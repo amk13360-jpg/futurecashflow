@@ -60,8 +60,10 @@ stages:
               appType: 'webAppLinux'
               appName: '$(webAppName)'
               package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
-              runtimeStack: 'NODE|18-lts'
+              runtimeStack: 'NODE|20-lts'
               startUpCommand: 'npm run start'
+              enableCustomDeployment: true
+              deploymentMethod: 'zipDeploy'
               appSettings: |
                 -DB_HOST mysqlscf-pqbaubvpq5u7m.mysql.database.azure.com
                 -DB_NAME fmf_scf_platform
