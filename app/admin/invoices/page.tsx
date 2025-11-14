@@ -1,0 +1,144 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { DashboardHeader } from "@/components/admin/dashboard-header"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
+import { getAllInvoices, generateOffers } from "@/lib/actions/invoices"
+import { FileText, Send, ArrowLeft } from "lucide-react"
+import Link from "next/link"
+import { toast } from "sonner"
+
+export default function AdminInvoicesPage() {
+  const [invoices, setInvoices] = useState<any[]>([])
+  const [selectedInvoices, setSelectedInvoices] = useState<number[]>([])
+  const [loading, setLoading] = useState(true)
+  const [generating, setGenerating] = useState(false)
+
+  useEffect(() => {
+    loadInvoices()
+  }, [])
+
+  const loadInvoices = async () => {
+    try {
+      const data = await getAllInvoices()
+      setInvoices(data)
+    } catch (error) {
+      toast.error("Failed to load invoices")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleGenerateOffers = async () => {
+    if (selectedInvoices.length === 0) {
+      toast.error("Please select at least one invoice")
+      return
+    }
+
+    setGenerating(true)
+    try {
+      const result = await generateOffers(selectedInvoices)
+      toast.success(`Generated ${result.created.length} offers`)
+      if (result.errors.length > 0) {
+        toast.error(`${result.errors.length} errors occurred`)
+      }
+      setSelectedInvoices([])
+      loadInvoices()
+    } catch (error: any) {
+      toast.error(error.message || "Failed to generate offers")
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  const eligibleInvoices = invoices.filter((inv) => inv.status === "matched")
+
+  return (
+    <div className="min-h-screen bg-muted/30">
+      <DashboardHeader />
+
+      <main className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <Link
+            href="/admin/dashboard"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to dashboard
+          </Link>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-3xl font-bold">Invoice Management</h2>
+              <p className="text-muted-foreground">Review invoices and generate offers</p>
+            </div>
+            <Button onClick={handleGenerateOffers} disabled={selectedInvoices.length === 0 || generating}>
+              <Send className="h-4 w-4 mr-2" />
+              {generating ? "Generating..." : `Generate Offers (${selectedInvoices.length})`}
+            </Button>
+          </div>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>All Invoices ({invoices.length})</CardTitle>
+            <CardDescription>
+              {eligibleInvoices.length} eligible for offer generation • {selectedInvoices.length} selected
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="text-center py-12 text-muted-foreground">Loading invoices...</div>
+            ) : invoices.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">
+                <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                <p>No invoices in the system</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {invoices.map((invoice: any) => (
+                  <div key={invoice.invoice_id} className="flex items-center gap-4 p-4 border rounded-lg">
+                    {invoice.status === "matched" && (
+                      <Checkbox
+                        checked={selectedInvoices.includes(invoice.invoice_id)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setSelectedInvoices([...selectedInvoices, invoice.invoice_id])
+                          } else {
+                            setSelectedInvoices(selectedInvoices.filter((id) => id !== invoice.invoice_id))
+                          }
+                        }}
+                      />
+                    )}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <h4 className="font-medium">{invoice.invoice_number}</h4>
+                        <Badge variant={invoice.status === "offered" ? "default" : "secondary"}>{invoice.status}</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {invoice.supplier_name} • {invoice.buyer_name} ({invoice.company_code})
+                      </p>
+                      <div className="flex items-center gap-4 mt-2 text-sm">
+                        <span className="font-medium">
+                          {invoice.currency} {typeof invoice.amount === "number" ? invoice.amount.toLocaleString() : (invoice.amount !== undefined && invoice.amount !== null ? Number(invoice.amount).toLocaleString() : "N/A")}
+                        </span>
+                        <span className="text-muted-foreground">
+                          Due: {invoice.due_date && !isNaN(Date.parse(invoice.due_date)) ? new Date(invoice.due_date).toLocaleDateString() : "N/A"}
+                        </span>
+                        {invoice.offer_count > 0 && (
+                          <span className="text-muted-foreground">{invoice.offer_count} offer(s)</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </main>
+    </div>
+  )
+}

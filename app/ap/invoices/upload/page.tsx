@@ -1,0 +1,244 @@
+"use client"
+
+
+
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { DashboardHeader } from "@/components/admin/dashboard-header"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { parseAPDataCSV, uploadAPData } from "@/lib/actions/invoices"
+import { Upload, FileText, CheckCircle, AlertCircle, ArrowLeft } from "lucide-react"
+import Link from "next/link"
+import { toast } from "sonner"
+
+export default function InvoiceUploadPage() {
+  const router = useRouter()
+  const [csvText, setCsvText] = useState("")
+  const [loading, setLoading] = useState(false)
+  const [preview, setPreview] = useState<any[]>([])
+  const [results, setResults] = useState<{ uploaded: string[]; errors: string[] } | null>(null)
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        const text = event.target?.result as string
+        setCsvText(text)
+        toast.success("File loaded successfully")
+      }
+      reader.readAsText(file)
+    }
+  }
+
+  const handlePreview = async () => {
+    try {
+      const rows = await parseAPDataCSV(csvText)
+      setPreview(rows.slice(0, 10)) // Show first 10 rows
+      toast.success(`Parsed ${rows.length} AP data rows`)
+    } catch (error: any) {
+      toast.error(error.message || "Failed to parse CSV. Please check the format.")
+    }
+  }
+
+  const handleUpload = async () => {
+    setLoading(true)
+    try {
+      const rows = await parseAPDataCSV(csvText)
+      const result = await uploadAPData(rows)
+      setResults(result)
+      toast.success(`Uploaded ${result.uploaded.length} invoices`)
+
+      if (result.uploaded.length > 0) {
+        router.refresh() // Force refresh the router cache
+        setTimeout(() => {
+          router.push("/ap/invoices")
+        }, 1500)
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to upload invoices")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+  <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+      <DashboardHeader />
+
+      <main className="container mx-auto px-4 py-8">
+        <div className="mb-6">
+          <Link
+            href="/ap/dashboard"
+            className="inline-flex items-center text-sm text-lightgray hover:text-white mb-4"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to dashboard
+          </Link>
+          <h2 className="text-3xl font-bold text-white">Upload AP Data</h2>
+          <p className="text-lightgray">Upload approved invoices from your ERP system</p>
+        </div>
+
+        {!results ? (
+          <div className="grid lg:grid-cols-2 gap-6">
+            <Card className="bg-card border border-darkgray shadow-xl">
+              <CardHeader>
+                <Upload className="h-8 w-8 text-accent-red mb-2" />
+                <CardTitle className="text-white">AP Data CSV Upload</CardTitle>
+                <CardDescription className="text-lightgray">Upload your accounts payable data export</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Alert className="bg-charcoal text-white border-accent-red">
+                  <FileText className="h-4 w-4 text-accent-red" />
+                  <AlertDescription>
+                    <strong>Required CSV columns:</strong>
+                    <br />
+                    <span className="text-lightgray">
+                      Company Code, Vendor Number, Vendor Name, Document Number, Document Type, Document Date, Posting
+                      Date, Baseline Date, Net Due Date, Days Overdue, Amount (Doc Curr), Currency, Amount (Local Curr),
+                      Payment Terms, Payment Method, Assignment (PO #), Reference (Invoice #), Open Item, Text
+                    </span>
+                  </AlertDescription>
+                </Alert>
+
+                <div className="space-y-2">
+                  <Label htmlFor="file" className="text-white">Upload CSV File</Label>
+                  <input
+                    id="file"
+                    type="file"
+                    accept=".csv"
+                    onChange={handleFileUpload}
+                    placeholder="Select a CSV file to upload"
+                    title="Upload CSV File"
+                    className="block w-full text-sm text-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-accent-red file:text-primary-foreground hover:file:bg-accent-red/90"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="csv" className="text-white">Or Paste CSV Data</Label>
+2000,200016,Shosholoza Logistics,19000300,KR,2025-08-25,2025-08-25,2025-08-25,2025-10-24,-64,9303.57,ZAR,9303.57,0003 (60 days),T (EFT),PO2100,INV-3100,Yes,IT support"
+                  <Textarea
+                    id="csv"
+                    value={csvText}
+                    onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setCsvText(e.target.value)}
+                    placeholder="Company Code,Vendor Number,Vendor Name,Document Number,Document Type,Document Date,Posting Date,Baseline Date,Net Due Date,Days Overdue,Amount (Doc Curr),Currency,Amount (Local Curr),Payment Terms,Payment Method,Assignment (PO #),Reference (Invoice #),Open Item,Text
+2000,200016,Shosholoza Logistics,19000300,KR,2025-08-25,2025-08-25,2025-08-25,2025-10-24,-64,9303.57,ZAR,9303.57,0003 (60 days),T (EFT),PO2100,INV-3100,Yes,IT support"
+                    rows={10}
+                    className="font-mono text-sm text-white bg-darkgray border-mediumgray"
+                  />
+                </div>
+
+                <div className="flex gap-2">
+                  <Button
+                    onClick={handlePreview}
+                    variant="outline"
+                    disabled={!csvText || loading}
+                    className="flex-1 bg-darkgray text-white border-mediumgray"
+                  >
+                    Preview
+                  </Button>
+                  <Button onClick={handleUpload} disabled={!csvText || loading} className="flex-1 bg-accent-red text-white">
+                    {loading ? "Uploading..." : "Upload AP Data"}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-card border border-darkgray shadow-xl">
+              <CardHeader>
+                <CardTitle className="text-white">Preview</CardTitle>
+                <CardDescription className="text-lightgray">Review AP data before uploading (first 10 rows)</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {preview.length === 0 ? (
+                  <div className="text-center py-8 text-lightgray">
+                    <FileText className="h-12 w-12 mx-auto mb-3 opacity-50 text-mediumgray" />
+                    <p>No data to preview</p>
+                    <p className="text-sm mt-1">Click "Preview" to parse your CSV</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {preview.map((row: any, idx: number) => (
+                      <div key={idx} className="p-3 border border-mediumgray rounded-lg text-sm bg-charcoal text-white">
+                        <div className="font-medium">
+                          {row["Document Number"]} - {row["Vendor Name"]}
+                        </div>
+                        <div className="text-lightgray text-xs">Vendor: {row["Vendor Number"]}</div>
+                        <div className="flex justify-between mt-1">
+                          <span>
+                            {row["Currency"]} {Number.parseFloat(row["Amount (Doc Curr)"]).toLocaleString()}
+                          </span>
+                          <span className="text-xs">Due: {row["Net Due Date"]}</span>
+                        </div>
+                        <div className="text-xs text-lightgray mt-1">{row["Text"]}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          <Card className="bg-darkgray/50 backdrop-blur border-darkgray shadow-xl">
+            <CardHeader>
+              <CardTitle className="text-white">Upload Results</CardTitle>
+              <CardDescription className="text-lightgray">Summary of AP data upload</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {results.uploaded.length > 0 && (
+                <Alert className="bg-charcoal text-white border-accent-green">
+                  <CheckCircle className="h-4 w-4 text-accent-green" />
+                  <AlertDescription>
+                    <strong>Successfully uploaded {results.uploaded.length} invoices</strong>
+                    <div className="mt-2 text-sm">
+                      {results.uploaded.slice(0, 5).map((inv: string) => (
+                        <div key={inv}>• {inv}</div>
+                      ))}
+                      {results.uploaded.length > 5 && <div>... and {results.uploaded.length - 5} more</div>}
+                    </div>
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {results.errors.length > 0 && (
+                <Alert variant="destructive" className="bg-charcoal text-white border-accent-red">
+                  <AlertCircle className="h-4 w-4 text-accent-red" />
+                  <AlertDescription>
+                    <strong>{results.errors.length} errors occurred</strong>
+                    <div className="mt-2 text-sm">
+                      {results.errors.slice(0, 5).map((err: string, idx: number) => (
+                        <div key={idx}>• {err}</div>
+                      ))}
+                      {results.errors.length > 5 && <div>... and {results.errors.length - 5} more</div>}
+                    </div>
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              <div className="flex gap-2">
+                <Button onClick={() => router.push("/ap/invoices")} className="flex-1 bg-accent-red text-white">
+                  View Invoices
+                </Button>
+                <Button
+                  onClick={() => {
+                    setResults(null)
+                    setCsvText("")
+                    setPreview([])
+                  }}
+                  variant="outline"
+                  className="flex-1 bg-darkgray text-white border-mediumgray"
+                >
+                  Upload More
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </main>
+  </div>
+  )
+}

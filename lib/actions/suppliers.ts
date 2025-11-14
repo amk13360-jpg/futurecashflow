@@ -1,0 +1,374 @@
+"use server"
+// Handle cession agreement upload
+import path from "path";
+import fs from "fs/promises";
+import { randomUUID } from "crypto";
+export async function uploadCessionAgreement({ supplierId, file, fileName }: { supplierId: number, file: Buffer, fileName: string }) {
+  // Save file to disk (or cloud storage in production)
+  const uploadDir = path.join(process.cwd(), "public", "uploads", "cession-agreements");
+  await fs.mkdir(uploadDir, { recursive: true });
+  const uniqueName = `${supplierId}-${Date.now()}-${randomUUID()}-${fileName}`;
+  const filePath = path.join(uploadDir, uniqueName);
+  await fs.writeFile(filePath, file);
+  const documentUrl = `/uploads/cession-agreements/${uniqueName}`;
+
+  // Insert or update cession_agreements record
+  await query(
+    `INSERT INTO cession_agreements (supplier_id, document_url, document_type, version, signed_date, status, created_at, updated_at)
+     VALUES (?, ?, 'uploaded', 'v1', NOW(), 'pending', NOW(), NOW())
+     ON DUPLICATE KEY UPDATE document_url = VALUES(document_url), document_type = 'uploaded', version = 'v1', signed_date = NOW(), status = 'pending', updated_at = NOW()`,
+    [supplierId, documentUrl]
+  );
+  return { success: true, documentUrl };
+}
+
+// Check if supplier has signed/uploaded cession agreement
+import type { CessionAgreement } from "@/lib/types/database"
+// ...existing code...
+export async function getSupplierCessionAgreement() {
+  const session = await getSupplierSession()
+  if (!session) {
+    redirect("/supplier/access")
+  }
+
+  try {
+    const agreements = await query<CessionAgreement[]>(
+      `SELECT * FROM cession_agreements WHERE supplier_id = ? ORDER BY created_at DESC LIMIT 1`,
+      [session.supplierId],
+    )
+    return agreements[0] || null
+  } catch (error) {
+    console.error("[v0] Error fetching supplier cession agreement:", error)
+    throw error
+  }
+}
+// Fetch supplier and buyer details for cession agreement PDF
+export async function getSupplierAndBuyerDetails(supplierId: string) {
+  // Replace with your actual DB logic
+  const supplierArr = await query(
+    `SELECT supplier_id, name, physical_address, contact_email, contact_phone FROM suppliers WHERE supplier_id = ? LIMIT 1`,
+    [supplierId]
+  );
+  const supplier = supplierArr[0];
+  if (!supplier) return null;
+  // You may need to determine buyer_id from another relationship if not present in suppliers
+  // For now, fetch the first buyer (or update logic as needed)
+  const buyerArr = await query(
+    `SELECT buyer_id, name, contact_email, contact_phone FROM buyers LIMIT 1`,
+    []
+  );
+  const buyer = buyerArr[0];
+  if (!buyer) return null;
+  return { supplier, buyer };
+}
+
+// ...existing code...
+
+
+import { query, transaction } from "@/lib/db"
+import { getSupplierSession } from "@/lib/auth/session"
+import { createAuditLog } from "@/lib/auth/audit"
+import { redirect } from "next/navigation"
+
+// Get supplier offers
+import type { PoolConnection } from "mysql2/promise"
+export async function getSupplierOffers() {
+  const session = await getSupplierSession()
+  if (!session) {
+    redirect("/supplier/access")
+  }
+
+  try {
+    const offers = await query(
+      `SELECT o.offer_id, o.annual_rate, o.days_to_maturity, o.discount_amount,
+              o.net_payment_amount, o.offer_expiry_date, o.status, o.sent_at,
+              i.invoice_number, i.invoice_date, i.due_date, i.amount as invoice_amount,
+              i.currency, i.description,
+              b.name as buyer_name, b.code as buyer_code
+       FROM offers o
+       JOIN invoices i ON o.invoice_id = i.invoice_id
+       JOIN buyers b ON o.buyer_id = b.buyer_id
+       WHERE o.supplier_id = ?
+       ORDER BY o.sent_at DESC`,
+      [session.supplierId],
+    )
+
+    return offers
+  } catch (error) {
+    console.error("[v0] Error fetching supplier offers:", error)
+    throw error
+  }
+}
+
+// Get supplier profile
+export async function getSupplierProfile() {
+  const session = await getSupplierSession()
+  if (!session) {
+    redirect("/supplier/access")
+  }
+
+  try {
+    const suppliers = await query(
+      `SELECT supplier_id, name, vat_no, registration_no, contact_person,
+              contact_email, contact_phone, physical_address,
+              bank_name, bank_account_no, bank_branch_code, bank_account_type,
+              risk_tier, onboarding_status, active_status
+       FROM suppliers
+       WHERE supplier_id = ?`,
+      [session.supplierId],
+    )
+
+    return suppliers[0] || null
+  } catch (error) {
+    console.error("[v0] Error fetching supplier profile:", error)
+    throw error
+  }
+}
+
+// Accept offer
+export async function acceptOffer(offerId: number, selectedInvoices: number[]) {
+  const session = await getSupplierSession()
+  if (!session) {
+    throw new Error("Unauthorized")
+  }
+
+  try {
+    const result = await transaction(async (connection) => {
+      // Verify offer belongs to supplier
+      type OfferWithInvoice = {
+        offer_expiry_date: string | Date;
+        invoice_id: number;
+        // ...other fields as needed
+      };
+  const [rows] = await connection.execute(
+        `SELECT o.*, i.invoice_id 
+         FROM offers o
+         JOIN invoices i ON o.invoice_id = i.invoice_id
+         WHERE o.offer_id = ? AND o.supplier_id = ? AND o.status = 'sent'`,
+        [offerId, session.supplierId],
+      );
+      const offersRows = rows as OfferWithInvoice[];
+
+      if (!offersRows || offersRows.length === 0) {
+        throw new Error("Offer not found or already processed")
+      }
+
+      const offer = offersRows[0];
+
+      // Check if offer is expired
+      if (new Date() > new Date(offer.offer_expiry_date)) {
+  await connection.execute(`UPDATE offers SET status = 'expired' WHERE offer_id = ?`, [offerId])
+        throw new Error("Offer has expired")
+      }
+
+      // Update offer status
+  await connection.execute(`UPDATE offers SET status = 'accepted', responded_at = NOW() WHERE offer_id = ?`, [
+        offerId,
+      ])
+
+      // Update invoice status
+  await connection.execute(`UPDATE invoices SET status = 'accepted' WHERE invoice_id = ?`, [offer.invoice_id])
+
+      return { success: true, offerId }
+    })
+
+    await createAuditLog({
+      userId: session.supplierId,
+      userType: "supplier",
+      action: "OFFER_ACCEPTED",
+      entityType: "offer",
+      entityId: offerId,
+      details: `Supplier ${session.name} accepted offer`,
+    })
+
+    return result
+  } catch (error) {
+    console.error("[v0] Error accepting offer:", error)
+    throw error
+  }
+}
+
+// Reject offer
+export async function rejectOffer(offerId: number) {
+  const session = await getSupplierSession()
+  if (!session) {
+    throw new Error("Unauthorized")
+  }
+
+  try {
+    const result = await transaction(async (connection) => {
+      // Verify offer belongs to supplier
+      type OfferWithInvoice = {
+        offer_expiry_date: string | Date;
+        invoice_id: number;
+        // ...other fields as needed
+      };
+  const [rows] = await connection.execute(
+        `SELECT o.*, i.invoice_id 
+         FROM offers o
+         JOIN invoices i ON o.invoice_id = i.invoice_id
+         WHERE o.offer_id = ? AND o.supplier_id = ? AND o.status = 'sent'`,
+        [offerId, session.supplierId],
+      );
+      const offersRows = rows as OfferWithInvoice[];
+
+      if (!offersRows || offersRows.length === 0) {
+        throw new Error("Offer not found or already processed")
+      }
+
+      const offer = offersRows[0];
+
+      // Update offer status
+  await connection.execute(`UPDATE offers SET status = 'rejected', responded_at = NOW() WHERE offer_id = ?`, [
+        offerId,
+      ])
+
+      // Update invoice status back to matched
+  await connection.execute(`UPDATE invoices SET status = 'matched' WHERE invoice_id = ?`, [offer.invoice_id])
+
+      return { success: true, offerId }
+    })
+
+    await createAuditLog({
+      userId: session.supplierId,
+      userType: "supplier",
+      action: "OFFER_REJECTED",
+      entityType: "offer",
+      entityId: offerId,
+      details: `Supplier ${session.name} rejected offer`,
+    })
+
+    return result
+  } catch (error) {
+    console.error("[v0] Error rejecting offer:", error)
+    throw error
+  }
+}
+
+// Get payment history
+export async function getSupplierPayments() {
+  const session = await getSupplierSession()
+  if (!session) {
+    redirect("/supplier/access")
+  }
+
+  try {
+    const payments = await query(
+      `SELECT p.payment_id, p.amount, p.currency, p.payment_reference,
+              p.status, p.scheduled_date, p.completed_date,
+              o.offer_id, o.discount_amount, o.net_payment_amount,
+              i.invoice_number, i.amount as invoice_amount,
+              b.name as buyer_name
+       FROM payments p
+       JOIN offers o ON p.offer_id = o.offer_id
+       JOIN invoices i ON o.invoice_id = i.invoice_id
+       JOIN buyers b ON o.buyer_id = b.buyer_id
+       WHERE p.supplier_id = ?
+       ORDER BY p.created_at DESC`,
+      [session.supplierId],
+    )
+
+    return payments
+  } catch (error) {
+    console.error("[v0] Error fetching supplier payments:", error)
+    throw error
+  }
+}
+
+// Update supplier profile
+export async function updateSupplierProfile(data: {
+  contactPerson?: string
+  contactPhone?: string
+  physicalAddress?: string
+}) {
+  const session = await getSupplierSession()
+  if (!session) {
+    throw new Error("Unauthorized")
+  }
+
+  try {
+    const updates: string[] = []
+    const values: any[] = []
+
+    if (data.contactPerson !== undefined) {
+      updates.push("contact_person = ?")
+      values.push(data.contactPerson)
+    }
+    if (data.contactPhone !== undefined) {
+      updates.push("contact_phone = ?")
+      values.push(data.contactPhone)
+    }
+    if (data.physicalAddress !== undefined) {
+      updates.push("physical_address = ?")
+      values.push(data.physicalAddress)
+    }
+
+    if (updates.length === 0) {
+      throw new Error("No updates provided")
+    }
+
+    values.push(session.supplierId)
+
+    await query(`UPDATE suppliers SET ${updates.join(", ")} WHERE supplier_id = ?`, values)
+
+    await createAuditLog({
+      userId: session.supplierId,
+      userType: "supplier",
+      action: "PROFILE_UPDATED",
+      details: "Supplier updated profile information",
+    })
+
+    return { success: true }
+  } catch (error) {
+    console.error("[v0] Error updating supplier profile:", error)
+    throw error
+  }
+}
+
+// Request bank detail change
+export async function requestBankChange(data: {
+  newBankName: string
+  newAccountNo: string
+  newBranchCode: string
+  newAccountType: "current" | "savings" | "business"
+  reason: string
+}) {
+  const session = await getSupplierSession()
+  if (!session) {
+    throw new Error("Unauthorized")
+  }
+
+  try {
+    // Get current bank details
+    const supplier = await getSupplierProfile()
+
+    await query(
+      `INSERT INTO bank_change_requests 
+       (supplier_id, old_bank_name, old_account_no, new_bank_name, new_account_no, 
+        new_branch_code, new_account_type, reason, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
+      [
+        session.supplierId,
+        supplier.bank_name,
+        supplier.bank_account_no,
+        data.newBankName,
+        data.newAccountNo,
+        data.newBranchCode,
+        data.newAccountType,
+        data.reason,
+      ],
+    )
+
+    await createAuditLog({
+      userId: session.supplierId,
+      userType: "supplier",
+      action: "BANK_CHANGE_REQUESTED",
+      details: `Requested bank change to ${data.newBankName}`,
+    })
+
+    return { success: true }
+  } catch (error) {
+    console.error("[v0] Error requesting bank change:", error)
+    throw error
+  }
+}

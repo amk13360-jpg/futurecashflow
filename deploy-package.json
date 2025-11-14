@@ -1,0 +1,12 @@
+{
+  "name": "scf-platform",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "next start",
+    "build": "next build",
+    "dev": "next dev"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

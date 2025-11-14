@@ -1,0 +1,375 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.38.33.27573",
+      "templateHash": "3589679834505905947"
+    }
+  },
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "minLength": 1,
+      "metadata": {
+        "description": "Primary location for all resources"
+      }
+    },
+    "environmentName": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Name of the the environment which is used to generate a short unique hash used in all resources."
+      }
+    },
+    "resourceNamePrefix": {
+      "type": "string",
+      "defaultValue": "scf",
+      "minLength": 1,
+      "metadata": {
+        "description": "Prefix for all resource names"
+      }
+    },
+    "appServiceSku": {
+      "type": "string",
+      "defaultValue": "F1",
+      "metadata": {
+        "description": "The SKU of the App Service Plan"
+      }
+    },
+    "mysqlAdminUsername": {
+      "type": "string",
+      "defaultValue": "Futuremining2025",
+      "metadata": {
+        "description": "MySQL server admin username"
+      }
+    },
+    "mysqlAdminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "MySQL server admin password"
+      }
+    },
+    "databaseName": {
+      "type": "string",
+      "defaultValue": "fmf_scf_platform",
+      "metadata": {
+        "description": "MySQL database name"
+      }
+    },
+    "jwtSecret": {
+      "type": "securestring",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "JWT secret for authentication"
+      }
+    }
+  },
+  "variables": {
+    "$fxv#0": {
+      "analysisServicesServers": "as",
+      "apiConnections": "con",
+      "apiManagementService": "apim",
+      "appConfigurationStores": "appcs",
+      "appManagedEnvironments": "cae",
+      "appContainerApps": "ca",
+      "authorizationPolicyDefinitions": "pd",
+      "automationAccounts": "aa",
+      "blueprints": "bp",
+      "blueprintArtifacts": "bpa",
+      "cacheRedis": "redis",
+      "cdnProfiles": "cdnp",
+      "cdnProfilesEndpoints": "cdne",
+      "cognitiveServicesAccounts": "cog",
+      "cognitiveServicesFormRecognizer": "csfr",
+      "cognitiveServicesTextAnalytics": "csta",
+      "containerAppsEnvironments": "cae",
+      "containerRegistries": "cr",
+      "containerInstances": "ci",
+      "cosmosDBDatabaseAccounts": "cosmos",
+      "databricksWorkspaces": "dbw",
+      "dataFactories": "df",
+      "dataLakeAnalyticsAccounts": "dla",
+      "dataLakeStoreAccounts": "dls",
+      "dataMigrationServices": "dms",
+      "dBforMySQLServers": "mysql",
+      "dBforPostgreSQLServers": "psql",
+      "devTestLabs": "dtl",
+      "deviceIotHubs": "iot",
+      "deviceProvisioningServices": "provs",
+      "deviceProvisioningServicesProvisioningServices": "provs",
+      "documentDBDatabaseAccounts": "docdb",
+      "eventGridDomains": "evgd",
+      "eventGridSubscriptions": "evgs",
+      "eventGridTopics": "evgt",
+      "eventHubNamespaces": "evhns",
+      "eventHubs": "evh",
+      "expressRouteCircuits": "erc",
+      "expressRouteGateways": "ergw",
+      "frontDoorService": "fd",
+      "hdInsightClustersHadoop": "hadoop",
+      "hdInsightClustersHbase": "hbase",
+      "hdInsightClustersKafka": "kafka",
+      "hdInsightClustersMl": "mls",
+      "hdInsightClustersSpark": "spark",
+      "hdInsightClustersStorm": "storm",
+      "hybridComputeMachines": "arcs",
+      "keyVaults": "kv",
+      "kubernetesServices": "aks",
+      "kustoClusters": "dec",
+      "loadBalancers": "lb",
+      "localNetworkGateways": "lgw",
+      "logicApps": "logic",
+      "machineLearningServicesWorkspaces": "mlw",
+      "managedIdentityUserAssignedIdentities": "id",
+      "managementGroups": "mg",
+      "maps": "map",
+      "mariaDBServers": "mariadb",
+      "networkApplicationGateways": "agw",
+      "networkApplicationSecurityGroups": "asg",
+      "networkAzureFirewalls": "afw",
+      "networkBastionHosts": "bas",
+      "networkConnections": "con",
+      "networkDdosProtectionPlans": "ddos",
+      "networkDnsZones": "dnsz",
+      "networkExpressRouteCircuits": "erc",
+      "networkFirewallPolicies": "afwp",
+      "networkFirewallPolicyRuleGroups": "fwpg",
+      "networkFrontDoors": "fd",
+      "networkFrontdoorWebApplicationFirewallPolicies": "fdfp",
+      "networkLoadBalancers": "lb",
+      "networkLocalNetworkGateways": "lgw",
+      "networkNatGateways": "ng",
+      "networkNetworkInterfaces": "nic",
+      "networkNetworkSecurityGroups": "nsg",
+      "networkNetworkSecurityGroupsSecurityRules": "nsgsr",
+      "networkNetworkWatchers": "nw",
+      "networkPrivateDnsZones": "pdnsz",
+      "networkPrivateLinkServices": "pl",
+      "networkPublicIPAddresses": "pip",
+      "networkPublicIPPrefixes": "ippre",
+      "networkRouteFilters": "rf",
+      "networkRouteTables": "rt",
+      "networkRouteTablesRoutes": "udr",
+      "networkTrafficManagerProfiles": "traf",
+      "networkVirtualNetworkGateways": "vgw",
+      "networkVirtualNetworks": "vnet",
+      "networkVirtualNetworksSubnets": "snet",
+      "networkVirtualNetworksVirtualNetworkPeerings": "peer",
+      "networkVirtualWans": "vwan",
+      "networkVpnGateways": "vpng",
+      "networkVpnSites": "vst",
+      "notificationHubNamespaces": "ntfns",
+      "notificationHubs": "ntf",
+      "operationalInsightsWorkspaces": "log",
+      "portalDashboards": "dash",
+      "powerBIWorkspaceCollections": "pbiwc",
+      "purviewAccounts": "pview",
+      "recoveryServicesVaults": "rsv",
+      "resourceGroups": "rg",
+      "searchServices": "srch",
+      "serviceBusNamespaces": "sbns",
+      "serviceBusNamespacesAuthorizationRules": "sbar",
+      "serviceBusNamespacesQueues": "sbq",
+      "serviceBusNamespacesQueuesAuthorizationRules": "sbqar",
+      "serviceBusNamespacesTopics": "sbt",
+      "serviceEndPointPolicies": "se",
+      "serviceFabricClusters": "sf",
+      "serviceFabricManagedClusters": "sfmc",
+      "signalRServiceSignalR": "sigr",
+      "sqlServers": "sql",
+      "sqlServersDatabase": "sqldb",
+      "sqlServersElasticPools": "sqlep",
+      "storageAccounts": "st",
+      "storageAccountsFileServices": "stf",
+      "streamAnalyticsCluster": "asa",
+      "synapseWorkspaces": "syn",
+      "timeSeriesInsightsEnvironments": "tsi",
+      "trafficManagerProfiles": "traf",
+      "virtualMachines": "vm",
+      "virtualMachineScaleSets": "vmss",
+      "webServerFarms": "plan",
+      "webSitesAppService": "app",
+      "webSitesAppServiceEnvironment": "ase",
+      "webSitesFunctions": "func"
+    },
+    "abbrs": "[variables('$fxv#0')]",
+    "resourceToken": "[toLower(uniqueString(subscription().id, parameters('environmentName'), parameters('location')))]",
+    "tags": {
+      "azdEnvName": "[parameters('environmentName')]",
+      "project": "supply-chain-finance"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/serverfarms",
+      "apiVersion": "2023-01-01",
+      "name": "[format('{0}{1}-{2}', variables('abbrs').webServerFarms, parameters('resourceNamePrefix'), variables('resourceToken'))]",
+      "location": "[parameters('location')]",
+      "tags": "[variables('tags')]",
+      "sku": {
+        "name": "[parameters('appServiceSku')]"
+      },
+      "properties": {
+        "reserved": false
+      }
+    },
+    {
+      "type": "Microsoft.DBforMySQL/flexibleServers",
+      "apiVersion": "2023-06-30",
+      "name": "[format('{0}{1}-{2}', variables('abbrs').dBforMySQLServers, parameters('resourceNamePrefix'), variables('resourceToken'))]",
+      "location": "[parameters('location')]",
+      "tags": "[variables('tags')]",
+      "sku": {
+        "name": "Standard_B1ms",
+        "tier": "Burstable"
+      },
+      "properties": {
+        "administratorLogin": "[parameters('mysqlAdminUsername')]",
+        "administratorLoginPassword": "[parameters('mysqlAdminPassword')]",
+        "storage": {
+          "storageSizeGB": 20,
+          "iops": 360,
+          "autoGrow": "Enabled"
+        },
+        "createMode": "Default",
+        "version": "8.0.21",
+        "backup": {
+          "backupRetentionDays": 7,
+          "geoRedundantBackup": "Disabled"
+        },
+        "highAvailability": {
+          "mode": "Disabled"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.DBforMySQL/flexibleServers/databases",
+      "apiVersion": "2023-06-30",
+      "name": "[format('{0}/{1}', format('{0}{1}-{2}', variables('abbrs').dBforMySQLServers, parameters('resourceNamePrefix'), variables('resourceToken')), parameters('databaseName'))]",
+      "properties": {
+        "charset": "utf8mb4",
+        "collation": "utf8mb4_unicode_ci"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.DBforMySQL/flexibleServers', format('{0}{1}-{2}', variables('abbrs').dBforMySQLServers, parameters('resourceNamePrefix'), variables('resourceToken')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.DBforMySQL/flexibleServers/firewallRules",
+      "apiVersion": "2023-06-30",
+      "name": "[format('{0}/{1}', format('{0}{1}-{2}', variables('abbrs').dBforMySQLServers, parameters('resourceNamePrefix'), variables('resourceToken')), 'AllowAzureServices')]",
+      "properties": {
+        "startIpAddress": "0.0.0.0",
+        "endIpAddress": "0.0.0.0"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.DBforMySQL/flexibleServers', format('{0}{1}-{2}', variables('abbrs').dBforMySQLServers, parameters('resourceNamePrefix'), variables('resourceToken')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.DBforMySQL/flexibleServers/firewallRules",
+      "apiVersion": "2023-06-30",
+      "name": "[format('{0}/{1}', format('{0}{1}-{2}', variables('abbrs').dBforMySQLServers, parameters('resourceNamePrefix'), variables('resourceToken')), 'AllowAllIPs')]",
+      "properties": {
+        "startIpAddress": "0.0.0.0",
+        "endIpAddress": "255.255.255.255"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.DBforMySQL/flexibleServers', format('{0}{1}-{2}', variables('abbrs').dBforMySQLServers, parameters('resourceNamePrefix'), variables('resourceToken')))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2023-01-01",
+      "name": "[format('{0}{1}-{2}', variables('abbrs').webSitesAppService, parameters('resourceNamePrefix'), variables('resourceToken'))]",
+      "location": "[parameters('location')]",
+      "tags": "[variables('tags')]",
+      "properties": {
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', format('{0}{1}-{2}', variables('abbrs').webServerFarms, parameters('resourceNamePrefix'), variables('resourceToken')))]",
+        "siteConfig": {
+          "nodeVersion": "18-lts",
+          "appCommandLine": "npm run start",
+          "appSettings": [
+            {
+              "name": "NODE_ENV",
+              "value": "production"
+            },
+            {
+              "name": "DB_HOST",
+              "value": "[reference(resourceId('Microsoft.DBforMySQL/flexibleServers', format('{0}{1}-{2}', variables('abbrs').dBforMySQLServers, parameters('resourceNamePrefix'), variables('resourceToken'))), '2023-06-30').fullyQualifiedDomainName]"
+            },
+            {
+              "name": "DB_NAME",
+              "value": "[parameters('databaseName')]"
+            },
+            {
+              "name": "DB_USER",
+              "value": "[parameters('mysqlAdminUsername')]"
+            },
+            {
+              "name": "DB_PASSWORD",
+              "value": "[parameters('mysqlAdminPassword')]"
+            },
+            {
+              "name": "DB_PORT",
+              "value": "3306"
+            },
+            {
+              "name": "JWT_SECRET",
+              "value": "[parameters('jwtSecret')]"
+            },
+            {
+              "name": "WEBSITES_ENABLE_APP_SERVICE_STORAGE",
+              "value": "false"
+            },
+            {
+              "name": "SCM_DO_BUILD_DURING_DEPLOYMENT",
+              "value": "true"
+            },
+            {
+              "name": "WEBSITE_NODE_DEFAULT_VERSION",
+              "value": "18.17.0"
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Web/serverfarms', format('{0}{1}-{2}', variables('abbrs').webServerFarms, parameters('resourceNamePrefix'), variables('resourceToken')))]",
+        "[resourceId('Microsoft.DBforMySQL/flexibleServers', format('{0}{1}-{2}', variables('abbrs').dBforMySQLServers, parameters('resourceNamePrefix'), variables('resourceToken')))]"
+      ]
+    }
+  ],
+  "outputs": {
+    "AZURE_LOCATION": {
+      "type": "string",
+      "value": "[parameters('location')]"
+    },
+    "AZURE_TENANT_ID": {
+      "type": "string",
+      "value": "[tenant().tenantId]"
+    },
+    "AZURE_RESOURCE_GROUP": {
+      "type": "string",
+      "value": "[resourceGroup().name]"
+    },
+    "SERVICE_WEB_NAME": {
+      "type": "string",
+      "value": "[format('{0}{1}-{2}', variables('abbrs').webSitesAppService, parameters('resourceNamePrefix'), variables('resourceToken'))]"
+    },
+    "SERVICE_WEB_URI": {
+      "type": "string",
+      "value": "[format('https://{0}.azurewebsites.net', format('{0}{1}-{2}', variables('abbrs').webSitesAppService, parameters('resourceNamePrefix'), variables('resourceToken')))]"
+    },
+    "MYSQL_HOST": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.DBforMySQL/flexibleServers', format('{0}{1}-{2}', variables('abbrs').dBforMySQLServers, parameters('resourceNamePrefix'), variables('resourceToken'))), '2023-06-30').fullyQualifiedDomainName]"
+    },
+    "MYSQL_DATABASE_NAME": {
+      "type": "string",
+      "value": "[parameters('databaseName')]"
+    }
+  }
+}
