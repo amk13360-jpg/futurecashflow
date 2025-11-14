@@ -22,9 +22,11 @@ stages:
       displayName: 'Install Node.js'
 
     - script: |
-        npm install
+        npm ci --legacy-peer-deps
         npm run build
       displayName: 'Install dependencies and build'
+      env:
+        NODE_ENV: production
 
     - task: ArchiveFiles@2
       displayName: 'Archive build files'
@@ -61,10 +63,11 @@ stages:
               runtimeStack: 'NODE|18-lts'
               startUpCommand: 'npm run start'
               appSettings: |
-                -DB_HOST "mysqlscf-pqbaubvpq5u7m.mysql.database.azure.com"
-                -DB_NAME "fmf_scf_platform"
-                -DB_USER "Futuremining2025"
-                -DB_PASSWORD "Mining@2025"
-                -DB_PORT "3306"
-                -JWT_SECRET "REDACTED_JWT_SECRET"
-                -NODE_ENV "production"
+                -DB_HOST mysqlscf-pqbaubvpq5u7m.mysql.database.azure.com
+                -DB_NAME fmf_scf_platform
+                -DB_USER Futuremining2025
+                -DB_PASSWORD Mining@2025
+                -DB_PORT 3306
+                -JWT_SECRET REDACTED_JWT_SECRET
+                -NODE_ENV production
+                -NEXTAUTH_URL https://scf-platform-app.azurewebsites.net
