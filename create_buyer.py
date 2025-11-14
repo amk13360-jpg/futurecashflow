@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 DB_PASSWORD = "Mining@2025"
 DB_USER = "Futuremining2025"
-DB_HOST = "dbfuture.mysql.database.azure.com"
+DB_HOST = "mysqlscf-pqbaubvpq5u7m.mysql.database.azure.com"
 DB_NAME = "fmf_scf_platform"
 
 # --- Update passwords for all seeded AP users ---
