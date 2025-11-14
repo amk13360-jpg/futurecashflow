@@ -33,15 +33,27 @@ stages:
         ls -la .next
       displayName: 'Verify build output'
 
-    - task: ArchiveFiles@2
-      displayName: 'Archive build files'
+    - task: CopyFiles@2
+      displayName: 'Copy files for deployment'
       inputs:
-        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+        SourceFolder: '$(System.DefaultWorkingDirectory)'
+        Contents: |
+          **
+          !node_modules/**
+          !.git/**
+          !.venv/**
+          !.vscode/**
+          !*.md
+        TargetFolder: '$(Build.ArtifactStagingDirectory)/deploy'
+
+    - task: ArchiveFiles@2
+      displayName: 'Archive deployment files'
+      inputs:
+        rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/deploy'
         includeRootFolder: false
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
         replaceExistingArchive: true
-        verbose: true
 
     - publish: $(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip
       artifact: drop
@@ -66,6 +78,6 @@ stages:
               appName: '$(webAppName)'
               package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
               runtimeStack: 'NODE|20-lts'
-              startUpCommand: 'node_modules/.bin/next start'
+              startUpCommand: 'npm install --production --legacy-peer-deps && node_modules/.bin/next start'
               enableCustomDeployment: true
               deploymentMethod: 'zipDeploy'
