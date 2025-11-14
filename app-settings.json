@@ -1,0 +1,8 @@
+[
+  {"name": "DB_HOST", "value": "mysqlscf-pqbaubvpq5u7m.mysql.database.azure.com", "slotSetting": false},
+  {"name": "DB_NAME", "value": "fmf_scf_platform", "slotSetting": false},
+  {"name": "DB_USER", "value": "Futuremining2025", "slotSetting": false},
+  {"name": "DB_PASSWORD", "value": "Mining@2025", "slotSetting": false},
+  {"name": "DB_PORT", "value": "3306", "slotSetting": false},
+  {"name": "JWT_SECRET", "value": "your_jwt_secret_key_here", "slotSetting": false}
+]
