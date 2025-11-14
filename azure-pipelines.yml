@@ -28,6 +28,11 @@ stages:
       env:
         NODE_ENV: production
 
+    - script: |
+        echo "Verifying .next folder exists"
+        ls -la .next
+      displayName: 'Verify build output'
+
     - task: ArchiveFiles@2
       displayName: 'Archive build files'
       inputs:
@@ -61,6 +66,6 @@ stages:
               appName: '$(webAppName)'
               package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
               runtimeStack: 'NODE|20-lts'
-              startUpCommand: 'npm install --production && npm run build && npm run start'
+              startUpCommand: 'node_modules/.bin/next start'
               enableCustomDeployment: true
               deploymentMethod: 'zipDeploy'
