@@ -61,6 +61,6 @@ stages:
               appName: '$(webAppName)'
               package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
               runtimeStack: 'NODE|20-lts'
-              startUpCommand: 'npm run start'
+              startUpCommand: 'npm install --production && npm run build && npm run start'
               enableCustomDeployment: true
               deploymentMethod: 'zipDeploy'
