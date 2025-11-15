@@ -3,8 +3,18 @@ import { EmailClient, KnownEmailSendStatus } from "@azure/communication-email"
 const connectionString = process.env.AZURE_COMMUNICATION_CONNECTION_STRING || ""
 const senderAddress = "DoNotReply@ccd12bc5-9970-4050-8117-1aec566c8db9.azurecomm.net"
 
-// Create email client
-const emailClient = new EmailClient(connectionString)
+// Create email client lazily to avoid build-time errors
+let emailClient: EmailClient | null = null
+
+function getEmailClient(): EmailClient {
+  if (!emailClient) {
+    if (!connectionString) {
+      throw new Error("AZURE_COMMUNICATION_CONNECTION_STRING is not configured")
+    }
+    emailClient = new EmailClient(connectionString)
+  }
+  return emailClient
+}
 
 export interface SendOTPEmailParams {
   recipientEmail: string
@@ -148,7 +158,8 @@ Future Finance Cashflow Team
     }
 
     // Send the email
-    const poller = await emailClient.beginSend(emailMessage)
+    const client = getEmailClient()
+    const poller = await client.beginSend(emailMessage)
 
     // Wait for the operation to complete
     const result = await poller.pollUntilDone()
@@ -279,7 +290,8 @@ Future Finance Cashflow Team
       },
     }
 
-    const poller = await emailClient.beginSend(emailMessage)
+    const client = getEmailClient()
+    const poller = await client.beginSend(emailMessage)
     const result = await poller.pollUntilDone()
 
     if (result.status === KnownEmailSendStatus.Succeeded) {
