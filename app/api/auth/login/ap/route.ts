@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { query } from "@/lib/db"
 import { verifyPassword, generateOTP } from "@/lib/auth/password"
 import { createAuditLog } from "@/lib/auth/audit"
+import { sendOTPEmail } from "@/lib/services/email"
 import type { User, Buyer } from "@/lib/types/database"
 
 export async function POST(request: NextRequest) {
@@ -69,14 +70,26 @@ export async function POST(request: NextRequest) {
     // Store OTP in database
     await query("INSERT INTO otp_codes (user_id, code, expires_at) VALUES (?, ?, ?)", [user.user_id, otp, expiresAt])
 
-    // TODO: Send OTP via email (for now, return it in response for testing)
-    console.log(`[v0] OTP for ${user.email}: ${otp}`)
+    // Send OTP via Azure Communication Services
+    const emailSent = await sendOTPEmail({
+      recipientEmail: user.email,
+      recipientName: user.full_name || user.username,
+      otp,
+      expiryMinutes: 10,
+    })
+
+    if (!emailSent) {
+      console.error(`[v0] Failed to send OTP email to ${user.email}`)
+      // Continue anyway - OTP is stored in database
+    } else {
+      console.log(`[v0] OTP email sent successfully to ${user.email}`)
+    }
 
     await createAuditLog({
       userId: user.user_id,
       userType: "accounts_payable",
       action: "OTP_GENERATED",
-      details: "OTP sent to email",
+      details: emailSent ? "OTP sent to email successfully" : "OTP generated but email failed",
       ipAddress: request.ip || request.headers.get("x-forwarded-for") || undefined,
       userAgent: request.headers.get("user-agent") || undefined,
     })
@@ -86,7 +99,7 @@ export async function POST(request: NextRequest) {
       message: "OTP sent to your email",
       userId: user.user_id,
       email: user.email,
-      // For testing only - remove in production
+      // For testing only - show OTP in development
       otp: process.env.NODE_ENV === "development" ? otp : undefined,
     })
   } catch (error) {
