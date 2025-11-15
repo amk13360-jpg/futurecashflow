@@ -4,6 +4,7 @@
 import { query, transaction } from "@/lib/db"
 import { getSession } from "@/lib/auth/session"
 import { createAuditLog } from "@/lib/auth/audit"
+import { sendSupplierWelcomeEmail } from "@/lib/services/email"
 import type { RowDataPacket, OkPacket } from "mysql2"
 import { generateToken } from "@/lib/utils"
 import type { APDataRow, VendorDataRow } from "@/lib/types/database"
@@ -347,8 +348,22 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
           [supplier.supplierId, token, tokenExpiry],
         )
 
-        // TODO: Send actual email via email service
-        console.log(`[v0] Invitation email should be sent to ${supplier.email} with token: ${token}`)
+        // Generate access link with token
+        const baseUrl = process.env.NEXTAUTH_URL || "https://scf-platform-app.azurewebsites.net"
+        const accessLink = `${baseUrl}/supplier/access?token=${token}`
+
+        // Send invitation email via Azure Communication Services
+        const emailSent = await sendSupplierWelcomeEmail(
+          supplier.email,
+          supplier.name,
+          accessLink
+        )
+
+        if (emailSent) {
+          console.log(`[v0] Invitation email sent successfully to ${supplier.email}`)
+        } else {
+          console.error(`[v0] Failed to send invitation email to ${supplier.email}`)
+        }
       } catch (error) {
         console.error(`[v0] Failed to create invitation for supplier ${supplier.supplierId}:`, error)
       }
