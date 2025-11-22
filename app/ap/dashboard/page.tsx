@@ -49,94 +49,94 @@ export default function APDashboardPage() {
   }, [])
 
   return (
-  <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+  <div className="bg-background min-h-screen text-foreground transition-colors duration-300">
       <DashboardHeader userName={session?.username || "User"} />
-      <main className="container mx-auto px-4 py-8 max-w-7xl">
-        <div className="mb-10 relative">
-          <div className="absolute inset-0 bg-accent-red/10 rounded-2xl blur-3xl" />
-          <div className="relative bg-card rounded-2xl p-8 border border-accent-red/20 shadow-2xl transition-colors duration-300">
+      <main className="mx-auto px-4 py-8 max-w-7xl container">
+        <div className="relative mb-10">
+          <div className="absolute inset-0 blur-3xl rounded-2xl bg-accent-red/10" />
+          <div className="relative bg-card shadow-2xl p-8 border border-accent-red/20 rounded-2xl transition-colors duration-300">
             <div className="flex items-center gap-3 mb-4">
-              <div className="h-12 w-1 bg-accent-red rounded-full" />
-              <h1 className="text-5xl font-bold text-foreground transition-colors duration-300">
+              <div className="rounded-full w-1 h-12 bg-accent-red" />
+              <h1 className="font-bold text-foreground text-5xl transition-colors duration-300">
                 Welcome back, <span className="text-accent-red">{session?.username || "User"}</span>
               </h1>
             </div>
-            <p className="text-xl text-muted-foreground ml-7 transition-colors duration-300">
+            <p className="ml-7 text-muted-foreground text-xl transition-colors duration-300">
               Manage your invoices, vendors, and track supplier financing offers
             </p>
           </div>
         </div>
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+          <div className="bg-red-50 mb-6 p-4 border border-red-200 rounded-lg text-red-700">
             {error}
           </div>
         )}
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
-          <Card className="bg-accent-green border-0 shadow-xl hover:shadow-2xl transition-all hover:scale-105 duration-300">
+        <div className="gap-6 grid md:grid-cols-3 mb-8">
+          <Card className="shadow-xl hover:shadow-2xl border-0 hover:scale-105 transition-all duration-300 bg-accent-green">
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex justify-between items-center">
                 <div>
-                  <CardDescription className="text-accent-green font-medium">Total Invoices</CardDescription>
-                  <CardTitle className="text-4xl font-bold text-foreground mt-2 transition-colors duration-300">{loading ? "..." : stats?.totalInvoices || 0}</CardTitle>
+                  <CardDescription className="font-medium text-accent-green">Total Invoices</CardDescription>
+                  <CardTitle className="mt-2 font-bold text-foreground text-4xl transition-colors duration-300">{loading ? "..." : stats?.totalInvoices || 0}</CardTitle>
                 </div>
-                <CheckCircle2 className="h-12 w-12 text-accent-green" />
+                <CheckCircle2 className="w-12 h-12 text-accent-green" />
               </div>
             </CardHeader>
           </Card>
-          <Card className="bg-accent-yellow border-0 shadow-xl hover:shadow-2xl transition-all hover:scale-105 duration-300">
+          <Card className="shadow-xl hover:shadow-2xl border-0 hover:scale-105 transition-all duration-300 bg-accent-yellow">
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex justify-between items-center">
                 <div>
-                  <CardDescription className="text-accent-yellow font-medium">Pending Offers</CardDescription>
-                  <CardTitle className="text-4xl font-bold text-foreground mt-2 transition-colors duration-300">{loading ? "..." : stats?.pendingOffers || 0}</CardTitle>
+                  <CardDescription className="font-medium text-accent-yellow">Pending Offers</CardDescription>
+                  <CardTitle className="mt-2 font-bold text-foreground text-4xl transition-colors duration-300">{loading ? "..." : stats?.pendingOffers || 0}</CardTitle>
                 </div>
-                <Clock className="h-12 w-12 text-accent-yellow" />
+                <Clock className="w-12 h-12 text-accent-yellow" />
               </div>
             </CardHeader>
           </Card>
-          <Card className="bg-brand-blue border-0 shadow-xl hover:shadow-2xl transition-all hover:scale-105 duration-300">
+          <Card className="bg-brand-blue shadow-xl hover:shadow-2xl border-0 hover:scale-105 transition-all duration-300">
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex justify-between items-center">
                 <div>
-                  <CardDescription className="text-brand-blue font-medium">Total Value</CardDescription>
-                  <CardTitle className="text-4xl font-bold text-foreground mt-2 transition-colors duration-300">R {loading ? "..." : (stats?.totalValue || 0).toLocaleString("en-ZA", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</CardTitle>
+                  <CardDescription className="font-medium text-brand-blue">Total Value</CardDescription>
+                  <CardTitle className="mt-2 font-bold text-foreground text-4xl transition-colors duration-300">R {loading ? "..." : (stats?.totalValue || 0).toLocaleString("en-ZA", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</CardTitle>
                 </div>
-                <TrendingUp className="h-12 w-12 text-brand-blue" />
+                <TrendingUp className="w-12 h-12 text-brand-blue" />
               </div>
             </CardHeader>
           </Card>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-darkgray/50 backdrop-blur border-darkgray hover:border-accent-red transition-all hover:shadow-xl hover:shadow-accent-red/20">
+        <div className="gap-6 grid md:grid-cols-2 lg:grid-cols-4 mb-8">
+          <Card className="bg-darkgray/50 hover:shadow-xl backdrop-blur border-darkgray hover:border-accent-red transition-all hover:shadow-accent-red/20">
             <CardHeader>
-              <div className="h-14 w-14 rounded-xl bg-accent-red/10 flex items-center justify-center mb-4">
-                <Upload className="h-7 w-7 text-accent-red" />
+              <div className="flex justify-center items-center mb-4 rounded-xl w-14 h-14 bg-accent-red/10">
+                <Upload className="w-7 h-7 text-accent-red" />
               </div>
-              <CardTitle className="text-xl text-foreground">Upload Invoices</CardTitle>
+              <CardTitle className="text-foreground text-xl">Upload Invoices</CardTitle>
               <CardDescription className="text-muted-foreground">
                 Upload approved invoices for supplier matching
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/ap/invoices/upload">
-                <Button className="w-full bg-accent-red hover:bg-accent-red text-foreground font-semibold" size="lg">
+                <Button className="w-full font-semibold text-foreground bg-accent-red hover:bg-accent-red" size="lg">
                   Upload AP Data
                 </Button>
               </Link>
             </CardContent>
           </Card>
-          <Card className="bg-darkgray/50 backdrop-blur border-darkgray hover:border-accent-red transition-all hover:shadow-xl hover:shadow-accent-red/20">
+          <Card className="bg-darkgray/50 hover:shadow-xl backdrop-blur border-darkgray hover:border-accent-red transition-all hover:shadow-accent-red/20">
             <CardHeader>
-              <div className="h-14 w-14 rounded-xl bg-brand-blue-soft/10 flex items-center justify-center mb-4">
-                <Users className="h-7 w-7 text-brand-blue" />
+              <div className="flex justify-center items-center bg-brand-blue-soft/10 mb-4 rounded-xl w-14 h-14">
+                <Users className="w-7 h-7 text-brand-blue" />
               </div>
-              <CardTitle className="text-xl text-foreground">Upload Vendors</CardTitle>
+              <CardTitle className="text-foreground text-xl">Upload Vendors</CardTitle>
               <CardDescription className="text-muted-foreground">Upload vendor master data from your ERP</CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/ap/vendors/upload">
                 <Button
-                  className="w-full bg-darkgray hover:bg-charcoal text-foreground font-semibold"
+                  className="bg-darkgray hover:bg-charcoal w-full font-semibold text-foreground"
                   variant="outline"
                   size="lg"
                 >
@@ -145,19 +145,19 @@ export default function APDashboardPage() {
               </Link>
             </CardContent>
           </Card>
-          <Card className="bg-darkgray/50 backdrop-blur border-darkgray hover:border-accent-red transition-all hover:shadow-xl hover:shadow-accent-red/20">
+          <Card className="bg-darkgray/50 hover:shadow-xl backdrop-blur border-darkgray hover:border-accent-red transition-all hover:shadow-accent-red/20">
             <CardHeader>
-              <div className="h-14 w-14 rounded-xl bg-accent-green/10 flex items-center justify-center mb-4">
-                <FileText className="h-7 w-7 text-accent-green" />
+              <div className="flex justify-center items-center mb-4 rounded-xl w-14 h-14 bg-accent-green/10">
+                <FileText className="w-7 h-7 text-accent-green" />
               </div>
-              <CardTitle className="text-xl text-foreground">View Invoices</CardTitle>
+              <CardTitle className="text-foreground text-xl">View Invoices</CardTitle>
               <CardDescription className="text-muted-foreground">Track uploaded invoices and offer status</CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/ap/invoices">
                 <Button
                   variant="outline"
-                  className="w-full bg-darkgray hover:bg-charcoal text-foreground font-semibold border-mediumgray"
+                  className="bg-darkgray hover:bg-charcoal border-mediumgray w-full font-semibold text-foreground"
                   size="lg"
                 >
                   View All
@@ -165,19 +165,19 @@ export default function APDashboardPage() {
               </Link>
             </CardContent>
           </Card>
-          <Card className="bg-darkgray/50 backdrop-blur border-darkgray hover:border-accent-red transition-all hover:shadow-xl hover:shadow-accent-red/20">
+          <Card className="bg-darkgray/50 hover:shadow-xl backdrop-blur border-darkgray hover:border-accent-red transition-all hover:shadow-accent-red/20">
             <CardHeader>
-              <div className="h-14 w-14 rounded-xl bg-softgrayblue/10 flex items-center justify-center mb-4">
-                <BarChart3 className="h-7 w-7 text-softgrayblue" />
+              <div className="flex justify-center items-center bg-softgrayblue/10 mb-4 rounded-xl w-14 h-14">
+                <BarChart3 className="w-7 h-7 text-softgrayblue" />
               </div>
-              <CardTitle className="text-xl text-foreground">Reports</CardTitle>
+              <CardTitle className="text-foreground text-xl">Reports</CardTitle>
               <CardDescription className="text-muted-foreground">View acceptance rates and statistics</CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/ap/reports">
                 <Button
                   variant="outline"
-                  className="w-full bg-darkgray hover:bg-charcoal text-foreground font-semibold border-mediumgray"
+                  className="bg-darkgray hover:bg-charcoal border-mediumgray w-full font-semibold text-foreground"
                   size="lg"
                 >
                   View Reports
@@ -186,28 +186,28 @@ export default function APDashboardPage() {
             </CardContent>
           </Card>
         </div>
-        <Card className="bg-darkgray/50 backdrop-blur border-darkgray shadow-xl">
-          <CardHeader className="border-b border-darkgray">
-            <CardTitle className="text-2xl text-foreground">Recent Activity</CardTitle>
+        <Card className="bg-darkgray/50 shadow-xl backdrop-blur border-darkgray">
+          <CardHeader className="border-darkgray border-b">
+            <CardTitle className="text-foreground text-2xl">Recent Activity</CardTitle>
             <CardDescription className="text-muted-foreground">Your latest invoice uploads and offer updates</CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
-            <div className="text-center py-16">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-darkgray/50 mb-6">
-                <FileText className="h-10 w-10 text-muted-foreground" />
+            <div className="py-16 text-center">
+              <div className="inline-flex justify-center items-center bg-darkgray/50 mb-6 rounded-2xl w-20 h-20">
+                <FileText className="w-10 h-10 text-muted-foreground" />
               </div>
-              <p className="text-xl font-semibold text-foreground mb-2">No recent activity to display</p>
-              <p className="text-muted-foreground mb-8">Upload invoices or vendors to get started</p>
-              <div className="flex gap-4 justify-center">
+              <p className="mb-2 font-semibold text-foreground text-xl">No recent activity to display</p>
+              <p className="mb-8 text-muted-foreground">Upload invoices or vendors to get started</p>
+              <div className="flex justify-center gap-4">
                 <Link href="/ap/invoices/upload">
-                  <Button className="bg-accent-red hover:bg-accent-red text-foreground font-semibold px-8">
+                  <Button className="px-8 font-semibold text-foreground bg-accent-red hover:bg-accent-red">
                     Upload Invoices
                   </Button>
                 </Link>
                 <Link href="/ap/vendors/upload">
                   <Button
                     variant="outline"
-                    className="bg-darkgray hover:bg-charcoal text-foreground border-mediumgray font-semibold px-8"
+                    className="bg-darkgray hover:bg-charcoal px-8 border-mediumgray font-semibold text-foreground"
                   >
                     Upload Vendors
                   </Button>

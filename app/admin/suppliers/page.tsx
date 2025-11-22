@@ -37,19 +37,19 @@ export default async function SuppliersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="bg-muted/30 min-h-screen">
       <DashboardHeader userName={session?.username} />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="mx-auto px-4 py-8 container">
         <div className="mb-6">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex justify-between items-center mb-4">
             <div>
-              <h1 className="text-3xl font-bold">All Suppliers</h1>
+              <h1 className="font-bold text-3xl">All Suppliers</h1>
               <p className="text-muted-foreground">Manage and view all registered suppliers</p>
             </div>
             <div className="flex gap-2">
               <Button variant="outline">
-                <Download className="h-4 w-4 mr-2" />
+                <Download className="mr-2 w-4 h-4" />
                 Export
               </Button>
               <Link href="/admin/dashboard">
@@ -62,12 +62,12 @@ export default async function SuppliersPage() {
           <Card className="mb-6">
             <CardContent className="pt-6">
               <div className="flex gap-4">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <div className="relative flex-1">
+                  <Search className="top-1/2 left-3 absolute w-4 h-4 text-muted-foreground -translate-y-1/2 transform" />
                   <Input placeholder="Search by name, VAT number, or email..." className="pl-10" />
                 </div>
                 <Button variant="outline">
-                  <Filter className="h-4 w-4 mr-2" />
+                  <Filter className="mr-2 w-4 h-4" />
                   Filter
                 </Button>
               </div>
@@ -82,7 +82,7 @@ export default async function SuppliersPage() {
             <CardDescription>Complete list of all suppliers in the system</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="rounded-md border">
+            <div className="border rounded-md">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -100,7 +100,7 @@ export default async function SuppliersPage() {
                 <TableBody>
                   {suppliers.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+                      <TableCell colSpan={9} className="py-8 text-muted-foreground text-center">
                         No suppliers found
                       </TableCell>
                     </TableRow>
@@ -126,13 +126,13 @@ export default async function SuppliersPage() {
                         </TableCell>
                         <TableCell>{getStatusBadge(supplier.onboarding_status)}</TableCell>
                         <TableCell>{getActiveStatusBadge(supplier.active_status)}</TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
+                        <TableCell className="text-muted-foreground text-sm">
                           {new Date(supplier.created_at).toLocaleDateString()}
                         </TableCell>
                         <TableCell className="text-right">
                           <Button variant="ghost" size="sm" asChild>
                             <Link href={`/admin/applications/${supplier.supplier_id}`}>
-                              <Eye className="h-4 w-4 mr-1" />
+                              <Eye className="mr-1 w-4 h-4" />
                               View
                             </Link>
                           </Button>

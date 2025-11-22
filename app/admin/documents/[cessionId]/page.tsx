@@ -36,12 +36,12 @@ export default async function DocumentReviewPage({ params }: DocumentReviewPageP
   }
 
   return (
-    <div className="min-h-screen bg-muted/30 py-8">
-      <div className="container max-w-4xl space-y-6">
-        <div className="flex items-center justify-between">
+    <div className="bg-muted/30 py-8 min-h-screen">
+      <div className="space-y-6 max-w-4xl container">
+        <div className="flex justify-between items-center">
           <div>
-            <p className="text-sm text-muted-foreground">Cession Agreement #{cession.cession_id}</p>
-            <h1 className="text-3xl font-bold">Document Review</h1>
+            <p className="text-muted-foreground text-sm">Cession Agreement #{cession.cession_id}</p>
+            <h1 className="font-bold text-3xl">Document Review</h1>
           </div>
           <Button asChild variant="outline">
             <Link href="/admin/dashboard">Back to dashboard</Link>
@@ -54,24 +54,24 @@ export default async function DocumentReviewPage({ params }: DocumentReviewPageP
             <CardDescription>Uploaded document details and history</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="gap-4 grid sm:grid-cols-2">
               <div>
-                <p className="text-sm text-muted-foreground">Supplier Contact</p>
+                <p className="text-muted-foreground text-sm">Supplier Contact</p>
                 <p className="font-medium">{cession.contact_person || "N/A"}</p>
                 <p className="text-sm">{cession.contact_email}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Document Type</p>
+                <p className="text-muted-foreground text-sm">Document Type</p>
                 <Badge variant="outline" className="mt-1 capitalize">
                   {cession.document_type.replace("_", " ")}
                 </Badge>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Uploaded</p>
+                <p className="text-muted-foreground text-sm">Uploaded</p>
                 <p className="font-medium">{new Date(cession.created_at).toLocaleString()}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Current Status</p>
+                <p className="text-muted-foreground text-sm">Current Status</p>
                 <Badge className="mt-1 capitalize">{cession.status}</Badge>
               </div>
             </div>
@@ -95,7 +95,7 @@ export default async function DocumentReviewPage({ params }: DocumentReviewPageP
             <CardTitle>Review Actions</CardTitle>
             <CardDescription>Approve or reject this cession agreement</CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col gap-3 sm:flex-row">
+          <CardContent className="flex sm:flex-row flex-col gap-3">
             <form action={reviewAction}>
               <input type="hidden" name="status" value="approved" />
               <Button type="submit">Approve</Button>

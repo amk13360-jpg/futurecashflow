@@ -36,12 +36,12 @@ export default async function ApplicationReviewPage({ params }: ApplicationRevie
   }
 
   return (
-    <div className="min-h-screen bg-muted/30 py-8">
-      <div className="container max-w-4xl space-y-6">
-        <div className="flex items-center justify-between">
+    <div className="bg-muted/30 py-8 min-h-screen">
+      <div className="space-y-6 max-w-4xl container">
+        <div className="flex justify-between items-center">
           <div>
-            <p className="text-sm text-muted-foreground">Application #{supplier.supplier_id}</p>
-            <h1 className="text-3xl font-bold">Supplier Application Review</h1>
+            <p className="text-muted-foreground text-sm">Application #{supplier.supplier_id}</p>
+            <h1 className="font-bold text-3xl">Supplier Application Review</h1>
             <p className="text-muted-foreground">Review supplier details and approve or reject onboarding</p>
           </div>
           <Button variant="outline" asChild>
@@ -55,22 +55,22 @@ export default async function ApplicationReviewPage({ params }: ApplicationRevie
             <CardDescription>{supplier.contact_email}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="gap-4 grid sm:grid-cols-2">
               <div>
-                <p className="text-sm text-muted-foreground">Contact Person</p>
+                <p className="text-muted-foreground text-sm">Contact Person</p>
                 <p className="font-medium">{supplier.contact_person || "N/A"}</p>
                 <p className="text-sm">{supplier.contact_phone || "N/A"}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">VAT Number</p>
+                <p className="text-muted-foreground text-sm">VAT Number</p>
                 <p className="font-medium">{supplier.vat_no || "N/A"}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Address</p>
+                <p className="text-muted-foreground text-sm">Address</p>
                 <p className="font-medium">{supplier.address || "N/A"}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Bank Details</p>
+                <p className="text-muted-foreground text-sm">Bank Details</p>
                 <p className="font-medium">{supplier.bank_name || "N/A"}</p>
                 <p className="text-sm">{supplier.bank_account_no || ""}</p>
               </div>
@@ -79,7 +79,7 @@ export default async function ApplicationReviewPage({ params }: ApplicationRevie
             <Separator />
 
             <div className="flex items-center gap-3">
-              <p className="text-sm text-muted-foreground">Current Status</p>
+              <p className="text-muted-foreground text-sm">Current Status</p>
               <Badge className="capitalize">{supplier.onboarding_status}</Badge>
             </div>
           </CardContent>
@@ -90,7 +90,7 @@ export default async function ApplicationReviewPage({ params }: ApplicationRevie
             <CardTitle>Review Actions</CardTitle>
             <CardDescription>Update application status</CardDescription>
           </CardHeader>
-          <CardContent className="flex flex-col gap-3 sm:flex-row">
+          <CardContent className="flex sm:flex-row flex-col gap-3">
             <form action={action}>
               <input type="hidden" name="status" value="approved" />
               <Button type="submit">Approve</Button>

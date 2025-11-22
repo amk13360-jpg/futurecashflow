@@ -22,12 +22,12 @@ export default async function AdminDashboardPage() {
   const bankChangeRequests = await getBankChangeRequests()
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="bg-muted/30 min-h-screen">
       <DashboardHeader userName={session?.username} />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="mx-auto px-4 py-8 container">
         {/* Metrics Overview */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+        <div className="gap-4 grid md:grid-cols-2 lg:grid-cols-4 mb-8">
           <MetricCard
             title="Pending Documents"
             value={metrics.pendingDocuments}
@@ -73,20 +73,20 @@ export default async function AdminDashboardPage() {
               </CardHeader>
               <CardContent>
                 {pendingCessions.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <CheckCircle className="h-12 w-12 mx-auto mb-3 text-green-500" />
+                  <div className="py-8 text-muted-foreground text-center">
+                    <CheckCircle className="mx-auto mb-3 w-12 h-12 text-green-500" />
                     <p>No pending documents to review</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {pendingCessions.map((cession: any) => (
-                      <div key={cession.cession_id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div key={cession.cession_id} className="flex justify-between items-center p-4 border rounded-lg">
                         <div className="flex-1">
                           <h4 className="font-medium">{cession.supplier_name}</h4>
-                          <p className="text-sm text-muted-foreground">{cession.contact_email}</p>
+                          <p className="text-muted-foreground text-sm">{cession.contact_email}</p>
                           <div className="flex items-center gap-2 mt-2">
                             <Badge variant="outline">{cession.document_type}</Badge>
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-muted-foreground text-xs">
                               Submitted {new Date(cession.created_at).toLocaleDateString()}
                             </span>
                           </div>
@@ -120,22 +120,22 @@ export default async function AdminDashboardPage() {
               </CardHeader>
               <CardContent>
                 {pendingApplications.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <CheckCircle className="h-12 w-12 mx-auto mb-3 text-green-500" />
+                  <div className="py-8 text-muted-foreground text-center">
+                    <CheckCircle className="mx-auto mb-3 w-12 h-12 text-green-500" />
                     <p>No pending applications</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {pendingApplications.map((app: any) => (
-                      <div key={app.supplier_id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div key={app.supplier_id} className="flex justify-between items-center p-4 border rounded-lg">
                         <div className="flex-1">
                           <h4 className="font-medium">{app.name}</h4>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-muted-foreground text-sm">
                             VAT: {app.vat_no || "N/A"} • {app.contact_email}
                           </p>
                           <div className="flex items-center gap-2 mt-2">
                             <Badge className="capitalize">{app.onboarding_status.replace(/_/g, " ")}</Badge>
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-muted-foreground text-xs">
                               Applied {new Date(app.created_at).toLocaleDateString()}
                             </span>
                           </div>
@@ -165,24 +165,24 @@ export default async function AdminDashboardPage() {
               </CardHeader>
               <CardContent>
                 {bankChangeRequests.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <CheckCircle className="h-12 w-12 mx-auto mb-3 text-green-500" />
+                  <div className="py-8 text-muted-foreground text-center">
+                    <CheckCircle className="mx-auto mb-3 w-12 h-12 text-green-500" />
                     <p>No pending bank change requests</p>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {bankChangeRequests.map((request: any) => (
-                      <div key={request.request_id} className="flex items-center justify-between p-4 border rounded-lg">
+                      <div key={request.request_id} className="flex justify-between items-center p-4 border rounded-lg">
                         <div className="flex-1">
                           <h4 className="font-medium">{request.supplier_name}</h4>
-                          <p className="text-sm text-muted-foreground">{request.contact_email}</p>
+                          <p className="text-muted-foreground text-sm">{request.contact_email}</p>
                           <div className="mt-2 text-sm">
                             <p className="font-medium">New Bank Details:</p>
                             <p className="text-muted-foreground">
                               {request.new_bank_name} • {request.new_account_no} • {request.new_branch_code}
                             </p>
                           </div>
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-muted-foreground text-xs">
                             Requested {new Date(request.created_at).toLocaleDateString()}
                           </span>
                         </div>
@@ -204,7 +204,7 @@ export default async function AdminDashboardPage() {
           <TabsContent value="suppliers">
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                   <div>
                     <CardTitle>All Suppliers</CardTitle>
                     <CardDescription>Manage supplier accounts and settings</CardDescription>
@@ -215,7 +215,7 @@ export default async function AdminDashboardPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Click "View All Suppliers" to see the complete supplier list with filtering and search capabilities.
                 </p>
               </CardContent>
@@ -226,7 +226,7 @@ export default async function AdminDashboardPage() {
           <TabsContent value="payments">
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                   <div>
                     <CardTitle>Payment Processing</CardTitle>
                     <CardDescription>Manage disbursements and track repayments</CardDescription>
@@ -237,7 +237,7 @@ export default async function AdminDashboardPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   Access the payment processing module to queue payments, generate batches, and track repayments.
                 </p>
               </CardContent>
@@ -246,15 +246,15 @@ export default async function AdminDashboardPage() {
         </Tabs>
 
         {/* Quick Actions */}
-        <div className="grid md:grid-cols-3 gap-4 mt-8">
+        <div className="gap-4 grid md:grid-cols-3 mt-8">
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Invoice Management</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">View and manage uploaded invoices and offers</p>
+              <p className="mb-4 text-muted-foreground text-sm">View and manage uploaded invoices and offers</p>
               <Link href="/admin/invoices">
-                <Button variant="outline" className="w-full bg-transparent">
+                <Button variant="outline" className="bg-transparent w-full">
                   Manage Invoices
                 </Button>
               </Link>
@@ -266,9 +266,9 @@ export default async function AdminDashboardPage() {
               <CardTitle className="text-base">Reports & Logs</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">Generate reports and view audit logs</p>
+              <p className="mb-4 text-muted-foreground text-sm">Generate reports and view audit logs</p>
               <Link href="/admin/reports">
-                <Button variant="outline" className="w-full bg-transparent">
+                <Button variant="outline" className="bg-transparent w-full">
                   View Reports
                 </Button>
               </Link>
@@ -280,9 +280,9 @@ export default async function AdminDashboardPage() {
               <CardTitle className="text-base">System Settings</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-sm text-muted-foreground mb-4">Configure rates, users, and system parameters</p>
+              <p className="mb-4 text-muted-foreground text-sm">Configure rates, users, and system parameters</p>
               <Link href="/admin/settings">
-                <Button variant="outline" className="w-full bg-transparent">
+                <Button variant="outline" className="bg-transparent w-full">
                   Settings
                 </Button>
               </Link>
