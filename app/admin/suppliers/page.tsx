@@ -25,8 +25,9 @@ export default async function SuppliersPage() {
     return <Badge variant={config.variant}>{config.label}</Badge>
   }
 
-  const getActiveStatusBadge = (active: boolean) => {
-    return active ? (
+  const getActiveStatusBadge = (status: string) => {
+    const isActive = (status || "").toLowerCase() === "active"
+    return isActive ? (
       <Badge variant="default" className="bg-green-600">
         Active
       </Badge>
@@ -129,9 +130,11 @@ export default async function SuppliersPage() {
                           {new Date(supplier.created_at).toLocaleDateString()}
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button variant="ghost" size="sm">
-                            <Eye className="h-4 w-4 mr-1" />
-                            View
+                          <Button variant="ghost" size="sm" asChild>
+                            <Link href={`/admin/applications/${supplier.supplier_id}`}>
+                              <Eye className="h-4 w-4 mr-1" />
+                              View
+                            </Link>
                           </Button>
                         </TableCell>
                       </TableRow>

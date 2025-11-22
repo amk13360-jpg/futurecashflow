@@ -25,7 +25,10 @@ export default function APDashboardPage() {
         const invoices = await res.json()
         if (mounted) {
           const totalInvoices = invoices.length
-          const totalValue = invoices.reduce((sum: number, inv: any) => sum + Number(inv.amount_doc_curr || 0), 0)
+          const totalValue = invoices.reduce((sum: number, inv: any) => {
+            const amount = Number(inv.amount_doc_curr ?? inv.amount_local_curr ?? inv.amount ?? 0)
+            return sum + (Number.isFinite(amount) ? amount : 0)
+          }, 0)
           const pendingOffers = invoices.filter((inv: any) => inv.status === "offered").length
           setStats({ totalInvoices, totalValue, pendingOffers })
           setLoading(false)
@@ -178,26 +181,6 @@ export default function APDashboardPage() {
                   size="lg"
                 >
                   View Reports
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-          <Card className="bg-darkgray/50 backdrop-blur border-darkgray hover:border-accent-red transition-all hover:shadow-xl hover:shadow-accent-red/20">
-            <CardHeader>
-              <div className="h-14 w-14 rounded-xl bg-blue-600/10 flex items-center justify-center mb-4">
-                <Users className="h-7 w-7 text-blue-600" />
-              </div>
-              <CardTitle className="text-xl text-foreground">View Suppliers</CardTitle>
-              <CardDescription className="text-muted-foreground">View supplier/vendor list and details</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/ap/suppliers">
-                <Button
-                  variant="outline"
-                  className="w-full bg-darkgray hover:bg-charcoal text-foreground font-semibold border-mediumgray"
-                  size="lg"
-                >
-                  View Suppliers
                 </Button>
               </Link>
             </CardContent>

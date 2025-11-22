@@ -136,24 +136,33 @@ export async function acceptOffer(offerId: number, selectedInvoices: number[]) {
     const result = await transaction(async (connection) => {
       // Verify offer belongs to supplier
       type OfferWithInvoice = {
-        offer_expiry_date: string | Date;
-        invoice_id: number;
-        // ...other fields as needed
-      };
-  const [rows] = await connection.execute(
-        `SELECT o.*, i.invoice_id 
+        offer_expiry_date: string | Date
+        invoice_id: number
+        status: "sent" | "opened" | "accepted" | "rejected" | "expired"
+      }
+      const [rows] = await connection.execute(
+        `SELECT o.*, i.invoice_id
          FROM offers o
          JOIN invoices i ON o.invoice_id = i.invoice_id
-         WHERE o.offer_id = ? AND o.supplier_id = ? AND o.status = 'sent'`,
+         WHERE o.offer_id = ? AND o.supplier_id = ?
+         FOR UPDATE`,
         [offerId, session.supplierId],
-      );
-      const offersRows = rows as OfferWithInvoice[];
+      )
+      const offersRows = rows as OfferWithInvoice[]
 
       if (!offersRows || offersRows.length === 0) {
         throw new Error("Offer not found or already processed")
       }
 
       const offer = offersRows[0];
+
+      if (offer.status === "accepted") {
+        return { success: true, offerId, alreadyAccepted: true }
+      }
+
+      if (offer.status !== "sent") {
+        throw new Error(`Offer is already ${offer.status}`)
+      }
 
       // Check if offer is expired
       if (new Date() > new Date(offer.offer_expiry_date)) {
@@ -167,19 +176,20 @@ export async function acceptOffer(offerId: number, selectedInvoices: number[]) {
       ])
 
       // Update invoice status
-  await connection.execute(`UPDATE invoices SET status = 'accepted' WHERE invoice_id = ?`, [offer.invoice_id])
+      await connection.execute(`UPDATE invoices SET status = 'accepted' WHERE invoice_id = ?`, [offer.invoice_id])
 
-      return { success: true, offerId }
+      return { success: true, offerId, alreadyAccepted: false }
     })
 
-    await createAuditLog({
-      userId: session.supplierId,
-      userType: "supplier",
-      action: "OFFER_ACCEPTED",
-      entityType: "offer",
-      entityId: offerId,
-      details: `Supplier ${session.name} accepted offer`,
-    })
+    if (!result.alreadyAccepted) {
+      await createAuditLog({
+        userType: "supplier",
+        action: "OFFER_ACCEPTED",
+        entityType: "offer",
+        entityId: offerId,
+        details: `Supplier ${session.name} (ID ${session.supplierId}) accepted offer`,
+      })
+    }
 
     return result
   } catch (error) {
@@ -230,12 +240,11 @@ export async function rejectOffer(offerId: number) {
     })
 
     await createAuditLog({
-      userId: session.supplierId,
       userType: "supplier",
       action: "OFFER_REJECTED",
       entityType: "offer",
       entityId: offerId,
-      details: `Supplier ${session.name} rejected offer`,
+      details: `Supplier ${session.name} (ID ${session.supplierId}) rejected offer`,
     })
 
     return result
@@ -312,9 +321,10 @@ export async function updateSupplierProfile(data: {
     await query(`UPDATE suppliers SET ${updates.join(", ")} WHERE supplier_id = ?`, values)
 
     await createAuditLog({
-      userId: session.supplierId,
       userType: "supplier",
       action: "PROFILE_UPDATED",
+      entityType: "supplier",
+      entityId: session.supplierId,
       details: "Supplier updated profile information",
     })
 
@@ -360,9 +370,10 @@ export async function requestBankChange(data: {
     )
 
     await createAuditLog({
-      userId: session.supplierId,
       userType: "supplier",
       action: "BANK_CHANGE_REQUESTED",
+      entityType: "supplier",
+      entityId: session.supplierId,
       details: `Requested bank change to ${data.newBankName}`,
     })
 

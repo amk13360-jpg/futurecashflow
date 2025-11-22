@@ -1,0 +1,115 @@
+import Link from "next/link"
+import { redirect } from "next/navigation"
+import { getSupplierApplicationById, reviewSupplierApplication } from "@/lib/actions/admin"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Separator } from "@/components/ui/separator"
+
+interface ApplicationReviewPageProps {
+  params: Promise<{
+    supplierId: string
+  }>
+}
+
+export default async function ApplicationReviewPage({ params }: ApplicationReviewPageProps) {
+  const { supplierId: supplierParam } = await params
+  const supplierId = Number(supplierParam)
+  if (Number.isNaN(supplierId)) {
+    redirect("/admin/dashboard")
+  }
+
+  const supplier = await getSupplierApplicationById(supplierId)
+  if (!supplier) {
+    redirect("/admin/dashboard")
+  }
+
+  const action = async (formData: FormData) => {
+    "use server"
+    const status = formData.get("status")
+    if (typeof status !== "string") {
+      return
+    }
+
+    await reviewSupplierApplication(supplierId, status as any)
+    redirect("/admin/dashboard")
+  }
+
+  return (
+    <div className="min-h-screen bg-muted/30 py-8">
+      <div className="container max-w-4xl space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm text-muted-foreground">Application #{supplier.supplier_id}</p>
+            <h1 className="text-3xl font-bold">Supplier Application Review</h1>
+            <p className="text-muted-foreground">Review supplier details and approve or reject onboarding</p>
+          </div>
+          <Button variant="outline" asChild>
+            <Link href="/admin/dashboard">Back to dashboard</Link>
+          </Button>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{supplier.name}</CardTitle>
+            <CardDescription>{supplier.contact_email}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <p className="text-sm text-muted-foreground">Contact Person</p>
+                <p className="font-medium">{supplier.contact_person || "N/A"}</p>
+                <p className="text-sm">{supplier.contact_phone || "N/A"}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">VAT Number</p>
+                <p className="font-medium">{supplier.vat_no || "N/A"}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Address</p>
+                <p className="font-medium">{supplier.address || "N/A"}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Bank Details</p>
+                <p className="font-medium">{supplier.bank_name || "N/A"}</p>
+                <p className="text-sm">{supplier.bank_account_no || ""}</p>
+              </div>
+            </div>
+
+            <Separator />
+
+            <div className="flex items-center gap-3">
+              <p className="text-sm text-muted-foreground">Current Status</p>
+              <Badge className="capitalize">{supplier.onboarding_status}</Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Review Actions</CardTitle>
+            <CardDescription>Update application status</CardDescription>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-3 sm:flex-row">
+            <form action={action}>
+              <input type="hidden" name="status" value="approved" />
+              <Button type="submit">Approve</Button>
+            </form>
+            <form action={action}>
+              <input type="hidden" name="status" value="documents_submitted" />
+              <Button type="submit" variant="outline">
+                Request Documents
+              </Button>
+            </form>
+            <form action={action}>
+              <input type="hidden" name="status" value="rejected" />
+              <Button type="submit" variant="destructive">
+                Reject
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
+}

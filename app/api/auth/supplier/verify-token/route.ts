@@ -61,9 +61,10 @@ export async function POST(request: NextRequest) {
     await setSupplierSessionCookie(sessionToken)
 
     await createAuditLog({
-      userId: supplier.supplier_id,
       userType: "supplier",
       action: "SUPPLIER_LOGIN_SUCCESS",
+      entityType: "supplier",
+      entityId: supplier.supplier_id,
       details: `Supplier ${supplier.name} accessed portal via token`,
       ipAddress: request.headers.get("x-forwarded-for") || undefined,
       userAgent: request.headers.get("user-agent") || undefined,

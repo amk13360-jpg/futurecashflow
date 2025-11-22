@@ -3,12 +3,12 @@ import bcrypt
 import mysql.connector
 from dotenv import load_dotenv
 
-# Load environment variables from .env
+# Load environment variables from .env (falls back to local defaults)
 load_dotenv()
-DB_PASSWORD = "Mining@2025"
-DB_USER = "Futuremining2025"
-DB_HOST = "mysqlscf-pqbaubvpq5u7m.mysql.database.azure.com"
-DB_NAME = "fmf_scf_platform"
+DB_HOST = os.getenv("DB_HOST", "localhost")
+DB_USER = os.getenv("DB_USER", "root")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "Transport@2025")
+DB_NAME = os.getenv("DB_NAME", "fmf_scf_platform")
 
 # --- Update passwords for all seeded AP users ---
 SEED_AP_USERS = [
@@ -16,7 +16,7 @@ SEED_AP_USERS = [
     {"username": "ssw_ap", "email": "ap@sibanyestillwater.com", "full_name": "Sibanye AP User"},
     {"username": "hgm_ap", "email": "ap@harmony.co.za", "full_name": "Harmony AP User"},
 ]
-NEW_PASSWORD = "Transport@2025"  # Change as needed
+NEW_PASSWORD = "mining@2025"  # Change as needed
 
 try:
     conn = mysql.connector.connect(
@@ -46,17 +46,6 @@ finally:
         cursor.close()
     if 'conn' in locals():
         conn.close()
-import os
-import bcrypt
-import mysql.connector
-from dotenv import load_dotenv
-
-# Load environment variables from .env
-load_dotenv()
-DB_PASSWORD = "Mining@2025"
-DB_USER = "Futuremining2025"
-DB_HOST = "dbfuture.mysql.database.azure.com"
-DB_NAME = "fmf_scf_platform"
 
 BUYER_CODE = "AAP001"  # Change to match a buyer code in your DB
 AP_USERNAME = "aap_ap"

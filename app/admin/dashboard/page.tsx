@@ -92,10 +92,16 @@ export default async function AdminDashboardPage() {
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline">
-                            View Document
+                          {cession.document_url && (
+                            <Button size="sm" variant="outline" asChild>
+                              <Link href={cession.document_url} target="_blank">
+                                View Document
+                              </Link>
+                            </Button>
+                          )}
+                          <Button size="sm" asChild>
+                            <Link href={`/admin/documents/${cession.cession_id}`}>Review</Link>
                           </Button>
-                          <Button size="sm">Review</Button>
                         </div>
                       </div>
                     ))}
@@ -128,17 +134,19 @@ export default async function AdminDashboardPage() {
                             VAT: {app.vat_no || "N/A"} • {app.contact_email}
                           </p>
                           <div className="flex items-center gap-2 mt-2">
-                            <Badge>{app.onboarding_status.replace("_", " ")}</Badge>
+                            <Badge className="capitalize">{app.onboarding_status.replace(/_/g, " ")}</Badge>
                             <span className="text-xs text-muted-foreground">
                               Applied {new Date(app.created_at).toLocaleDateString()}
                             </span>
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline">
-                            View Details
+                          <Button size="sm" variant="outline" asChild>
+                            <Link href={`/admin/applications/${app.supplier_id}`}>View Details</Link>
                           </Button>
-                          <Button size="sm">Review</Button>
+                          <Button size="sm" asChild>
+                            <Link href={`/admin/applications/${app.supplier_id}`}>Review</Link>
+                          </Button>
                         </div>
                       </div>
                     ))}

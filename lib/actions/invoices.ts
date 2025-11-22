@@ -10,6 +10,11 @@ import { generateToken } from "@/lib/utils"
 import type { APDataRow, VendorDataRow } from "@/lib/types/database"
 import { redirect } from "next/navigation"
 
+type OfferGenerationResults = {
+  created: Array<{ invoiceId: number; invoiceNumber: string | null; supplierEmail: string | null; token: string }>
+  errors: string[]
+}
+
 // Parse AP invoice CSV text into APDataRow[]
 export async function parseAPDataCSV(csvText: string): Promise<APDataRow[]> {
   const lines = csvText.trim().split("\n")
@@ -104,6 +109,28 @@ function toNullable(value: any): any {
     return null
   }
   return value
+}
+
+async function ensureBuyerForCompany(connection: any, companyCode: string | null): Promise<number | null> {
+  if (!companyCode) {
+    return null
+  }
+
+  const [existing] = await connection.execute(`SELECT buyer_id FROM buyers WHERE code = ? LIMIT 1`, [companyCode])
+  const rows = existing as RowDataPacket[]
+
+  if (rows.length > 0) {
+    return rows[0].buyer_id
+  }
+
+  const [result] = await connection.execute(
+    `INSERT INTO buyers (name, code, contact_email, active_status)
+     VALUES (?, ?, ?, 'active')`,
+    [`Company ${companyCode}`, companyCode, `${companyCode}@placeholder.local`],
+  )
+
+  const insertResult = result as OkPacket
+  return insertResult.insertId ?? null
 }
 
 export async function uploadAPData(apDataRows: APDataRow[]) {
@@ -229,6 +256,9 @@ export async function uploadAPData(apDataRows: APDataRow[]) {
       details: `Uploaded ${results.uploaded.length} invoices, ${results.errors.length} errors`,
     })
 
+    // Automatically generate offers for any invoices that became eligible after this upload
+    await autoGenerateOffersForEligibleInvoices("ap_upload")
+
     return results
   } catch (error) {
     console.error("[v0] Error uploading AP data:", error)
@@ -266,7 +296,7 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
                 name = ?, address = ?, contact_person = ?, contact_email = ?, contact_phone = ?,
                 bank_country = ?, bank_name = ?, bank_key_branch_code = ?, bank_account_no = ?,
                 iban = ?, swift_bic = ?, default_payment_method = ?, default_payment_terms = ?,
-                vat_no = ?, reconciliation_gl_account = ?, onboarding_status = 'approved'
+                vat_no = ?, reconciliation_gl_account = ?
               WHERE supplier_id = ?`,
               [
                 row["Vendor Name"],
@@ -295,7 +325,7 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
                 bank_country, bank_name, bank_key_branch_code, bank_account_no, iban, swift_bic,
                 default_payment_method, default_payment_terms, vat_no, reconciliation_gl_account,
                 onboarding_status, active_status
-              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'approved', 'active')`,
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'active')`,
               [
                 row["Vendor Number"],
                 row["Company Code"],
@@ -413,7 +443,134 @@ export async function getInvoicesForBuyer() {
   }
 }
 
-// Generate offers for eligible invoices - UPDATED for new structure
+// Internal helper to build offers for a list of invoice IDs
+async function createOffersForInvoices(invoiceIds: number[]): Promise<OfferGenerationResults> {
+  const uniqueInvoiceIds = [...new Set(invoiceIds)].filter((id) => typeof id === "number" && !Number.isNaN(id))
+  if (uniqueInvoiceIds.length === 0) {
+    return { created: [], errors: [] }
+  }
+
+  // Get system settings
+  const settings = await query<RowDataPacket[]>(
+    `SELECT setting_key, setting_value FROM system_settings 
+     WHERE setting_key IN ('default_annual_rate', 'offer_expiry_days')`,
+  )
+
+  const settingsMap = settings.reduce(
+    (acc, s) => {
+      acc[s.setting_key] = s.setting_value
+      return acc
+    },
+    {} as Record<string, string>,
+  )
+
+  const annualRate = Number.parseFloat(settingsMap.default_annual_rate || "12.5")
+  const expiryDays = Number.parseInt(settingsMap.offer_expiry_days || "7")
+
+  return transaction(async (connection) => {
+    const created: OfferGenerationResults["created"] = []
+    const errors: string[] = []
+
+    for (const invoiceId of uniqueInvoiceIds) {
+      try {
+        // Get invoice details
+        const [invoices] = await connection.execute(
+          `SELECT i.*, s.supplier_id, s.contact_email, s.onboarding_status, b.buyer_id
+           FROM invoices i
+           JOIN suppliers s ON i.vendor_number = s.vendor_number AND i.company_code = s.company_code
+           LEFT JOIN buyers b ON b.code = i.company_code
+           WHERE i.invoice_id = ? AND i.status = 'matched'`,
+          [invoiceId],
+        )
+
+        const invoiceRows = invoices as RowDataPacket[]
+
+        if (invoiceRows.length === 0) {
+          errors.push(`Invoice ${invoiceId}: Not found or not eligible`)
+          continue
+        }
+
+        const invoice = invoiceRows[0]
+
+        // Check if supplier is approved
+        if (invoice.onboarding_status !== "approved") {
+          errors.push(`Invoice ${invoiceId}: Supplier not approved`)
+          continue
+        }
+
+        // Calculate offer details
+        const dueDate = new Date(invoice.due_date)
+        const today = new Date()
+        const daysToMaturity = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+
+        if (daysToMaturity <= 0) {
+          errors.push(`Invoice ${invoiceId}: Already due or overdue`)
+          continue
+        }
+
+        const discountAmount = (invoice.amount * annualRate * daysToMaturity) / (365 * 100)
+        const netPaymentAmount = invoice.amount - discountAmount
+
+        const offerExpiryDate = new Date()
+        offerExpiryDate.setDate(offerExpiryDate.getDate() + expiryDays)
+
+        let buyerId = invoice.buyer_id as number | null
+        if (!buyerId) {
+          buyerId = await ensureBuyerForCompany(connection, invoice.company_code)
+        }
+
+        if (!buyerId) {
+          errors.push(`Invoice ${invoiceId}: Unable to resolve buyer for company code ${invoice.company_code}`)
+          continue
+        }
+
+        // Create offer record referencing resolved supplier/buyer ids
+        await connection.execute(
+          `INSERT INTO offers (invoice_id, supplier_id, buyer_id, annual_rate,
+           days_to_maturity, discount_amount, net_payment_amount, offer_expiry_date, status)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'sent')`,
+          [
+            invoiceId,
+            invoice.supplier_id,
+            buyerId,
+            annualRate,
+            daysToMaturity,
+            discountAmount,
+            netPaymentAmount,
+            offerExpiryDate,
+          ],
+        )
+
+        // Update invoice status
+        await connection.execute(`UPDATE invoices SET status = 'offered' WHERE invoice_id = ?`, [invoiceId])
+
+        // Generate supplier token
+        const token = generateToken()
+        const tokenExpiry = new Date()
+        tokenExpiry.setDate(tokenExpiry.getDate() + 14)
+
+        await connection.execute(
+          `INSERT INTO supplier_tokens (supplier_id, token, token_type, expires_at)
+           VALUES (?, ?, 'offer_access', ?)`,
+          [invoice.supplier_id, token, tokenExpiry],
+        )
+
+        created.push({
+          invoiceId,
+          invoiceNumber: invoice.invoice_number ?? null,
+          supplierEmail: invoice.contact_email ?? null,
+          token,
+        })
+      } catch (error: any) {
+        errors.push(`Invoice ${invoiceId}: ${error.message}`)
+      }
+    }
+
+    return { created, errors }
+  })
+}
+
+// Generate offers for eligible invoices - now reusing shared helper
 export async function generateOffers(invoiceIds: number[]) {
   const session = await getSession()
   if (!session || session.role !== "admin") {
@@ -421,113 +578,7 @@ export async function generateOffers(invoiceIds: number[]) {
   }
 
   try {
-    // Get system settings
-    const settings = await query<RowDataPacket[]>(
-      `SELECT setting_key, setting_value FROM system_settings 
-       WHERE setting_key IN ('default_annual_rate', 'offer_expiry_days')`,
-    )
-
-    const settingsMap = settings.reduce(
-      (acc, s) => {
-        acc[s.setting_key] = s.setting_value
-        return acc
-      },
-      {} as Record<string, string>,
-    )
-
-    const annualRate = Number.parseFloat(settingsMap.default_annual_rate || "12.5")
-    const expiryDays = Number.parseInt(settingsMap.offer_expiry_days || "7")
-
-    const results = await transaction(async (connection) => {
-      const created = []
-      const errors = []
-
-      for (const invoiceId of invoiceIds) {
-        try {
-          // Get invoice details
-          const [invoices] = await connection.execute(
-            `SELECT i.*, s.supplier_id, s.contact_email, s.onboarding_status
-             FROM invoices i
-             JOIN suppliers s ON i.vendor_number = s.vendor_number AND i.company_code = s.company_code
-             WHERE i.invoice_id = ? AND i.status = 'matched'`,
-            [invoiceId],
-          )
-
-          const invoiceRows = invoices as RowDataPacket[]
-
-          if (invoiceRows.length === 0) {
-            errors.push(`Invoice ${invoiceId}: Not found or not eligible`)
-            continue
-          }
-
-          const invoice = invoiceRows[0]
-
-          // Check if supplier is approved
-          if (invoice.onboarding_status !== "approved") {
-            errors.push(`Invoice ${invoiceId}: Supplier not approved`)
-            continue
-          }
-
-          // Calculate offer details
-          const dueDate = new Date(invoice.due_date)
-          const today = new Date()
-          const daysToMaturity = Math.ceil((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
-
-          if (daysToMaturity <= 0) {
-            errors.push(`Invoice ${invoiceId}: Already due or overdue`)
-            continue
-          }
-
-          const discountAmount = (invoice.amount * annualRate * daysToMaturity) / (365 * 100)
-          const netPaymentAmount = invoice.amount - discountAmount
-
-          const offerExpiryDate = new Date()
-          offerExpiryDate.setDate(offerExpiryDate.getDate() + expiryDays)
-
-          // Create offer - UPDATED to use vendor_number and company_code instead of supplier_id
-          await connection.execute(
-            `INSERT INTO offers (invoice_id, vendor_number, company_code, annual_rate, 
-             days_to_maturity, discount_amount, net_payment_amount, offer_expiry_date, status)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'sent')`,
-            [
-              invoiceId,
-              invoice.vendor_number,
-              invoice.company_code,
-              annualRate,
-              daysToMaturity,
-              discountAmount,
-              netPaymentAmount,
-              offerExpiryDate,
-            ],
-          )
-
-          // Update invoice status
-          await connection.execute(`UPDATE invoices SET status = 'offered' WHERE invoice_id = ?`, [invoiceId])
-
-          // Generate supplier token
-          const token = generateToken()
-          const tokenExpiry = new Date()
-          tokenExpiry.setDate(tokenExpiry.getDate() + 14)
-
-          await connection.execute(
-            `INSERT INTO supplier_tokens (supplier_id, token, token_type, expires_at)
-             VALUES (?, ?, 'offer_access', ?)`,
-            [invoice.supplier_id, token, tokenExpiry],
-          )
-
-          created.push({
-            invoiceId,
-            invoiceNumber: invoice.invoice_number,
-            supplierEmail: invoice.contact_email,
-            token,
-          })
-        } catch (error: any) {
-          errors.push(`Invoice ${invoiceId}: ${error.message}`)
-        }
-      }
-
-      return { created, errors }
-    })
+    const results = await createOffersForInvoices(invoiceIds)
 
     await createAuditLog({
       userId: session.userId,
@@ -539,6 +590,71 @@ export async function generateOffers(invoiceIds: number[]) {
     return results
   } catch (error) {
     console.error("[v0] Error generating offers:", error)
+    throw error
+  }
+}
+
+export async function autoGenerateOffersForEligibleInvoices(triggerSource = "system") {
+  try {
+    const eligibleInvoices = await query<RowDataPacket[]>(
+      `SELECT i.invoice_id
+       FROM invoices i
+       JOIN suppliers s ON i.vendor_number = s.vendor_number AND i.company_code = s.company_code
+       LEFT JOIN offers o ON o.invoice_id = i.invoice_id
+       WHERE i.status = 'matched'
+         AND s.onboarding_status = 'approved'
+         AND i.due_date > NOW()
+         AND o.offer_id IS NULL`,
+    )
+
+    const invoiceIds = eligibleInvoices.map((row) => Number(row.invoice_id)).filter((id) => !Number.isNaN(id))
+
+    const results = await createOffersForInvoices(invoiceIds)
+
+    if (results.created.length > 0 || results.errors.length > 0) {
+      await createAuditLog({
+        userType: "system",
+        action: "AUTO_OFFERS_GENERATED",
+        details: `Auto-generated ${results.created.length} offers, ${results.errors.length} errors (trigger: ${triggerSource})`,
+      })
+    }
+
+    return results
+  } catch (error) {
+    console.error("[v0] Error auto-generating offers:", error)
+    throw error
+  }
+}
+
+export async function autoGenerateOffersForSupplier(supplierId: number, triggerSource = "supplier") {
+  try {
+    const eligibleInvoices = await query<RowDataPacket[]>(
+      `SELECT i.invoice_id
+       FROM invoices i
+       JOIN suppliers s ON i.vendor_number = s.vendor_number AND i.company_code = s.company_code
+       LEFT JOIN offers o ON o.invoice_id = i.invoice_id
+       WHERE s.supplier_id = ?
+         AND s.onboarding_status = 'approved'
+         AND i.status = 'matched'
+         AND i.due_date > NOW()
+         AND o.offer_id IS NULL`,
+      [supplierId],
+    )
+
+    const invoiceIds = eligibleInvoices.map((row) => Number(row.invoice_id)).filter((id) => !Number.isNaN(id))
+    const results = await createOffersForInvoices(invoiceIds)
+
+    if (results.created.length > 0 || results.errors.length > 0) {
+      await createAuditLog({
+        userType: "system",
+        action: "AUTO_OFFERS_GENERATED",
+        details: `Auto-generated ${results.created.length} offers, ${results.errors.length} errors (trigger: ${triggerSource}, supplier: ${supplierId})`,
+      })
+    }
+
+    return results
+  } catch (error) {
+    console.error("[v0] Error auto-generating offers for supplier:", error)
     throw error
   }
 }

@@ -5,19 +5,19 @@ from dotenv import load_dotenv
 
 # Load environment variables from .env
 load_dotenv()
-DB_PASSWORD = "Mining@2025"
-DB_USER = "Futuremining2025"
-DB_HOST = "dbfuture.mysql.database.azure.com"
+DB_PASSWORD = "Transport@2025"
+DB_USER = "root"
+DB_HOST = "localhost"
 DB_NAME = "fmf_scf_platform"
 
-ADMIN_USERNAME = "admin2"
-ADMIN_EMAIL = "admin2@example.com"
-ADMIN_PASSWORD = "Transport@2025"  # Change as needed
+ADMIN_USERNAME = "admin01"
+ADMIN_EMAIL = "admin01@futureming.com"
+ADMIN_PASSWORD = "Mining@2025"  # Change as needed
 
 # Buyer credentials
-BUYER_USERNAME = "buyer1"
-BUYER_EMAIL = "buyer1@example.com"
-BUYER_PASSWORD = "Transport@2025"  # Change as needed
+BUYER_USERNAME = "buyer01"
+BUYER_EMAIL = "buyer1@gmail.com"
+BUYER_PASSWORD = "buyer01@2025"  # Change as needed
 
 # Hash passwords
 admin_hashed = bcrypt.hashpw(ADMIN_PASSWORD.encode(), bcrypt.gensalt()).decode()

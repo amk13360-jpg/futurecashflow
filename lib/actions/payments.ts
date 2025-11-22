@@ -4,6 +4,7 @@ import { query, transaction } from "@/lib/db"
 import { getSession } from "@/lib/auth/session"
 import { createAuditLog } from "@/lib/auth/audit"
 import { redirect } from "next/navigation"
+import type { RowDataPacket } from "mysql2"
 
 // Get payment queue (accepted offers ready for payment)
 export async function getPaymentQueue() {
@@ -82,7 +83,7 @@ export async function queuePayments(offerIds: number[]) {
       for (const offerId of offerIds) {
         try {
           // Get offer details
-          const offers = await connection.execute(
+          const [offerRows] = await connection.execute<RowDataPacket[]>(
             `SELECT o.*, s.supplier_id, s.bank_account_no, i.invoice_id, i.due_date
              FROM offers o
              JOIN suppliers s ON o.supplier_id = s.supplier_id
@@ -91,17 +92,18 @@ export async function queuePayments(offerIds: number[]) {
             [offerId],
           )
 
-          if (offers.length === 0) {
+          if (offerRows.length === 0) {
             errors.push(`Offer ${offerId}: Not found or not accepted`)
             continue
           }
 
-          const offer = offers[0]
+          const offer = offerRows[0] as any
 
           // Check if payment already exists
-          const existingPayments = await connection.execute(`SELECT payment_id FROM payments WHERE offer_id = ?`, [
-            offerId,
-          ])
+          const [existingPayments] = await connection.execute<RowDataPacket[]>(
+            `SELECT payment_id FROM payments WHERE offer_id = ?`,
+            [offerId],
+          )
 
           if (existingPayments.length > 0) {
             errors.push(`Offer ${offerId}: Payment already exists`)
@@ -164,7 +166,7 @@ export async function generatePaymentBatch(paymentIds: number[]) {
 
       for (const paymentId of paymentIds) {
         // Get payment details
-        const paymentData = await connection.execute(
+          const [paymentData] = await connection.execute<RowDataPacket[]>(
           `SELECT p.payment_id, p.amount, p.payment_reference,
                   s.name as supplier_name, s.bank_name, s.bank_account_no, 
                   s.bank_branch_code, s.bank_account_type
@@ -311,7 +313,7 @@ export async function recordRepayment(repaymentId: number, amount: number, refer
   try {
     await transaction(async (connection) => {
       // Get current repayment
-      const repayments = await connection.execute(
+      const [repayments] = await connection.execute<RowDataPacket[]>(
         `SELECT expected_amount, received_amount FROM repayments WHERE repayment_id = ?`,
         [repaymentId],
       )

@@ -3,6 +3,7 @@
 import { query } from "@/lib/db"
 import { getSession } from "@/lib/auth/session"
 import { redirect } from "next/navigation"
+import { autoGenerateOffersForSupplier } from "@/lib/actions/invoices"
 
 // Get dashboard metrics
 export async function getDashboardMetrics() {
@@ -93,6 +94,51 @@ export async function getPendingCessions() {
   }
 }
 
+export async function getCessionById(cessionId: number) {
+  const session = await getSession()
+  if (!session || session.role !== "admin") {
+    redirect("/login/admin")
+  }
+
+  try {
+    const cessions = await query(
+      `SELECT c.cession_id, c.supplier_id, c.document_url, c.document_type,
+              c.version, c.signed_date, c.status, c.approved_by, c.approved_at,
+              c.created_at, c.updated_at,
+              s.name as supplier_name, s.contact_email, s.contact_person, s.address
+       FROM cession_agreements c
+       JOIN suppliers s ON c.supplier_id = s.supplier_id
+       WHERE c.cession_id = ?
+       LIMIT 1`,
+      [cessionId],
+    )
+
+    return cessions[0] || null
+  } catch (error) {
+    console.error("[v0] Error fetching cession agreement:", error)
+    throw error
+  }
+}
+
+export async function reviewCessionAgreement(cessionId: number, status: "approved" | "rejected") {
+  const session = await getSession()
+  if (!session || session.role !== "admin") {
+    redirect("/login/admin")
+  }
+
+  try {
+    await query(
+      `UPDATE cession_agreements
+       SET status = ?, approved_by = ?, approved_at = NOW()
+       WHERE cession_id = ?`,
+      [status, session.userId, cessionId],
+    )
+  } catch (error) {
+    console.error("[v0] Error updating cession status:", error)
+    throw error
+  }
+}
+
 // Get bank change requests
 export async function getBankChangeRequests() {
   const session = await getSession()
@@ -114,6 +160,55 @@ export async function getBankChangeRequests() {
     return requests
   } catch (error) {
     console.error("[v0] Error fetching bank change requests:", error)
+    throw error
+  }
+}
+
+export async function getSupplierApplicationById(supplierId: number) {
+  const session = await getSession()
+  if (!session || session.role !== "admin") {
+    redirect("/login/admin")
+  }
+
+  try {
+    const results = await query(
+      `SELECT s.*, b.name AS buyer_name
+       FROM suppliers s
+       LEFT JOIN buyers b ON s.company_code = b.code
+       WHERE s.supplier_id = ?
+       LIMIT 1`,
+      [supplierId],
+    )
+
+    return results[0] || null
+  } catch (error) {
+    console.error("[v0] Error fetching supplier application:", error)
+    throw error
+  }
+}
+
+export async function reviewSupplierApplication(
+  supplierId: number,
+  status: "approved" | "pending" | "rejected" | "documents_submitted",
+) {
+  const session = await getSession()
+  if (!session || session.role !== "admin") {
+    redirect("/login/admin")
+  }
+
+  try {
+    await query(
+      `UPDATE suppliers
+       SET onboarding_status = ?, updated_at = NOW()
+       WHERE supplier_id = ?`,
+      [status, supplierId],
+    )
+
+    if (status === "approved") {
+      await autoGenerateOffersForSupplier(supplierId, "admin_review")
+    }
+  } catch (error) {
+    console.error("[v0] Error updating supplier status:", error)
     throw error
   }
 }
