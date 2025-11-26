@@ -29,6 +29,12 @@ stages:
         NODE_ENV: production
 
     - script: |
+        npm ci --production --legacy-peer-deps
+      displayName: 'Install production dependencies'
+      env:
+        NODE_ENV: production
+
+    - script: |
         echo "Verifying .next folder exists"
         ls -la .next
       displayName: 'Verify build output'
@@ -78,6 +84,6 @@ stages:
               appName: '$(webAppName)'
               package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
               runtimeStack: 'NODE|20-lts'
-              startUpCommand: 'npm install --production --legacy-peer-deps && node_modules/.bin/next start'
+              startUpCommand: 'node_modules/.bin/next start'
               enableCustomDeployment: true
               deploymentMethod: 'zipDeploy'
