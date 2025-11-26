@@ -22,8 +22,8 @@ const CompanyDescriptionSection = () => {
               <p>
                 <span className="font-semibold">Future Finance Cashflow is a fintech and funding platform</span>{" "}
                 enabling companies to offer{" "}
-                <span className="bg-blue-600 text-white rounded-full px-6 py-2 font-semibold">early payment</span>{" "}
-                programs for SMEs in their supply chain.
+                <span className="bg-blue-600 text-white rounded-full px-6 py-2 font-semibold">early payment programs</span>{" "}
+                for SMEs in their supply chain.
               </p>
             </div>
 
@@ -406,7 +406,7 @@ export default function LandingPage() {
           <div className="mt-12 space-y-6 text-xl text-gray-600 font-light">
             <p>
               Future Finance is a fintech and funding platform enabling companies to offer{" "}
-              <span className="bg-[#2563eb] text-white rounded-full px-3 py-1 font-normal">early payment</span> programs
+              <span className="bg-[#2563eb] text-white rounded-full px-3 py-1 font-normal">early payment programs</span>{" "}
               for SMEs in their supply chain.
             </p>
             <p>Our platform helps businesses make a greater impact on SMEs by enabling faster payments to suppliers.</p>
