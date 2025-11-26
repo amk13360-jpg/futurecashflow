@@ -5,9 +5,9 @@ from dotenv import load_dotenv
 
 # Load environment variables from .env (falls back to local defaults)
 load_dotenv()
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_USER = os.getenv("DB_USER", "root")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "Transport@2025")
+DB_HOST = os.getenv("DB_HOST", "futurefinancecashflow.mysql.database.azure.com")
+DB_USER = os.getenv("DB_USER", "FMadmin")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "REDACTED_DB_PASSWORD")
 DB_NAME = os.getenv("DB_NAME", "fmf_scf_platform")
 
 # --- Update passwords for all seeded AP users ---

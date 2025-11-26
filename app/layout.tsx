@@ -1,7 +1,6 @@
 import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Inter } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "@/components/ui/sonner"
 import "./globals.css"
 import ThemeRoot from "@/components/ThemeRoot"
@@ -64,7 +63,6 @@ export default function RootLayout({
         <ThemeRoot>
           {children}
           <Toaster />
-          <Analytics />
         </ThemeRoot>
       </body>
     </html>

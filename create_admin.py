@@ -5,10 +5,10 @@ from dotenv import load_dotenv
 
 # Load environment variables from .env
 load_dotenv()
-DB_PASSWORD = "Transport@2025"
-DB_USER = "root"
-DB_HOST = "localhost"
-DB_NAME = "fmf_scf_platform"
+DB_PASSWORD = os.getenv("DB_PASSWORD", "REDACTED_DB_PASSWORD")
+DB_USER = os.getenv("DB_USER", "FMadmin")
+DB_HOST = os.getenv("DB_HOST", "futurefinancecashflow.mysql.database.azure.com")
+DB_NAME = os.getenv("DB_NAME", "fmf_scf_platform")
 
 ADMIN_USERNAME = "admin01"
 ADMIN_EMAIL = "admin01@futureming.com"
