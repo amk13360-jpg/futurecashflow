@@ -1,7 +1,7 @@
 import { EmailClient, KnownEmailSendStatus } from "@azure/communication-email"
 
 const connectionString = process.env.AZURE_COMMUNICATION_CONNECTION_STRING || ""
-const senderAddress = "DoNotReply@ccd12bc5-9970-4050-8117-1aec566c8db9.azurecomm.net"
+const senderAddress = process.env.AZURE_COMMUNICATION_SENDER || "DoNotReply@ccd12bc5-9970-4050-8117-1aec566c8db9.azurecomm.net"
 
 // Create email client lazily to avoid build-time errors
 let emailClient: EmailClient | null = null

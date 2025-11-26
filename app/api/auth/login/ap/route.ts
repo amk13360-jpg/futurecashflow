@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
         userType: "accounts_payable",
         action: "LOGIN_FAILED",
         details: "Invalid password",
-        ipAddress: request.ip || request.headers.get("x-forwarded-for") || undefined,
+        ipAddress: request.headers.get("x-forwarded-for") || undefined,
         userAgent: request.headers.get("user-agent") || undefined,
       })
 
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
       userType: "accounts_payable",
       action: "OTP_GENERATED",
       details: emailSent ? "OTP sent to email successfully" : "OTP generated but email failed",
-      ipAddress: request.ip || request.headers.get("x-forwarded-for") || undefined,
+      ipAddress: request.headers.get("x-forwarded-for") || undefined,
       userAgent: request.headers.get("user-agent") || undefined,
     })
 
