@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 # Load environment variables from .env (falls back to local defaults)
 load_dotenv()
 DB_HOST = os.getenv("DB_HOST", "futurefinancecashflow.mysql.database.azure.com")
-DB_USER = os.getenv("DB_USER", "FMadmin")
+DB_USER = os.getenv("DB_USER", "FMadmin@futurefinancecashflow")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "REDACTED_DB_PASSWORD")
 DB_NAME = os.getenv("DB_NAME", "fmf_scf_platform")
 
