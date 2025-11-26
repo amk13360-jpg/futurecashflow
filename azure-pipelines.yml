@@ -45,7 +45,6 @@ stages:
         SourceFolder: '$(System.DefaultWorkingDirectory)'
         Contents: |
           **
-          !node_modules/**
           !.git/**
           !.venv/**
           !.vscode/**
@@ -84,6 +83,6 @@ stages:
               appName: '$(webAppName)'
               package: '$(Pipeline.Workspace)/drop/$(Build.BuildId).zip'
               runtimeStack: 'NODE|20-lts'
-              startUpCommand: 'node_modules/.bin/next start'
+              startUpCommand: 'node server.js'
               enableCustomDeployment: true
               deploymentMethod: 'zipDeploy'
