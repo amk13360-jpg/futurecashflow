@@ -1,8 +1,0 @@
-name: scf-platform
-location: eastus
-
-services:
-  web:
-    project: .
-    language: js
-    host: appservice

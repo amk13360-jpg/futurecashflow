@@ -6,8 +6,8 @@ pool:
 
 variables:
   azureSubscription: 'connectionservice'
-  webAppName: 'scf-platform-app'
-  resourceGroupName: 'scf-platform-prod'
+  webAppName: 'fm-asp-dev-san-hufee4h8hyawbhcx'
+  resourceGroupName: 'fm-asp-dev-san'
 
 stages:
 - stage: Build
