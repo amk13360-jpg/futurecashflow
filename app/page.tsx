@@ -2,12 +2,12 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
-// Logo with brand blue and blinking animation
-export const LogoIcon = ({ className = "w-10 h-10" }) => (
+// Logo with brand blue (no animation)
+export const LogoIcon = ({ className = "w-12 h-12" }) => (
   <div className="relative">
     <svg aria-hidden="true" className={className} fill="currentColor" viewBox="0 0 80 80">
-      <path d="M40 28L16 52H26L40 38L54 52H64L40 28Z" className="animate-blink-2" />
-      <path d="M40 8L16 32H26L40 18L54 32H64L40 8Z" className="animate-blink-1" />
+      <path d="M40 28L16 52H26L40 38L54 52H64L40 28Z" />
+      <path d="M40 8L16 32H26L40 18L54 32H64L40 8Z" />
     </svg>
   </div>
 )

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Hammer, DollarSign, AlertTriangle, Building } from "lucide-react"
 
 // Logo with brand blue (solid, no gradient, no animation)
-export const LogoIcon = ({ className = "w-10 h-10" }) => (
+export const LogoIcon = ({ className = "w-12 h-12" }) => (
   <div className="relative">
     <svg aria-hidden="true" className={className} fill="currentColor" viewBox="0 0 80 80">
       {/* Bottom arrow */}
@@ -582,15 +582,15 @@ export default function LandingPage() {
     <div className="bg-background text-foreground">
       <div className="flex flex-col items-center justify-center min-h-screen">
         <main className="flex flex-col items-center justify-center text-center p-4 max-w-4xl mx-auto">
-          <div className="flex items-center justify-center gap-3 mb-12">
+          <div className="flex items-center justify-center gap-4 mb-12">
             {/* Static chevrons (no animation) */}
             <span className="flex flex-col">
-              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+              <svg width="56" height="56" viewBox="0 0 40 40" fill="none">
                 <path d="M20 8L12 16H16L20 12L24 16H28L20 8Z" className="fill-primary" />
                 <path d="M20 18L12 26H16L20 22L24 26H28L20 18Z" className="fill-primary" />
               </svg>
             </span>
-            <span className="font-bold text-2xl md:text-3xl lg:text-4xl text-primary">Future Cashflow</span>
+            <span className="font-bold text-3xl md:text-4xl lg:text-5xl text-primary">Future Cashflow</span>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">

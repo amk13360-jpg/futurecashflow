@@ -10,12 +10,12 @@ interface LogoIconProps {
  * Future Cashflow Logo Icon
  * Reusable SVG logo component for consistent branding
  */
-export function LogoIcon({ className = "h-8 w-8 text-primary" }: LogoIconProps) {
+export function LogoIcon({ className = "h-10 w-10 text-primary" }: LogoIconProps) {
   return (
     <div className="relative">
       <svg 
         aria-hidden="true" 
-        className={cn("h-8 w-8 text-primary", className)} 
+        className={cn("h-10 w-10 text-primary", className)} 
         fill="currentColor" 
         viewBox="0 0 80 80"
       >
@@ -30,13 +30,14 @@ interface LogoProps {
   className?: string
   iconClassName?: string
   showText?: boolean
-  size?: "sm" | "md" | "lg"
+  size?: "sm" | "md" | "lg" | "xl"
 }
 
 const sizeClasses = {
-  sm: { icon: "h-6 w-6", text: "text-lg" },
-  md: { icon: "h-8 w-8", text: "text-xl" },
-  lg: { icon: "h-10 w-10", text: "text-2xl" },
+  sm: { icon: "h-8 w-8", text: "text-lg" },
+  md: { icon: "h-10 w-10", text: "text-xl" },
+  lg: { icon: "h-12 w-12", text: "text-2xl" },
+  xl: { icon: "h-14 w-14", text: "text-3xl" },
 }
 
 /**
