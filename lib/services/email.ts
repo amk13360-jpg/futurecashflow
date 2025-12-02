@@ -137,11 +137,11 @@ Future Cashflow Team
       If you did not request this OTP, please contact your administrator immediately.
     </div>
     
-    <p>Best regards,<br><strong>Future Finance Cashflow Team</strong></p>
+    <p>Best regards,<br><strong>Future Cashflow Team</strong></p>
   </div>
   <div class="footer">
     <p>This is an automated message, please do not reply to this email.</p>
-    <p>© 2025 Future Finance Cashflow. All rights reserved.</p>
+    <p>© 2025 Future Cashflow. All rights reserved.</p>
   </div>
 </body>
 </html>
