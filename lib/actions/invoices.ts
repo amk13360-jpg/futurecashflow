@@ -133,6 +133,24 @@ async function ensureBuyerForCompany(connection: any, companyCode: string | null
   return insertResult.insertId ?? null
 }
 
+async function getSupplierIdByVendorNumber(connection: any, vendorNumber: string | null, companyCode: string | null): Promise<number | null> {
+  if (!vendorNumber) {
+    return null
+  }
+
+  const [existing] = await connection.execute(
+    `SELECT supplier_id FROM suppliers WHERE vendor_number = ? AND (company_code = ? OR company_code IS NULL) LIMIT 1`,
+    [vendorNumber, companyCode]
+  )
+  const rows = existing as RowDataPacket[]
+
+  if (rows.length > 0) {
+    return rows[0].supplier_id
+  }
+
+  return null
+}
+
 export async function uploadAPData(apDataRows: APDataRow[]) {
   // Updated mapping from APDataRow (CSV) to new invoices table columns (without supplier_id and buyer_id):
   // CSV fields: Company Code, Vendor Number, Vendor Name, Document Number, Document Type, Document Date, Posting Date, Baseline Date, Net Due Date, Days Overdue, Amount (Doc Curr), Currency, Amount (Local Curr), Payment Terms, Payment Method, Assignment (PO #), Reference (Invoice #), Open Item, Text
@@ -183,6 +201,20 @@ export async function uploadAPData(apDataRows: APDataRow[]) {
             continue
           }
 
+          // Get buyer_id from Company Code
+          const buyerId = await ensureBuyerForCompany(connection, row["Company Code"])
+          if (!buyerId) {
+            errors.push(`${row["Document Number"]}: Could not resolve buyer for company code ${row["Company Code"]}`)
+            continue
+          }
+
+          // Get supplier_id from Vendor Number
+          const supplierId = await getSupplierIdByVendorNumber(connection, row["Vendor Number"], row["Company Code"])
+          if (!supplierId) {
+            errors.push(`${row["Document Number"]}: Supplier not found for vendor number ${row["Vendor Number"]}. Please upload vendor data first.`)
+            continue
+          }
+
           const amountDocCurr = row["Amount (Doc Curr)"]
             ? Number.parseFloat(row["Amount (Doc Curr)"].replace(/,/g, ""))
             : 0
@@ -198,41 +230,43 @@ export async function uploadAPData(apDataRows: APDataRow[]) {
 
           await connection.execute(
             `INSERT INTO invoices (
-              company_code, vendor_number, invoice_number, invoice_date, due_date, amount, currency,
+              buyer_id, supplier_id, company_code, vendor_number, invoice_number, invoice_date, due_date, amount, currency,
               description, status, uploaded_by, uploaded_at, updated_at,
               document_number, document_type, document_date,
               posting_date, baseline_date, net_due_date, days_overdue, amount_doc_curr,
               amount_local_curr, payment_terms, payment_method, assignment_po, reference_invoice,
               open_item, text_description
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
-              toNullable(row["Company Code"]), // 1. company_code
-              toNullable(row["Vendor Number"]), // 2. vendor_number
-              toNullable(row["Reference (Invoice #)"]) || toNullable(row["Document Number"]), // 3. invoice_number
-              documentDate, // 4. invoice_date
-              netDueDate, // 5. due_date
-              amountDocCurr, // 6. amount
-              toNullable(row["Currency"]) || "ZAR", // 7. currency
-              toNullable(row["Text"]), // 8. description
-              "matched", // 9. status
-              session.userId, // 10. uploaded_by
-              // 11. uploaded_at (NOW())
-              // 12. updated_at (NOW())
-              toNullable(row["Document Number"]), // 13. document_number
-              toNullable(row["Document Type"]), // 14. document_type
-              documentDate, // 15. document_date
-              postingDate, // 16. posting_date
-              baselineDate, // 17. baseline_date
-              netDueDate, // 18. net_due_date
-              daysOverdue, // 19. days_overdue
-              amountDocCurr, // 20. amount_doc_curr
-              amountLocalCurr, // 21. amount_local_curr
-              toNullable(row["Payment Terms"]), // 22. payment_terms
-              toNullable(row["Payment Method"]), // 23. payment_method
-              toNullable(row["Assignment (PO #)"]), // 24. assignment_po
-              toNullable(row["Reference (Invoice #)"]), // 25. reference_invoice
-              toNullable(row["Open Item"]), // 26. open_item
-              toNullable(row["Text"]), // 27. text_description
+              buyerId, // 1. buyer_id
+              supplierId, // 2. supplier_id
+              toNullable(row["Company Code"]), // 3. company_code
+              toNullable(row["Vendor Number"]), // 4. vendor_number
+              toNullable(row["Reference (Invoice #)"]) || toNullable(row["Document Number"]), // 5. invoice_number
+              documentDate, // 6. invoice_date
+              netDueDate, // 7. due_date
+              amountDocCurr, // 8. amount
+              toNullable(row["Currency"]) || "ZAR", // 9. currency
+              toNullable(row["Text"]), // 10. description
+              "matched", // 11. status
+              session.userId, // 12. uploaded_by
+              // 13. uploaded_at (NOW())
+              // 14. updated_at (NOW())
+              toNullable(row["Document Number"]), // 15. document_number
+              toNullable(row["Document Type"]), // 16. document_type
+              documentDate, // 17. document_date
+              postingDate, // 18. posting_date
+              baselineDate, // 19. baseline_date
+              netDueDate, // 20. net_due_date
+              daysOverdue, // 21. days_overdue
+              amountDocCurr, // 22. amount_doc_curr
+              amountLocalCurr, // 23. amount_local_curr
+              toNullable(row["Payment Terms"]), // 24. payment_terms
+              toNullable(row["Payment Method"]), // 25. payment_method
+              toNullable(row["Assignment (PO #)"]), // 26. assignment_po
+              toNullable(row["Reference (Invoice #)"]), // 27. reference_invoice
+              toNullable(row["Open Item"]), // 28. open_item
+              toNullable(row["Text"]), // 29. text_description
             ],
           )
 
@@ -289,7 +323,10 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
           const existingRows = existing as RowDataPacket[]
 
           let supplierId: number | null = null;
+          let isNewSupplier = false;
+          
           if (existingRows.length > 0) {
+            // Existing supplier - update their details
             supplierId = existingRows[0].supplier_id;
             await connection.execute(
               `UPDATE suppliers SET
@@ -319,6 +356,7 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
             );
             uploaded.push(row["Vendor Number"]);
           } else {
+            // New supplier - insert into database
             const [result] = await connection.execute(
               `INSERT INTO suppliers (
                 vendor_number, company_code, name, address, contact_person, contact_email, contact_phone,
@@ -348,10 +386,12 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
             );
             const insertResult = result as OkPacket;
             supplierId = insertResult.insertId;
+            isNewSupplier = true;
             uploaded.push(row["Vendor Number"]);
           }
-          // Always push supplier info for token creation
-          if (supplierId) {
+          
+          // Only create tokens for NEW suppliers (not updates to existing ones)
+          if (supplierId && isNewSupplier && row["Contact Email"]) {
             newSuppliers.push({
               supplierId,
               email: row["Contact Email"],
@@ -366,8 +406,23 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
       return { uploaded, errors, newSuppliers }
     })
 
+    // Create tokens and send invitation emails for new suppliers
+    console.log(`[v0] Processing ${results.newSuppliers.length} new suppliers for token creation and email invitations`)
+    
     for (const supplier of results.newSuppliers) {
       try {
+        // Check if supplier already has an active (unused, non-expired) token
+        const existingTokens = await query<RowDataPacket[]>(
+          `SELECT token_id FROM supplier_tokens 
+           WHERE supplier_id = ? AND token_type = 'invite' AND used_at IS NULL AND expires_at > NOW()`,
+          [supplier.supplierId]
+        )
+        
+        if (existingTokens.length > 0) {
+          console.log(`[v0] Supplier ${supplier.supplierId} already has an active invite token, skipping`)
+          continue
+        }
+        
         const token = generateToken()
         const tokenExpiry = new Date()
         tokenExpiry.setDate(tokenExpiry.getDate() + 14)
@@ -377,12 +432,16 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
            VALUES (?, ?, 'invite', ?)`,
           [supplier.supplierId, token, tokenExpiry],
         )
+        
+        console.log(`[v0] Created invite token for supplier ${supplier.supplierId} (${supplier.email})`)
 
-        // Generate access link with token
-        const baseUrl = process.env.NEXTAUTH_URL || "https://scf-platform-app.azurewebsites.net"
+        // Generate access link with token - use the correct Azure URL
+        const baseUrl = process.env.NEXTAUTH_URL || "https://fm-asp-dev-san-hufee4h8hyawbhcx.southafricanorth-01.azurewebsites.net"
         const accessLink = `${baseUrl}/supplier/access?token=${token}`
 
         // Send invitation email via Azure Communication Services
+        console.log(`[v0] Sending invitation email to ${supplier.email} with access link: ${accessLink}`)
+        
         const emailSent = await sendSupplierWelcomeEmail(
           supplier.email,
           supplier.name,
@@ -392,7 +451,7 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
         if (emailSent) {
           console.log(`[v0] Invitation email sent successfully to ${supplier.email}`)
         } else {
-          console.error(`[v0] Failed to send invitation email to ${supplier.email}`)
+          console.error(`[v0] Failed to send invitation email to ${supplier.email} - email service returned false`)
         }
       } catch (error) {
         console.error(`[v0] Failed to create invitation for supplier ${supplier.supplierId}:`, error)
