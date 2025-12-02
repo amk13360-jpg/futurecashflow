@@ -1,6 +1,7 @@
 "use client"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 // Logo with brand blue (no animation)
 export const LogoIcon = ({ className = "w-12 h-12" }) => (
@@ -12,28 +13,24 @@ export const LogoIcon = ({ className = "w-12 h-12" }) => (
   </div>
 )
 
-// Footer
-const Footer = () => {
+// Header
+const Header = () => {
   return (
-    <footer className="bg-gray-900 py-16 text-gray-300">
-      <div className="mx-auto px-4 container">
-        <div className="text-center">
-          <div className="flex justify-center items-center gap-3 mb-6">
-            <LogoIcon className="w-8 h-8 text-primary" />
-            <span className="font-bold text-white text-xl">Future Cashflow</span>
-          </div>
-          <p className="mb-6 text-base">Future Cashflow (Pty) Ltd is a registered Credit Provider NCRCP18174</p>
-          <div className="text-sm">&copy; 2025 Future Cashflow. All Rights Reserved.</div>
+    <header className="top-0 right-0 left-0 z-50 fixed bg-background/80 backdrop-blur-sm border-b">
+      <div className="mx-auto px-4 py-4 container">
+        <div className="flex justify-end items-center">
+          <ThemeToggle />
         </div>
       </div>
-    </footer>
+    </header>
   )
 }
 
 export default function HomePage() {
   return (
-    <div className="bg-background text-foreground">
-      <div className="flex flex-col justify-center items-center min-h-screen">
+    <div className="bg-background h-screen overflow-hidden text-foreground">
+      <Header />
+      <div className="flex flex-col justify-center items-center h-full">
         <main className="flex flex-col justify-center items-center mx-auto p-4 max-w-4xl text-center">
           <div className="flex justify-center items-center gap-4 mb-12">
             {/* Static chevrons (no animation) */}
@@ -60,7 +57,6 @@ export default function HomePage() {
           </div>
         </main>
       </div>
-      <Footer />
     </div>
   )
 }
