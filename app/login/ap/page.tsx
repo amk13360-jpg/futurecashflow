@@ -11,16 +11,8 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ArrowLeft } from "lucide-react"
-// Modern Logo Component
-const LogoIcon = ({ className = "w-10 h-10 text-primary" }) => (
-  <div className="relative">
-    <svg aria-hidden="true" className={className} fill="currentColor" viewBox="0 0 80 80">
-      <path d="M40 8L16 32H26L40 18L54 32H64L40 8Z" />
-      <path d="M40 28L16 52H26L40 38L54 52H64L40 28Z" />
-    </svg>
-  </div>
-)
 import { ThemeToggle } from "@/components/theme-toggle"
+import { Logo } from "@/components/ui/logo"
 
 export default function APLoginPage() {
   const router = useRouter()
@@ -113,9 +105,8 @@ export default function APLoginPage() {
         </Link>
         <Card className="bg-card border-0 shadow-none text-foreground">
           <CardHeader className="text-center">
-            <div className="flex items-center justify-center mb-4 gap-3">
-              <LogoIcon className="w-10 h-10 text-primary" />
-              <span className="font-bold text-primary text-xl">Future Cashflow</span>
+            <div className="flex items-center justify-center mb-4">
+              <Logo size="lg" />
             </div>
             <CardTitle className="text-2xl font-bold">Accounts Payable Login</CardTitle>
             <CardDescription>
@@ -140,6 +131,7 @@ export default function APLoginPage() {
                     placeholder="e.g., AAP001"
                     required
                     disabled={loading}
+                    className="transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   />
                 </div>
                 <div className="space-y-2">
@@ -152,6 +144,7 @@ export default function APLoginPage() {
                     placeholder="Enter your password"
                     required
                     disabled={loading}
+                    className="transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   />
                 </div>
                 <Button type="submit" className="w-full font-semibold py-3 rounded-xl" disabled={loading}>
@@ -180,6 +173,7 @@ export default function APLoginPage() {
                     maxLength={6}
                     required
                     disabled={loading}
+                    className="transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   />
                 </div>
                 <Button type="submit" className="w-full font-semibold py-3 rounded-xl" disabled={loading}>

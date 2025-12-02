@@ -4,17 +4,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { LogOut } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { BRAND } from "@/lib/constants/brand"
-
-// Modern Logo Component
-const LogoIcon = ({ className = "h-8 w-8 text-primary" }) => (
-  <div className="relative">
-    <svg aria-hidden="true" className={className} fill="currentColor" viewBox="0 0 80 80">
-      <path d="M40 8L16 32H26L40 18L54 32H64L40 8Z" />
-      <path d="M40 28L16 52H26L40 38L54 52H64L40 28Z" />
-    </svg>
-  </div>
-)
+import { Logo } from "@/components/ui/logo"
 
 interface SupplierHeaderProps {
   supplierName?: string
@@ -33,8 +23,7 @@ export function SupplierHeader({ supplierName }: SupplierHeaderProps) {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <LogoIcon className="h-8 w-8 text-primary" />
-            <span className="font-bold text-primary">{BRAND.name}</span>
+            <Logo size="md" />
             {supplierName && <span className="text-sm text-muted-foreground ml-2">{supplierName}</span>}
           </div>
           <div className="flex items-center gap-4">

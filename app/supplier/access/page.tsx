@@ -11,15 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Users, ArrowLeft } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
-
-const LogoIcon = ({ className = "w-10 h-10 text-primary" }) => (
-  <div className="relative">
-    <svg aria-hidden="true" className={className} fill="currentColor" viewBox="0 0 80 80">
-      <path d="M40 8L16 32H26L40 18L54 32H64L40 8Z" />
-      <path d="M40 28L16 52H26L40 38L54 52H64L40 28Z" />
-    </svg>
-  </div>
-)
+import { Logo } from "@/components/ui/logo"
 
 export default function SupplierAccessPage() {
   const router = useRouter()
@@ -71,8 +63,8 @@ export default function SupplierAccessPage() {
       </div>
       {/* Modern background gradient and blur effects */}
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-72 w-72 rounded-full bg-green-600/20 blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 h-72 w-72 rounded-full bg-green-600/10 blur-3xl"></div>
+        <div className="absolute -top-40 -right-40 h-72 w-72 rounded-full bg-primary/20 blur-3xl"></div>
+        <div className="absolute -bottom-40 -left-40 h-72 w-72 rounded-full bg-primary/10 blur-3xl"></div>
       </div>
       <div className="w-full max-w-md">
         <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6">
@@ -81,15 +73,12 @@ export default function SupplierAccessPage() {
         </Link>
         <Card className="bg-card border-0 shadow-none text-foreground">
           <CardHeader className="text-center">
-            <div className="flex items-center justify-center mb-4 gap-3">
-              <LogoIcon className="w-10 h-10 text-blue-600" />
-              <span className="font-bold text-blue-600">Future</span>
-              <div className="w-px h-8 bg-blue-600/70" />
-              <span className="font-bold whitespace-nowrap text-blue-600">Finance Cashflow</span>
+            <div className="flex items-center justify-center mb-4">
+              <Logo size="lg" />
             </div>
             <div className="mb-6">
               <div className="p-4 rounded-full border border-border bg-muted inline-block">
-                <Users className="h-12 w-12 text-blue-600" />
+                <Users className="h-12 w-12 text-primary" />
               </div>
             </div>
             <CardTitle className="text-2xl font-bold">Supplier Access</CardTitle>
@@ -113,10 +102,10 @@ export default function SupplierAccessPage() {
                   required
                   disabled={loading}
                   autoComplete="off"
-                  className={`form-input transition-colors ${token ? "bg-muted" : ""}`}
+                  className="transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                 />
               </div>
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-colors disabled:bg-blue-300 disabled:text-white/70" disabled={loading}>
+              <Button type="submit" className="w-full font-semibold py-3 rounded-xl" disabled={loading}>
                 {loading ? "Verifying..." : "Verify Token"}
               </Button>
             </form>
