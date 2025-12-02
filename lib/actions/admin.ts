@@ -4,7 +4,7 @@ import { query } from "@/lib/db"
 import { getSession } from "@/lib/auth/session"
 import { redirect } from "next/navigation"
 import { autoGenerateOffersForSupplier } from "@/lib/actions/invoices"
-import { sendSupplierWelcomeEmail } from "@/lib/services/email"
+import { sendSupplierApprovalEmail } from "@/lib/services/email"
 import { randomBytes } from "crypto"
 
 // Generate a secure random token
@@ -248,9 +248,9 @@ export async function reviewSupplierApplication(
             const baseUrl = process.env.NEXTAUTH_URL || "https://fm-asp-dev-san-hufee4h8hyawbhcx.southafricanorth-01.azurewebsites.net"
             const accessLink = `${baseUrl}/supplier/access?token=${token}`
             
-            // Send welcome email
+            // Send approval email (for dashboard access to view early payment offers)
             console.log(`[Admin] Sending approval email to ${supplier.contact_email}`)
-            await sendSupplierWelcomeEmail(
+            await sendSupplierApprovalEmail(
               supplier.contact_email,
               supplier.name,
               accessLink
@@ -260,7 +260,8 @@ export async function reviewSupplierApplication(
         }
       } catch (emailError) {
         // Don't fail the approval if email fails - just log it
-        console.error(`[Admin] Failed to send welcome email for supplier ${supplierId}:`, emailError)
+        console.error(`[Admin] Failed to send approval email for supplier ${supplierId}:`, emailError)
+      }
       }
     }
   } catch (error) {

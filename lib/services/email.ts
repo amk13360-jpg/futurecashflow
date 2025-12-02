@@ -190,15 +190,21 @@ export async function sendSupplierWelcomeEmail(
     const emailMessage = {
       senderAddress,
       content: {
-        subject: "Welcome to Future Cashflow Platform",
+        subject: "Action Required: Sign Your Cession Agreement - Future Cashflow",
         plainText: `
 Hello ${supplierName},
 
 Welcome to the Future Cashflow Platform!
 
-You have been onboarded as a supplier. Please use the following link to access your dashboard:
+You have been registered as a supplier. To complete your onboarding, please sign your cession agreement.
+
+Click the link below to access the portal and sign your agreement:
 
 ${accessLink}
+
+This link will expire in 14 days.
+
+Once you have signed your cession agreement, your application will be reviewed by our team.
 
 Best regards,
 Future Cashflow Team
@@ -243,6 +249,29 @@ Future Cashflow Team
       font-weight: bold;
       margin: 20px 0;
     }
+    .steps {
+      background: #f3f4f6;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+    }
+    .step-number {
+      background: #2563eb;
+      color: white;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      font-weight: bold;
+    }
     .footer {
       background: #f9fafb;
       padding: 20px;
@@ -253,19 +282,36 @@ Future Cashflow Team
       border: 1px solid #e5e7eb;
       border-top: none;
     }
+    .expiry {
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 12px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>🎉 Welcome to Future Cashflow</h1>
+    <h1>📋 Welcome to Future Cashflow</h1>
   </div>
   <div class="content">
     <h2>Hello ${supplierName},</h2>
     <p>Welcome to the <strong>Future Cashflow Platform</strong>!</p>
-    <p>You have been successfully onboarded as a supplier. You can now access your dashboard to view offers and manage your account.</p>
+    <p>You have been registered as a supplier. To complete your onboarding, please follow these steps:</p>
+    
+    <div class="steps">
+      <div class="step"><span class="step-number">1</span> Click the button below to access the portal</div>
+      <div class="step"><span class="step-number">2</span> Sign or upload your cession agreement</div>
+      <div class="step"><span class="step-number">3</span> Wait for approval from our team</div>
+    </div>
     
     <div style="text-align: center;">
-      <a href="${accessLink}" class="button">Access Dashboard</a>
+      <a href="${accessLink}" class="button">Sign Cession Agreement</a>
+    </div>
+    
+    <div class="expiry">
+      ⏱️ <strong>This link will expire in 14 days.</strong>
     </div>
     
     <p>If you have any questions, please contact your account manager.</p>
@@ -303,6 +349,178 @@ Future Cashflow Team
     }
   } catch (error) {
     console.error("[Email Service] Error sending welcome email:", error)
+    return false
+  }
+}
+
+/**
+ * Send approval email to supplier - access to dashboard for early payment offers
+ */
+export async function sendSupplierApprovalEmail(
+  recipientEmail: string,
+  supplierName: string,
+  accessLink: string,
+): Promise<boolean> {
+  try {
+    const emailMessage = {
+      senderAddress,
+      content: {
+        subject: "🎉 Your Application Has Been Approved - Future Cashflow",
+        plainText: `
+Hello ${supplierName},
+
+Great news! Your supplier application has been approved.
+
+You can now access your dashboard to view and accept early payment offers.
+
+Click the link below to access your dashboard:
+
+${accessLink}
+
+This link will expire in 14 days.
+
+Best regards,
+Future Cashflow Team
+        `.trim(),
+        html: `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      padding: 30px;
+      text-align: center;
+      border-radius: 8px 8px 0 0;
+    }
+    .header h1 {
+      color: white;
+      margin: 0;
+      font-size: 24px;
+    }
+    .content {
+      background: #ffffff;
+      padding: 30px;
+      border: 1px solid #e5e7eb;
+      border-top: none;
+    }
+    .button {
+      display: inline-block;
+      padding: 15px 30px;
+      background: #059669;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    .success-box {
+      background: #ecfdf5;
+      border: 2px solid #059669;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      margin: 20px 0;
+    }
+    .success-icon {
+      font-size: 48px;
+      margin-bottom: 10px;
+    }
+    .features {
+      background: #f3f4f6;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    .feature {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+    }
+    .feature-icon {
+      margin-right: 12px;
+      font-size: 20px;
+    }
+    .footer {
+      background: #f9fafb;
+      padding: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #6b7280;
+      border-radius: 0 0 8px 8px;
+      border: 1px solid #e5e7eb;
+      border-top: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>✅ Application Approved!</h1>
+  </div>
+  <div class="content">
+    <h2>Hello ${supplierName},</h2>
+    
+    <div class="success-box">
+      <div class="success-icon">🎉</div>
+      <h3 style="margin: 0; color: #059669;">Your supplier application has been approved!</h3>
+    </div>
+    
+    <p>You can now access your dashboard and start receiving early payment offers.</p>
+    
+    <div class="features">
+      <h4 style="margin-top: 0;">What you can do now:</h4>
+      <div class="feature"><span class="feature-icon">💰</span> View and accept early payment offers</div>
+      <div class="feature"><span class="feature-icon">📊</span> Track your payment history</div>
+      <div class="feature"><span class="feature-icon">👤</span> Manage your supplier profile</div>
+    </div>
+    
+    <div style="text-align: center;">
+      <a href="${accessLink}" class="button">Access Your Dashboard</a>
+    </div>
+    
+    <p>If you have any questions, please contact your account manager.</p>
+    
+    <p>Best regards,<br><strong>Future Cashflow Team</strong></p>
+  </div>
+  <div class="footer">
+    <p>This is an automated message, please do not reply to this email.</p>
+    <p>© 2025 Future Cashflow. All rights reserved.</p>
+  </div>
+</body>
+</html>
+        `.trim(),
+      },
+      recipients: {
+        to: [
+          {
+            address: recipientEmail,
+            displayName: supplierName,
+          },
+        ],
+      },
+    }
+
+    const client = getEmailClient()
+    const poller = await client.beginSend(emailMessage)
+    const result = await poller.pollUntilDone()
+
+    if (result.status === KnownEmailSendStatus.Succeeded) {
+      console.log(`[Email Service] Approval email sent successfully to ${recipientEmail}`)
+      return true
+    } else {
+      console.error(`[Email Service] Failed to send approval email. Status: ${result.status}`)
+      return false
+    }
+  } catch (error) {
+    console.error("[Email Service] Error sending approval email:", error)
     return false
   }
 }

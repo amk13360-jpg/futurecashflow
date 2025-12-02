@@ -3,14 +3,27 @@
 import path from "path";
 import fs from "fs/promises";
 import { randomUUID } from "crypto";
+import { uploadToBlobStorage, isBlobStorageConfigured } from "@/lib/services/blob-storage";
+
 export async function uploadCessionAgreement({ supplierId, file, fileName }: { supplierId: number, file: Buffer, fileName: string }) {
-  // Save file to disk (or cloud storage in production)
-  const uploadDir = path.join(process.cwd(), "public", "uploads", "cession-agreements");
-  await fs.mkdir(uploadDir, { recursive: true });
-  const uniqueName = `${supplierId}-${Date.now()}-${randomUUID()}-${fileName}`;
-  const filePath = path.join(uploadDir, uniqueName);
-  await fs.writeFile(filePath, file);
-  const documentUrl = `/uploads/cession-agreements/${uniqueName}`;
+  let documentUrl: string;
+
+  // Use Azure Blob Storage in production, local filesystem for development
+  if (isBlobStorageConfigured()) {
+    // Upload to Azure Blob Storage (persistent)
+    console.log(`[Cession] Uploading to Azure Blob Storage for supplier ${supplierId}`);
+    documentUrl = await uploadToBlobStorage(file, fileName, supplierId);
+    console.log(`[Cession] Uploaded to Blob Storage: ${documentUrl}`);
+  } else {
+    // Fallback to local filesystem (development only)
+    console.log(`[Cession] Blob Storage not configured, using local filesystem`);
+    const uploadDir = path.join(process.cwd(), "public", "uploads", "cession-agreements");
+    await fs.mkdir(uploadDir, { recursive: true });
+    const uniqueName = `${supplierId}-${Date.now()}-${randomUUID()}-${fileName}`;
+    const filePath = path.join(uploadDir, uniqueName);
+    await fs.writeFile(filePath, file);
+    documentUrl = `/uploads/cession-agreements/${uniqueName}`;
+  }
 
   // Insert or update cession_agreements record
   await query(
