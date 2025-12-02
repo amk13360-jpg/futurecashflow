@@ -593,11 +593,7 @@ export default function LandingPage() {
             <span className="font-bold text-2xl md:text-3xl lg:text-4xl text-primary">Future Cashflow</span>
           </div>
 
-          <p className="text-muted-foreground text-lg mb-8 max-w-md">
-            Supply Chain Finance Platform for Mining Industry
-          </p>
-
-          <div className="mt-4 flex flex-col sm:flex-row gap-4 items-center justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
             <Link href="/login/admin" passHref>
               <Button size="lg" className="rounded-full px-8 py-6 text-lg font-semibold min-w-[200px]">
                 Admin Login
