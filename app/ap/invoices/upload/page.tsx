@@ -1,7 +1,6 @@
 "use client"
 
-
-
+import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { DashboardHeader } from "@/components/admin/dashboard-header"
@@ -67,46 +66,51 @@ export default function InvoiceUploadPage() {
   }
 
   return (
-  <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+    <div className="min-h-screen bg-muted/30">
       <DashboardHeader />
 
       <main className="container mx-auto px-4 py-8">
         <div className="mb-6">
           <Link
             href="/ap/dashboard"
-            className="inline-flex items-center text-sm text-lightgray hover:text-white mb-4"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to dashboard
           </Link>
-          <h2 className="text-3xl font-bold text-white">Upload AP Data</h2>
-          <p className="text-lightgray">Upload approved invoices from your ERP system</p>
+          <h2 className="text-3xl font-bold">Upload AP Data</h2>
+          <p className="text-muted-foreground">Please upload your approved accounts payable data from your ERP system here</p>
         </div>
 
         {!results ? (
           <div className="grid lg:grid-cols-2 gap-6">
-            <Card className="bg-card border border-darkgray shadow-xl">
+            <Card>
               <CardHeader>
-                <Upload className="h-8 w-8 text-accent-red mb-2" />
-                <CardTitle className="text-white">AP Data CSV Upload</CardTitle>
-                <CardDescription className="text-lightgray">Upload your accounts payable data export</CardDescription>
+                <Upload className="h-8 w-8 text-primary mb-2" />
+                <CardTitle>AP Data CSV Upload</CardTitle>
+                <CardDescription>Upload your accounts payable data export</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Alert className="bg-charcoal text-white border-accent-red">
-                  <FileText className="h-4 w-4 text-accent-red" />
+                <Alert>
+                  <FileText className="h-4 w-4" />
                   <AlertDescription>
                     <strong>Required CSV columns:</strong>
                     <br />
-                    <span className="text-lightgray">
-                      Company Code, Vendor Number, Vendor Name, Document Number, Document Type, Document Date, Posting
-                      Date, Baseline Date, Net Due Date, Days Overdue, Amount (Doc Curr), Currency, Amount (Local Curr),
-                      Payment Terms, Payment Method, Assignment (PO #), Reference (Invoice #), Open Item, Text
-                    </span>
+                    Company Code, Vendor Number, Vendor Name, Document Number, Document Type, Document Date, Posting
+                    Date, Baseline Date, Net Due Date, Days Overdue, Amount (Doc Curr), Currency, Amount (Local Curr),
+                    Payment Terms, Payment Method, Assignment (PO #), Reference (Invoice #), Open Item, Text
+                  </AlertDescription>
+                </Alert>
+
+                <Alert>
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>
+                    <strong>Note:</strong> Make sure vendors have been uploaded first. Invoices will be matched to existing suppliers by Vendor Number.
                   </AlertDescription>
                 </Alert>
 
                 <div className="space-y-2">
-                  <Label htmlFor="file" className="text-white">Upload CSV File</Label>
+                  <Label htmlFor="file">Upload CSV File</Label>
                   <input
                     id="file"
                     type="file"
@@ -114,13 +118,12 @@ export default function InvoiceUploadPage() {
                     onChange={handleFileUpload}
                     placeholder="Select a CSV file to upload"
                     title="Upload CSV File"
-                    className="block w-full text-sm text-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-accent-red file:text-primary-foreground hover:file:bg-accent-red/90"
+                    className="block w-full text-sm text-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="csv" className="text-white">Or Paste CSV Data</Label>
-2000,200016,Shosholoza Logistics,19000300,KR,2025-08-25,2025-08-25,2025-08-25,2025-10-24,-64,9303.57,ZAR,9303.57,0003 (60 days),T (EFT),PO2100,INV-3100,Yes,IT support"
+                  <Label htmlFor="csv">Or Paste CSV Data</Label>
                   <Textarea
                     id="csv"
                     value={csvText}
@@ -128,7 +131,7 @@ export default function InvoiceUploadPage() {
                     placeholder="Company Code,Vendor Number,Vendor Name,Document Number,Document Type,Document Date,Posting Date,Baseline Date,Net Due Date,Days Overdue,Amount (Doc Curr),Currency,Amount (Local Curr),Payment Terms,Payment Method,Assignment (PO #),Reference (Invoice #),Open Item,Text
 2000,200016,Shosholoza Logistics,19000300,KR,2025-08-25,2025-08-25,2025-08-25,2025-10-24,-64,9303.57,ZAR,9303.57,0003 (60 days),T (EFT),PO2100,INV-3100,Yes,IT support"
                     rows={10}
-                    className="font-mono text-sm text-white bg-darkgray border-mediumgray"
+                    className="font-mono text-sm"
                   />
                 </div>
 
@@ -137,44 +140,44 @@ export default function InvoiceUploadPage() {
                     onClick={handlePreview}
                     variant="outline"
                     disabled={!csvText || loading}
-                    className="flex-1 bg-darkgray text-white border-mediumgray"
+                    className="flex-1 bg-transparent"
                   >
                     Preview
                   </Button>
-                  <Button onClick={handleUpload} disabled={!csvText || loading} className="flex-1 bg-accent-red text-white">
+                  <Button onClick={handleUpload} disabled={!csvText || loading} className="flex-1">
                     {loading ? "Uploading..." : "Upload AP Data"}
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-card border border-darkgray shadow-xl">
+            <Card>
               <CardHeader>
-                <CardTitle className="text-white">Preview</CardTitle>
-                <CardDescription className="text-lightgray">Review AP data before uploading (first 10 rows)</CardDescription>
+                <CardTitle>Preview</CardTitle>
+                <CardDescription>Review AP data before uploading (first 10 rows)</CardDescription>
               </CardHeader>
               <CardContent>
                 {preview.length === 0 ? (
-                  <div className="text-center py-8 text-lightgray">
-                    <FileText className="h-12 w-12 mx-auto mb-3 opacity-50 text-mediumgray" />
+                  <div className="text-center py-8 text-muted-foreground">
+                    <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
                     <p>No data to preview</p>
-                    <p className="text-sm mt-1">Click "Preview" to parse your CSV</p>
+                    <p className="text-sm mt-1">Click &quot;Preview&quot; to parse your CSV</p>
                   </div>
                 ) : (
                   <div className="space-y-3 max-h-96 overflow-y-auto">
                     {preview.map((row: any, idx: number) => (
-                      <div key={idx} className="p-3 border border-mediumgray rounded-lg text-sm bg-charcoal text-white">
+                      <div key={idx} className="p-3 border rounded-lg text-sm">
                         <div className="font-medium">
                           {row["Document Number"]} - {row["Vendor Name"]}
                         </div>
-                        <div className="text-lightgray text-xs">Vendor: {row["Vendor Number"]}</div>
+                        <div className="text-muted-foreground text-xs">Vendor: {row["Vendor Number"]}</div>
                         <div className="flex justify-between mt-1">
                           <span>
                             {row["Currency"]} {Number.parseFloat(row["Amount (Doc Curr)"]).toLocaleString()}
                           </span>
                           <span className="text-xs">Due: {row["Net Due Date"]}</span>
                         </div>
-                        <div className="text-xs text-lightgray mt-1">{row["Text"]}</div>
+                        <div className="text-xs text-muted-foreground mt-1">{row["Text"]}</div>
                       </div>
                     ))}
                   </div>
@@ -183,15 +186,15 @@ export default function InvoiceUploadPage() {
             </Card>
           </div>
         ) : (
-          <Card className="bg-darkgray/50 backdrop-blur border-darkgray shadow-xl">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-white">Upload Results</CardTitle>
-              <CardDescription className="text-lightgray">Summary of AP data upload</CardDescription>
+              <CardTitle>Upload Results</CardTitle>
+              <CardDescription>Summary of AP data upload</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {results.uploaded.length > 0 && (
-                <Alert className="bg-charcoal text-white border-accent-green">
-                  <CheckCircle className="h-4 w-4 text-accent-green" />
+                <Alert>
+                  <CheckCircle className="h-4 w-4" />
                   <AlertDescription>
                     <strong>Successfully uploaded {results.uploaded.length} invoices</strong>
                     <div className="mt-2 text-sm">
@@ -205,8 +208,8 @@ export default function InvoiceUploadPage() {
               )}
 
               {results.errors.length > 0 && (
-                <Alert variant="destructive" className="bg-charcoal text-white border-accent-red">
-                  <AlertCircle className="h-4 w-4 text-accent-red" />
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
                     <strong>{results.errors.length} errors occurred</strong>
                     <div className="mt-2 text-sm">
@@ -220,7 +223,7 @@ export default function InvoiceUploadPage() {
               )}
 
               <div className="flex gap-2">
-                <Button onClick={() => router.push("/ap/invoices")} className="flex-1 bg-accent-red text-white">
+                <Button onClick={() => router.push("/ap/invoices")} className="flex-1">
                   View Invoices
                 </Button>
                 <Button
@@ -230,7 +233,7 @@ export default function InvoiceUploadPage() {
                     setPreview([])
                   }}
                   variant="outline"
-                  className="flex-1 bg-darkgray text-white border-mediumgray"
+                  className="flex-1 bg-transparent"
                 >
                   Upload More
                 </Button>
@@ -239,6 +242,6 @@ export default function InvoiceUploadPage() {
           </Card>
         )}
       </main>
-  </div>
+    </div>
   )
 }

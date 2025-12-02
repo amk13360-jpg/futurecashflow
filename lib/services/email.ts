@@ -33,11 +33,11 @@ export async function sendOTPEmail(params: SendOTPEmailParams): Promise<boolean>
     const emailMessage = {
       senderAddress,
       content: {
-        subject: "Your OTP for Future Finance Cashflow Platform",
+        subject: "Your OTP for Future Cashflow Platform",
         plainText: `
 Hello ${recipientName},
 
-Your One-Time Password (OTP) for accessing the Future Finance Cashflow Platform is:
+Your One-Time Password (OTP) for accessing the Future Cashflow Platform is:
 
 ${otp}
 
@@ -46,7 +46,7 @@ This OTP will expire in ${expiryMinutes} minutes.
 If you did not request this OTP, please contact your administrator immediately.
 
 Best regards,
-Future Finance Cashflow Team
+Future Cashflow Team
         `.trim(),
         html: `
 <!DOCTYPE html>
@@ -119,11 +119,11 @@ Future Finance Cashflow Team
 </head>
 <body>
   <div class="header">
-    <h1>🔐 Future Finance Cashflow</h1>
+    <h1>🔐 Future Cashflow</h1>
   </div>
   <div class="content">
     <h2>Hello ${recipientName},</h2>
-    <p>Your One-Time Password (OTP) for accessing the <strong>Future Finance Cashflow Platform</strong> is:</p>
+    <p>Your One-Time Password (OTP) for accessing the <strong>Future Cashflow Platform</strong> is:</p>
     
     <div class="otp-box">
       <div class="otp-code">${otp}</div>
@@ -190,18 +190,18 @@ export async function sendSupplierWelcomeEmail(
     const emailMessage = {
       senderAddress,
       content: {
-        subject: "Welcome to Future Finance Cashflow Platform",
+        subject: "Welcome to Future Cashflow Platform",
         plainText: `
 Hello ${supplierName},
 
-Welcome to the Future Finance Cashflow Platform!
+Welcome to the Future Cashflow Platform!
 
 You have been onboarded as a supplier. Please use the following link to access your dashboard:
 
 ${accessLink}
 
 Best regards,
-Future Finance Cashflow Team
+Future Cashflow Team
         `.trim(),
         html: `
 <!DOCTYPE html>
@@ -257,11 +257,11 @@ Future Finance Cashflow Team
 </head>
 <body>
   <div class="header">
-    <h1>🎉 Welcome to Future Finance Cashflow</h1>
+    <h1>🎉 Welcome to Future Cashflow</h1>
   </div>
   <div class="content">
     <h2>Hello ${supplierName},</h2>
-    <p>Welcome to the <strong>Future Finance Cashflow Platform</strong>!</p>
+    <p>Welcome to the <strong>Future Cashflow Platform</strong>!</p>
     <p>You have been successfully onboarded as a supplier. You can now access your dashboard to view offers and manage your account.</p>
     
     <div style="text-align: center;">
@@ -270,11 +270,11 @@ Future Finance Cashflow Team
     
     <p>If you have any questions, please contact your account manager.</p>
     
-    <p>Best regards,<br><strong>Future Finance Cashflow Team</strong></p>
+    <p>Best regards,<br><strong>Future Cashflow Team</strong></p>
   </div>
   <div class="footer">
     <p>This is an automated message, please do not reply to this email.</p>
-    <p>© 2025 Future Finance Cashflow. All rights reserved.</p>
+    <p>© 2025 Future Cashflow. All rights reserved.</p>
   </div>
 </body>
 </html>

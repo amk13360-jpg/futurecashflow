@@ -1,0 +1,2 @@
+Company Code,Vendor Number,Vendor Name,Address,Contact Person,Contact Email,Contact Phone,Bank Country,Bank Name,Bank Key (Branch Code),Bank Account Number,IBAN,SWIFT/BIC,Default Payment Method,Default Payment Terms,VAT Registration No,Reconciliation G/L Account
+FMF001,TEST-V004,Test Vendor Swelihle 2,456 Test Avenue Sandton,Swelihle Lucas,swelihlelucas@gmail.com,+27 11 987 6543,ZA,FNB,250655,987654321,,FIRNZAJJ,EFT,30 days,4888777666,

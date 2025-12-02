@@ -5,14 +5,14 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Hammer, DollarSign, AlertTriangle, Building } from "lucide-react"
 
-// Logo with brand blue (solid, no gradient)
+// Logo with brand blue (solid, no gradient, no animation)
 export const LogoIcon = ({ className = "w-10 h-10" }) => (
   <div className="relative">
     <svg aria-hidden="true" className={className} fill="currentColor" viewBox="0 0 80 80">
-      {/* Bottom arrow blinks second */}
-      <path d="M40 28L16 52H26L40 38L54 52H64L40 28Z" className="animate-blink-2" />
-      {/* Top arrow blinks first */}
-      <path d="M40 8L16 32H26L40 18L54 32H64L40 8Z" className="animate-blink-1" />
+      {/* Bottom arrow */}
+      <path d="M40 28L16 52H26L40 38L54 52H64L40 28Z" />
+      {/* Top arrow */}
+      <path d="M40 8L16 32H26L40 18L54 32H64L40 8Z" />
     </svg>
   </div>
 )
@@ -548,10 +548,10 @@ const Footer = () => {
         <div className="text-center">
           <div className="flex items-center justify-center gap-3 mb-6">
             <LogoIcon className="w-8 h-8 text-primary" />
-            <span className="font-bold text-white text-xl">Future Mining Finance</span>
+            <span className="font-bold text-white text-xl">Future Cashflow</span>
           </div>
-          <p className="text-base mb-6">Future Mining Finance (Pty) Ltd is a registered Credit Provider NCRCP18174</p>
-          <div className="text-sm">&copy; 2025 Future Mining Finance. All Rights Reserved.</div>
+          <p className="text-base mb-6">Future Cashflow (Pty) Ltd is a registered Credit Provider NCRCP18174</p>
+          <div className="text-sm">&copy; 2025 Future Cashflow. All Rights Reserved.</div>
         </div>
       </div>
     </footer>
@@ -582,56 +582,33 @@ export default function LandingPage() {
     <div className="bg-[#f7f7f9] text-gray-700">
       <div className="flex flex-col items-center justify-center min-h-screen">
         <main className="flex flex-col items-center justify-center text-center p-4 max-w-4xl mx-auto">
-          <div className="flex items-center justify-center gap-4 mb-6">
-            {/* Two blinking chevrons before 'Future' on one line */}
+          <div className="flex items-center justify-center gap-4 mb-12">
+            {/* Static chevrons (no animation) */}
             <span className="flex flex-col mr-2">
               <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                <path d="M16 8L10 14H13L16 11L19 14H22L16 8Z" fill="#2563eb" className="animate-blink-1" />
-                <path d="M16 16L10 22H13L16 19L19 22H22L16 16Z" fill="#2563eb" className="animate-blink-2" />
+                <path d="M16 8L10 14H13L16 11L19 14H22L16 8Z" fill="#2563eb" />
+                <path d="M16 16L10 22H13L16 19L19 22H22L16 16Z" fill="#2563eb" />
               </svg>
             </span>
             <span className="font-bold text-2xl md:text-3xl lg:text-4xl text-[#181e29]">Future</span>
-            <span className="h-8 w-px bg-[#2563eb] mx-2"></span>
-            <span className="font-bold text-2xl md:text-3xl lg:text-4xl text-blue-600">Finance</span>
-            <span className={`font-bold text-2xl md:text-3xl lg:text-4xl text-blue-600 ${styles["cashflow-margin"]}`}>Cashflow</span>
+            <span className={`font-bold text-2xl md:text-3xl lg:text-4xl text-blue-600 ${styles["cashflow-margin"]}`}>Cashflow Platform</span>
           </div>
 
-          <div className="mt-12 space-y-6 text-xl text-gray-600 font-light">
-            <p>
-              Future Finance is a fintech and funding platform enabling companies to offer{" "}
-              <span className="bg-[#2563eb] text-white rounded-full px-3 py-1 font-normal">early payment</span> programs
-              for SMEs in their supply chain.
-            </p>
-            <p>Our platform helps businesses make a greater impact on SMEs by enabling faster payments to suppliers.</p>
-            <p>
-              Through our platform, suppliers can receive immediate payments for approved invoices,{" "}
-              <span className="underline decoration-[#2563eb] decoration-2 underline-offset-4">
-                improving their cash flow
-              </span>{" "}
-              and fostering sustainable growth.
-            </p>
-          </div>
-
-          <div className="mt-12">
-            <Link href="/login" passHref>
-              <Button size="lg" className="rounded-full px-8 py-6 text-lg font-normal bg-[#2563eb] hover:bg-[#1d4ed8]">
-                Get Started
+          <div className="mt-8 flex flex-col sm:flex-row gap-4 items-center justify-center">
+            <Link href="/login/admin" passHref>
+              <Button size="lg" className="rounded-full px-8 py-6 text-lg font-normal bg-[#2563eb] hover:bg-[#1d4ed8] min-w-[200px]">
+                Admin Login
+              </Button>
+            </Link>
+            <Link href="/login/ap" passHref>
+              <Button size="lg" className="rounded-full px-8 py-6 text-lg font-normal bg-[#2563eb] hover:bg-[#1d4ed8] min-w-[200px]">
+                AP Login
               </Button>
             </Link>
           </div>
         </main>
       </div>
-      <CompanyDescriptionSection />
-      <ProblemGridSection />
-      <SolutionSection />
-      <HowItWorksSection />
-      <EcosystemSection />
       <Footer />
-      <style>{`
-  @keyframes blink { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
-  .animate-blink-1 { animation: blink 1.5s infinite; }
-  .animate-blink-2 { animation: blink 1.5s 0.3s infinite; }
-`}</style>
     </div>
   )
 }
