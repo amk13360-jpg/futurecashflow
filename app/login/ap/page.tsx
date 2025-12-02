@@ -11,8 +11,8 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ArrowLeft } from "lucide-react"
-// Modern Logo Component (copied from /login/admin)
-const LogoIcon = ({ className = "w-10 h-10 text-blue-600" }) => (
+// Modern Logo Component
+const LogoIcon = ({ className = "w-10 h-10 text-primary" }) => (
   <div className="relative">
     <svg aria-hidden="true" className={className} fill="currentColor" viewBox="0 0 80 80">
       <path d="M40 8L16 32H26L40 18L54 32H64L40 8Z" />
@@ -114,10 +114,8 @@ export default function APLoginPage() {
         <Card className="bg-card border-0 shadow-none text-foreground">
           <CardHeader className="text-center">
             <div className="flex items-center justify-center mb-4 gap-3">
-              <LogoIcon className="w-10 h-10 text-blue-600" />
-              <span className="font-bold text-blue-600">Future</span>
-              <div className="w-px h-8 bg-blue-600/70" />
-              <span className="font-bold whitespace-nowrap text-blue-600">Finance Cashflow</span>
+              <LogoIcon className="w-10 h-10 text-primary" />
+              <span className="font-bold text-primary text-xl">Future Cashflow</span>
             </div>
             <CardTitle className="text-2xl font-bold">Accounts Payable Login</CardTitle>
             <CardDescription>
@@ -156,7 +154,7 @@ export default function APLoginPage() {
                     disabled={loading}
                   />
                 </div>
-                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-colors disabled:bg-blue-300 disabled:text-white/70" disabled={loading}>
+                <Button type="submit" className="w-full font-semibold py-3 rounded-xl" disabled={loading}>
                   {loading ? "Sending OTP..." : "Continue"}
                 </Button>
                 
@@ -184,7 +182,7 @@ export default function APLoginPage() {
                     disabled={loading}
                   />
                 </div>
-                <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition-colors disabled:bg-blue-300 disabled:text-white/70" disabled={loading}>
+                <Button type="submit" className="w-full font-semibold py-3 rounded-xl" disabled={loading}>
                   {loading ? "Verifying..." : "Verify & Sign In"}
                 </Button>
                 <Button
