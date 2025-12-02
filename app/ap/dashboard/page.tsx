@@ -56,7 +56,7 @@ export default function APDashboardPage() {
         <div className="relative mb-10">
           <div className="relative bg-card shadow-xl p-8 border rounded-2xl">
             <div className="flex items-center gap-3 mb-4">
-              <div className="rounded-full w-1 h-12 bg-primary" />
+              <div className="bg-primary rounded-full w-1 h-12" />
               <h1 className="font-bold text-foreground text-4xl md:text-5xl">
                 Welcome back, <span className="text-primary">{session?.fullName || session?.username || "User"}</span>
               </h1>
@@ -75,7 +75,7 @@ export default function APDashboardPage() {
 
         {/* Stats Cards */}
         <div className="gap-6 grid md:grid-cols-3 mb-8">
-          <Card className="shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 bg-emerald-500/10 border-emerald-500/20">
+          <Card className="bg-emerald-500/10 shadow-xl hover:shadow-2xl border-emerald-500/20 hover:scale-[1.02] transition-all duration-300">
             <CardHeader>
               <div className="flex justify-between items-center">
                 <div>
@@ -86,7 +86,7 @@ export default function APDashboardPage() {
               </div>
             </CardHeader>
           </Card>
-          <Card className="shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 bg-amber-500/10 border-amber-500/20">
+          <Card className="bg-amber-500/10 shadow-xl hover:shadow-2xl border-amber-500/20 hover:scale-[1.02] transition-all duration-300">
             <CardHeader>
               <div className="flex justify-between items-center">
                 <div>
@@ -97,7 +97,7 @@ export default function APDashboardPage() {
               </div>
             </CardHeader>
           </Card>
-          <Card className="shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 bg-primary/10 border-primary/20">
+          <Card className="bg-primary/10 shadow-xl hover:shadow-2xl border-primary/20 hover:scale-[1.02] transition-all duration-300">
             <CardHeader>
               <div className="flex justify-between items-center">
                 <div>
@@ -114,7 +114,7 @@ export default function APDashboardPage() {
         <div className="gap-6 grid md:grid-cols-2 lg:grid-cols-4 mb-8">
           <Card className="bg-card/50 hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
             <CardHeader>
-              <div className="flex justify-center items-center mb-4 rounded-xl w-14 h-14 bg-primary/10">
+              <div className="flex justify-center items-center bg-primary/10 mb-4 rounded-xl w-14 h-14">
                 <Upload className="w-7 h-7 text-primary" />
               </div>
               <CardTitle className="text-foreground text-xl">Upload Invoices</CardTitle>
@@ -132,7 +132,7 @@ export default function APDashboardPage() {
           </Card>
           <Card className="bg-card/50 hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
             <CardHeader>
-              <div className="flex justify-center items-center mb-4 rounded-xl w-14 h-14 bg-primary/10">
+              <div className="flex justify-center items-center bg-primary/10 mb-4 rounded-xl w-14 h-14">
                 <Users className="w-7 h-7 text-primary" />
               </div>
               <CardTitle className="text-foreground text-xl">Upload Vendors</CardTitle>
@@ -148,7 +148,7 @@ export default function APDashboardPage() {
           </Card>
           <Card className="bg-card/50 hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
             <CardHeader>
-              <div className="flex justify-center items-center mb-4 rounded-xl w-14 h-14 bg-emerald-500/10">
+              <div className="flex justify-center items-center bg-emerald-500/10 mb-4 rounded-xl w-14 h-14">
                 <FileText className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
               </div>
               <CardTitle className="text-foreground text-xl">View Invoices</CardTitle>
@@ -164,7 +164,7 @@ export default function APDashboardPage() {
           </Card>
           <Card className="bg-card/50 hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
             <CardHeader>
-              <div className="flex justify-center items-center mb-4 rounded-xl w-14 h-14 bg-muted">
+              <div className="flex justify-center items-center bg-muted mb-4 rounded-xl w-14 h-14">
                 <BarChart3 className="w-7 h-7 text-muted-foreground" />
               </div>
               <CardTitle className="text-foreground text-xl">Reports</CardTitle>
