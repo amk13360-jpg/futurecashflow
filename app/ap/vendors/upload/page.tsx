@@ -65,33 +65,33 @@ export default function VendorUploadPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="bg-muted/30 min-h-screen">
       <DashboardHeader />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="mx-auto px-4 py-8 container">
         <div className="mb-6">
           <Link
             href="/ap/dashboard"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
+            className="inline-flex items-center mb-4 text-muted-foreground hover:text-foreground text-sm"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="mr-2 w-4 h-4" />
             Back to dashboard
           </Link>
-          <h2 className="text-3xl font-bold">Upload Vendor Data</h2>
+          <h2 className="font-bold text-3xl">Upload Vendor Data</h2>
           <p className="text-muted-foreground">Upload supplier/vendor master data from your ERP system</p>
         </div>
 
         {!results ? (
-          <div className="grid lg:grid-cols-2 gap-6">
+          <div className="gap-6 grid lg:grid-cols-2">
             <Card>
               <CardHeader>
-                <Users className="h-8 w-8 text-primary mb-2" />
+                <Users className="mb-2 w-8 h-8 text-primary" />
                 <CardTitle>Vendor Data CSV Upload</CardTitle>
                 <CardDescription>Upload your vendor master data export</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <Alert>
-                  <FileText className="h-4 w-4" />
+                  <FileText className="w-4 h-4" />
                   <AlertDescription>
                     <strong>Required CSV columns:</strong>
                     <br />
@@ -102,7 +102,7 @@ export default function VendorUploadPage() {
                 </Alert>
 
                 <Alert>
-                  <AlertCircle className="h-4 w-4" />
+                  <AlertCircle className="w-4 h-4" />
                   <AlertDescription>
                     <strong>Note:</strong> New suppliers will automatically receive invitation emails to complete their
                     onboarding. Existing suppliers will be updated with the new information.
@@ -118,7 +118,7 @@ export default function VendorUploadPage() {
                     onChange={handleFileUpload}
                     placeholder="Select CSV file"
                     title="Upload CSV file"
-                    className="block w-full text-sm text-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+                    className="block hover:file:bg-primary/90 file:bg-primary file:mr-4 file:px-4 file:py-2 file:border-0 file:rounded-md w-full file:font-medium text-foreground file:text-primary-foreground text-sm file:text-sm"
                   />
                 </div>
 
@@ -158,10 +158,10 @@ export default function VendorUploadPage() {
               </CardHeader>
               <CardContent>
                 {preview.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                  <div className="py-8 text-muted-foreground text-center">
+                    <FileText className="opacity-50 mx-auto mb-3 w-12 h-12" />
                     <p>No data to preview</p>
-                    <p className="text-sm mt-1">Click "Preview" to parse your CSV</p>
+                    <p className="mt-1 text-sm">Click "Preview" to parse your CSV</p>
                   </div>
                 ) : (
                   <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -169,8 +169,8 @@ export default function VendorUploadPage() {
                       <div key={idx} className="p-3 border rounded-lg text-sm">
                         <div className="font-medium">{row["Vendor Name"]}</div>
                         <div className="text-muted-foreground text-xs">Vendor #: {row["Vendor Number"]}</div>
-                        <div className="text-xs mt-1">{row["Contact Email"]}</div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="mt-1 text-xs">{row["Contact Email"]}</div>
+                        <div className="text-muted-foreground text-xs">
                           {row["Bank Name"]} - {row["Bank Account Number"]}
                         </div>
                       </div>
@@ -189,7 +189,7 @@ export default function VendorUploadPage() {
             <CardContent className="space-y-6">
               {results.uploaded.length > 0 && (
                 <Alert>
-                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <CheckCircle className="w-4 h-4 text-green-500" />
                   <AlertDescription>
                     <strong>Successfully uploaded {results.uploaded.length} vendors</strong>
                     {results.newSuppliers && results.newSuppliers.length > 0 && (
@@ -209,7 +209,7 @@ export default function VendorUploadPage() {
 
               {results.errors.length > 0 && (
                 <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
+                  <AlertCircle className="w-4 h-4" />
                   <AlertDescription>
                     <strong>{results.errors.length} errors occurred</strong>
                     <div className="mt-2 text-sm">
