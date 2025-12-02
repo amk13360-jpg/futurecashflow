@@ -131,7 +131,7 @@ export default function VendorUploadPage() {
                   >
                     Preview
                   </Button>
-                  <Button onClick={handleUpload} disabled={!csvText || loading} className="flex-1">
+                  <Button onClick={handleUpload} variant="outline" disabled={!csvText || loading} className="flex-1">
                     {loading ? "Uploading..." : "Upload Vendor Data"}
                   </Button>
                 </div>

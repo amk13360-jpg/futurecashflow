@@ -124,7 +124,7 @@ export default function APDashboardPage() {
             </CardHeader>
             <CardContent>
               <Link href="/ap/invoices/upload">
-                <Button className="w-full font-semibold" size="lg">
+                <Button variant="outline" className="w-full font-semibold" size="lg">
                   Upload AP Data
                 </Button>
               </Link>
@@ -195,7 +195,7 @@ export default function APDashboardPage() {
               <p className="mb-8 text-muted-foreground">Upload invoices or vendors to get started</p>
               <div className="flex justify-center gap-4">
                 <Link href="/ap/invoices/upload">
-                  <Button className="px-8 font-semibold">
+                  <Button variant="outline" className="px-8 font-semibold">
                     Upload Invoices
                   </Button>
                 </Link>
