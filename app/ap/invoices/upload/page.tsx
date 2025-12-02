@@ -118,7 +118,7 @@ export default function InvoiceUploadPage() {
                     onChange={handleFileUpload}
                     placeholder="Select a CSV file to upload"
                     title="Upload CSV File"
-                    className="block file:bg-transparent file:border file:border-input hover:file:bg-accent file:mr-4 file:px-4 file:py-2 file:rounded-md w-full file:font-medium text-foreground file:text-foreground text-sm file:text-sm file:cursor-pointer"
+                    className="block hover:file:bg-accent file:bg-transparent file:mr-4 file:px-4 file:py-2 file:border file:border-input file:rounded-md w-full file:font-medium text-foreground file:text-foreground text-sm file:text-sm file:cursor-pointer"
                   />
                 </div>
 
