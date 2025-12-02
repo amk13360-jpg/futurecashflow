@@ -32,10 +32,10 @@ export default function HomePage() {
       <Header />
       <div className="flex flex-col justify-center items-center h-full">
         <main className="flex flex-col justify-center items-center mx-auto p-4 max-w-4xl text-center">
-          <div className="flex justify-center items-center gap-4 mb-12">
-            {/* Static chevrons (no animation) */}
+          {/* Hero Logo */}
+          <div className="flex justify-center items-center gap-4 mb-6">
             <span className="flex flex-col">
-              <svg width="56" height="56" viewBox="0 0 40 40" fill="none">
+              <svg width="64" height="64" viewBox="0 0 40 40" fill="none">
                 <path d="M20 8L12 16H16L20 12L24 16H28L20 8Z" className="fill-primary" />
                 <path d="M20 18L12 26H16L20 22L24 26H28L20 18Z" className="fill-primary" />
               </svg>
@@ -43,19 +43,39 @@ export default function HomePage() {
             <span className="font-bold text-primary text-3xl md:text-4xl lg:text-5xl">Future Cashflow</span>
           </div>
 
+          {/* Tagline */}
+          <p className="text-muted-foreground text-lg mb-10 max-w-md">
+            Supply Chain Finance for the Mining Industry
+          </p>
+
+          {/* CTA Buttons */}
           <div className="flex sm:flex-row flex-col justify-center items-center gap-4">
             <Link href="/login/admin" passHref>
-              <Button size="lg" className="px-8 py-6 rounded-full min-w-[200px] font-semibold text-lg">
+              <Button 
+                size="lg" 
+                className="px-8 py-6 rounded-full min-w-[200px] font-semibold text-lg transition-all duration-200 hover:scale-105 hover:shadow-lg"
+              >
                 Admin Login
               </Button>
             </Link>
             <Link href="/login/ap" passHref>
-              <Button size="lg" variant="outline" className="px-8 py-6 rounded-full min-w-[200px] font-semibold text-lg">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="px-8 py-6 rounded-full min-w-[200px] font-semibold text-lg transition-all duration-200 hover:scale-105 hover:shadow-lg"
+              >
                 AP Login
               </Button>
             </Link>
           </div>
         </main>
+
+        {/* Footer - subtle at bottom */}
+        <footer className="absolute bottom-4 left-0 right-0 text-center">
+          <p className="text-muted-foreground text-xs">
+            © 2025 Future Cashflow (Pty) Ltd · Registered Credit Provider NCRCP18174
+          </p>
+        </footer>
       </div>
     </div>
   )
