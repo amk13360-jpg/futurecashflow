@@ -24,7 +24,7 @@ export default async function AdminDashboardPage() {
 
   return (
     <div className="bg-muted/30 min-h-screen">
-      <DashboardHeader userName={session?.username} />
+      <DashboardHeader userName={session?.fullName || session?.username} />
 
       <main className="mx-auto px-4 py-8 container">
         {/* Metrics Overview */}

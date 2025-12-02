@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { query } from "@/lib/db"
 import { createSession, setSessionCookie } from "@/lib/auth/session"
 import { createAuditLog } from "@/lib/auth/audit"
-import type { User } from "@/lib/types/database"
+import type { User, Buyer } from "@/lib/types/database"
 
 interface OTPCode {
   otp_id: number
@@ -58,16 +58,27 @@ export async function POST(request: NextRequest) {
 
     const user = users[0]
 
+    // Get buyer name if user has a buyer_id
+    let buyerName: string | undefined
+    if (user.buyer_id) {
+      const buyers = await query<Buyer[]>("SELECT name FROM buyers WHERE buyer_id = ?", [user.buyer_id])
+      if (buyers.length > 0) {
+        buyerName = buyers[0].name
+      }
+    }
+
     // Reset failed login attempts and update last login
     await query("UPDATE users SET failed_login_attempts = 0, last_login_at = NOW() WHERE user_id = ?", [user.user_id])
 
-    // Create session
+    // Create session with full_name and buyer_name
     const token = await createSession({
       userId: user.user_id,
       username: user.username,
       email: user.email,
       role: user.role,
       buyerId: user.buyer_id,
+      fullName: user.full_name,
+      buyerName: buyerName,
     })
 
     await setSessionCookie(token)

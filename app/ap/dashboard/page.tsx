@@ -50,7 +50,7 @@ export default function APDashboardPage() {
 
   return (
     <div className="bg-background min-h-screen text-foreground transition-colors duration-300">
-      <DashboardHeader userName={session?.username || "User"} />
+      <DashboardHeader userName={session?.fullName || session?.username || "User"} />
       <main className="mx-auto px-4 py-8 max-w-7xl container">
         {/* Welcome Section */}
         <div className="relative mb-10">
@@ -58,7 +58,7 @@ export default function APDashboardPage() {
             <div className="flex items-center gap-3 mb-4">
               <div className="rounded-full w-1 h-12 bg-primary" />
               <h1 className="font-bold text-foreground text-4xl md:text-5xl">
-                Welcome back, <span className="text-primary">{session?.username || "User"}</span>
+                Welcome back, <span className="text-primary">{session?.fullName || session?.username || "User"}</span>
               </h1>
             </div>
             <p className="ml-7 text-muted-foreground text-lg md:text-xl">

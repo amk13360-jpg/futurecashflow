@@ -9,6 +9,8 @@ export interface SessionData {
   email: string
   role: "admin" | "accounts_payable" | "auditor"
   buyerId?: number
+  fullName?: string
+  buyerName?: string
 }
 
 export interface SupplierSessionData {

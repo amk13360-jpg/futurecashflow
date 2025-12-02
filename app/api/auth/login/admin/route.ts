@@ -70,6 +70,7 @@ export async function POST(request: NextRequest) {
       email: user.email,
       role: user.role,
       buyerId: user.buyer_id,
+      fullName: user.full_name,
     })
 
     await setSessionCookie(token)
