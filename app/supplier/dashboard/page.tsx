@@ -6,7 +6,9 @@ import { use } from "react"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { FileText, DollarSign, User, Clock } from "lucide-react"
+import { FileText, DollarSign, User, Clock, CheckCircle2, AlertTriangle } from "lucide-react"
+import { EmptyState } from "@/components/ui/empty-state"
+import { MetricCard } from "@/components/admin/metric-card"
 
 export default function SupplierDashboardPage() {
   const profilePromise = getSupplierProfile();
@@ -21,59 +23,64 @@ export default function SupplierDashboardPage() {
   const acceptedOffers = offers.filter((o: any) => o.status === "accepted");
   const needsCessionAgreement = !cessionAgreement || (cessionAgreement.status !== "signed" && cessionAgreement.status !== "approved");
 
+  // Calculate total value of accepted offers
+  const totalAcceptedValue = acceptedOffers.reduce((sum: number, o: any) => sum + (o.net_payment_amount || 0), 0);
+
   return (
     <div className="min-h-screen bg-muted/30">
       <SupplierHeader supplierName={profile?.name} />
       <main className="container mx-auto px-4 py-8">
+        {/* Welcome Section */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">Welcome, {profile?.name}</h2>
+          <h2 className="text-3xl font-bold mb-2">Welcome back, <span className="text-primary">{profile?.name}</span></h2>
           <p className="text-muted-foreground">Review your early payment offers and manage your account</p>
         </div>
 
         {needsCessionAgreement && (
           <div className="mb-8">
-            <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
-              <strong>Action Required:</strong> You must sign or upload your cession agreement before accessing offers or payments.<br />
-              <Link href="/supplier/cession-agreement">
-                <Button className="mt-2">Sign/Upload Cession Agreement</Button>
-              </Link>
-            </div>
+            <Card className="border-amber-500/50 bg-amber-500/10">
+              <CardContent className="flex items-center gap-4 py-4">
+                <div className="p-2 rounded-lg bg-amber-500/20">
+                  <AlertTriangle className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-foreground">Action Required</p>
+                  <p className="text-sm text-muted-foreground">You must sign or upload your cession agreement before accessing offers or payments.</p>
+                </div>
+                <Link href="/supplier/cession-agreement">
+                  <Button>Sign Agreement</Button>
+                </Link>
+              </CardContent>
+            </Card>
           </div>
         )}
 
-        {/* Quick Stats */}
+        {/* Quick Stats - Using MetricCard */}
         <div className="grid md:grid-cols-4 gap-4 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Pending Offers</CardTitle>
-              <Clock className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{pendingOffers.length}</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Accepted Offers</CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{acceptedOffers.length}</div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Status</CardTitle>
-              <User className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <Badge variant={profile?.onboarding_status === "approved" ? "default" : "secondary"}>
-                {profile?.onboarding_status}
-              </Badge>
-            </CardContent>
-          </Card>
+          <MetricCard
+            title="Pending Offers"
+            value={pendingOffers.length}
+            icon={Clock}
+            variant="warning"
+          />
+          <MetricCard
+            title="Accepted Offers"
+            value={acceptedOffers.length}
+            icon={CheckCircle2}
+            variant="success"
+          />
+          <MetricCard
+            title="Total Received"
+            value={`R ${totalAcceptedValue.toLocaleString()}`}
+            icon={DollarSign}
+            variant="primary"
+          />
+          <MetricCard
+            title="Status"
+            value={profile?.onboarding_status || "pending"}
+            icon={User}
+            variant={profile?.onboarding_status === "approved" ? "success" : "default"}
+          />
         </div>
 
         {/* Main Content */}
@@ -93,10 +100,11 @@ export default function SupplierDashboardPage() {
               </CardHeader>
               <CardContent>
                 {pendingOffers.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                    <p>No pending offers at this time</p>
-                  </div>
+                  <EmptyState
+                    icon={FileText}
+                    title="No pending offers"
+                    description="New early payment offers will appear here when available"
+                  />
                 ) : (
                   <div className="space-y-4">
                     {pendingOffers.map((offer: any) => (
@@ -158,9 +166,11 @@ export default function SupplierDashboardPage() {
               </CardHeader>
               <CardContent>
                 {offers.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <p>No offer history</p>
-                  </div>
+                  <EmptyState
+                    icon={FileText}
+                    title="No offer history"
+                    description="Your offer history will appear here"
+                  />
                 ) : (
                   <div className="space-y-3">
                     {offers.map((offer: any) => (
@@ -202,10 +212,11 @@ export default function SupplierDashboardPage() {
                 <CardDescription>Track your disbursements</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-12 text-muted-foreground">
-                  <DollarSign className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                  <p>Payment history will appear here</p>
-                </div>
+                <EmptyState
+                  icon={DollarSign}
+                  title="No payments yet"
+                  description="Payment history will appear here after you accept offers"
+                />
               </CardContent>
             </Card>
           </TabsContent>

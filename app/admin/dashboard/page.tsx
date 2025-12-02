@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { EmptyState } from "@/components/ui/empty-state"
 import { FileText, Users, DollarSign, CheckCircle, Clock } from "lucide-react"
 import Link from "next/link"
 import { getSession } from "@/lib/auth/session"
@@ -33,24 +34,28 @@ export default async function AdminDashboardPage() {
             value={metrics.pendingDocuments}
             icon={FileText}
             description="Cession agreements awaiting review"
+            variant="warning"
           />
           <MetricCard
             title="Total Applications"
             value={metrics.totalApplications}
             icon={Clock}
             description="Supplier onboarding in progress"
+            variant="info"
           />
           <MetricCard
             title="Registered Suppliers"
             value={metrics.registeredSuppliers}
             icon={Users}
             description="Approved and active suppliers"
+            variant="success"
           />
           <MetricCard
             title="48h Payments Issued"
             value={`R ${metrics.paymentsIssued48h.toLocaleString()}`}
             icon={DollarSign}
             description="Last 48 hours"
+            variant="primary"
           />
         </div>
 
@@ -73,10 +78,12 @@ export default async function AdminDashboardPage() {
               </CardHeader>
               <CardContent>
                 {pendingCessions.length === 0 ? (
-                  <div className="py-8 text-muted-foreground text-center">
-                    <CheckCircle className="mx-auto mb-3 w-12 h-12 text-green-500" />
-                    <p>No pending documents to review</p>
-                  </div>
+                  <EmptyState
+                    icon={CheckCircle}
+                    title="All caught up!"
+                    description="No pending documents to review"
+                    variant="success"
+                  />
                 ) : (
                   <div className="space-y-4">
                     {pendingCessions.map((cession: any) => (
@@ -120,10 +127,12 @@ export default async function AdminDashboardPage() {
               </CardHeader>
               <CardContent>
                 {pendingApplications.length === 0 ? (
-                  <div className="py-8 text-muted-foreground text-center">
-                    <CheckCircle className="mx-auto mb-3 w-12 h-12 text-green-500" />
-                    <p>No pending applications</p>
-                  </div>
+                  <EmptyState
+                    icon={CheckCircle}
+                    title="All caught up!"
+                    description="No pending applications to review"
+                    variant="success"
+                  />
                 ) : (
                   <div className="space-y-4">
                     {pendingApplications.map((app: any) => (

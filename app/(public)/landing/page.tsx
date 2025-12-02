@@ -579,29 +579,32 @@ function WordSpinner({ words }: { words: string[] }) {
 
 export default function LandingPage() {
   return (
-    <div className="bg-[#f7f7f9] text-gray-700">
+    <div className="bg-background text-foreground">
       <div className="flex flex-col items-center justify-center min-h-screen">
         <main className="flex flex-col items-center justify-center text-center p-4 max-w-4xl mx-auto">
-          <div className="flex items-center justify-center gap-4 mb-12">
+          <div className="flex items-center justify-center gap-3 mb-12">
             {/* Static chevrons (no animation) */}
-            <span className="flex flex-col mr-2">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                <path d="M16 8L10 14H13L16 11L19 14H22L16 8Z" fill="#2563eb" />
-                <path d="M16 16L10 22H13L16 19L19 22H22L16 16Z" fill="#2563eb" />
+            <span className="flex flex-col">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                <path d="M20 8L12 16H16L20 12L24 16H28L20 8Z" className="fill-primary" />
+                <path d="M20 18L12 26H16L20 22L24 26H28L20 18Z" className="fill-primary" />
               </svg>
             </span>
-            <span className="font-bold text-2xl md:text-3xl lg:text-4xl text-[#181e29]">Future</span>
-            <span className={`font-bold text-2xl md:text-3xl lg:text-4xl text-blue-600 ${styles["cashflow-margin"]}`}>Cashflow Platform</span>
+            <span className="font-bold text-2xl md:text-3xl lg:text-4xl text-primary">Future Cashflow</span>
           </div>
 
-          <div className="mt-8 flex flex-col sm:flex-row gap-4 items-center justify-center">
+          <p className="text-muted-foreground text-lg mb-8 max-w-md">
+            Supply Chain Finance Platform for Mining Industry
+          </p>
+
+          <div className="mt-4 flex flex-col sm:flex-row gap-4 items-center justify-center">
             <Link href="/login/admin" passHref>
-              <Button size="lg" className="rounded-full px-8 py-6 text-lg font-normal bg-[#2563eb] hover:bg-[#1d4ed8] min-w-[200px]">
+              <Button size="lg" className="rounded-full px-8 py-6 text-lg font-semibold min-w-[200px]">
                 Admin Login
               </Button>
             </Link>
             <Link href="/login/ap" passHref>
-              <Button size="lg" className="rounded-full px-8 py-6 text-lg font-normal bg-[#2563eb] hover:bg-[#1d4ed8] min-w-[200px]">
+              <Button size="lg" variant="outline" className="rounded-full px-8 py-6 text-lg font-semibold min-w-[200px]">
                 AP Login
               </Button>
             </Link>

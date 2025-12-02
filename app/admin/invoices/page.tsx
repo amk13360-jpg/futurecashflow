@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
+import { SkeletonTable } from "@/components/ui/skeleton"
+import { EmptyState } from "@/components/ui/empty-state"
 import { getAllInvoices, generateOffers } from "@/lib/actions/invoices"
 import { FileText, Send, ArrowLeft } from "lucide-react"
 import Link from "next/link"
@@ -90,12 +92,17 @@ export default function AdminInvoicesPage() {
           </CardHeader>
           <CardContent>
             {loading ? (
-              <div className="text-center py-12 text-muted-foreground">Loading invoices...</div>
+              <SkeletonTable rows={5} />
             ) : invoices.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                <p>No invoices in the system</p>
-              </div>
+              <EmptyState
+                icon={FileText}
+                title="No invoices in the system"
+                description="Upload AP data to see invoices here"
+              >
+                <Link href="/ap/invoices/upload">
+                  <Button>Upload Invoices</Button>
+                </Link>
+              </EmptyState>
             ) : (
               <div className="space-y-3">
                 {invoices.map((invoice: any) => (
