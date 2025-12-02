@@ -118,7 +118,7 @@ export default function InvoiceUploadPage() {
                     onChange={handleFileUpload}
                     placeholder="Select a CSV file to upload"
                     title="Upload CSV File"
-                    className="block hover:file:bg-primary/90 file:bg-primary file:mr-4 file:px-4 file:py-2 file:border-0 file:rounded-md w-full file:font-medium text-foreground file:text-primary-foreground text-sm file:text-sm"
+                    className="block file:bg-transparent file:border file:border-input hover:file:bg-accent file:mr-4 file:px-4 file:py-2 file:rounded-md w-full file:font-medium text-foreground file:text-foreground text-sm file:text-sm file:cursor-pointer"
                   />
                 </div>
 
@@ -144,7 +144,7 @@ export default function InvoiceUploadPage() {
                   >
                     Preview
                   </Button>
-                  <Button onClick={handleUpload} disabled={!csvText || loading} className="flex-1">
+                  <Button onClick={handleUpload} variant="outline" disabled={!csvText || loading} className="flex-1">
                     {loading ? "Uploading..." : "Upload AP Data"}
                   </Button>
                 </div>

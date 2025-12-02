@@ -115,6 +115,22 @@ export default function APDashboardPage() {
           <Card className="bg-card/50 hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
             <CardHeader>
               <div className="flex justify-center items-center bg-primary/10 mb-4 rounded-xl w-14 h-14">
+                <Users className="w-7 h-7 text-primary" />
+              </div>
+              <CardTitle className="text-foreground text-xl">Upload Vendors</CardTitle>
+              <CardDescription className="text-muted-foreground">Upload vendor master data from your ERP</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/ap/vendors/upload">
+                <Button variant="outline" className="w-full font-semibold" size="lg">
+                  Upload Vendors
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+          <Card className="bg-card/50 hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
+            <CardHeader>
+              <div className="flex justify-center items-center bg-primary/10 mb-4 rounded-xl w-14 h-14">
                 <Upload className="w-7 h-7 text-primary" />
               </div>
               <CardTitle className="text-foreground text-xl">Upload Invoices</CardTitle>
@@ -126,22 +142,6 @@ export default function APDashboardPage() {
               <Link href="/ap/invoices/upload">
                 <Button variant="outline" className="w-full font-semibold" size="lg">
                   Upload AP Data
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-          <Card className="bg-card/50 hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
-            <CardHeader>
-              <div className="flex justify-center items-center bg-primary/10 mb-4 rounded-xl w-14 h-14">
-                <Users className="w-7 h-7 text-primary" />
-              </div>
-              <CardTitle className="text-foreground text-xl">Upload Vendors</CardTitle>
-              <CardDescription className="text-muted-foreground">Upload vendor master data from your ERP</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/ap/vendors/upload">
-                <Button variant="outline" className="w-full font-semibold" size="lg">
-                  Upload Vendors
                 </Button>
               </Link>
             </CardContent>
