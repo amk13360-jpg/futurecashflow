@@ -4,7 +4,7 @@ function Skeleton({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
       data-slot="skeleton"
-      className={cn('bg-muted animate-pulse rounded-md', className)}
+      className={cn('bg-muted rounded-md animate-pulse', className)}
       {...props}
     />
   )
@@ -12,13 +12,13 @@ function Skeleton({ className, ...props }: React.ComponentProps<'div'>) {
 
 function SkeletonCard() {
   return (
-    <div className="rounded-lg border bg-card p-6">
-      <div className="flex items-center justify-between">
+    <div className="bg-card p-6 border rounded-lg">
+      <div className="flex justify-between items-center">
         <div className="space-y-2">
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-8 w-16" />
+          <Skeleton className="w-24 h-4" />
+          <Skeleton className="w-16 h-8" />
         </div>
-        <Skeleton className="h-12 w-12 rounded-full" />
+        <Skeleton className="rounded-full w-12 h-12" />
       </div>
     </div>
   )
@@ -26,13 +26,13 @@ function SkeletonCard() {
 
 function SkeletonMetricCard() {
   return (
-    <div className="rounded-lg border bg-card p-6 shadow-xl">
-      <div className="flex items-center justify-between">
+    <div className="bg-card shadow-xl p-6 border rounded-lg">
+      <div className="flex justify-between items-center">
         <div className="space-y-3">
-          <Skeleton className="h-4 w-28" />
-          <Skeleton className="h-10 w-20" />
+          <Skeleton className="w-28 h-4" />
+          <Skeleton className="w-20 h-10" />
         </div>
-        <Skeleton className="h-12 w-12 rounded-lg" />
+        <Skeleton className="rounded-lg w-12 h-12" />
       </div>
     </div>
   )
@@ -41,9 +41,9 @@ function SkeletonMetricCard() {
 function SkeletonTable({ rows = 5 }: { rows?: number }) {
   return (
     <div className="space-y-3">
-      <Skeleton className="h-10 w-full" />
+      <Skeleton className="w-full h-10" />
       {Array.from({ length: rows }).map((_, i) => (
-        <Skeleton key={i} className="h-16 w-full" />
+        <Skeleton key={i} className="w-full h-16" />
       ))}
     </div>
   )

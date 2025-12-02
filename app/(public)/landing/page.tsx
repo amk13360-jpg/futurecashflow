@@ -18,14 +18,14 @@ export const LogoIcon = ({ className = "w-12 h-12" }) => (
 // Footer
 const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-gray-300 py-16">
-      <div className="container mx-auto px-4">
+    <footer className="bg-gray-900 py-16 text-gray-300">
+      <div className="mx-auto px-4 container">
         <div className="text-center">
-          <div className="flex items-center justify-center gap-3 mb-6">
+          <div className="flex justify-center items-center gap-3 mb-6">
             <LogoIcon className="w-8 h-8 text-primary" />
             <span className="font-bold text-white text-xl">Future Cashflow</span>
           </div>
-          <p className="text-base mb-6">Future Cashflow (Pty) Ltd is a registered Credit Provider NCRCP18174</p>
+          <p className="mb-6 text-base">Future Cashflow (Pty) Ltd is a registered Credit Provider NCRCP18174</p>
           <div className="text-sm">&copy; 2025 Future Cashflow. All Rights Reserved.</div>
         </div>
       </div>
@@ -36,9 +36,9 @@ const Footer = () => {
 export default function LandingPage() {
   return (
     <div className="bg-background text-foreground">
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <main className="flex flex-col items-center justify-center text-center p-4 max-w-4xl mx-auto">
-          <div className="flex items-center justify-center gap-4 mb-12">
+      <div className="flex flex-col justify-center items-center min-h-screen">
+        <main className="flex flex-col justify-center items-center mx-auto p-4 max-w-4xl text-center">
+          <div className="flex justify-center items-center gap-4 mb-12">
             {/* Static chevrons (no animation) */}
             <span className="flex flex-col">
               <svg width="56" height="56" viewBox="0 0 40 40" fill="none">
@@ -46,17 +46,17 @@ export default function LandingPage() {
                 <path d="M20 18L12 26H16L20 22L24 26H28L20 18Z" className="fill-primary" />
               </svg>
             </span>
-            <span className="font-bold text-3xl md:text-4xl lg:text-5xl text-primary">Future Cashflow</span>
+            <span className="font-bold text-primary text-3xl md:text-4xl lg:text-5xl">Future Cashflow</span>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+          <div className="flex sm:flex-row flex-col justify-center items-center gap-4">
             <Link href="/login/admin" passHref>
-              <Button size="lg" className="rounded-full px-8 py-6 text-lg font-semibold min-w-[200px]">
+              <Button size="lg" className="px-8 py-6 rounded-full min-w-[200px] font-semibold text-lg">
                 Admin Login
               </Button>
             </Link>
             <Link href="/login/ap" passHref>
-              <Button size="lg" variant="outline" className="rounded-full px-8 py-6 text-lg font-semibold min-w-[200px]">
+              <Button size="lg" variant="outline" className="px-8 py-6 rounded-full min-w-[200px] font-semibold text-lg">
                 AP Login
               </Button>
             </Link>

@@ -19,24 +19,24 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
   }
 
   return (
-    <header className="border-b bg-card">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
+    <header className="bg-card border-b">
+      <div className="mx-auto px-4 py-4 container">
+        <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
             <Logo size="md" />
-            <span className="text-sm text-muted-foreground ml-2">Admin Dashboard</span>
+            <span className="ml-2 text-muted-foreground text-sm">Admin Dashboard</span>
           </div>
 
           <div className="flex items-center gap-4">
             <ThemeToggle />
             {userName && (
               <div className="text-right">
-                <p className="text-sm font-medium text-foreground">{userName}</p>
-                <p className="text-xs text-muted-foreground">Administrator</p>
+                <p className="font-medium text-foreground text-sm">{userName}</p>
+                <p className="text-muted-foreground text-xs">Administrator</p>
               </div>
             )}
             <Button variant="outline" size="sm" onClick={handleLogout}>
-              <LogOut className="h-4 w-4 mr-2" />
+              <LogOut className="mr-2 w-4 h-4" />
               Logout
             </Button>
           </div>

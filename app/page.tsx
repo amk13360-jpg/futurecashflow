@@ -30,17 +30,21 @@ export default function HomePage() {
   return (
     <div className="bg-background h-screen overflow-hidden text-foreground">
       <Header />
-      <div className="flex flex-col justify-center items-center h-full">
+      <div className="flex flex-col justify-center items-center h-full relative">
         <main className="flex flex-col justify-center items-center mx-auto p-4 max-w-4xl text-center">
           {/* Hero Logo */}
           <div className="flex justify-center items-center gap-4 mb-6">
+            {/* Chevrons */}
             <span className="flex flex-col">
               <svg width="64" height="64" viewBox="0 0 40 40" fill="none">
-                <path d="M20 8L12 16H16L20 12L24 16H28L20 8Z" className="fill-primary" />
-                <path d="M20 18L12 26H16L20 22L24 26H28L20 18Z" className="fill-primary" />
+                <path d="M20 8L12 16H16L20 12L24 16H28L20 8Z" className="fill-blue-600" />
+                <path d="M20 18L12 26H16L20 22L24 26H28L20 18Z" className="fill-blue-600" />
               </svg>
             </span>
-            <span className="font-bold text-primary text-3xl md:text-4xl lg:text-5xl">Future Cashflow</span>
+            {/* Brand Name with Divider */}
+            <span className="font-bold text-blue-600 text-3xl md:text-4xl lg:text-5xl">Future</span>
+            <div className="w-px h-10 md:h-12 bg-blue-600"></div>
+            <span className="font-bold text-blue-600 text-3xl md:text-4xl lg:text-5xl">Cashflow</span>
           </div>
 
           {/* Tagline */}
@@ -53,6 +57,7 @@ export default function HomePage() {
             <Link href="/login/admin" passHref>
               <Button 
                 size="lg" 
+                variant="outline"
                 className="px-8 py-6 rounded-full min-w-[200px] font-semibold text-lg transition-all duration-200 hover:scale-105 hover:shadow-lg"
               >
                 Admin Login

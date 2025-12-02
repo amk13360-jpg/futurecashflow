@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { ArrowLeft, LogIn } from "lucide-react"
+import { ArrowLeft } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Logo } from "@/components/ui/logo"
 
@@ -68,11 +68,6 @@ export default function AdminLoginPage() {
           <CardHeader className="text-center">
             <div className="flex items-center justify-center mb-4">
               <Logo size="lg" />
-            </div>
-            <div className="mb-6">
-              <div className="p-4 rounded-full border border-border bg-muted inline-block">
-                <LogIn className="h-12 w-12 text-blue-600" />
-              </div>
             </div>
             <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
             <CardDescription>Sign in to access the admin dashboard</CardDescription>

@@ -66,33 +66,33 @@ export default function InvoiceUploadPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="bg-muted/30 min-h-screen">
       <DashboardHeader />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="mx-auto px-4 py-8 container">
         <div className="mb-6">
           <Link
             href="/ap/dashboard"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
+            className="inline-flex items-center mb-4 text-muted-foreground hover:text-foreground text-sm"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="mr-2 w-4 h-4" />
             Back to dashboard
           </Link>
-          <h2 className="text-3xl font-bold">Upload AP Data</h2>
+          <h2 className="font-bold text-3xl">Upload AP Data</h2>
           <p className="text-muted-foreground">Please upload your approved accounts payable data from your ERP system here</p>
         </div>
 
         {!results ? (
-          <div className="grid lg:grid-cols-2 gap-6">
+          <div className="gap-6 grid lg:grid-cols-2">
             <Card>
               <CardHeader>
-                <Upload className="h-8 w-8 text-primary mb-2" />
+                <Upload className="mb-2 w-8 h-8 text-primary" />
                 <CardTitle>AP Data CSV Upload</CardTitle>
                 <CardDescription>Upload your accounts payable data export</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <Alert>
-                  <FileText className="h-4 w-4" />
+                  <FileText className="w-4 h-4" />
                   <AlertDescription>
                     <strong>Required CSV columns:</strong>
                     <br />
@@ -103,7 +103,7 @@ export default function InvoiceUploadPage() {
                 </Alert>
 
                 <Alert>
-                  <AlertCircle className="h-4 w-4" />
+                  <AlertCircle className="w-4 h-4" />
                   <AlertDescription>
                     <strong>Note:</strong> Make sure vendors have been uploaded first. Invoices will be matched to existing suppliers by Vendor Number.
                   </AlertDescription>
@@ -118,7 +118,7 @@ export default function InvoiceUploadPage() {
                     onChange={handleFileUpload}
                     placeholder="Select a CSV file to upload"
                     title="Upload CSV File"
-                    className="block w-full text-sm text-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+                    className="block hover:file:bg-primary/90 file:bg-primary file:mr-4 file:px-4 file:py-2 file:border-0 file:rounded-md w-full file:font-medium text-foreground file:text-primary-foreground text-sm file:text-sm"
                   />
                 </div>
 
@@ -158,10 +158,10 @@ export default function InvoiceUploadPage() {
               </CardHeader>
               <CardContent>
                 {preview.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                  <div className="py-8 text-muted-foreground text-center">
+                    <FileText className="opacity-50 mx-auto mb-3 w-12 h-12" />
                     <p>No data to preview</p>
-                    <p className="text-sm mt-1">Click &quot;Preview&quot; to parse your CSV</p>
+                    <p className="mt-1 text-sm">Click &quot;Preview&quot; to parse your CSV</p>
                   </div>
                 ) : (
                   <div className="space-y-3 max-h-96 overflow-y-auto">
@@ -177,7 +177,7 @@ export default function InvoiceUploadPage() {
                           </span>
                           <span className="text-xs">Due: {row["Net Due Date"]}</span>
                         </div>
-                        <div className="text-xs text-muted-foreground mt-1">{row["Text"]}</div>
+                        <div className="mt-1 text-muted-foreground text-xs">{row["Text"]}</div>
                       </div>
                     ))}
                   </div>
@@ -194,7 +194,7 @@ export default function InvoiceUploadPage() {
             <CardContent className="space-y-6">
               {results.uploaded.length > 0 && (
                 <Alert>
-                  <CheckCircle className="h-4 w-4" />
+                  <CheckCircle className="w-4 h-4" />
                   <AlertDescription>
                     <strong>Successfully uploaded {results.uploaded.length} invoices</strong>
                     <div className="mt-2 text-sm">
@@ -209,7 +209,7 @@ export default function InvoiceUploadPage() {
 
               {results.errors.length > 0 && (
                 <Alert variant="destructive">
-                  <AlertCircle className="h-4 w-4" />
+                  <AlertCircle className="w-4 h-4" />
                   <AlertDescription>
                     <strong>{results.errors.length} errors occurred</strong>
                     <div className="mt-2 text-sm">

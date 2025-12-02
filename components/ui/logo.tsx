@@ -10,12 +10,12 @@ interface LogoIconProps {
  * Future Cashflow Logo Icon
  * Reusable SVG logo component for consistent branding
  */
-export function LogoIcon({ className = "h-10 w-10 text-primary" }: LogoIconProps) {
+export function LogoIcon({ className = "h-10 w-10 text-blue-600" }: LogoIconProps) {
   return (
     <div className="relative">
       <svg 
         aria-hidden="true" 
-        className={cn("h-10 w-10 text-primary", className)} 
+        className={cn("h-10 w-10 text-blue-600", className)} 
         fill="currentColor" 
         viewBox="0 0 80 80"
       >
@@ -34,10 +34,10 @@ interface LogoProps {
 }
 
 const sizeClasses = {
-  sm: { icon: "h-8 w-8", text: "text-lg" },
-  md: { icon: "h-10 w-10", text: "text-xl" },
-  lg: { icon: "h-12 w-12", text: "text-2xl" },
-  xl: { icon: "h-14 w-14", text: "text-3xl" },
+  sm: { icon: "h-8 w-8", text: "text-lg", divider: "h-5" },
+  md: { icon: "h-10 w-10", text: "text-xl", divider: "h-6" },
+  lg: { icon: "h-12 w-12", text: "text-2xl", divider: "h-8" },
+  xl: { icon: "h-14 w-14", text: "text-3xl", divider: "h-10" },
 }
 
 /**
@@ -54,11 +54,13 @@ export function Logo({
   
   return (
     <div className={cn("flex items-center gap-3", className)}>
-      <LogoIcon className={cn(sizes.icon, "text-primary", iconClassName)} />
+      <LogoIcon className={cn(sizes.icon, "text-blue-600", iconClassName)} />
       {showText && (
-        <span className={cn(sizes.text, "font-bold text-primary")}>
-          Future Cashflow
-        </span>
+        <>
+          <span className={cn(sizes.text, "font-bold text-blue-600")}>Future</span>
+          <div className={cn("w-px bg-blue-600", sizes.divider)}></div>
+          <span className={cn(sizes.text, "font-bold text-blue-600")}>Cashflow</span>
+        </>
       )}
     </div>
   )
