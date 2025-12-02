@@ -30,7 +30,7 @@ export default function HomePage() {
   return (
     <div className="bg-background h-screen overflow-hidden text-foreground">
       <Header />
-      <div className="flex flex-col justify-center items-center h-full relative">
+      <div className="relative flex flex-col justify-center items-center h-full">
         <main className="flex flex-col justify-center items-center mx-auto p-4 max-w-4xl text-center">
           {/* Hero Logo */}
           <div className="flex justify-center items-center gap-4 mb-6">
@@ -43,12 +43,12 @@ export default function HomePage() {
             </span>
             {/* Brand Name with Divider */}
             <span className="font-bold text-blue-600 text-3xl md:text-4xl lg:text-5xl">Future</span>
-            <div className="w-px h-10 md:h-12 bg-blue-600"></div>
+            <div className="bg-blue-600 w-px h-10 md:h-12"></div>
             <span className="font-bold text-blue-600 text-3xl md:text-4xl lg:text-5xl">Cashflow</span>
           </div>
 
           {/* Tagline */}
-          <p className="text-muted-foreground text-lg mb-10 max-w-md">
+          <p className="mb-10 max-w-md text-muted-foreground text-lg">
             Supply Chain Finance for the Mining Industry
           </p>
 
@@ -58,7 +58,7 @@ export default function HomePage() {
               <Button 
                 size="lg" 
                 variant="outline"
-                className="px-8 py-6 rounded-full min-w-[200px] font-semibold text-lg transition-all duration-200 hover:scale-105 hover:shadow-lg"
+                className="hover:shadow-lg px-8 py-6 rounded-full min-w-[200px] font-semibold text-lg hover:scale-105 transition-all duration-200"
               >
                 Admin Login
               </Button>
@@ -67,7 +67,7 @@ export default function HomePage() {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="px-8 py-6 rounded-full min-w-[200px] font-semibold text-lg transition-all duration-200 hover:scale-105 hover:shadow-lg"
+                className="hover:shadow-lg px-8 py-6 rounded-full min-w-[200px] font-semibold text-lg hover:scale-105 transition-all duration-200"
               >
                 AP Login
               </Button>
@@ -76,7 +76,7 @@ export default function HomePage() {
         </main>
 
         {/* Footer - subtle at bottom */}
-        <footer className="absolute bottom-4 left-0 right-0 text-center">
+        <footer className="right-0 bottom-4 left-0 absolute text-center">
           <p className="text-muted-foreground text-xs">
             © 2025 Future Cashflow (Pty) Ltd · Registered Credit Provider NCRCP18174
           </p>

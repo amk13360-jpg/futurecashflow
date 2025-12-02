@@ -15,7 +15,7 @@ export function LogoIcon({ className = "h-10 w-10 text-blue-600" }: LogoIconProp
     <div className="relative">
       <svg 
         aria-hidden="true" 
-        className={cn("h-10 w-10 text-blue-600", className)} 
+        className={cn("w-10 h-10 text-blue-600", className)} 
         fill="currentColor" 
         viewBox="0 0 80 80"
       >
@@ -58,7 +58,7 @@ export function Logo({
       {showText && (
         <>
           <span className={cn(sizes.text, "font-bold text-blue-600")}>Future</span>
-          <div className={cn("w-px bg-blue-600", sizes.divider)}></div>
+          <div className={cn("bg-blue-600 w-px", sizes.divider)}></div>
           <span className={cn(sizes.text, "font-bold text-blue-600")}>Cashflow</span>
         </>
       )}

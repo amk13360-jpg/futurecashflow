@@ -49,38 +49,38 @@ export default function AdminLoginPage() {
 
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-background text-foreground px-4">
+    <div className="relative flex justify-center items-center bg-background px-4 min-h-screen text-foreground">
       {/* Theme toggle top-right */}
-      <div className="absolute top-4 right-4 z-10">
+      <div className="top-4 right-4 z-10 absolute">
         <ThemeToggle />
       </div>
       {/* Modern background gradient and blur effects */}
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-72 w-72 rounded-full bg-primary/20 blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 h-72 w-72 rounded-full bg-primary/10 blur-3xl"></div>
+      <div className="-z-10 absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="-top-40 -right-40 absolute bg-primary/20 blur-3xl rounded-full w-72 h-72"></div>
+        <div className="-bottom-40 -left-40 absolute bg-primary/10 blur-3xl rounded-full w-72 h-72"></div>
       </div>
       <div className="w-full max-w-md">
-        <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6">
-          <ArrowLeft className="h-4 w-4 mr-2" />
+        <Link href="/" className="inline-flex items-center mb-6 text-muted-foreground hover:text-foreground text-sm">
+          <ArrowLeft className="mr-2 w-4 h-4" />
           Back to home
         </Link>
-        <Card className="bg-card border-0 shadow-none text-foreground">
+        <Card className="bg-card shadow-none border-0 text-foreground">
           <CardHeader className="text-center">
-            <div className="flex items-center justify-center mb-4">
+            <div className="flex justify-center items-center mb-4">
               <Logo size="lg" />
             </div>
-            <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
+            <CardTitle className="font-bold text-2xl">Admin Login</CardTitle>
             <CardDescription>Sign in to access the admin dashboard</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <Alert variant="destructive" className="border-error bg-error/10">
+                <Alert variant="destructive" className="bg-error/10 border-error">
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
               <div className="space-y-2">
-                <Label htmlFor="username" className="text-sm font-semibold">Username</Label>
+                <Label htmlFor="username" className="font-semibold text-sm">Username</Label>
                 <Input
                   id="username"
                   type="text"
@@ -90,11 +90,11 @@ export default function AdminLoginPage() {
                   required
                   disabled={loading}
                   autoComplete="username"
-                  className="transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-colors"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-semibold">Password</Label>
+                <Label htmlFor="password" className="font-semibold text-sm">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -104,10 +104,10 @@ export default function AdminLoginPage() {
                   required
                   disabled={loading}
                   autoComplete="current-password"
-                  className="transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-colors"
                 />
               </div>
-              <Button type="submit" className="w-full font-semibold py-3 rounded-xl" disabled={loading}>
+              <Button type="submit" className="py-3 rounded-xl w-full font-semibold" disabled={loading}>
                 {loading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
