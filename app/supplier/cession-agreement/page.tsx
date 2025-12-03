@@ -8,9 +8,9 @@ export default async function SupplierCessionAgreementPage() {
   const templateUrl = `/api/cession-agreement/template?supplierId=${supplierId}`;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-muted/30">
-      <div className="max-w-lg w-full bg-background text-foreground rounded-lg shadow p-8 border">
-        <h1 className="text-2xl font-bold mb-4">Cession Agreement Required</h1>
+    <div className="flex flex-col justify-center items-center bg-muted/30 min-h-screen">
+      <div className="bg-background shadow p-8 border rounded-lg w-full max-w-lg text-foreground">
+        <h1 className="mb-4 font-bold text-2xl">Cession Agreement Required</h1>
         <p className="mb-6 text-muted-foreground">
           To access offers and payments, you must sign or upload your cession agreement. Please download the template, sign it, and upload the completed document.
         </p>

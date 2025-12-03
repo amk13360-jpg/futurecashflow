@@ -39,9 +39,9 @@ export default function SupplierCessionAgreementUploadPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-muted/30">
-      <div className="max-w-lg w-full bg-background text-foreground rounded-lg shadow p-8 border">
-        <h1 className="text-2xl font-bold mb-4">Upload Signed Cession Agreement</h1>
+    <div className="flex flex-col justify-center items-center bg-muted/30 min-h-screen">
+      <div className="bg-background shadow p-8 border rounded-lg w-full max-w-lg text-foreground">
+        <h1 className="mb-4 font-bold text-2xl">Upload Signed Cession Agreement</h1>
         <p className="mb-6 text-muted-foreground">
           Please upload your signed cession agreement PDF. Once submitted, your onboarding will be reviewed and you will be notified of approval.
         </p>
@@ -53,14 +53,14 @@ export default function SupplierCessionAgreementUploadPage() {
             id="cession-agreement-upload"
             type="file"
             accept="application/pdf"
-            className="border rounded px-3 py-2"
+            className="px-3 py-2 border rounded"
             title="Upload your signed cession agreement PDF"
             placeholder="Choose PDF file"
             required
           />
           <Button type="submit" disabled={uploading}>{uploading ? "Uploading..." : "Submit Document"}</Button>
         </form>
-        {error && <div className="text-red-600 mt-2 text-center">{error}</div>}
+        {error && <div className="mt-2 text-red-600 text-center">{error}</div>}
         <div className="mt-6 text-center">
           <Link href="/supplier/dashboard" className="text-primary hover:underline">Back to Dashboard</Link>
         </div>
