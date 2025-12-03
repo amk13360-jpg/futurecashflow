@@ -116,9 +116,9 @@ export default function VendorUploadPage() {
                     type="file"
                     accept=".csv"
                     onChange={handleFileUpload}
-                    placeholder="Select CSV file"
-                    title="Upload CSV file"
-                    className="block hover:file:bg-primary/90 file:bg-primary file:mr-4 file:px-4 file:py-2 file:border-0 file:rounded-md w-full file:font-medium text-foreground file:text-primary-foreground text-sm file:text-sm"
+                    placeholder="Select a CSV file to upload"
+                    title="Upload CSV File"
+                    className="block hover:file:bg-accent file:bg-transparent file:mr-4 file:px-4 file:py-2 file:border file:border-input file:rounded-md w-full file:font-medium text-foreground file:text-foreground text-sm file:text-sm file:cursor-pointer"
                   />
                 </div>
 
