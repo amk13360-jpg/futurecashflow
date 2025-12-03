@@ -40,7 +40,7 @@ export default function SupplierCessionAgreementUploadPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-muted/30">
-      <div className="max-w-lg w-full bg-white rounded-lg shadow p-8">
+      <div className="max-w-lg w-full bg-background text-foreground rounded-lg shadow p-8 border">
         <h1 className="text-2xl font-bold mb-4">Upload Signed Cession Agreement</h1>
         <p className="mb-6 text-muted-foreground">
           Please upload your signed cession agreement PDF. Once submitted, your onboarding will be reviewed and you will be notified of approval.
@@ -62,7 +62,7 @@ export default function SupplierCessionAgreementUploadPage() {
         </form>
         {error && <div className="text-red-600 mt-2 text-center">{error}</div>}
         <div className="mt-6 text-center">
-          <Link href="/supplier/dashboard" className="text-blue-600 hover:underline">Back to Dashboard</Link>
+          <Link href="/supplier/dashboard" className="text-primary hover:underline">Back to Dashboard</Link>
         </div>
       </div>
     </div>

@@ -9,7 +9,7 @@ export default async function SupplierCessionAgreementPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-muted/30">
-      <div className="max-w-lg w-full bg-white rounded-lg shadow p-8">
+      <div className="max-w-lg w-full bg-background text-foreground rounded-lg shadow p-8 border">
         <h1 className="text-2xl font-bold mb-4">Cession Agreement Required</h1>
         <p className="mb-6 text-muted-foreground">
           To access offers and payments, you must sign or upload your cession agreement. Please download the template, sign it, and upload the completed document.
