@@ -14,14 +14,8 @@ ADMIN_USERNAME = "admin01"
 ADMIN_EMAIL = "admin01@futureming.com"
 ADMIN_PASSWORD = "Mining@2025"  # Change as needed
 
-# Buyer credentials
-BUYER_USERNAME = "buyer01"
-BUYER_EMAIL = "buyer1@gmail.com"
-BUYER_PASSWORD = "buyer01@2025"  # Change as needed
-
-# Hash passwords
+# Hash password
 admin_hashed = bcrypt.hashpw(ADMIN_PASSWORD.encode(), bcrypt.gensalt()).decode()
-buyer_hashed = bcrypt.hashpw(BUYER_PASSWORD.encode(), bcrypt.gensalt()).decode()
 
 try:
     conn = mysql.connector.connect(
@@ -34,19 +28,23 @@ try:
         ssl_verify_identity=False
     )
     cursor = conn.cursor()
-    # Create admin user
+    
+    # Update admin user password
     cursor.execute("""
-        INSERT INTO users (username, email, password_hash, role)
-        VALUES (%s, %s, %s, %s)
-    """, (ADMIN_USERNAME, ADMIN_EMAIL, admin_hashed, "admin"))
-    print("Admin user created successfully.")
-
-    # Create buyer user
-    cursor.execute("""
-        INSERT INTO users (username, email, password_hash, role)
-        VALUES (%s, %s, %s, %s)
-    """, (BUYER_USERNAME, BUYER_EMAIL, buyer_hashed, "accounts_payable"))
-    print("Buyer user created successfully.")
+        UPDATE users 
+        SET password_hash = %s, updated_at = NOW()
+        WHERE username = %s
+    """, (admin_hashed, ADMIN_USERNAME))
+    
+    if cursor.rowcount > 0:
+        print(f"Admin user '{ADMIN_USERNAME}' password updated successfully.")
+    else:
+        # Create admin user if doesn't exist
+        cursor.execute("""
+            INSERT INTO users (username, email, password_hash, role)
+            VALUES (%s, %s, %s, %s)
+        """, (ADMIN_USERNAME, ADMIN_EMAIL, admin_hashed, "admin"))
+        print(f"Admin user '{ADMIN_USERNAME}' created successfully.")
 
     conn.commit()
 except Exception as e:

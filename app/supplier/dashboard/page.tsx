@@ -23,8 +23,8 @@ export default function SupplierDashboardPage() {
   const acceptedOffers = offers.filter((o: any) => o.status === "accepted");
   const needsCessionAgreement = !cessionAgreement || (cessionAgreement.status !== "signed" && cessionAgreement.status !== "approved");
 
-  // Calculate total value of accepted offers
-  const totalAcceptedValue = acceptedOffers.reduce((sum: number, o: any) => sum + (o.net_payment_amount || 0), 0);
+  // Calculate total value of accepted offers (ensure numeric conversion)
+  const totalAcceptedValue = acceptedOffers.reduce((sum: number, o: any) => sum + (Number(o.net_payment_amount) || 0), 0);
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -71,7 +71,7 @@ export default function SupplierDashboardPage() {
           />
           <MetricCard
             title="Total Received"
-            value={`R ${totalAcceptedValue.toLocaleString()}`}
+            value={`R ${totalAcceptedValue.toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
             icon={DollarSign}
             variant="primary"
           />
