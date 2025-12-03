@@ -214,7 +214,7 @@ export async function reviewSupplierApplication(
     if (status === "approved") {
       await autoGenerateOffersForSupplier(supplierId, "admin_review")
       
-      // Create access token and send welcome email
+      // Create access token and send approval email
       try {
         // Get supplier details
         const suppliers = await query<Array<{ contact_email: string; name: string }>>(
@@ -225,43 +225,41 @@ export async function reviewSupplierApplication(
         if (suppliers.length > 0) {
           const supplier = suppliers[0]
           
-          // Check if supplier already has an active token
-          const existingTokens = await query<Array<{ token_id: number }>>(
-            `SELECT token_id FROM supplier_tokens 
-             WHERE supplier_id = ? AND token_type = 'invite' AND used_at IS NULL AND expires_at > NOW()`,
-            [supplierId]
+          // Always create a NEW approval token when admin approves
+          // This is different from the initial 'invite' token sent during vendor upload
+          const token = generateToken()
+          const tokenExpiry = new Date()
+          tokenExpiry.setDate(tokenExpiry.getDate() + 14)
+          
+          await query(
+            `INSERT INTO supplier_tokens (supplier_id, token, token_type, expires_at)
+             VALUES (?, ?, 'approval', ?)`,
+            [supplierId, token, tokenExpiry]
           )
           
-          if (existingTokens.length === 0) {
-            // Create new token (14 day expiry)
-            const token = generateToken()
-            const tokenExpiry = new Date()
-            tokenExpiry.setDate(tokenExpiry.getDate() + 14)
-            
-            await query(
-              `INSERT INTO supplier_tokens (supplier_id, token, token_type, expires_at)
-               VALUES (?, ?, 'invite', ?)`,
-              [supplierId, token, tokenExpiry]
-            )
-            
-            // Generate access link
-            const baseUrl = process.env.NEXTAUTH_URL || "https://fm-asp-dev-san-hufee4h8hyawbhcx.southafricanorth-01.azurewebsites.net"
-            const accessLink = `${baseUrl}/supplier/access?token=${token}`
-            
-            // Send approval email (for dashboard access to view early payment offers)
-            console.log(`[Admin] Sending approval email to ${supplier.contact_email}`)
-            await sendSupplierApprovalEmail(
-              supplier.contact_email,
-              supplier.name,
-              accessLink
-            )
-            console.log(`[Admin] Approval email sent to ${supplier.contact_email}`)
+          console.log(`[Admin] Created approval token for supplier ${supplierId}`)
+          
+          // Generate access link
+          const baseUrl = process.env.NEXTAUTH_URL || "https://fm-asp-dev-san-hufee4h8hyawbhcx.southafricanorth-01.azurewebsites.net"
+          const accessLink = `${baseUrl}/supplier/access?token=${token}`
+          
+          // Send approval email (for dashboard access to view early payment offers)
+          console.log(`[Admin] Sending approval email to ${supplier.contact_email}`)
+          const emailSent = await sendSupplierApprovalEmail(
+            supplier.contact_email,
+            supplier.name,
+            accessLink
+          )
+          
+          if (emailSent) {
+            console.log(`[Admin] Approval email sent successfully to ${supplier.contact_email}`)
+          } else {
+            console.error(`[Admin] Failed to send approval email to ${supplier.contact_email}`)
           }
         }
       } catch (emailError) {
         // Don't fail the approval if email fails - just log it
         console.error(`[Admin] Failed to send approval email for supplier ${supplierId}:`, emailError)
-      }
       }
     }
   } catch (error) {

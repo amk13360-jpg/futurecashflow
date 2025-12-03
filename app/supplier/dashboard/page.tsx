@@ -23,8 +23,11 @@ export default function SupplierDashboardPage() {
   const acceptedOffers = offers.filter((o: any) => o.status === "accepted");
   const needsCessionAgreement = !cessionAgreement || (cessionAgreement.status !== "signed" && cessionAgreement.status !== "approved");
 
-  // Calculate total value of accepted offers (ensure numeric conversion)
-  const totalAcceptedValue = acceptedOffers.reduce((sum: number, o: any) => sum + (Number(o.net_payment_amount) || 0), 0);
+  // Calculate total value of accepted offers (ensure numeric conversion from Decimal/string)
+  const totalAcceptedValue = acceptedOffers.reduce((sum: number, o: any) => {
+    const amount = parseFloat(String(o.net_payment_amount)) || 0;
+    return sum + amount;
+  }, 0);
 
   return (
     <div className="bg-muted/30 min-h-screen">
