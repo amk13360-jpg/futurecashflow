@@ -27,25 +27,25 @@ export default function SupplierDashboardPage() {
   const totalAcceptedValue = acceptedOffers.reduce((sum: number, o: any) => sum + (Number(o.net_payment_amount) || 0), 0);
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="bg-muted/30 min-h-screen">
       <SupplierHeader supplierName={profile?.name} />
-      <main className="container mx-auto px-4 py-8">
+      <main className="mx-auto px-4 py-8 container">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">Welcome back, <span className="text-primary">{profile?.name}</span></h2>
+          <h2 className="mb-2 font-bold text-3xl">Welcome back, <span className="text-primary">{profile?.name}</span></h2>
           <p className="text-muted-foreground">Review your early payment offers and manage your account</p>
         </div>
 
         {needsCessionAgreement && (
           <div className="mb-8">
-            <Card className="border-amber-500/50 bg-amber-500/10">
+            <Card className="bg-amber-500/10 border-amber-500/50">
               <CardContent className="flex items-center gap-4 py-4">
-                <div className="p-2 rounded-lg bg-amber-500/20">
-                  <AlertTriangle className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                <div className="bg-amber-500/20 p-2 rounded-lg">
+                  <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
                 </div>
                 <div className="flex-1">
                   <p className="font-semibold text-foreground">Action Required</p>
-                  <p className="text-sm text-muted-foreground">You must sign or upload your cession agreement before accessing offers or payments.</p>
+                  <p className="text-muted-foreground text-sm">You must sign or upload your cession agreement before accessing offers or payments.</p>
                 </div>
                 <Link href="/supplier/cession-agreement">
                   <Button>Sign Agreement</Button>
@@ -56,7 +56,7 @@ export default function SupplierDashboardPage() {
         )}
 
         {/* Quick Stats - Using MetricCard */}
-        <div className="grid md:grid-cols-4 gap-4 mb-8">
+        <div className="gap-4 grid md:grid-cols-4 mb-8">
           <MetricCard
             title="Pending Offers"
             value={pendingOffers.length}
@@ -109,41 +109,41 @@ export default function SupplierDashboardPage() {
                   <div className="space-y-4">
                     {pendingOffers.map((offer: any) => (
                       <div key={offer.offer_id} className="p-4 border rounded-lg">
-                        <div className="flex items-start justify-between mb-3">
+                        <div className="flex justify-between items-start mb-3">
                           <div>
                             <h4 className="font-medium text-lg">{offer.invoice_number}</h4>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-muted-foreground text-sm">
                               {offer.buyer_name} ({offer.buyer_code})
                             </p>
                           </div>
                           <Badge>Pending</Badge>
                         </div>
-                        <div className="grid md:grid-cols-2 gap-4 mb-4">
+                        <div className="gap-4 grid md:grid-cols-2 mb-4">
                           <div>
-                            <p className="text-sm text-muted-foreground">Invoice Amount</p>
-                            <p className="text-lg font-semibold">
+                            <p className="text-muted-foreground text-sm">Invoice Amount</p>
+                            <p className="font-semibold text-lg">
                               {offer.currency} {offer.invoice_amount.toLocaleString()}
                             </p>
                           </div>
                           <div>
-                            <p className="text-sm text-muted-foreground">Early Payment Amount</p>
-                            <p className="text-lg font-semibold text-green-600">
+                            <p className="text-muted-foreground text-sm">Early Payment Amount</p>
+                            <p className="font-semibold text-green-600 text-lg">
                               {offer.currency} {offer.net_payment_amount.toLocaleString()}
                             </p>
                           </div>
                           <div>
-                            <p className="text-sm text-muted-foreground">Discount</p>
-                            <p className="text-sm font-medium">
+                            <p className="text-muted-foreground text-sm">Discount</p>
+                            <p className="font-medium text-sm">
                               {offer.currency} {offer.discount_amount.toLocaleString()} ({offer.annual_rate}% p.a.)
                             </p>
                           </div>
                           <div>
-                            <p className="text-sm text-muted-foreground">Days to Maturity</p>
-                            <p className="text-sm font-medium">{offer.days_to_maturity} days</p>
+                            <p className="text-muted-foreground text-sm">Days to Maturity</p>
+                            <p className="font-medium text-sm">{offer.days_to_maturity} days</p>
                           </div>
                         </div>
-                        <div className="flex items-center justify-between pt-3 border-t">
-                          <p className="text-xs text-muted-foreground">
+                        <div className="flex justify-between items-center pt-3 border-t">
+                          <p className="text-muted-foreground text-xs">
                             Expires: {new Date(offer.offer_expiry_date).toLocaleDateString()}
                           </p>
                           <Link href={`/supplier/offers/${offer.offer_id}`}>
@@ -174,7 +174,7 @@ export default function SupplierDashboardPage() {
                 ) : (
                   <div className="space-y-3">
                     {offers.map((offer: any) => (
-                      <div key={offer.offer_id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div key={offer.offer_id} className="flex justify-between items-center p-3 border rounded-lg">
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
                             <h4 className="font-medium">{offer.invoice_number}</h4>
@@ -190,11 +190,11 @@ export default function SupplierDashboardPage() {
                               {offer.status}
                             </Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground mt-1">
+                          <p className="mt-1 text-muted-foreground text-sm">
                             {offer.currency} {offer.net_payment_amount.toLocaleString()} • {offer.buyer_name}
                           </p>
                         </div>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-muted-foreground text-xs">
                           {new Date(offer.sent_at).toLocaleDateString()}
                         </span>
                       </div>
@@ -229,25 +229,25 @@ export default function SupplierDashboardPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <div className="grid md:grid-cols-2 gap-4">
+                  <div className="gap-4 grid md:grid-cols-2">
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground">Company Name</p>
+                      <p className="font-medium text-muted-foreground text-sm">Company Name</p>
                       <p className="text-base">{profile?.name}</p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground">VAT Number</p>
+                      <p className="font-medium text-muted-foreground text-sm">VAT Number</p>
                       <p className="text-base">{profile?.vat_no || "N/A"}</p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground">Contact Email</p>
+                      <p className="font-medium text-muted-foreground text-sm">Contact Email</p>
                       <p className="text-base">{profile?.contact_email}</p>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-muted-foreground">Contact Phone</p>
+                      <p className="font-medium text-muted-foreground text-sm">Contact Phone</p>
                       <p className="text-base">{profile?.contact_phone || "N/A"}</p>
                     </div>
                     <div className="md:col-span-2">
-                      <p className="text-sm font-medium text-muted-foreground">Bank Details</p>
+                      <p className="font-medium text-muted-foreground text-sm">Bank Details</p>
                       <p className="text-base">
                         {profile?.bank_name} • {profile?.bank_account_no} • {profile?.bank_branch_code}
                       </p>
