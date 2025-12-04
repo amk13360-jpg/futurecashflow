@@ -551,71 +551,104 @@ export default function BuyersPage() {
         </CardContent>
       </Card>
 
-      {/* Create Buyer Dialog - Wizard Style */}
+      {/* Create Buyer Dialog - Premium Wizard Style */}
       <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetForm(); }}>
-        <DialogContent className="flex flex-col p-0 max-w-4xl max-h-[90vh] overflow-hidden">
-          {/* Header with Progress */}
-          <div className="bg-linear-to-r from-blue-600 to-indigo-600 p-6 text-white">
-            <DialogTitle className="font-bold text-white text-2xl">Add New Buyer</DialogTitle>
-            <DialogDescription className="mt-1 text-blue-100">
-              Complete the steps below to onboard a new buyer
-            </DialogDescription>
+        <DialogContent className="flex flex-col gap-0 p-0 border-0 max-w-5xl w-[95vw] h-[92vh] max-h-[900px] overflow-hidden rounded-2xl shadow-2xl">
+          {/* Stunning Header with Gradient & Pattern */}
+          <div className="relative bg-linear-to-br from-blue-600 via-indigo-600 to-purple-700 px-8 pt-8 pb-10 overflow-hidden">
+            {/* Decorative background pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute top-0 right-0 bg-white/20 blur-3xl rounded-full w-96 h-96 -translate-y-1/2 translate-x-1/2" />
+              <div className="absolute bottom-0 left-0 bg-white/10 blur-3xl rounded-full w-64 h-64 translate-y-1/2 -translate-x-1/2" />
+            </div>
             
-            {/* Progress Stepper */}
-            <div className="flex justify-between items-center mt-6">
-              {[
-                { step: 1, label: 'Company', icon: Building2 },
-                { step: 2, label: 'Contacts', icon: Users },
-                { step: 3, label: 'Address', icon: MapPin },
-                { step: 4, label: 'Settings', icon: Settings2 },
-                { step: 5, label: 'Review', icon: Check },
-              ].map((item, index) => (
-                <div key={item.step} className="flex items-center">
-                  <div 
-                    className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all cursor-pointer
-                      ${createStep === item.step 
-                        ? 'bg-white text-blue-600 border-white shadow-lg scale-110' 
-                        : createStep > item.step 
-                          ? 'bg-blue-400 border-blue-400 text-white' 
-                          : 'border-blue-300 text-blue-200'
-                      }`}
-                    onClick={() => item.step < createStep && setCreateStep(item.step)}
-                  >
-                    {createStep > item.step ? (
-                      <CheckCircle2 className="w-5 h-5" />
-                    ) : (
-                      <item.icon className="w-5 h-5" />
-                    )}
-                  </div>
-                  <span className={`hidden sm:block ml-2 text-sm font-medium ${createStep >= item.step ? 'text-white' : 'text-blue-200'}`}>
-                    {item.label}
-                  </span>
-                  {index < 4 && (
-                    <div className={`hidden sm:block w-12 h-0.5 mx-3 ${createStep > item.step ? 'bg-blue-400' : 'bg-blue-300/50'}`} />
-                  )}
+            <div className="relative z-10">
+              <div className="flex items-start gap-5">
+                <div className="flex justify-center items-center bg-white/20 backdrop-blur-sm shadow-lg rounded-2xl w-16 h-16">
+                  <Building2 className="w-8 h-8 text-white" />
                 </div>
-              ))}
+                <div className="flex-1">
+                  <DialogTitle className="font-bold text-white text-3xl tracking-tight">
+                    Add New Buyer
+                  </DialogTitle>
+                  <DialogDescription className="mt-2 text-blue-100 text-base">
+                    Complete the onboarding wizard to set up a new buyer profile
+                  </DialogDescription>
+                </div>
+                <Badge className="bg-white/20 hover:bg-white/20 backdrop-blur-sm px-4 py-2 border-0 text-white text-sm">
+                  Step {createStep} of 5
+                </Badge>
+              </div>
+              
+              {/* Enhanced Progress Stepper */}
+              <div className="mt-10">
+                <div className="flex justify-between items-center relative">
+                  {/* Progress line background */}
+                  <div className="top-6 right-12 left-12 absolute bg-white/20 h-1 rounded-full" />
+                  {/* Active progress line */}
+                  <div 
+                    className="top-6 left-12 absolute bg-white h-1 rounded-full transition-all duration-500 ease-out"
+                    style={{ width: `calc(${((createStep - 1) / 4) * 100}% - 48px)` }}
+                  />
+                  
+                  {[
+                    { step: 1, label: 'Company Info', icon: Building2, desc: 'Business details' },
+                    { step: 2, label: 'Contacts', icon: Users, desc: 'Contact persons' },
+                    { step: 3, label: 'Address', icon: MapPin, desc: 'Location' },
+                    { step: 4, label: 'Settings', icon: Settings2, desc: 'Configuration' },
+                    { step: 5, label: 'Review', icon: Check, desc: 'Confirm' },
+                  ].map((item) => (
+                    <div 
+                      key={item.step} 
+                      className="z-10 flex flex-col items-center cursor-pointer group"
+                      onClick={() => item.step < createStep && setCreateStep(item.step)}
+                    >
+                      <div 
+                        className={`flex items-center justify-center w-12 h-12 rounded-xl transition-all duration-300 
+                          ${createStep === item.step 
+                            ? 'bg-white text-blue-600 shadow-xl shadow-blue-900/30 scale-110 ring-4 ring-white/30' 
+                            : createStep > item.step 
+                              ? 'bg-green-400 text-white shadow-lg' 
+                              : 'bg-white/20 text-white/70 group-hover:bg-white/30'
+                          }`}
+                      >
+                        {createStep > item.step ? (
+                          <CheckCircle2 className="w-6 h-6" />
+                        ) : (
+                          <item.icon className="w-5 h-5" />
+                        )}
+                      </div>
+                      <span className={`mt-3 text-sm font-semibold transition-colors ${createStep >= item.step ? 'text-white' : 'text-white/60'}`}>
+                        {item.label}
+                      </span>
+                      <span className={`text-xs transition-colors ${createStep >= item.step ? 'text-blue-200' : 'text-white/40'}`}>
+                        {item.desc}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Form Content */}
-          <div className="flex-1 p-6 overflow-y-auto">
+          {/* Form Content - Enhanced Styling */}
+          <div className="flex-1 bg-linear-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-950 px-8 py-8 overflow-y-auto">
             {/* Step 1: Company Information */}
             {createStep === 1 && (
-              <div className="slide-in-from-right-5 space-y-6 animate-in">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-blue-100 p-2 rounded-lg">
-                    <Building2 className="w-6 h-6 text-blue-600" />
+              <div className="slide-in-from-right-5 space-y-8 mx-auto max-w-3xl animate-in duration-300">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="flex justify-center items-center bg-linear-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-200 dark:shadow-blue-900/30 rounded-xl w-14 h-14">
+                    <Building2 className="w-7 h-7 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Company Information</h3>
-                    <p className="text-muted-foreground text-sm">Enter the buyer's business details</p>
+                    <h3 className="font-bold text-xl text-slate-900 dark:text-white">Company Information</h3>
+                    <p className="text-slate-500 dark:text-slate-400">Enter the buyer's legal business details</p>
                   </div>
                 </div>
 
-                <div className="gap-6 grid grid-cols-2">
-                  <div className="space-y-2 col-span-2 sm:col-span-1">
-                    <Label htmlFor="name" className="flex items-center gap-1">
+                <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
+                  <div className="space-y-2 col-span-1 md:col-span-2 lg:col-span-1">
+                    <Label htmlFor="name" className="flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-300 text-sm">
                       Legal Business Name <span className="text-red-500">*</span>
                     </Label>
                     <Input
@@ -623,24 +656,25 @@ export default function BuyersPage() {
                       value={formData.name || ''}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
                       placeholder="e.g., Anglo American Platinum Ltd"
-                      className={formErrors.name ? 'border-red-500' : ''}
+                      className={`h-12 text-base transition-all ${formErrors.name ? 'border-red-500 ring-2 ring-red-100' : 'focus:ring-2 focus:ring-blue-100 focus:border-blue-500'}`}
                     />
-                    {formErrors.name && <p className="text-red-500 text-sm">{formErrors.name}</p>}
+                    {formErrors.name && <p className="flex items-center gap-1 text-red-500 text-sm"><AlertCircle className="w-3 h-3" />{formErrors.name}</p>}
                   </div>
-                  <div className="space-y-2 col-span-2 sm:col-span-1">
-                    <Label htmlFor="trading_name">Trading Name</Label>
+                  <div className="space-y-2 col-span-1 md:col-span-2 lg:col-span-1">
+                    <Label htmlFor="trading_name" className="font-semibold text-slate-700 dark:text-slate-300 text-sm">Trading Name</Label>
                     <Input
                       id="trading_name"
                       value={formData.trading_name || ''}
                       onChange={(e) => setFormData({...formData, trading_name: e.target.value})}
                       placeholder="If different from legal name"
+                      className="h-12 text-base focus:ring-2 focus:ring-blue-100 focus:border-blue-500"
                     />
                   </div>
                 </div>
 
-                <div className="gap-6 grid grid-cols-2">
+                <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="code" className="flex items-center gap-1">
+                    <Label htmlFor="code" className="flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-300 text-sm">
                       Buyer Code <span className="text-red-500">*</span>
                     </Label>
                     <Input
@@ -648,78 +682,95 @@ export default function BuyersPage() {
                       value={formData.code || ''}
                       onChange={(e) => setFormData({...formData, code: e.target.value.toUpperCase()})}
                       placeholder="e.g., AAP001"
-                      className={formErrors.code ? 'border-red-500' : ''}
+                      className={`h-12 text-base font-mono tracking-wider uppercase transition-all ${formErrors.code ? 'border-red-500 ring-2 ring-red-100' : 'focus:ring-2 focus:ring-blue-100 focus:border-blue-500'}`}
                     />
-                    {formErrors.code && <p className="text-red-500 text-sm">{formErrors.code}</p>}
-                    <p className="text-muted-foreground text-xs">Unique identifier for this buyer</p>
+                    {formErrors.code && <p className="flex items-center gap-1 text-red-500 text-sm"><AlertCircle className="w-3 h-3" />{formErrors.code}</p>}
+                    <p className="text-slate-400 text-xs">Unique identifier used throughout the system</p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="registration_no">Company Registration No</Label>
+                    <Label htmlFor="registration_no" className="font-semibold text-slate-700 dark:text-slate-300 text-sm">Company Registration No</Label>
                     <Input
                       id="registration_no"
                       value={formData.registration_no || ''}
                       onChange={(e) => setFormData({...formData, registration_no: e.target.value})}
                       placeholder="e.g., 2000/012345/06"
+                      className="h-12 text-base focus:ring-2 focus:ring-blue-100 focus:border-blue-500"
                     />
                   </div>
                 </div>
 
-                <div className="gap-6 grid grid-cols-3">
+                <div className="gap-6 grid grid-cols-1 md:grid-cols-3">
                   <div className="space-y-2">
-                    <Label htmlFor="tax_id">VAT Number</Label>
+                    <Label htmlFor="tax_id" className="font-semibold text-slate-700 dark:text-slate-300 text-sm">VAT Number</Label>
                     <Input
                       id="tax_id"
                       value={formData.tax_id || ''}
                       onChange={(e) => setFormData({...formData, tax_id: e.target.value})}
                       placeholder="e.g., 4123456789"
+                      className="h-12 text-base focus:ring-2 focus:ring-blue-100 focus:border-blue-500"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label>Industry Sector</Label>
+                    <Label className="font-semibold text-slate-700 dark:text-slate-300 text-sm">Industry Sector</Label>
                     <Select 
                       value={formData.industry_sector} 
                       onValueChange={(v: any) => setFormData({...formData, industry_sector: v})}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="h-12 text-base">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="mining">⛏️ Mining</SelectItem>
-                        <SelectItem value="manufacturing">🏭 Manufacturing</SelectItem>
-                        <SelectItem value="retail">🛒 Retail</SelectItem>
-                        <SelectItem value="construction">🏗️ Construction</SelectItem>
-                        <SelectItem value="agriculture">🌾 Agriculture</SelectItem>
-                        <SelectItem value="services">💼 Services</SelectItem>
-                        <SelectItem value="other">📦 Other</SelectItem>
+                        <SelectItem value="mining"><span className="flex items-center gap-2">⛏️ Mining</span></SelectItem>
+                        <SelectItem value="manufacturing"><span className="flex items-center gap-2">🏭 Manufacturing</span></SelectItem>
+                        <SelectItem value="retail"><span className="flex items-center gap-2">🛒 Retail</span></SelectItem>
+                        <SelectItem value="construction"><span className="flex items-center gap-2">🏗️ Construction</span></SelectItem>
+                        <SelectItem value="agriculture"><span className="flex items-center gap-2">🌾 Agriculture</span></SelectItem>
+                        <SelectItem value="services"><span className="flex items-center gap-2">💼 Services</span></SelectItem>
+                        <SelectItem value="other"><span className="flex items-center gap-2">📦 Other</span></SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label>Risk Tier</Label>
+                    <Label className="font-semibold text-slate-700 dark:text-slate-300 text-sm">Risk Tier</Label>
                     <Select 
                       value={formData.risk_tier} 
                       onValueChange={(v: any) => setFormData({...formData, risk_tier: v})}
                     >
-                      <SelectTrigger>
+                      <SelectTrigger className="h-12 text-base">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="A">
-                          <div className="flex items-center gap-2">
-                            <span className="bg-blue-500 rounded-full w-2 h-2" />
-                            Tier A - Premium
+                          <div className="flex items-center gap-3">
+                            <div className="flex justify-center items-center bg-blue-100 rounded-full w-6 h-6">
+                              <span className="bg-blue-500 rounded-full w-2.5 h-2.5" />
+                            </div>
+                            <div>
+                              <span className="font-medium">Tier A</span>
+                              <span className="ml-2 text-slate-400">Premium</span>
+                            </div>
                           </div>
                         </SelectItem>
                         <SelectItem value="B">
-                          <div className="flex items-center gap-2">
-                            <span className="bg-purple-500 rounded-full w-2 h-2" />
-                            Tier B - Standard
+                          <div className="flex items-center gap-3">
+                            <div className="flex justify-center items-center bg-purple-100 rounded-full w-6 h-6">
+                              <span className="bg-purple-500 rounded-full w-2.5 h-2.5" />
+                            </div>
+                            <div>
+                              <span className="font-medium">Tier B</span>
+                              <span className="ml-2 text-slate-400">Standard</span>
+                            </div>
                           </div>
                         </SelectItem>
                         <SelectItem value="C">
-                          <div className="flex items-center gap-2">
-                            <span className="bg-orange-500 rounded-full w-2 h-2" />
-                            Tier C - Higher Risk
+                          <div className="flex items-center gap-3">
+                            <div className="flex justify-center items-center bg-orange-100 rounded-full w-6 h-6">
+                              <span className="bg-orange-500 rounded-full w-2.5 h-2.5" />
+                            </div>
+                            <div>
+                              <span className="font-medium">Tier C</span>
+                              <span className="ml-2 text-slate-400">Higher Risk</span>
+                            </div>
                           </div>
                         </SelectItem>
                       </SelectContent>
@@ -731,35 +782,41 @@ export default function BuyersPage() {
 
             {/* Step 2: Contact Information */}
             {createStep === 2 && (
-              <div className="slide-in-from-right-5 space-y-6 animate-in">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-green-100 p-2 rounded-lg">
-                    <Users className="w-6 h-6 text-green-600" />
+              <div className="slide-in-from-right-5 space-y-8 mx-auto max-w-3xl animate-in duration-300">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="flex justify-center items-center bg-linear-to-br from-green-500 to-emerald-600 shadow-lg shadow-green-200 dark:shadow-green-900/30 rounded-xl w-14 h-14">
+                    <Users className="w-7 h-7 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Contact Information</h3>
-                    <p className="text-muted-foreground text-sm">Add primary and financial contacts</p>
+                    <h3 className="font-bold text-xl text-slate-900 dark:text-white">Contact Information</h3>
+                    <p className="text-slate-500 dark:text-slate-400">Add primary and financial contact details</p>
                   </div>
                 </div>
 
                 {/* Primary Contact Card */}
-                <Card className="border-l-4 border-l-blue-500">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <Mail className="w-4 h-4" /> Primary Contact
+                <Card className="border-0 bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+                  <div className="bg-linear-to-r from-blue-500 to-blue-600 h-1.5" />
+                  <CardHeader className="pb-4 pt-6">
+                    <CardTitle className="flex items-center gap-3 text-lg">
+                      <div className="flex justify-center items-center bg-blue-100 dark:bg-blue-900 rounded-lg w-10 h-10">
+                        <Mail className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      Primary Contact
+                      <Badge className="bg-blue-100 hover:bg-blue-100 ml-auto text-blue-700 text-xs">Required</Badge>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="gap-4 grid grid-cols-2">
+                  <CardContent className="gap-5 grid grid-cols-1 md:grid-cols-2 pt-0">
                     <div className="space-y-2">
-                      <Label>Contact Name</Label>
+                      <Label className="font-semibold text-slate-700 dark:text-slate-300 text-sm">Contact Name</Label>
                       <Input
                         value={formData.primary_contact_name || ''}
                         onChange={(e) => setFormData({...formData, primary_contact_name: e.target.value})}
                         placeholder="e.g., John Smith"
+                        className="h-12 text-base focus:ring-2 focus:ring-blue-100 focus:border-blue-500"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label className="flex items-center gap-1">
+                      <Label className="flex items-center gap-1.5 font-semibold text-slate-700 dark:text-slate-300 text-sm">
                         Email Address <span className="text-red-500">*</span>
                       </Label>
                       <Input
@@ -767,49 +824,55 @@ export default function BuyersPage() {
                         value={formData.contact_email || ''}
                         onChange={(e) => setFormData({...formData, contact_email: e.target.value})}
                         placeholder="e.g., john@company.com"
-                        className={formErrors.contact_email ? 'border-red-500' : ''}
+                        className={`h-12 text-base transition-all ${formErrors.contact_email ? 'border-red-500 ring-2 ring-red-100' : 'focus:ring-2 focus:ring-blue-100 focus:border-blue-500'}`}
                       />
-                      {formErrors.contact_email && <p className="text-red-500 text-sm">{formErrors.contact_email}</p>}
+                      {formErrors.contact_email && <p className="flex items-center gap-1 text-red-500 text-sm"><AlertCircle className="w-3 h-3" />{formErrors.contact_email}</p>}
                     </div>
-                    <div className="space-y-2">
-                      <Label>Phone Number</Label>
+                    <div className="space-y-2 md:col-span-2 lg:col-span-1">
+                      <Label className="font-semibold text-slate-700 dark:text-slate-300 text-sm">Phone Number</Label>
                       <Input
                         value={formData.contact_phone || ''}
                         onChange={(e) => setFormData({...formData, contact_phone: e.target.value})}
                         placeholder="+27 11 123 4567"
+                        className="h-12 text-base focus:ring-2 focus:ring-blue-100 focus:border-blue-500"
                       />
                     </div>
                   </CardContent>
                 </Card>
 
                 {/* Financial Contact Card */}
-                <Card className="border-l-4 border-l-green-500">
-                  <CardHeader className="pb-3">
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <DollarSign className="w-4 h-4" /> Financial Contact
-                      <Badge variant="outline" className="ml-2 text-xs">Optional</Badge>
+                <Card className="border-0 bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+                  <div className="bg-linear-to-r from-emerald-500 to-green-600 h-1.5" />
+                  <CardHeader className="pb-4 pt-6">
+                    <CardTitle className="flex items-center gap-3 text-lg">
+                      <div className="flex justify-center items-center bg-emerald-100 dark:bg-emerald-900 rounded-lg w-10 h-10">
+                        <DollarSign className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                      </div>
+                      Financial Contact
+                      <Badge variant="outline" className="ml-auto text-xs">Optional</Badge>
                     </CardTitle>
-                    <CardDescription>For repayment tracking and financial communications</CardDescription>
+                    <CardDescription className="ml-13 text-slate-500">For repayment tracking and financial communications</CardDescription>
                   </CardHeader>
-                  <CardContent className="gap-4 grid grid-cols-2">
+                  <CardContent className="gap-5 grid grid-cols-1 md:grid-cols-2 pt-0">
                     <div className="space-y-2">
-                      <Label>Contact Name</Label>
+                      <Label className="font-semibold text-slate-700 dark:text-slate-300 text-sm">Contact Name</Label>
                       <Input
                         value={formData.financial_contact_name || ''}
                         onChange={(e) => setFormData({...formData, financial_contact_name: e.target.value})}
                         placeholder="e.g., Jane Doe"
+                        className="h-12 text-base focus:ring-2 focus:ring-emerald-100 focus:border-emerald-500"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label>Email Address</Label>
+                      <Label className="font-semibold text-slate-700 dark:text-slate-300 text-sm">Email Address</Label>
                       <Input
                         type="email"
                         value={formData.financial_contact_email || ''}
                         onChange={(e) => setFormData({...formData, financial_contact_email: e.target.value})}
                         placeholder="e.g., finance@company.com"
-                        className={formErrors.financial_contact_email ? 'border-red-500' : ''}
+                        className={`h-12 text-base transition-all ${formErrors.financial_contact_email ? 'border-red-500 ring-2 ring-red-100' : 'focus:ring-2 focus:ring-emerald-100 focus:border-emerald-500'}`}
                       />
-                      {formErrors.financial_contact_email && <p className="text-red-500 text-sm">{formErrors.financial_contact_email}</p>}
+                      {formErrors.financial_contact_email && <p className="flex items-center gap-1 text-red-500 text-sm"><AlertCircle className="w-3 h-3" />{formErrors.financial_contact_email}</p>}
                     </div>
                   </CardContent>
                 </Card>
@@ -818,146 +881,165 @@ export default function BuyersPage() {
 
             {/* Step 3: Address */}
             {createStep === 3 && (
-              <div className="slide-in-from-right-5 space-y-6 animate-in">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-orange-100 p-2 rounded-lg">
-                    <MapPin className="w-6 h-6 text-orange-600" />
+              <div className="slide-in-from-right-5 space-y-8 mx-auto max-w-3xl animate-in duration-300">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="flex justify-center items-center bg-linear-to-br from-orange-500 to-amber-600 shadow-lg shadow-orange-200 dark:shadow-orange-900/30 rounded-xl w-14 h-14">
+                    <MapPin className="w-7 h-7 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Physical Address</h3>
-                    <p className="text-muted-foreground text-sm">Enter the buyer's business address</p>
+                    <h3 className="font-bold text-xl text-slate-900 dark:text-white">Physical Address</h3>
+                    <p className="text-slate-500 dark:text-slate-400">Enter the buyer's business address</p>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label>Street Address</Label>
-                    <Input
-                      value={formData.physical_address_street || ''}
-                      onChange={(e) => setFormData({...formData, physical_address_street: e.target.value})}
-                      placeholder="e.g., 123 Main Street, Suite 400"
-                    />
-                  </div>
-                  <div className="gap-4 grid grid-cols-3">
+                <Card className="border-0 bg-white dark:bg-slate-800 shadow-lg overflow-hidden">
+                  <div className="bg-linear-to-r from-orange-500 to-amber-500 h-1.5" />
+                  <CardContent className="space-y-6 pt-8 pb-8">
                     <div className="space-y-2">
-                      <Label>City</Label>
+                      <Label className="font-semibold text-slate-700 dark:text-slate-300 text-sm">Street Address</Label>
                       <Input
-                        value={formData.physical_address_city || ''}
-                        onChange={(e) => setFormData({...formData, physical_address_city: e.target.value})}
-                        placeholder="e.g., Johannesburg"
+                        value={formData.physical_address_street || ''}
+                        onChange={(e) => setFormData({...formData, physical_address_street: e.target.value})}
+                        placeholder="e.g., 123 Main Street, Suite 400"
+                        className="h-12 text-base focus:ring-2 focus:ring-orange-100 focus:border-orange-500"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <Label>Province</Label>
-                      <Select 
-                        value={formData.physical_address_province || ''} 
-                        onValueChange={(v) => setFormData({...formData, physical_address_province: v})}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select province" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Gauteng">Gauteng</SelectItem>
-                          <SelectItem value="Western Cape">Western Cape</SelectItem>
-                          <SelectItem value="KwaZulu-Natal">KwaZulu-Natal</SelectItem>
-                          <SelectItem value="Eastern Cape">Eastern Cape</SelectItem>
-                          <SelectItem value="Mpumalanga">Mpumalanga</SelectItem>
-                          <SelectItem value="Limpopo">Limpopo</SelectItem>
-                          <SelectItem value="North West">North West</SelectItem>
-                          <SelectItem value="Free State">Free State</SelectItem>
-                          <SelectItem value="Northern Cape">Northern Cape</SelectItem>
-                        </SelectContent>
-                      </Select>
+                    <div className="gap-5 grid grid-cols-1 md:grid-cols-3">
+                      <div className="space-y-2">
+                        <Label className="font-semibold text-slate-700 dark:text-slate-300 text-sm">City</Label>
+                        <Input
+                          value={formData.physical_address_city || ''}
+                          onChange={(e) => setFormData({...formData, physical_address_city: e.target.value})}
+                          placeholder="e.g., Johannesburg"
+                          className="h-12 text-base focus:ring-2 focus:ring-orange-100 focus:border-orange-500"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="font-semibold text-slate-700 dark:text-slate-300 text-sm">Province</Label>
+                        <Select 
+                          value={formData.physical_address_province || ''} 
+                          onValueChange={(v) => setFormData({...formData, physical_address_province: v})}
+                        >
+                          <SelectTrigger className="h-12 text-base">
+                            <SelectValue placeholder="Select province" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Gauteng">🏙️ Gauteng</SelectItem>
+                            <SelectItem value="Western Cape">🌊 Western Cape</SelectItem>
+                            <SelectItem value="KwaZulu-Natal">🌴 KwaZulu-Natal</SelectItem>
+                            <SelectItem value="Eastern Cape">🏔️ Eastern Cape</SelectItem>
+                            <SelectItem value="Mpumalanga">🌿 Mpumalanga</SelectItem>
+                            <SelectItem value="Limpopo">🌳 Limpopo</SelectItem>
+                            <SelectItem value="North West">🌾 North West</SelectItem>
+                            <SelectItem value="Free State">🌻 Free State</SelectItem>
+                            <SelectItem value="Northern Cape">🏜️ Northern Cape</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="font-semibold text-slate-700 dark:text-slate-300 text-sm">Postal Code</Label>
+                        <Input
+                          value={formData.physical_address_postal || ''}
+                          onChange={(e) => setFormData({...formData, physical_address_postal: e.target.value})}
+                          placeholder="e.g., 2000"
+                          className="h-12 text-base focus:ring-2 focus:ring-orange-100 focus:border-orange-500"
+                        />
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Postal Code</Label>
-                      <Input
-                        value={formData.physical_address_postal || ''}
-                        onChange={(e) => setFormData({...formData, physical_address_postal: e.target.value})}
-                        placeholder="e.g., 2000"
-                      />
-                    </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
 
-                <div className="bg-muted/50 mt-6 p-4 rounded-lg">
-                  <p className="flex items-center gap-2 text-muted-foreground text-sm">
-                    <AlertCircle className="w-4 h-4" />
-                    Address is optional but recommended for compliance and delivery purposes.
-                  </p>
+                <div className="flex items-start gap-4 bg-amber-50 dark:bg-amber-950/30 p-5 border border-amber-200 dark:border-amber-800 rounded-xl">
+                  <div className="flex justify-center items-center bg-amber-100 dark:bg-amber-900 rounded-lg w-10 h-10 shrink-0">
+                    <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-amber-800 dark:text-amber-200 text-sm">Address is optional</p>
+                    <p className="mt-1 text-amber-700 dark:text-amber-300 text-sm">
+                      However, providing a complete address is recommended for compliance, document delivery, and regulatory requirements.
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
 
             {/* Step 4: Configuration */}
             {createStep === 4 && (
-              <div className="slide-in-from-right-5 space-y-6 animate-in">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-purple-100 p-2 rounded-lg">
-                    <Settings2 className="w-6 h-6 text-purple-600" />
+              <div className="slide-in-from-right-5 space-y-8 mx-auto max-w-3xl animate-in duration-300">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="flex justify-center items-center bg-linear-to-br from-purple-500 to-violet-600 shadow-lg shadow-purple-200 dark:shadow-purple-900/30 rounded-xl w-14 h-14">
+                    <Settings2 className="w-7 h-7 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Configuration</h3>
-                    <p className="text-muted-foreground text-sm">Set invoice eligibility and financial limits</p>
+                    <h3 className="font-bold text-xl text-slate-900 dark:text-white">Configuration</h3>
+                    <p className="text-slate-500 dark:text-slate-400">Set invoice eligibility and financial limits</p>
                   </div>
                 </div>
 
                 {/* Invoice Eligibility */}
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-base">Invoice Eligibility Criteria</CardTitle>
-                    <CardDescription>Define which invoices can be processed for this buyer</CardDescription>
+                <Card className="border-0 bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+                  <div className="bg-linear-to-r from-violet-500 to-purple-600 h-1.5" />
+                  <CardHeader className="pb-4 pt-6">
+                    <CardTitle className="flex items-center gap-3 text-lg">
+                      <div className="flex justify-center items-center bg-violet-100 dark:bg-violet-900 rounded-lg w-10 h-10">
+                        <FileText className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+                      </div>
+                      Invoice Eligibility Criteria
+                    </CardTitle>
+                    <CardDescription className="ml-13 text-slate-500">Define which invoices can be processed for this buyer</CardDescription>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="gap-4 grid grid-cols-2">
+                  <CardContent className="space-y-6 pt-0">
+                    <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
                       <div className="space-y-2">
-                        <Label className="flex items-center gap-2">
-                          <DollarSign className="w-4 h-4 text-muted-foreground" />
+                        <Label className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300 text-sm">
+                          <DollarSign className="w-4 h-4 text-slate-400" />
                           Min Invoice Amount (R)
                         </Label>
                         <Input
                           type="number"
                           value={formData.min_invoice_amount || 1000}
                           onChange={(e) => setFormData({...formData, min_invoice_amount: Number(e.target.value)})}
-                          className={formErrors.min_invoice_amount ? 'border-red-500' : ''}
+                          className={`h-12 text-base transition-all ${formErrors.min_invoice_amount ? 'border-red-500 ring-2 ring-red-100' : 'focus:ring-2 focus:ring-purple-100 focus:border-purple-500'}`}
                         />
-                        {formErrors.min_invoice_amount && <p className="text-red-500 text-sm">{formErrors.min_invoice_amount}</p>}
+                        {formErrors.min_invoice_amount && <p className="flex items-center gap-1 text-red-500 text-sm"><AlertCircle className="w-3 h-3" />{formErrors.min_invoice_amount}</p>}
                       </div>
                       <div className="space-y-2">
-                        <Label className="flex items-center gap-2">
-                          <DollarSign className="w-4 h-4 text-muted-foreground" />
+                        <Label className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300 text-sm">
+                          <DollarSign className="w-4 h-4 text-slate-400" />
                           Max Invoice Amount (R)
                         </Label>
                         <Input
                           type="number"
                           value={formData.max_invoice_amount || 5000000}
                           onChange={(e) => setFormData({...formData, max_invoice_amount: Number(e.target.value)})}
+                          className="h-12 text-base focus:ring-2 focus:ring-purple-100 focus:border-purple-500"
                         />
                       </div>
                     </div>
-                    <div className="gap-4 grid grid-cols-2">
+                    <div className="gap-6 grid grid-cols-1 md:grid-cols-2">
                       <div className="space-y-2">
-                        <Label className="flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-muted-foreground" />
+                        <Label className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300 text-sm">
+                          <Clock className="w-4 h-4 text-slate-400" />
                           Min Days to Maturity
                         </Label>
                         <Input
                           type="number"
                           value={formData.min_days_to_maturity || 7}
                           onChange={(e) => setFormData({...formData, min_days_to_maturity: Number(e.target.value)})}
-                          className={formErrors.min_days_to_maturity ? 'border-red-500' : ''}
+                          className={`h-12 text-base transition-all ${formErrors.min_days_to_maturity ? 'border-red-500 ring-2 ring-red-100' : 'focus:ring-2 focus:ring-purple-100 focus:border-purple-500'}`}
                         />
-                        {formErrors.min_days_to_maturity && <p className="text-red-500 text-sm">{formErrors.min_days_to_maturity}</p>}
+                        {formErrors.min_days_to_maturity && <p className="flex items-center gap-1 text-red-500 text-sm"><AlertCircle className="w-3 h-3" />{formErrors.min_days_to_maturity}</p>}
                       </div>
                       <div className="space-y-2">
-                        <Label className="flex items-center gap-2">
-                          <Clock className="w-4 h-4 text-muted-foreground" />
+                        <Label className="flex items-center gap-2 font-semibold text-slate-700 dark:text-slate-300 text-sm">
+                          <Clock className="w-4 h-4 text-slate-400" />
                           Max Days to Maturity
                         </Label>
                         <Input
                           type="number"
                           value={formData.max_days_to_maturity || 90}
                           onChange={(e) => setFormData({...formData, max_days_to_maturity: Number(e.target.value)})}
+                          className="h-12 text-base focus:ring-2 focus:ring-purple-100 focus:border-purple-500"
                         />
                       </div>
                     </div>
@@ -965,29 +1047,36 @@ export default function BuyersPage() {
                 </Card>
 
                 {/* Financial Configuration */}
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-base">Financial Configuration</CardTitle>
-                    <CardDescription>Credit limits and rate card assignment</CardDescription>
+                <Card className="border-0 bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+                  <div className="bg-linear-to-r from-indigo-500 to-blue-600 h-1.5" />
+                  <CardHeader className="pb-4 pt-6">
+                    <CardTitle className="flex items-center gap-3 text-lg">
+                      <div className="flex justify-center items-center bg-indigo-100 dark:bg-indigo-900 rounded-lg w-10 h-10">
+                        <DollarSign className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                      </div>
+                      Financial Configuration
+                    </CardTitle>
+                    <CardDescription className="ml-13 text-slate-500">Credit limits and rate card assignment</CardDescription>
                   </CardHeader>
-                  <CardContent className="gap-4 grid grid-cols-2">
+                  <CardContent className="gap-6 grid grid-cols-1 md:grid-cols-2 pt-0">
                     <div className="space-y-2">
-                      <Label>Credit Limit (R)</Label>
+                      <Label className="font-semibold text-slate-700 dark:text-slate-300 text-sm">Credit Limit (R)</Label>
                       <Input
                         type="number"
                         value={formData.credit_limit || ''}
                         onChange={(e) => setFormData({...formData, credit_limit: e.target.value ? Number(e.target.value) : undefined})}
                         placeholder="Leave blank for no limit"
+                        className="h-12 text-base focus:ring-2 focus:ring-indigo-100 focus:border-indigo-500"
                       />
-                      <p className="text-muted-foreground text-xs">Maximum outstanding financed amount</p>
+                      <p className="text-slate-400 text-xs">Maximum outstanding financed amount at any time</p>
                     </div>
                     <div className="space-y-2">
-                      <Label>Rate Card</Label>
+                      <Label className="font-semibold text-slate-700 dark:text-slate-300 text-sm">Rate Card</Label>
                       <Select 
                         value={formData.rate_card_id?.toString() || ''} 
                         onValueChange={(v) => setFormData({...formData, rate_card_id: v ? Number(v) : undefined})}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="h-12 text-base">
                           <SelectValue placeholder="Select rate card" />
                         </SelectTrigger>
                         <SelectContent>
@@ -1001,7 +1090,7 @@ export default function BuyersPage() {
                           ))}
                         </SelectContent>
                       </Select>
-                      <p className="text-muted-foreground text-xs">Can be assigned later after activation</p>
+                      <p className="text-slate-400 text-xs">Can be assigned later after activation</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -1010,144 +1099,179 @@ export default function BuyersPage() {
 
             {/* Step 5: Review */}
             {createStep === 5 && (
-              <div className="slide-in-from-right-5 space-y-6 animate-in">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-green-100 p-2 rounded-lg">
-                    <Check className="w-6 h-6 text-green-600" />
+              <div className="slide-in-from-right-5 space-y-8 mx-auto max-w-3xl animate-in duration-300">
+                <div className="flex items-center gap-4 mb-8">
+                  <div className="flex justify-center items-center bg-linear-to-br from-green-500 to-emerald-600 shadow-lg shadow-green-200 dark:shadow-green-900/30 rounded-xl w-14 h-14">
+                    <Check className="w-7 h-7 text-white" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Review & Confirm</h3>
-                    <p className="text-muted-foreground text-sm">Review the information before creating the buyer</p>
+                    <h3 className="font-bold text-xl text-slate-900 dark:text-white">Review & Confirm</h3>
+                    <p className="text-slate-500 dark:text-slate-400">Review all information before creating the buyer</p>
                   </div>
                 </div>
 
-                <div className="gap-6 grid grid-cols-2">
+                <div className="gap-5 grid grid-cols-1 md:grid-cols-2">
                   {/* Company Info */}
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex items-center gap-2 font-medium text-sm">
-                        <Building2 className="w-4 h-4" /> Company
+                  <Card className="border-0 bg-white dark:bg-slate-800 shadow-lg overflow-hidden">
+                    <div className="bg-linear-to-r from-blue-500 to-indigo-500 h-1" />
+                    <CardHeader className="pb-3 pt-5">
+                      <CardTitle className="flex items-center gap-3 font-semibold text-base">
+                        <div className="flex justify-center items-center bg-blue-100 dark:bg-blue-900 rounded-lg w-8 h-8">
+                          <Building2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        Company
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-1 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Name:</span>
-                        <span className="font-medium">{formData.name || '-'}</span>
+                    <CardContent className="space-y-3 pt-0 text-sm">
+                      <div className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700">
+                        <span className="text-slate-500">Name</span>
+                        <span className="font-semibold text-slate-900 dark:text-white">{formData.name || '-'}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Code:</span>
-                        <span className="font-mono">{formData.code || '-'}</span>
+                      <div className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700">
+                        <span className="text-slate-500">Code</span>
+                        <span className="bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-md font-mono font-medium text-slate-700 dark:text-slate-300">{formData.code || '-'}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Industry:</span>
-                        <span className="capitalize">{formData.industry_sector || '-'}</span>
+                      <div className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700">
+                        <span className="text-slate-500">Industry</span>
+                        <span className="capitalize text-slate-700 dark:text-slate-300">{formData.industry_sector || '-'}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Risk Tier:</span>
+                      <div className="flex justify-between items-center py-2">
+                        <span className="text-slate-500">Risk Tier</span>
                         {formData.risk_tier && getRiskBadge(formData.risk_tier)}
                       </div>
                     </CardContent>
                   </Card>
 
                   {/* Contact Info */}
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex items-center gap-2 font-medium text-sm">
-                        <Users className="w-4 h-4" /> Contacts
+                  <Card className="border-0 bg-white dark:bg-slate-800 shadow-lg overflow-hidden">
+                    <div className="bg-linear-to-r from-green-500 to-emerald-500 h-1" />
+                    <CardHeader className="pb-3 pt-5">
+                      <CardTitle className="flex items-center gap-3 font-semibold text-base">
+                        <div className="flex justify-center items-center bg-green-100 dark:bg-green-900 rounded-lg w-8 h-8">
+                          <Users className="w-4 h-4 text-green-600 dark:text-green-400" />
+                        </div>
+                        Contacts
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-1 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Primary:</span>
-                        <span>{formData.primary_contact_name || '-'}</span>
+                    <CardContent className="space-y-3 pt-0 text-sm">
+                      <div className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700">
+                        <span className="text-slate-500">Primary</span>
+                        <span className="text-slate-700 dark:text-slate-300">{formData.primary_contact_name || '-'}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Email:</span>
-                        <span className="text-blue-600">{formData.contact_email || '-'}</span>
+                      <div className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700">
+                        <span className="text-slate-500">Email</span>
+                        <span className="font-medium text-blue-600 dark:text-blue-400">{formData.contact_email || '-'}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Phone:</span>
-                        <span>{formData.contact_phone || '-'}</span>
+                      <div className="flex justify-between items-center py-2">
+                        <span className="text-slate-500">Phone</span>
+                        <span className="text-slate-700 dark:text-slate-300">{formData.contact_phone || '-'}</span>
                       </div>
                     </CardContent>
                   </Card>
 
                   {/* Address */}
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex items-center gap-2 font-medium text-sm">
-                        <MapPin className="w-4 h-4" /> Address
+                  <Card className="border-0 bg-white dark:bg-slate-800 shadow-lg overflow-hidden">
+                    <div className="bg-linear-to-r from-orange-500 to-amber-500 h-1" />
+                    <CardHeader className="pb-3 pt-5">
+                      <CardTitle className="flex items-center gap-3 font-semibold text-base">
+                        <div className="flex justify-center items-center bg-orange-100 dark:bg-orange-900 rounded-lg w-8 h-8">
+                          <MapPin className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+                        </div>
+                        Address
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="text-sm">
+                    <CardContent className="pt-0 text-sm">
                       {formData.physical_address_street ? (
-                        <p>
-                          {formData.physical_address_street}<br/>
-                          {formData.physical_address_city}, {formData.physical_address_province} {formData.physical_address_postal}
-                        </p>
+                        <div className="text-slate-700 dark:text-slate-300 leading-relaxed">
+                          <p>{formData.physical_address_street}</p>
+                          <p>{formData.physical_address_city}, {formData.physical_address_province}</p>
+                          <p>{formData.physical_address_postal}</p>
+                        </div>
                       ) : (
-                        <p className="text-muted-foreground">Not provided</p>
+                        <p className="text-slate-400 italic">Not provided</p>
                       )}
                     </CardContent>
                   </Card>
 
                   {/* Configuration */}
-                  <Card>
-                    <CardHeader className="pb-2">
-                      <CardTitle className="flex items-center gap-2 font-medium text-sm">
-                        <Settings2 className="w-4 h-4" /> Configuration
+                  <Card className="border-0 bg-white dark:bg-slate-800 shadow-lg overflow-hidden">
+                    <div className="bg-linear-to-r from-purple-500 to-violet-500 h-1" />
+                    <CardHeader className="pb-3 pt-5">
+                      <CardTitle className="flex items-center gap-3 font-semibold text-base">
+                        <div className="flex justify-center items-center bg-purple-100 dark:bg-purple-900 rounded-lg w-8 h-8">
+                          <Settings2 className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                        </div>
+                        Configuration
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-1 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Invoice Range:</span>
-                        <span>R{formData.min_invoice_amount?.toLocaleString()} - R{formData.max_invoice_amount?.toLocaleString()}</span>
+                    <CardContent className="space-y-3 pt-0 text-sm">
+                      <div className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700">
+                        <span className="text-slate-500">Invoice Range</span>
+                        <span className="font-medium text-slate-700 dark:text-slate-300">R{formData.min_invoice_amount?.toLocaleString()} - R{formData.max_invoice_amount?.toLocaleString()}</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Maturity:</span>
-                        <span>{formData.min_days_to_maturity} - {formData.max_days_to_maturity} days</span>
+                      <div className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-700">
+                        <span className="text-slate-500">Maturity</span>
+                        <span className="text-slate-700 dark:text-slate-300">{formData.min_days_to_maturity} - {formData.max_days_to_maturity} days</span>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Credit Limit:</span>
-                        <span>{formData.credit_limit ? `R${formData.credit_limit.toLocaleString()}` : 'No limit'}</span>
+                      <div className="flex justify-between items-center py-2">
+                        <span className="text-slate-500">Credit Limit</span>
+                        <span className="font-medium text-slate-700 dark:text-slate-300">{formData.credit_limit ? `R${formData.credit_limit.toLocaleString()}` : 'No limit'}</span>
                       </div>
                     </CardContent>
                   </Card>
                 </div>
 
-                <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-                  <p className="flex items-center gap-2 text-sm">
-                    <AlertCircle className="w-4 h-4 text-yellow-600" />
-                    <span>The buyer will be created in <strong>Draft</strong> status. You'll need to upload required documents and activate them before processing invoices.</span>
-                  </p>
+                <div className="flex items-start gap-4 bg-linear-to-r from-amber-50 to-yellow-50 dark:from-amber-950/30 dark:to-yellow-950/30 p-5 border border-amber-200 dark:border-amber-800 rounded-xl">
+                  <div className="flex justify-center items-center bg-amber-100 dark:bg-amber-900 rounded-full w-10 h-10 shrink-0">
+                    <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-amber-800 dark:text-amber-200">Important Notice</p>
+                    <p className="mt-1 text-amber-700 dark:text-amber-300 text-sm">
+                      The buyer will be created in <Badge className="bg-slate-200 hover:bg-slate-200 mx-1 text-slate-700">Draft</Badge> status. You'll need to upload required documents and activate them before processing invoices.
+                    </p>
+                  </div>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Footer with Navigation */}
-          <div className="flex justify-between items-center bg-muted/30 p-4 border-t">
+          {/* Enhanced Footer with Navigation */}
+          <div className="flex justify-between items-center bg-slate-50 dark:bg-slate-900 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] px-8 py-5 border-t border-slate-200 dark:border-slate-700">
             <div>
               {createStep > 1 && (
-                <Button variant="ghost" onClick={prevStep}>
-                  <ChevronLeft className="mr-2 w-4 h-4" />
+                <Button variant="ghost" onClick={prevStep} className="gap-2 hover:bg-slate-200 dark:hover:bg-slate-800 px-5 h-11 text-base">
+                  <ChevronLeft className="w-5 h-5" />
                   Back
                 </Button>
               )}
             </div>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
+            <div className="flex items-center gap-3">
+              <Button variant="outline" onClick={() => setShowCreateDialog(false)} className="px-6 h-11 text-base">
                 Cancel
               </Button>
               {createStep < 5 ? (
-                <Button onClick={nextStep}>
-                  Next
-                  <ChevronRight className="ml-2 w-4 h-4" />
+                <Button onClick={nextStep} className="gap-2 bg-linear-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg shadow-blue-500/25 px-8 h-11 text-base">
+                  Continue
+                  <ChevronRight className="w-5 h-5" />
                 </Button>
               ) : (
-                <Button onClick={handleCreate} disabled={isPending} className="bg-green-600 hover:bg-green-700">
-                  {isPending ? 'Creating...' : 'Create Buyer'}
-                  <Check className="ml-2 w-4 h-4" />
+                <Button 
+                  onClick={handleCreate} 
+                  disabled={isPending} 
+                  className="gap-2 bg-linear-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 shadow-lg shadow-green-500/25 px-8 h-11 text-base"
+                >
+                  {isPending ? (
+                    <>
+                      <div className="border-white border-b-2 rounded-full w-5 h-5 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    <>
+                      Create Buyer
+                      <Check className="w-5 h-5" />
+                    </>
+                  )}
                 </Button>
               )}
             </div>
