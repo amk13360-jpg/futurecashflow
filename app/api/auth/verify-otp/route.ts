@@ -12,6 +12,10 @@ interface OTPCode {
   used_at: Date | null
 }
 
+interface UserWithPasswordFlag extends User {
+  must_change_password?: number;
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { userId, otp } = await request.json()
@@ -32,7 +36,7 @@ export async function POST(request: NextRequest) {
         userType: "accounts_payable",
         action: "OTP_VERIFICATION_FAILED",
         details: "Invalid OTP code",
-        ipAddress: request.ip || request.headers.get("x-forwarded-for") || undefined,
+        ipAddress: request.headers.get("x-forwarded-for") || undefined,
         userAgent: request.headers.get("user-agent") || undefined,
       })
 
@@ -50,13 +54,16 @@ export async function POST(request: NextRequest) {
     await query("UPDATE otp_codes SET used_at = NOW() WHERE otp_id = ?", [otpCode.otp_id])
 
     // Get user details
-    const users = await query<User[]>("SELECT * FROM users WHERE user_id = ?", [userId])
+    const users = await query<UserWithPasswordFlag[]>("SELECT * FROM users WHERE user_id = ?", [userId])
 
     if (users.length === 0) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
     }
 
     const user = users[0]
+
+    // Check if user must change password (first login with temp password)
+    const mustChangePassword = user.must_change_password === 1
 
     // Get buyer name if user has a buyer_id
     let buyerName: string | undefined
@@ -83,17 +90,24 @@ export async function POST(request: NextRequest) {
 
     await setSessionCookie(token)
 
+    // Map role to valid audit userType
+    const auditUserType = user.role === 'accounts_payable' ? 'accounts_payable' 
+      : user.role === 'admin' ? 'admin' : 'accounts_payable';
+    
     await createAuditLog({
       userId: user.user_id,
-      userType: "accounts_payable",
+      userType: auditUserType,
       action: "LOGIN_SUCCESS",
-      details: "AP user logged in successfully with OTP",
-      ipAddress: request.ip || request.headers.get("x-forwarded-for") || undefined,
+      details: mustChangePassword 
+        ? "User logged in successfully - password change required" 
+        : "User logged in successfully with OTP",
+      ipAddress: request.headers.get("x-forwarded-for") || undefined,
       userAgent: request.headers.get("user-agent") || undefined,
     })
 
     return NextResponse.json({
       success: true,
+      mustChangePassword, // Tell client to redirect to password change
       user: {
         userId: user.user_id,
         username: user.username,

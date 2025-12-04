@@ -703,12 +703,12 @@ Use the seeded data for testing:
 
 ### 8.2 Database Tables Reference
 
-The system uses 18 tables in the `fmf_scf_platform` database:
+The system uses 21 tables in the `fmf_scf_platform` database:
 
 | Table | Description | Key Columns |
 |-------|-------------|-------------|
-| `buyers` | Buyer/Company entities | buyer_id, name, code, is_active |
-| `users` | Admin and AP user accounts | user_id, buyer_id, email, role, password_hash |
+| `buyers` | Buyer/Company entities | buyer_id, name, code, trading_name, registration_no, risk_tier, credit_limit |
+| `users` | Admin and AP user accounts | user_id, buyer_id, email, role, password_hash, must_change_password |
 | `suppliers` | Supplier/Vendor entities | supplier_id, buyer_id, vendor_number, name, bank details |
 | `invoices` | Uploaded invoices | invoice_id, buyer_id, supplier_id, document_number, amount |
 | `offers` | Early payment offers | offer_id, invoice_id, supplier_id, batch_id, discount_rate, status |
@@ -725,6 +725,9 @@ The system uses 18 tables in the `fmf_scf_platform` database:
 | `trusted_devices` | Remember device feature | device_id, user_id, fingerprint, trusted_until |
 | `notification_rules` | Email trigger rules | rule_id, buyer_id, event_type, is_active |
 | `email_templates` | Email content templates | template_id, buyer_id, template_type, subject, body |
+| `rate_cards` | Buyer pricing rate cards | rate_card_id, name, base_annual_rate, tier_adjustments |
+| `buyer_documents` | Buyer onboarding documents | document_id, buyer_id, document_type, verification_status |
+| `buyer_change_log` | Buyer profile change history | log_id, buyer_id, field_name, old_value, new_value |
 
 ### 8.3 Common Queries
 
@@ -922,6 +925,67 @@ if (process.env.NODE_ENV === 'development') {
 
 ---
 
+### 9.5 Buyer Onboarding Flow
+
+The buyer onboarding flow is FMF Admin initiated (not self-service):
+
+#### Flow Overview
+1. **Create Buyer (Draft)** - Admin creates buyer profile with company details
+2. **Upload Documents** - Admin uploads CIPC, tax clearance, financial statements
+3. **Verify Documents** - Admin reviews and marks documents as verified/rejected
+4. **Assign Rate Card** - Admin assigns pricing rate card and credit limit
+5. **Activate Buyer** - Admin activates buyer once all requirements met
+6. **Create AP Users** - Admin creates up to 4 AP users per buyer
+7. **Send Welcome Email** - System sends email with temp password
+8. **First Login** - AP user changes password on first login
+
+#### Key Files
+
+| File | Purpose |
+|------|---------|
+| `lib/actions/buyers.ts` | Buyer CRUD operations |
+| `lib/actions/buyer-users.ts` | Create AP users, send welcome emails |
+| `lib/actions/buyer-documents.ts` | Document upload/verify/delete |
+| `app/admin/buyers/page.tsx` | Buyer list with filters |
+| `app/admin/buyers/[id]/page.tsx` | Buyer details (users, docs, history) |
+| `app/login/ap/change-password/page.tsx` | First login password change |
+| `app/api/auth/change-password/route.ts` | Password change API |
+
+#### Database Schema (Buyer Onboarding)
+
+```sql
+-- Buyer expanded columns (in buyers table)
+trading_name, registration_no, tax_id, industry_sector,
+risk_tier (A/B/C), address_*, contact_*, 
+credit_limit, current_exposure, rate_card_id
+
+-- Users table additions
+must_change_password, is_email_verified,
+activation_token, activation_expires_at
+
+-- New tables
+rate_cards, buyer_documents, buyer_change_log
+```
+
+#### Creating an AP User Programmatically
+
+```typescript
+import { createUserForBuyer } from '@/lib/actions/buyer-users';
+
+const result = await createUserForBuyer({
+  buyer_id: 1,
+  username: 'aap_user1',
+  email: 'user@mine.com',
+  full_name: 'John Doe',
+  phone: '+27 82 123 4567',
+  send_welcome_email: true // Sends email with temp password
+});
+
+// result.tempPassword contains the generated password
+```
+
+---
+
 ## 10. Troubleshooting
 
 ### 10.1 Common Issues
@@ -1097,6 +1161,7 @@ rm -rf .next node_modules/.cache
 |---------|------|--------|---------|
 | 1.0.0 | December 3, 2025 | Development Team | Initial release |
 | 1.1.0 | June 14, 2025 | Development Team | Added Phase 1 features: offer batches, standing cession, user management, bank change requests. Updated database tables section with new tables (offer_batches, trusted_devices, notification_rules, email_templates). |
+| 1.2.0 | June 15, 2025 | Development Team | Added buyer onboarding (Module 0.4): rate_cards, buyer_documents, buyer_change_log tables. Added lib/actions/buyer-users.ts, buyer-documents.ts. Added first login password change flow. Updated database schema with 22 new columns in buyers, 4 in users. |
 
 ---
 

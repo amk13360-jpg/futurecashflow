@@ -8,12 +8,20 @@ export async function POST(request: NextRequest) {
     const supplierSession = await getSupplierSession()
 
     if (session) {
+      // Map session role to audit userType (auditor -> admin for audit purposes)
+      const userTypeMap: Record<string, 'admin' | 'accounts_payable' | 'supplier' | 'system'> = {
+        admin: 'admin',
+        accounts_payable: 'accounts_payable',
+        auditor: 'admin' // Map auditor to admin for audit logging
+      };
+      const userType = userTypeMap[session.role] || 'admin';
+      
       await createAuditLog({
         userId: session.userId,
-        userType: session.role,
+        userType,
         action: "LOGOUT",
         details: "User logged out",
-        ipAddress: request.ip || request.headers.get("x-forwarded-for") || undefined,
+        ipAddress: request.headers.get("x-forwarded-for") || undefined,
         userAgent: request.headers.get("user-agent") || undefined,
       })
     } else if (supplierSession) {
@@ -22,7 +30,7 @@ export async function POST(request: NextRequest) {
         userType: "supplier",
         action: "LOGOUT",
         details: "Supplier logged out",
-        ipAddress: request.ip || request.headers.get("x-forwarded-for") || undefined,
+        ipAddress: request.headers.get("x-forwarded-for") || undefined,
         userAgent: request.headers.get("user-agent") || undefined,
       })
     }

@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
         userType: "system",
         action: "LOGIN_FAILED",
         details: `Failed admin login attempt for username: ${username}`,
-        ipAddress: request.ip || request.headers.get("x-forwarded-for") || undefined,
+        ipAddress: request.headers.get("x-forwarded-for") || undefined,
         userAgent: request.headers.get("user-agent") || undefined,
       })
 
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
         userType: "admin",
         action: "LOGIN_FAILED",
         details: "Invalid password",
-        ipAddress: request.ip || request.headers.get("x-forwarded-for") || undefined,
+        ipAddress: request.headers.get("x-forwarded-for") || undefined,
         userAgent: request.headers.get("user-agent") || undefined,
       })
 
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
       userType: "admin",
       action: "LOGIN_SUCCESS",
       details: "Admin logged in successfully",
-      ipAddress: request.ip || request.headers.get("x-forwarded-for") || undefined,
+      ipAddress: request.headers.get("x-forwarded-for") || undefined,
       userAgent: request.headers.get("user-agent") || undefined,
     })
 

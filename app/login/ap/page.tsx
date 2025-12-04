@@ -80,7 +80,12 @@ export default function APLoginPage() {
         return
       }
 
-      router.push("/ap/dashboard")
+      // Check if user needs to change password (first login)
+      if (data.mustChangePassword) {
+        router.push("/login/ap/change-password")
+      } else {
+        router.push("/ap/dashboard")
+      }
     } catch (err) {
       setError("An error occurred. Please try again.")
       setLoading(false)
@@ -88,27 +93,27 @@ export default function APLoginPage() {
   }
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-background text-foreground px-4">
+    <div className="relative flex justify-center items-center bg-background px-4 min-h-screen text-foreground">
       {/* Theme toggle top-right */}
-      <div className="absolute top-4 right-4 z-10">
+      <div className="top-4 right-4 z-10 absolute">
         <ThemeToggle />
       </div>
       {/* Modern background gradient and blur effects */}
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-72 w-72 rounded-full bg-primary/20 blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 h-72 w-72 rounded-full bg-primary/10 blur-3xl"></div>
+      <div className="-z-10 absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="-top-40 -right-40 absolute bg-primary/20 blur-3xl rounded-full w-72 h-72"></div>
+        <div className="-bottom-40 -left-40 absolute bg-primary/10 blur-3xl rounded-full w-72 h-72"></div>
       </div>
       <div className="w-full max-w-md">
-        <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6">
-          <ArrowLeft className="h-4 w-4 mr-2" />
+        <Link href="/" className="inline-flex items-center mb-6 text-muted-foreground hover:text-foreground text-sm">
+          <ArrowLeft className="mr-2 w-4 h-4" />
           Back to home
         </Link>
-        <Card className="bg-card border-0 shadow-none text-foreground">
+        <Card className="bg-card shadow-none border-0 text-foreground">
           <CardHeader className="text-center">
-            <div className="flex items-center justify-center mb-4">
+            <div className="flex justify-center items-center mb-4">
               <Logo size="lg" />
             </div>
-            <CardTitle className="text-2xl font-bold">Accounts Payable Login</CardTitle>
+            <CardTitle className="font-bold text-2xl">Accounts Payable Login</CardTitle>
             <CardDescription>
               {step === "credentials" ? "Enter your mine code and password" : "Enter the OTP sent to your email"}
             </CardDescription>
@@ -117,12 +122,12 @@ export default function APLoginPage() {
             {step === "credentials" ? (
               <form onSubmit={handleCredentialsSubmit} className="space-y-4">
                 {error && (
-                  <Alert variant="destructive" className="border-error bg-error/10">
+                  <Alert variant="destructive" className="bg-error/10 border-error">
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 )}
                 <div className="space-y-2">
-                  <Label htmlFor="mineCode" className="text-sm font-semibold">Mine Code</Label>
+                  <Label htmlFor="mineCode" className="font-semibold text-sm">Mine Code</Label>
                   <Input
                     id="mineCode"
                     type="text"
@@ -131,11 +136,11 @@ export default function APLoginPage() {
                     placeholder="e.g., AAP001"
                     required
                     disabled={loading}
-                    className="transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                    className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-colors"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-sm font-semibold">Password</Label>
+                  <Label htmlFor="password" className="font-semibold text-sm">Password</Label>
                   <Input
                     id="password"
                     type="password"
@@ -144,10 +149,10 @@ export default function APLoginPage() {
                     placeholder="Enter your password"
                     required
                     disabled={loading}
-                    className="transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                    className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-colors"
                   />
                 </div>
-                <Button type="submit" className="w-full font-semibold py-3 rounded-xl" disabled={loading}>
+                <Button type="submit" className="py-3 rounded-xl w-full font-semibold" disabled={loading}>
                   {loading ? "Sending OTP..." : "Continue"}
                 </Button>
                 
@@ -155,7 +160,7 @@ export default function APLoginPage() {
             ) : (
               <form onSubmit={handleOtpSubmit} className="space-y-4">
                 {error && (
-                  <Alert variant="destructive" className="border-error bg-error/10">
+                  <Alert variant="destructive" className="bg-error/10 border-error">
                     <AlertDescription>{error}</AlertDescription>
                   </Alert>
                 )}
@@ -163,7 +168,7 @@ export default function APLoginPage() {
                   <AlertDescription>A 6-digit code has been sent to {email}</AlertDescription>
                 </Alert>
                 <div className="space-y-2">
-                  <Label htmlFor="otp" className="text-sm font-semibold">One-Time Password</Label>
+                  <Label htmlFor="otp" className="font-semibold text-sm">One-Time Password</Label>
                   <Input
                     id="otp"
                     type="text"
@@ -173,10 +178,10 @@ export default function APLoginPage() {
                     maxLength={6}
                     required
                     disabled={loading}
-                    className="transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                    className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-colors"
                   />
                 </div>
-                <Button type="submit" className="w-full font-semibold py-3 rounded-xl" disabled={loading}>
+                <Button type="submit" className="py-3 rounded-xl w-full font-semibold" disabled={loading}>
                   {loading ? "Verifying..." : "Verify & Sign In"}
                 </Button>
                 <Button

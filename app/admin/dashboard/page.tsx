@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { EmptyState } from "@/components/ui/empty-state"
-import { FileText, Users, DollarSign, CheckCircle, Clock, Package, ArrowRight } from "lucide-react"
+import { FileText, Users, DollarSign, CheckCircle, Clock, Package, ArrowRight, Building2 } from "lucide-react"
 import Link from "next/link"
 import { getSession } from "@/lib/auth/session"
 
@@ -60,7 +60,7 @@ export default async function AdminDashboardPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="gap-4 grid md:grid-cols-3 mb-8">
+        <div className="gap-4 grid md:grid-cols-4 mb-8">
           <Card className="bg-gradient-to-br from-blue-50 dark:from-blue-950 to-transparent border-blue-200 dark:border-blue-800">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-lg">
@@ -73,6 +73,24 @@ export default async function AdminDashboardPage() {
               <Button asChild className="w-full">
                 <Link href="/admin/offer-batches">
                   Manage Offer Batches
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-purple-50 dark:from-purple-950 to-transparent border-purple-200 dark:border-purple-800">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Building2 className="w-5 h-5 text-purple-600" />
+                Buyers
+              </CardTitle>
+              <CardDescription>Manage buyer profiles and settings</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild className="w-full" variant="outline">
+                <Link href="/admin/buyers">
+                  Manage Buyers
                   <ArrowRight className="ml-2 w-4 h-4" />
                 </Link>
               </Button>

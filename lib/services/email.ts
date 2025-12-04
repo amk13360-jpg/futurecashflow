@@ -3,6 +3,54 @@ import { EmailClient, KnownEmailSendStatus } from "@azure/communication-email"
 const connectionString = process.env.AZURE_COMMUNICATION_CONNECTION_STRING || ""
 const senderAddress = process.env.AZURE_COMMUNICATION_SENDER || "DoNotReply@ccd12bc5-9970-4050-8117-1aec566c8db9.azurecomm.net"
 
+// ============================================================================
+// Generic Email Interface
+// ============================================================================
+
+export interface SendEmailParams {
+  to: string;
+  subject: string;
+  html: string;
+  text?: string;
+}
+
+/**
+ * Generic email sending function
+ */
+export async function sendEmail(params: SendEmailParams): Promise<boolean> {
+  const { to, subject, html, text } = params;
+
+  try {
+    const client = getEmailClient();
+    
+    const emailMessage = {
+      senderAddress,
+      content: {
+        subject,
+        html,
+        plainText: text || html.replace(/<[^>]*>/g, ''), // Strip HTML for plain text
+      },
+      recipients: {
+        to: [{ address: to }],
+      },
+    };
+
+    const poller = await client.beginSend(emailMessage);
+    const result = await poller.pollUntilDone();
+
+    if (result.status === KnownEmailSendStatus.Succeeded) {
+      console.log(`[Email Service] Email sent successfully to ${to}`);
+      return true;
+    } else {
+      console.error(`[Email Service] Failed to send email. Status: ${result.status}`);
+      return false;
+    }
+  } catch (error) {
+    console.error("[Email Service] Error sending email:", error);
+    return false;
+  }
+}
+
 // Create email client lazily to avoid build-time errors
 let emailClient: EmailClient | null = null
 
