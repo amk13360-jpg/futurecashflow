@@ -553,7 +553,7 @@ export default function BuyersPage() {
 
       {/* Create Buyer Dialog - Wizard Style */}
       <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetForm(); }}>
-        <DialogContent className="flex flex-col gap-0 p-0 w-auto max-w-[95vw] h-auto bg-white dark:bg-slate-950">
+        <DialogContent className="flex flex-col gap-0 bg-white dark:bg-slate-950 p-0 w-auto max-w-[95vw] h-auto">
           {/* Header with Progress */}
           <div className="bg-linear-to-r from-blue-600 to-indigo-600 px-8 pt-8 pb-10">
             <DialogTitle className="font-bold text-white text-2xl">Add New Buyer</DialogTitle>
