@@ -57,18 +57,22 @@ export async function getSupplierCessionAgreement() {
 }
 // Fetch supplier and buyer details for cession agreement PDF
 export async function getSupplierAndBuyerDetails(supplierId: string) {
-  // Replace with your actual DB logic
+  // Get supplier details including company_code
   const supplierArr = await query(
-    `SELECT supplier_id, name, physical_address, contact_email, contact_phone FROM suppliers WHERE supplier_id = ? LIMIT 1`,
+    `SELECT supplier_id, name, physical_address, contact_email, contact_phone, company_code 
+     FROM suppliers WHERE supplier_id = ? LIMIT 1`,
     [supplierId]
   );
   const supplier = supplierArr[0];
   if (!supplier) return null;
-  // You may need to determine buyer_id from another relationship if not present in suppliers
-  // For now, fetch the first buyer (or update logic as needed)
+  
+  // Get the correct buyer based on supplier's company_code
   const buyerArr = await query(
-    `SELECT buyer_id, name, contact_email, contact_phone FROM buyers LIMIT 1`,
-    []
+    `SELECT buyer_id, name, contact_email, contact_phone 
+     FROM buyers 
+     WHERE code = ? 
+     LIMIT 1`,
+    [supplier.company_code]
   );
   const buyer = buyerArr[0];
   if (!buyer) return null;

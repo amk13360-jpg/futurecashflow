@@ -189,6 +189,18 @@ export async function uploadAPData(apDataRows: APDataRow[]) {
     throw new Error("Unauthorized")
   }
 
+  // Get the buyer code for the logged-in AP user to validate uploads
+  let allowedBuyerCode: string | null = null
+  if (session.buyerId) {
+    const buyers = await query<Array<{ code: string }>>(
+      `SELECT code FROM buyers WHERE buyer_id = ?`,
+      [session.buyerId]
+    )
+    if (buyers.length > 0) {
+      allowedBuyerCode = buyers[0].code
+    }
+  }
+
   try {
     const results = await transaction(async (connection) => {
       const uploaded = []
@@ -201,8 +213,18 @@ export async function uploadAPData(apDataRows: APDataRow[]) {
             continue
           }
 
-          // Get buyer_id from Company Code
-          const buyerId = await ensureBuyerForCompany(connection, row["Company Code"])
+          // Validate that AP user can only upload for their own buyer
+          const rowCompanyCode = row["Company Code"]
+          if (allowedBuyerCode && rowCompanyCode && rowCompanyCode !== allowedBuyerCode) {
+            errors.push(`${row["Document Number"]}: You can only upload invoices for your company (${allowedBuyerCode}), not ${rowCompanyCode}`)
+            continue
+          }
+
+          // Get buyer_id from Company Code (use session's buyer_id if available)
+          let buyerId: number | null = session.buyerId || null
+          if (!buyerId) {
+            buyerId = await ensureBuyerForCompany(connection, row["Company Code"])
+          }
           if (!buyerId) {
             errors.push(`${row["Document Number"]}: Could not resolve buyer for company code ${row["Company Code"]}`)
             continue
@@ -307,6 +329,15 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
   }
 
   try {
+    // Get the buyer code for the logged-in AP user (for validation)
+    let allowedBuyerCode: string | null = null
+    if (session.buyerId) {
+      const buyers = await query<Array<{ code: string }>>(`SELECT code FROM buyers WHERE buyer_id = ?`, [session.buyerId])
+      if (buyers.length > 0) {
+        allowedBuyerCode = buyers[0].code
+      }
+    }
+
     const results = await transaction(async (connection) => {
       const uploaded = []
       const errors = []
@@ -314,6 +345,13 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
 
       for (const row of vendorDataRows) {
         try {
+          // Validate that AP users only upload vendors for their company
+          const rowCompanyCode = row["Company Code"]
+          if (allowedBuyerCode && rowCompanyCode && rowCompanyCode !== allowedBuyerCode) {
+            errors.push(`${row["Vendor Number"]}: You can only upload vendors for your company (${allowedBuyerCode}), not ${rowCompanyCode}`)
+            continue
+          }
+
           // Check if supplier exists
           const [existing] = await connection.execute(
             "SELECT supplier_id FROM suppliers WHERE vendor_number = ? AND company_code = ?",
@@ -472,32 +510,100 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
   }
 }
 
-// Get invoices for AP user - UPDATED for new structure
+// Get invoices for AP user - UPDATED to filter by buyer_id
 export async function getInvoicesForBuyer() {
   const session = await getSession()
   if (!session || session.role !== "accounts_payable") {
     redirect("/login/ap")
   }
 
-  try {
-  const invoices = await query(
-    `SELECT i.invoice_id, i.document_number, i.reference_invoice, i.document_date, 
-      CAST(i.due_date AS CHAR) as due_date, i.amount_local_curr, i.net_due_date, i.amount_doc_curr, i.currency, i.text_description, i.status, 
-      i.uploaded_at, i.payment_terms, i.vendor_number, i.company_code,
-      s.name as supplier_name,
-      COUNT(o.offer_id) as offer_count
-     FROM invoices i
-     LEFT JOIN offers o ON i.invoice_id = o.invoice_id
-     LEFT JOIN suppliers s ON i.vendor_number = s.vendor_number
-     WHERE i.uploaded_by = ?
-     GROUP BY i.invoice_id
-     ORDER BY i.uploaded_at DESC`,
-    [session.userId]
+  // Get buyer code from buyer_id
+  const buyers = await query<Array<{ code: string }>>(
+    `SELECT code FROM buyers WHERE buyer_id = ?`,
+    [session.buyerId]
   )
+  
+  if (buyers.length === 0) {
+    console.error("[v0] No buyer found for buyerId:", session.buyerId)
+    return []
+  }
+  
+  const buyerCode = buyers[0].code
+
+  try {
+    const invoices = await query(
+      `SELECT i.invoice_id, i.document_number, i.reference_invoice, i.document_date, 
+        CAST(i.due_date AS CHAR) as due_date, i.amount_local_curr, i.net_due_date, i.amount_doc_curr, i.currency, i.text_description, i.status, 
+        i.uploaded_at, i.payment_terms, i.vendor_number, i.company_code,
+        s.name as supplier_name,
+        COUNT(o.offer_id) as offer_count
+       FROM invoices i
+       LEFT JOIN offers o ON i.invoice_id = o.invoice_id
+       LEFT JOIN suppliers s ON i.vendor_number = s.vendor_number AND i.company_code = s.company_code
+       WHERE i.buyer_id = ?
+       GROUP BY i.invoice_id
+       ORDER BY i.uploaded_at DESC`,
+      [session.buyerId]
+    )
 
     return invoices
   } catch (error) {
     console.error("[v0] Error fetching invoices:", error)
+    throw error
+  }
+}
+
+// Get invoices based on user session - for API use
+export async function getInvoicesForSession() {
+  const session = await getSession()
+  if (!session) {
+    throw new Error("Unauthorized")
+  }
+
+  try {
+    // Admin sees all invoices
+    if (session.role === "admin") {
+      const invoices = await query(
+        `SELECT i.invoice_id, i.document_number, i.reference_invoice, i.document_date, 
+          i.due_date, i.amount, i.currency, i.status, i.uploaded_at,
+          i.vendor_number, i.payment_terms, i.company_code, i.amount_doc_curr, i.amount_local_curr,
+          s.name as supplier_name,
+          b.name as buyer_name,
+          COUNT(o.offer_id) as offer_count
+         FROM invoices i
+         LEFT JOIN offers o ON i.invoice_id = o.invoice_id
+         LEFT JOIN suppliers s ON i.vendor_number = s.vendor_number AND i.company_code = s.company_code
+         LEFT JOIN buyers b ON i.buyer_id = b.buyer_id
+         GROUP BY i.invoice_id
+         ORDER BY i.uploaded_at DESC
+         LIMIT 100`,
+      )
+      return invoices
+    }
+
+    // AP user sees only their buyer's invoices
+    if (session.role === "accounts_payable" && session.buyerId) {
+      const invoices = await query(
+        `SELECT i.invoice_id, i.document_number, i.reference_invoice, i.document_date, 
+          CAST(i.due_date AS CHAR) as due_date, i.amount_local_curr, i.net_due_date, i.amount_doc_curr, i.currency, i.text_description, i.status, 
+          i.uploaded_at, i.payment_terms, i.vendor_number, i.company_code,
+          s.name as supplier_name,
+          COUNT(o.offer_id) as offer_count
+         FROM invoices i
+         LEFT JOIN offers o ON i.invoice_id = o.invoice_id
+         LEFT JOIN suppliers s ON i.vendor_number = s.vendor_number AND i.company_code = s.company_code
+         WHERE i.buyer_id = ?
+         GROUP BY i.invoice_id
+         ORDER BY i.uploaded_at DESC`,
+        [session.buyerId]
+      )
+      return invoices
+    }
+
+    // Fallback - empty result
+    return []
+  } catch (error) {
+    console.error("[v0] Error fetching invoices for session:", error)
     throw error
   }
 }
