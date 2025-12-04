@@ -553,9 +553,9 @@ export default function BuyersPage() {
 
       {/* Create Buyer Dialog - Wizard Style */}
       <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetForm(); }}>
-        <DialogContent className="flex flex-col gap-0 p-0 w-full max-w-[95vw] sm:max-w-[95vw] xl:max-w-[1500px] h-auto max-h-[95vh] bg-background border border-border shadow-2xl overflow-hidden">
+        <DialogContent className="flex flex-col gap-0 bg-background shadow-2xl p-0 border border-border w-full max-w-[95vw] sm:max-w-[95vw] xl:max-w-[1500px] h-auto max-h-[95vh] overflow-hidden">
           {/* Header with Progress */}
-          <div className="bg-primary text-primary-foreground px-8 pt-8 pb-10">
+          <div className="bg-primary px-8 pt-8 pb-10 text-primary-foreground">
             <DialogTitle className="font-bold text-2xl">Add New Buyer</DialogTitle>
             <DialogDescription className="mt-1 text-primary-foreground/80">
               Complete the steps below to onboard a new buyer
