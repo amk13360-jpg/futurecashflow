@@ -140,6 +140,23 @@ export async function reviewCessionAgreement(cessionId: number, status: "approve
        WHERE cession_id = ?`,
       [status, session.userId, cessionId],
     )
+
+    if (status === "approved") {
+      const suppliers = await query<Array<{ supplier_id: number; onboarding_status: string }>>(
+        `SELECT s.supplier_id, s.onboarding_status
+         FROM suppliers s
+         JOIN cession_agreements c ON c.supplier_id = s.supplier_id
+         WHERE c.cession_id = ?
+         LIMIT 1`,
+        [cessionId],
+      )
+
+      const supplier = suppliers[0]
+      if (supplier && supplier.onboarding_status !== "approved") {
+        // Reuse supplier approval workflow so emails/offers stay consistent
+        await reviewSupplierApplication(supplier.supplier_id, "approved")
+      }
+    }
   } catch (error) {
     console.error("[v0] Error updating cession status:", error)
     throw error

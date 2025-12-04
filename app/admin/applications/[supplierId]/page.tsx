@@ -35,6 +35,12 @@ export default async function ApplicationReviewPage({ params }: ApplicationRevie
     redirect("/admin/dashboard")
   }
 
+  const resendApprovalEmail = async () => {
+    "use server"
+    await reviewSupplierApplication(supplierId, "approved")
+    redirect(`/admin/applications/${supplierId}`)
+  }
+
   return (
     <div className="bg-muted/30 py-8 min-h-screen">
       <div className="space-y-6 max-w-4xl container">
@@ -105,6 +111,11 @@ export default async function ApplicationReviewPage({ params }: ApplicationRevie
               <input type="hidden" name="status" value="rejected" />
               <Button type="submit" variant="destructive">
                 Reject
+              </Button>
+            </form>
+            <form action={resendApprovalEmail}>
+              <Button type="submit" variant="secondary">
+                Resend Approval Email
               </Button>
             </form>
           </CardContent>
