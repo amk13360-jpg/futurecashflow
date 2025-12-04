@@ -553,7 +553,7 @@ export default function BuyersPage() {
 
       {/* Create Buyer Dialog - Wizard Style */}
       <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetForm(); }}>
-        <DialogContent className="flex flex-col gap-0 p-0 max-w-7xl w-[98vw] h-[95vh] max-h-[950px] overflow-hidden">
+        <DialogContent className="flex flex-col gap-0 p-0 w-[98vw] max-w-7xl h-[95vh] max-h-[950px] overflow-hidden">
           {/* Header with Progress */}
           <div className="bg-linear-to-r from-blue-600 to-indigo-600 px-8 pt-8 pb-10">
             <DialogTitle className="font-bold text-white text-2xl">Add New Buyer</DialogTitle>
@@ -883,7 +883,7 @@ export default function BuyersPage() {
                 </Card>
 
                 <div className="flex items-start gap-3 bg-amber-50 dark:bg-amber-950/30 p-4 border border-amber-200 dark:border-amber-800 rounded-lg">
-                  <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
+                  <AlertCircle className="mt-0.5 w-5 h-5 text-amber-600" />
                   <div>
                     <p className="font-medium text-amber-800 dark:text-amber-200 text-sm">Address is optional</p>
                     <p className="text-amber-700 dark:text-amber-300 text-sm">
@@ -1118,7 +1118,7 @@ export default function BuyersPage() {
                 </div>
 
                 <div className="flex items-start gap-3 bg-amber-50 dark:bg-amber-950/30 p-4 border border-amber-200 dark:border-amber-800 rounded-lg">
-                  <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
+                  <AlertCircle className="mt-0.5 w-5 h-5 text-amber-600" />
                   <div>
                     <p className="font-medium text-amber-800 dark:text-amber-200">Important Notice</p>
                     <p className="text-amber-700 dark:text-amber-300 text-sm">
