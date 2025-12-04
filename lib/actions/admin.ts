@@ -157,7 +157,9 @@ export async function getBankChangeRequests() {
     const requests = await query(
       `SELECT b.request_id, b.supplier_id, b.new_bank_name, b.new_account_no,
               b.new_branch_code, b.reason, b.status, b.created_at,
-              s.name as supplier_name, s.contact_email
+              s.name as supplier_name, s.contact_email,
+              s.bank_name as current_bank_name, s.bank_account_no as current_account_no,
+              s.bank_branch_code as current_branch_code
        FROM bank_change_requests b
        JOIN suppliers s ON b.supplier_id = s.supplier_id
        WHERE b.status = 'pending'
@@ -167,6 +169,121 @@ export async function getBankChangeRequests() {
     return requests
   } catch (error) {
     console.error("[v0] Error fetching bank change requests:", error)
+    throw error
+  }
+}
+
+// Approve bank change request
+export async function approveBankChangeRequest(requestId: number): Promise<{ success: boolean; error?: string }> {
+  const session = await getSession()
+  if (!session || session.role !== "admin") {
+    return { success: false, error: "Unauthorized" }
+  }
+
+  try {
+    await transaction(async (connection) => {
+      // Get the request details
+      const [requests]: any = await connection.execute(
+        `SELECT * FROM bank_change_requests WHERE request_id = ? AND status = 'pending'`,
+        [requestId]
+      )
+
+      if (!requests || requests.length === 0) {
+        throw new Error("Request not found or already processed")
+      }
+
+      const request = requests[0]
+
+      // Update supplier bank details
+      await connection.execute(
+        `UPDATE suppliers 
+         SET bank_name = ?, bank_account_no = ?, bank_branch_code = ?, updated_at = NOW()
+         WHERE supplier_id = ?`,
+        [request.new_bank_name, request.new_account_no, request.new_branch_code, request.supplier_id]
+      )
+
+      // Update request status
+      await connection.execute(
+        `UPDATE bank_change_requests 
+         SET status = 'approved', reviewed_by = ?, reviewed_at = NOW()
+         WHERE request_id = ?`,
+        [session.userId, requestId]
+      )
+    })
+
+    await createAuditLog({
+      userType: "admin",
+      action: "BANK_CHANGE_APPROVED",
+      entityType: "bank_change_request",
+      entityId: requestId,
+      details: `Admin ${session.username} approved bank change request`,
+    })
+
+    return { success: true }
+  } catch (error: any) {
+    console.error("[v0] Error approving bank change request:", error)
+    return { success: false, error: error.message || "Failed to approve request" }
+  }
+}
+
+// Reject bank change request
+export async function rejectBankChangeRequest(
+  requestId: number, 
+  reason?: string
+): Promise<{ success: boolean; error?: string }> {
+  const session = await getSession()
+  if (!session || session.role !== "admin") {
+    return { success: false, error: "Unauthorized" }
+  }
+
+  try {
+    await query(
+      `UPDATE bank_change_requests 
+       SET status = 'rejected', reviewed_by = ?, reviewed_at = NOW(), rejection_reason = ?
+       WHERE request_id = ? AND status = 'pending'`,
+      [session.userId, reason || null, requestId]
+    )
+
+    await createAuditLog({
+      userType: "admin",
+      action: "BANK_CHANGE_REJECTED",
+      entityType: "bank_change_request",
+      entityId: requestId,
+      details: `Admin ${session.username} rejected bank change request${reason ? `: ${reason}` : ''}`,
+    })
+
+    return { success: true }
+  } catch (error: any) {
+    console.error("[v0] Error rejecting bank change request:", error)
+    return { success: false, error: error.message || "Failed to reject request" }
+  }
+}
+
+// Get all bank change requests (including processed)
+export async function getAllBankChangeRequests() {
+  const session = await getSession()
+  if (!session || session.role !== "admin") {
+    redirect("/login/admin")
+  }
+
+  try {
+    const requests = await query(
+      `SELECT b.request_id, b.supplier_id, b.new_bank_name, b.new_account_no,
+              b.new_branch_code, b.reason, b.status, b.created_at, b.reviewed_at,
+              b.rejection_reason,
+              s.name as supplier_name, s.contact_email,
+              s.bank_name as current_bank_name, s.bank_account_no as current_account_no,
+              s.bank_branch_code as current_branch_code,
+              u.username as reviewed_by_username
+       FROM bank_change_requests b
+       JOIN suppliers s ON b.supplier_id = s.supplier_id
+       LEFT JOIN users u ON b.reviewed_by = u.user_id
+       ORDER BY b.created_at DESC`,
+    )
+
+    return requests
+  } catch (error) {
+    console.error("[v0] Error fetching all bank change requests:", error)
     throw error
   }
 }

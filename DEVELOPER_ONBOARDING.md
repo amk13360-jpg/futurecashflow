@@ -241,11 +241,13 @@ scf-platform/
 │   ├── admin/             # Admin dashboard routes
 │   │   ├── dashboard/
 │   │   ├── applications/
+│   │   ├── bank-changes/  # Bank change request approvals
 │   │   ├── documents/
 │   │   ├── invoices/
+│   │   ├── offer-batches/ # Batch offer management
 │   │   ├── payments/
 │   │   ├── reports/
-│   │   ├── settings/
+│   │   ├── settings/      # System settings + User management
 │   │   ├── suppliers/
 │   │   └── vendors/
 │   ├── ap/                # Accounts Payable routes
@@ -254,10 +256,10 @@ scf-platform/
 │   │   ├── reports/
 │   │   └── vendors/
 │   ├── supplier/          # Supplier portal routes
-│   │   ├── access/
-│   │   ├── cession-agreement/
+│   │   ├── access/        # Token verification
+│   │   ├── cession-agreement/  # Cession signing + Standing cession
 │   │   ├── dashboard/
-│   │   └── offers/
+│   │   └── offers/        # View/accept offers (single & multi-select)
 │   ├── api/               # API routes
 │   │   ├── auth/
 │   │   ├── invoices/
@@ -277,12 +279,15 @@ scf-platform/
 │
 ├── lib/                  # Core library code
 │   ├── actions/          # Server Actions
-│   │   ├── admin.ts
-│   │   ├── invoices.ts
-│   │   ├── payments.ts
-│   │   ├── reports.ts
-│   │   ├── settings.ts
-│   │   └── suppliers.ts
+│   │   ├── admin.ts        # Admin ops, bank change approve/reject
+│   │   ├── invoices.ts     # Invoice CRUD
+│   │   ├── offer-batches.ts # Batch offer creation & management
+│   │   ├── payments.ts     # Payment processing
+│   │   ├── reports.ts      # Report generation
+│   │   ├── settings.ts     # System settings
+│   │   ├── standing-cession.ts # Standing cession & addendums
+│   │   ├── suppliers.ts    # Supplier ops, multi-offer accept
+│   │   └── users.ts        # User CRUD for admin
 │   ├── auth/             # Authentication utilities
 │   │   ├── session.ts    # JWT session management
 │   │   ├── password.ts   # Password hashing
@@ -292,12 +297,14 @@ scf-platform/
 │   │   └── blob-storage.ts
 │   ├── types/            # TypeScript types
 │   ├── utils/            # Utility functions
+│   │   └── index.ts      # Includes generateToken, generateShortCode
 │   └── db.ts             # Database connection
 │
 ├── scripts/              # Database scripts
 │   ├── 01-create-database-schema.sql
 │   ├── 02-seed-initial-data.sql
-│   └── 03-update-schema-for-ap-data.sql
+│   ├── 03-update-schema-for-ap-data.sql
+│   └── 04-phase1-schema-updates.sql  # New tables & columns
 │
 ├── public/               # Static assets
 ├── styles/               # Additional styles
@@ -318,6 +325,9 @@ scf-platform/
 | `lib/db.ts` | MySQL connection pool and query helpers |
 | `lib/auth/session.ts` | JWT token creation and verification |
 | `lib/actions/*.ts` | Server actions for database operations |
+| `lib/actions/offer-batches.ts` | Admin batch offer creation, sending, cancellation |
+| `lib/actions/standing-cession.ts` | Standing cession & invoice addendum management |
+| `lib/actions/users.ts` | User CRUD operations for admin settings |
 | `lib/services/email.ts` | Azure Communication Services integration |
 
 ### 4.3 Route Structure
@@ -331,13 +341,15 @@ Public Routes (No Auth):
 └── /supplier/access      → Supplier token verification
 
 Protected Routes (Admin):
-├── /admin/dashboard      → Admin overview
+├── /admin/dashboard      → Admin overview + Quick actions
 ├── /admin/applications   → Supplier applications
+├── /admin/bank-changes   → Bank change request approvals
 ├── /admin/documents      → Document review
 ├── /admin/invoices       → Invoice management
+├── /admin/offer-batches  → Batch offer creation & management
 ├── /admin/payments       → Payment processing
 ├── /admin/reports        → Analytics
-├── /admin/settings       → System settings
+├── /admin/settings       → System settings + User management tab
 └── /admin/suppliers      → Supplier management
 
 Protected Routes (AP):
@@ -348,8 +360,8 @@ Protected Routes (AP):
 
 Protected Routes (Supplier):
 ├── /supplier/dashboard   → Supplier overview
-├── /supplier/offers      → View/accept offers
-├── /supplier/cession-agreement → Sign/upload cession
+├── /supplier/offers      → View/accept offers (single & multi-select)
+├── /supplier/cession-agreement → Sign/upload cession + Standing cession
 └── /supplier/profile     → Profile management
 ```
 
@@ -689,7 +701,32 @@ Use the seeded data for testing:
    mysql -u root -p fmf_scf_platform < scripts/04-your-change.sql
    ```
 
-### 8.2 Common Queries
+### 8.2 Database Tables Reference
+
+The system uses 18 tables in the `fmf_scf_platform` database:
+
+| Table | Description | Key Columns |
+|-------|-------------|-------------|
+| `buyers` | Buyer/Company entities | buyer_id, name, code, is_active |
+| `users` | Admin and AP user accounts | user_id, buyer_id, email, role, password_hash |
+| `suppliers` | Supplier/Vendor entities | supplier_id, buyer_id, vendor_number, name, bank details |
+| `invoices` | Uploaded invoices | invoice_id, buyer_id, supplier_id, document_number, amount |
+| `offers` | Early payment offers | offer_id, invoice_id, supplier_id, batch_id, discount_rate, status |
+| `offer_batches` | Grouped offers for batch sending | batch_id, buyer_id, name, status, pricing_model |
+| `payments` | Payment records | payment_id, offer_id, amount, payment_date, reference |
+| `repayments` | Repayment tracking | repayment_id, payment_id, expected_amount |
+| `cession_agreements` | Signed cession documents | cession_id, is_standing, parent_cession_id, linked_invoice_ids |
+| `bank_change_requests` | Supplier bank detail changes | request_id, supplier_id, status, reviewed_by |
+| `supplier_tokens` | Access tokens for supplier portal | token_id, supplier_id, token, short_code, expires_at |
+| `notifications` | User notifications | notification_id, user_id, message, is_read |
+| `audit_logs` | System audit trail | log_id, user_id, action, entity_type, entity_id |
+| `otp_codes` | One-time passwords for AP login | otp_id, user_id, code, expires_at |
+| `system_settings` | Global configuration | setting_key, setting_value |
+| `trusted_devices` | Remember device feature | device_id, user_id, fingerprint, trusted_until |
+| `notification_rules` | Email trigger rules | rule_id, buyer_id, event_type, is_active |
+| `email_templates` | Email content templates | template_id, buyer_id, template_type, subject, body |
+
+### 8.3 Common Queries
 
 ```sql
 -- Find supplier by vendor number
@@ -701,14 +738,35 @@ FROM offers o
 JOIN invoices i ON o.invoice_id = i.invoice_id
 WHERE o.supplier_id = 1 AND o.status = 'pending';
 
+-- Get offers by batch
+SELECT o.*, i.document_number, s.name as supplier_name
+FROM offers o
+JOIN invoices i ON o.invoice_id = i.invoice_id
+JOIN suppliers s ON o.supplier_id = s.supplier_id
+WHERE o.batch_id = 1;
+
+-- Check standing cession for supplier
+SELECT * FROM cession_agreements 
+WHERE supplier_id = 1 AND is_standing = 1 AND standing_valid_until > NOW();
+
+-- Get cession addendums (linked to parent)
+SELECT * FROM cession_agreements 
+WHERE parent_cession_id = 1 ORDER BY created_at DESC;
+
 -- Check AP user OTP
-SELECT * FROM ap_otps WHERE user_id = 1 ORDER BY created_at DESC LIMIT 1;
+SELECT * FROM otp_codes WHERE user_id = 1 ORDER BY created_at DESC LIMIT 1;
 
 -- View recent audit logs
 SELECT * FROM audit_logs ORDER BY created_at DESC LIMIT 20;
+
+-- Get pending bank change requests
+SELECT bcr.*, s.name as supplier_name 
+FROM bank_change_requests bcr
+JOIN suppliers s ON bcr.supplier_id = s.supplier_id
+WHERE bcr.status = 'pending';
 ```
 
-### 8.3 Database Debugging
+### 8.4 Database Debugging
 
 ```typescript
 // Enable query logging in development
@@ -1038,6 +1096,7 @@ rm -rf .next node_modules/.cache
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0.0 | December 3, 2025 | Development Team | Initial release |
+| 1.1.0 | June 14, 2025 | Development Team | Added Phase 1 features: offer batches, standing cession, user management, bank change requests. Updated database tables section with new tables (offer_batches, trusted_devices, notification_rules, email_templates). |
 
 ---
 

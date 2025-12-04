@@ -97,9 +97,18 @@ export default function SupplierDashboardPage() {
 
           <TabsContent value="offers">
             <Card>
-              <CardHeader>
-                <CardTitle>Pending Offers</CardTitle>
-                <CardDescription>Review and accept early payment offers</CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Pending Offers</CardTitle>
+                  <CardDescription>Review and accept early payment offers</CardDescription>
+                </div>
+                {pendingOffers.length > 1 && (
+                  <Link href="/supplier/offers">
+                    <Button variant="outline">
+                      Select Multiple Offers
+                    </Button>
+                  </Link>
+                )}
               </CardHeader>
               <CardContent>
                 {pendingOffers.length === 0 ? (

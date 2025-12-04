@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { EmptyState } from "@/components/ui/empty-state"
-import { FileText, Users, DollarSign, CheckCircle, Clock } from "lucide-react"
+import { FileText, Users, DollarSign, CheckCircle, Clock, Package, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { getSession } from "@/lib/auth/session"
 
@@ -57,6 +57,63 @@ export default async function AdminDashboardPage() {
             description="Last 48 hours"
             variant="primary"
           />
+        </div>
+
+        {/* Quick Actions */}
+        <div className="gap-4 grid md:grid-cols-3 mb-8">
+          <Card className="bg-gradient-to-br from-blue-50 dark:from-blue-950 to-transparent border-blue-200 dark:border-blue-800">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <Package className="w-5 h-5 text-blue-600" />
+                Offer Batches
+              </CardTitle>
+              <CardDescription>Create and manage offers for suppliers</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button asChild className="w-full">
+                <Link href="/admin/offer-batches">
+                  Manage Offer Batches
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <FileText className="w-5 h-5" />
+                Invoices
+              </CardTitle>
+              <CardDescription>View and manage all invoices</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" asChild className="w-full">
+                <Link href="/admin/invoices">
+                  View Invoices
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <DollarSign className="w-5 h-5" />
+                Payments
+              </CardTitle>
+              <CardDescription>Track and process payments</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" asChild className="w-full">
+                <Link href="/admin/payments">
+                  View Payments
+                  <ArrowRight className="ml-2 w-4 h-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Main Content Tabs */}
@@ -168,9 +225,14 @@ export default async function AdminDashboardPage() {
           {/* Bank Changes Tab */}
           <TabsContent value="bank-changes">
             <Card>
-              <CardHeader>
-                <CardTitle>Bank Detail Change Requests</CardTitle>
-                <CardDescription>Review and approve supplier bank account changes</CardDescription>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>Bank Detail Change Requests</CardTitle>
+                  <CardDescription>Review and approve supplier bank account changes</CardDescription>
+                </div>
+                <Link href="/admin/bank-changes">
+                  <Button variant="outline">View All Requests</Button>
+                </Link>
               </CardHeader>
               <CardContent>
                 {bankChangeRequests.length === 0 ? (
@@ -195,12 +257,9 @@ export default async function AdminDashboardPage() {
                             Requested {new Date(request.created_at).toLocaleDateString()}
                           </span>
                         </div>
-                        <div className="flex gap-2">
-                          <Button size="sm" variant="outline">
-                            View Details
-                          </Button>
+                        <Link href="/admin/bank-changes">
                           <Button size="sm">Review</Button>
-                        </div>
+                        </Link>
                       </div>
                     ))}
                   </div>

@@ -7,18 +7,42 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
-import { ArrowLeft, Settings, DollarSign, Mail, Shield, Database } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { ArrowLeft, Settings, DollarSign, Mail, Shield, Database, Users, Plus, Edit, Trash2, Key, UserCog } from "lucide-react"
 import Link from "next/link"
 import { toast } from "sonner"
 import { getSystemSettings, updateSystemSetting } from "@/lib/actions/settings"
+import { getUsers, getBuyersForDropdown, createUser, updateUser, resetUserPassword, toggleUserStatus, deleteUser } from "@/lib/actions/users"
+import type { User } from "@/lib/actions/users"
 
 export default function SettingsPage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [settings, setSettings] = useState<any>({})
+  
+  // User management state
+  const [users, setUsers] = useState<User[]>([])
+  const [buyers, setBuyers] = useState<{ buyer_id: number; name: string; code: string }[]>([])
+  const [showUserDialog, setShowUserDialog] = useState(false)
+  const [showPasswordDialog, setShowPasswordDialog] = useState(false)
+  const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [userForm, setUserForm] = useState({
+    username: "",
+    full_name: "",
+    email: "",
+    password: "",
+    role: "ap_user" as "admin" | "ap_user" | "buyer_admin",
+    buyer_id: null as number | null,
+  })
+  const [newPassword, setNewPassword] = useState("")
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null)
 
   useEffect(() => {
     loadSettings()
+    loadUsers()
   }, [])
 
   const loadSettings = async () => {
@@ -30,6 +54,19 @@ export default function SettingsPage() {
       toast.error("Failed to load settings")
     } finally {
       setLoading(false)
+    }
+  }
+
+  const loadUsers = async () => {
+    try {
+      const [usersData, buyersData] = await Promise.all([
+        getUsers(),
+        getBuyersForDropdown()
+      ])
+      setUsers(usersData)
+      setBuyers(buyersData)
+    } catch (error) {
+      console.error("[v0] Error loading users:", error)
     }
   }
 
@@ -45,6 +82,96 @@ export default function SettingsPage() {
     } finally {
       setSaving(false)
     }
+  }
+
+  const handleCreateUser = async () => {
+    const result = await createUser(userForm)
+    if (result.success) {
+      toast.success("User created successfully")
+      setShowUserDialog(false)
+      resetUserForm()
+      loadUsers()
+    } else {
+      toast.error(result.error || "Failed to create user")
+    }
+  }
+
+  const handleUpdateUser = async () => {
+    if (!editingUser) return
+    const result = await updateUser({
+      user_id: editingUser.user_id,
+      full_name: userForm.full_name,
+      email: userForm.email,
+      role: userForm.role,
+      buyer_id: userForm.buyer_id,
+    })
+    if (result.success) {
+      toast.success("User updated successfully")
+      setShowUserDialog(false)
+      setEditingUser(null)
+      resetUserForm()
+      loadUsers()
+    } else {
+      toast.error(result.error || "Failed to update user")
+    }
+  }
+
+  const handleResetPassword = async () => {
+    if (!selectedUserId || !newPassword) return
+    const result = await resetUserPassword(selectedUserId, newPassword)
+    if (result.success) {
+      toast.success("Password reset successfully")
+      setShowPasswordDialog(false)
+      setNewPassword("")
+      setSelectedUserId(null)
+    } else {
+      toast.error(result.error || "Failed to reset password")
+    }
+  }
+
+  const handleToggleStatus = async (userId: number) => {
+    const result = await toggleUserStatus(userId)
+    if (result.success) {
+      toast.success(`User ${result.newStatus === 'active' ? 'activated' : 'deactivated'}`)
+      loadUsers()
+    } else {
+      toast.error(result.error || "Failed to toggle user status")
+    }
+  }
+
+  const handleDeleteUser = async (userId: number) => {
+    if (!confirm("Are you sure you want to deactivate this user?")) return
+    const result = await deleteUser(userId)
+    if (result.success) {
+      toast.success("User deactivated")
+      loadUsers()
+    } else {
+      toast.error(result.error || "Failed to delete user")
+    }
+  }
+
+  const openEditDialog = (user: User) => {
+    setEditingUser(user)
+    setUserForm({
+      username: user.username,
+      full_name: user.full_name || "",
+      email: user.email,
+      password: "",
+      role: user.role,
+      buyer_id: user.buyer_id,
+    })
+    setShowUserDialog(true)
+  }
+
+  const resetUserForm = () => {
+    setUserForm({
+      username: "",
+      full_name: "",
+      email: "",
+      password: "",
+      role: "ap_user",
+      buyer_id: null,
+    })
   }
 
   if (loading) {
@@ -92,6 +219,10 @@ export default function SettingsPage() {
             <TabsTrigger value="security">
               <Shield className="h-4 w-4 mr-2" />
               Security
+            </TabsTrigger>
+            <TabsTrigger value="users">
+              <Users className="h-4 w-4 mr-2" />
+              Users
             </TabsTrigger>
             <TabsTrigger value="database">
               <Database className="h-4 w-4 mr-2" />
@@ -362,6 +493,245 @@ export default function SettingsPage() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Users Management */}
+          <TabsContent value="users">
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between">
+                <div>
+                  <CardTitle>User Management</CardTitle>
+                  <CardDescription>Manage system users and their permissions</CardDescription>
+                </div>
+                <Dialog open={showUserDialog} onOpenChange={(open) => {
+                  setShowUserDialog(open)
+                  if (!open) {
+                    setEditingUser(null)
+                    resetUserForm()
+                  }
+                }}>
+                  <DialogTrigger asChild>
+                    <Button onClick={() => { setEditingUser(null); resetUserForm(); }}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add User
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle>{editingUser ? "Edit User" : "Create New User"}</DialogTitle>
+                      <DialogDescription>
+                        {editingUser ? "Update user details and permissions" : "Add a new user to the system"}
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      {!editingUser && (
+                        <div className="space-y-2">
+                          <Label htmlFor="username">Username</Label>
+                          <Input
+                            id="username"
+                            value={userForm.username}
+                            onChange={(e) => setUserForm({ ...userForm, username: e.target.value })}
+                            placeholder="johndoe"
+                          />
+                        </div>
+                      )}
+                      <div className="space-y-2">
+                        <Label htmlFor="full_name">Full Name</Label>
+                        <Input
+                          id="full_name"
+                          value={userForm.full_name}
+                          onChange={(e) => setUserForm({ ...userForm, full_name: e.target.value })}
+                          placeholder="John Doe"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          value={userForm.email}
+                          onChange={(e) => setUserForm({ ...userForm, email: e.target.value })}
+                          placeholder="john@example.com"
+                        />
+                      </div>
+                      {!editingUser && (
+                        <div className="space-y-2">
+                          <Label htmlFor="password">Password</Label>
+                          <Input
+                            id="password"
+                            type="password"
+                            value={userForm.password}
+                            onChange={(e) => setUserForm({ ...userForm, password: e.target.value })}
+                            placeholder="••••••••"
+                          />
+                        </div>
+                      )}
+                      <div className="space-y-2">
+                        <Label htmlFor="role">Role</Label>
+                        <Select
+                          value={userForm.role}
+                          onValueChange={(value: "admin" | "ap_user" | "buyer_admin") => setUserForm({ ...userForm, role: value })}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select role" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="admin">Admin</SelectItem>
+                            <SelectItem value="ap_user">AP User</SelectItem>
+                            <SelectItem value="buyer_admin">Buyer Admin</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      {userForm.role !== "admin" && (
+                        <div className="space-y-2">
+                          <Label htmlFor="buyer">Buyer (Company)</Label>
+                          <Select
+                            value={userForm.buyer_id?.toString() || ""}
+                            onValueChange={(value) => setUserForm({ ...userForm, buyer_id: value ? Number(value) : null })}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select buyer" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {buyers.map((buyer) => (
+                                <SelectItem key={buyer.buyer_id} value={buyer.buyer_id.toString()}>
+                                  {buyer.name} ({buyer.code})
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      )}
+                    </div>
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setShowUserDialog(false)}>Cancel</Button>
+                      <Button onClick={editingUser ? handleUpdateUser : handleCreateUser}>
+                        {editingUser ? "Update" : "Create"} User
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {users.length === 0 ? (
+                    <div className="text-center py-8 text-muted-foreground">
+                      <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                      <p>No users found</p>
+                    </div>
+                  ) : (
+                    <div className="border rounded-lg overflow-hidden">
+                      <table className="w-full">
+                        <thead className="bg-muted/50">
+                          <tr>
+                            <th className="text-left p-3 font-medium">User</th>
+                            <th className="text-left p-3 font-medium">Role</th>
+                            <th className="text-left p-3 font-medium">Buyer</th>
+                            <th className="text-left p-3 font-medium">Status</th>
+                            <th className="text-right p-3 font-medium">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {users.map((user) => (
+                            <tr key={user.user_id} className="border-t">
+                              <td className="p-3">
+                                <div>
+                                  <p className="font-medium">{user.full_name || user.username}</p>
+                                  <p className="text-sm text-muted-foreground">{user.email}</p>
+                                </div>
+                              </td>
+                              <td className="p-3">
+                                <Badge variant="outline" className="capitalize">
+                                  {user.role.replace("_", " ")}
+                                </Badge>
+                              </td>
+                              <td className="p-3">
+                                {user.buyer_name ? (
+                                  <span className="text-sm">{user.buyer_name} ({user.buyer_code})</span>
+                                ) : (
+                                  <span className="text-sm text-muted-foreground">—</span>
+                                )}
+                              </td>
+                              <td className="p-3">
+                                <Badge variant={user.status === "active" ? "default" : "secondary"} className="capitalize">
+                                  {user.status}
+                                </Badge>
+                              </td>
+                              <td className="p-3">
+                                <div className="flex justify-end gap-2">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => openEditDialog(user)}
+                                    title="Edit user"
+                                  >
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {
+                                      setSelectedUserId(user.user_id)
+                                      setShowPasswordDialog(true)
+                                    }}
+                                    title="Reset password"
+                                  >
+                                    <Key className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleToggleStatus(user.user_id)}
+                                    title={user.status === "active" ? "Deactivate" : "Activate"}
+                                  >
+                                    <UserCog className="h-4 w-4" />
+                                  </Button>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => handleDeleteUser(user.user_id)}
+                                    title="Delete user"
+                                    className="text-red-600 hover:text-red-700"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Password Reset Dialog */}
+            <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Reset Password</DialogTitle>
+                  <DialogDescription>Enter a new password for the user</DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="new-password">New Password</Label>
+                    <Input
+                      id="new-password"
+                      type="password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      placeholder="••••••••"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setShowPasswordDialog(false)}>Cancel</Button>
+                  <Button onClick={handleResetPassword}>Reset Password</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </TabsContent>
 
           {/* Database Settings */}

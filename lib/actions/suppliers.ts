@@ -195,7 +195,7 @@ export async function acceptOffer(offerId: number, selectedInvoices: number[]) {
       // Update invoice status
       await connection.execute(`UPDATE invoices SET status = 'accepted' WHERE invoice_id = ?`, [offer.invoice_id])
 
-      return { success: true, offerId, alreadyAccepted: false }
+      return { success: true, offerId, alreadyAccepted: false, invoiceId: offer.invoice_id }
     })
 
     if (!result.alreadyAccepted) {
@@ -206,6 +206,18 @@ export async function acceptOffer(offerId: number, selectedInvoices: number[]) {
         entityId: offerId,
         details: `Supplier ${session.name} (ID ${session.supplierId}) accepted offer`,
       })
+
+      // Create cession addendum for the accepted offer
+      try {
+        const { createCessionAddendum } = await import("@/lib/actions/standing-cession")
+        const addendumResult = await createCessionAddendum([result.invoiceId], "offer_acceptance")
+        
+        if (!addendumResult.success) {
+          console.warn("[Cession Addendum] Failed to create addendum:", addendumResult.error)
+        }
+      } catch (addendumError) {
+        console.warn("[Cession Addendum] Error creating addendum:", addendumError)
+      }
     }
 
     return result
@@ -267,6 +279,131 @@ export async function rejectOffer(offerId: number) {
     return result
   } catch (error) {
     console.error("[v0] Error rejecting offer:", error)
+    throw error
+  }
+}
+
+// Accept multiple offers at once
+export async function acceptMultipleOffers(offerIds: number[]) {
+  const session = await getSupplierSession()
+  if (!session) {
+    throw new Error("Unauthorized")
+  }
+
+  if (!offerIds || offerIds.length === 0) {
+    throw new Error("No offers selected")
+  }
+
+  try {
+    const results = await transaction(async (connection) => {
+      const successfulOffers: number[] = []
+      const failedOffers: { offerId: number; reason: string }[] = []
+
+      for (const offerId of offerIds) {
+        try {
+          // Verify offer belongs to supplier
+          type OfferWithInvoice = {
+            offer_expiry_date: string | Date
+            invoice_id: number
+            status: "sent" | "opened" | "accepted" | "rejected" | "expired"
+          }
+          const [rows] = await connection.execute(
+            `SELECT o.*, i.invoice_id
+             FROM offers o
+             JOIN invoices i ON o.invoice_id = i.invoice_id
+             WHERE o.offer_id = ? AND o.supplier_id = ?
+             FOR UPDATE`,
+            [offerId, session.supplierId],
+          )
+          const offersRows = rows as OfferWithInvoice[]
+
+          if (!offersRows || offersRows.length === 0) {
+            failedOffers.push({ offerId, reason: "Offer not found or already processed" })
+            continue
+          }
+
+          const offer = offersRows[0]
+
+          if (offer.status === "accepted") {
+            successfulOffers.push(offerId) // Already accepted, count as success
+            continue
+          }
+
+          if (offer.status !== "sent") {
+            failedOffers.push({ offerId, reason: `Offer is already ${offer.status}` })
+            continue
+          }
+
+          // Check if offer is expired
+          if (new Date() > new Date(offer.offer_expiry_date)) {
+            await connection.execute(`UPDATE offers SET status = 'expired' WHERE offer_id = ?`, [offerId])
+            failedOffers.push({ offerId, reason: "Offer has expired" })
+            continue
+          }
+
+          // Update offer status
+          await connection.execute(`UPDATE offers SET status = 'accepted', responded_at = NOW() WHERE offer_id = ?`, [
+            offerId,
+          ])
+
+          // Update invoice status
+          await connection.execute(`UPDATE invoices SET status = 'accepted' WHERE invoice_id = ?`, [offer.invoice_id])
+
+          successfulOffers.push(offerId)
+        } catch (err: any) {
+          failedOffers.push({ offerId, reason: err.message || "Unknown error" })
+        }
+      }
+
+      return { successfulOffers, failedOffers }
+    })
+
+    // Log audit for each successful acceptance
+    for (const offerId of results.successfulOffers) {
+      await createAuditLog({
+        userType: "supplier",
+        action: "OFFER_ACCEPTED",
+        entityType: "offer",
+        entityId: offerId,
+        details: `Supplier ${session.name} (ID ${session.supplierId}) accepted offer (batch)`,
+      })
+    }
+
+    // Create cession addendum for accepted offers if any were successful
+    if (results.successfulOffers.length > 0) {
+      try {
+        // Get invoice IDs for successful offers
+        const invoiceQuery = await query<any[]>(
+          `SELECT invoice_id FROM offers WHERE offer_id IN (?)`,
+          [results.successfulOffers]
+        )
+        const invoiceIds = invoiceQuery.map((row: any) => row.invoice_id)
+        
+        if (invoiceIds.length > 0) {
+          // Import and create addendum (dynamic import to avoid circular deps)
+          const { createCessionAddendum } = await import("@/lib/actions/standing-cession")
+          const addendumResult = await createCessionAddendum(invoiceIds, "offer_acceptance")
+          
+          if (!addendumResult.success) {
+            console.warn("[Cession Addendum] Failed to create addendum:", addendumResult.error)
+            // Don't fail the offer acceptance, just log the warning
+          }
+        }
+      } catch (addendumError) {
+        console.warn("[Cession Addendum] Error creating addendum:", addendumError)
+        // Don't fail the offer acceptance, just log the warning
+      }
+    }
+
+    return {
+      success: true,
+      acceptedCount: results.successfulOffers.length,
+      failedCount: results.failedOffers.length,
+      successfulOffers: results.successfulOffers,
+      failedOffers: results.failedOffers,
+    }
+  } catch (error) {
+    console.error("[v0] Error accepting multiple offers:", error)
     throw error
   }
 }
