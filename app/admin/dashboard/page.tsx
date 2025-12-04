@@ -61,14 +61,14 @@ export default async function AdminDashboardPage() {
 
         {/* Quick Actions */}
         <div className="gap-4 grid md:grid-cols-4 mb-8">
-          <Card className="group hover:shadow-md transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-700">
+          <Card className="group hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-200">
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg group-hover:scale-110 transition-transform">
+              <div className="flex justify-between items-center">
+                <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg group-hover:scale-110 transition-transform">
                   <Package className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
               </div>
-              <CardTitle className="text-lg mt-3">Offer Batches</CardTitle>
+              <CardTitle className="mt-3 text-lg">Offer Batches</CardTitle>
               <CardDescription>Create and manage offers for suppliers</CardDescription>
             </CardHeader>
             <CardContent>
@@ -81,14 +81,14 @@ export default async function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="group hover:shadow-md transition-all duration-200 hover:border-purple-300 dark:hover:border-purple-700">
+          <Card className="group hover:shadow-md hover:border-purple-300 dark:hover:border-purple-700 transition-all duration-200">
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg group-hover:scale-110 transition-transform">
+              <div className="flex justify-between items-center">
+                <div className="bg-purple-100 dark:bg-purple-900 p-2 rounded-lg group-hover:scale-110 transition-transform">
                   <Building2 className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                 </div>
               </div>
-              <CardTitle className="text-lg mt-3">Buyers</CardTitle>
+              <CardTitle className="mt-3 text-lg">Buyers</CardTitle>
               <CardDescription>Manage buyer profiles and settings</CardDescription>
             </CardHeader>
             <CardContent>
@@ -101,14 +101,14 @@ export default async function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="group hover:shadow-md transition-all duration-200 hover:border-green-300 dark:hover:border-green-700">
+          <Card className="group hover:shadow-md hover:border-green-300 dark:hover:border-green-700 transition-all duration-200">
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg group-hover:scale-110 transition-transform">
+              <div className="flex justify-between items-center">
+                <div className="bg-green-100 dark:bg-green-900 p-2 rounded-lg group-hover:scale-110 transition-transform">
                   <FileText className="w-5 h-5 text-green-600 dark:text-green-400" />
                 </div>
               </div>
-              <CardTitle className="text-lg mt-3">Invoices</CardTitle>
+              <CardTitle className="mt-3 text-lg">Invoices</CardTitle>
               <CardDescription>View and manage all invoices</CardDescription>
             </CardHeader>
             <CardContent>
@@ -121,14 +121,14 @@ export default async function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="group hover:shadow-md transition-all duration-200 hover:border-orange-300 dark:hover:border-orange-700">
+          <Card className="group hover:shadow-md hover:border-orange-300 dark:hover:border-orange-700 transition-all duration-200">
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="p-2 bg-orange-100 dark:bg-orange-900 rounded-lg group-hover:scale-110 transition-transform">
+              <div className="flex justify-between items-center">
+                <div className="bg-orange-100 dark:bg-orange-900 p-2 rounded-lg group-hover:scale-110 transition-transform">
                   <DollarSign className="w-5 h-5 text-orange-600 dark:text-orange-400" />
                 </div>
               </div>
-              <CardTitle className="text-lg mt-3">Payments</CardTitle>
+              <CardTitle className="mt-3 text-lg">Payments</CardTitle>
               <CardDescription>Track and process payments</CardDescription>
             </CardHeader>
             <CardContent>

@@ -533,16 +533,16 @@ export default function BuyersPage() {
 
       {/* Create Buyer Dialog - Wizard Style */}
       <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetForm(); }}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-0">
+        <DialogContent className="flex flex-col p-0 max-w-4xl max-h-[90vh] overflow-hidden">
           {/* Header with Progress */}
-          <div className="bg-linear-to-r from-blue-600 to-indigo-600 text-white p-6">
-            <DialogTitle className="text-2xl font-bold text-white">Add New Buyer</DialogTitle>
-            <DialogDescription className="text-blue-100 mt-1">
+          <div className="bg-linear-to-r from-blue-600 to-indigo-600 p-6 text-white">
+            <DialogTitle className="font-bold text-white text-2xl">Add New Buyer</DialogTitle>
+            <DialogDescription className="mt-1 text-blue-100">
               Complete the steps below to onboard a new buyer
             </DialogDescription>
             
             {/* Progress Stepper */}
-            <div className="flex items-center justify-between mt-6">
+            <div className="flex justify-between items-center mt-6">
               {[
                 { step: 1, label: 'Company', icon: Building2 },
                 { step: 2, label: 'Contacts', icon: Users },
@@ -579,22 +579,22 @@ export default function BuyersPage() {
           </div>
 
           {/* Form Content */}
-          <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex-1 p-6 overflow-y-auto">
             {/* Step 1: Company Information */}
             {createStep === 1 && (
-              <div className="space-y-6 animate-in slide-in-from-right-5">
+              <div className="slide-in-from-right-5 space-y-6 animate-in">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-blue-100 rounded-lg">
+                  <div className="bg-blue-100 p-2 rounded-lg">
                     <Building2 className="w-6 h-6 text-blue-600" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold">Company Information</h3>
-                    <p className="text-sm text-muted-foreground">Enter the buyer's business details</p>
+                    <h3 className="font-semibold text-lg">Company Information</h3>
+                    <p className="text-muted-foreground text-sm">Enter the buyer's business details</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="col-span-2 sm:col-span-1 space-y-2">
+                <div className="gap-6 grid grid-cols-2">
+                  <div className="space-y-2 col-span-2 sm:col-span-1">
                     <Label htmlFor="name" className="flex items-center gap-1">
                       Legal Business Name <span className="text-red-500">*</span>
                     </Label>
@@ -605,9 +605,9 @@ export default function BuyersPage() {
                       placeholder="e.g., Anglo American Platinum Ltd"
                       className={formErrors.name ? 'border-red-500' : ''}
                     />
-                    {formErrors.name && <p className="text-sm text-red-500">{formErrors.name}</p>}
+                    {formErrors.name && <p className="text-red-500 text-sm">{formErrors.name}</p>}
                   </div>
-                  <div className="col-span-2 sm:col-span-1 space-y-2">
+                  <div className="space-y-2 col-span-2 sm:col-span-1">
                     <Label htmlFor="trading_name">Trading Name</Label>
                     <Input
                       id="trading_name"
@@ -618,7 +618,7 @@ export default function BuyersPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="gap-6 grid grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="code" className="flex items-center gap-1">
                       Buyer Code <span className="text-red-500">*</span>
@@ -630,8 +630,8 @@ export default function BuyersPage() {
                       placeholder="e.g., AAP001"
                       className={formErrors.code ? 'border-red-500' : ''}
                     />
-                    {formErrors.code && <p className="text-sm text-red-500">{formErrors.code}</p>}
-                    <p className="text-xs text-muted-foreground">Unique identifier for this buyer</p>
+                    {formErrors.code && <p className="text-red-500 text-sm">{formErrors.code}</p>}
+                    <p className="text-muted-foreground text-xs">Unique identifier for this buyer</p>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="registration_no">Company Registration No</Label>
@@ -644,7 +644,7 @@ export default function BuyersPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-6">
+                <div className="gap-6 grid grid-cols-3">
                   <div className="space-y-2">
                     <Label htmlFor="tax_id">VAT Number</Label>
                     <Input
@@ -686,19 +686,19 @@ export default function BuyersPage() {
                       <SelectContent>
                         <SelectItem value="A">
                           <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-blue-500" />
+                            <span className="bg-blue-500 rounded-full w-2 h-2" />
                             Tier A - Premium
                           </div>
                         </SelectItem>
                         <SelectItem value="B">
                           <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-purple-500" />
+                            <span className="bg-purple-500 rounded-full w-2 h-2" />
                             Tier B - Standard
                           </div>
                         </SelectItem>
                         <SelectItem value="C">
                           <div className="flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-orange-500" />
+                            <span className="bg-orange-500 rounded-full w-2 h-2" />
                             Tier C - Higher Risk
                           </div>
                         </SelectItem>
@@ -711,25 +711,25 @@ export default function BuyersPage() {
 
             {/* Step 2: Contact Information */}
             {createStep === 2 && (
-              <div className="space-y-6 animate-in slide-in-from-right-5">
+              <div className="slide-in-from-right-5 space-y-6 animate-in">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-green-100 rounded-lg">
+                  <div className="bg-green-100 p-2 rounded-lg">
                     <Users className="w-6 h-6 text-green-600" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold">Contact Information</h3>
-                    <p className="text-sm text-muted-foreground">Add primary and financial contacts</p>
+                    <h3 className="font-semibold text-lg">Contact Information</h3>
+                    <p className="text-muted-foreground text-sm">Add primary and financial contacts</p>
                   </div>
                 </div>
 
                 {/* Primary Contact Card */}
                 <Card className="border-l-4 border-l-blue-500">
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-base flex items-center gap-2">
+                    <CardTitle className="flex items-center gap-2 text-base">
                       <Mail className="w-4 h-4" /> Primary Contact
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="grid grid-cols-2 gap-4">
+                  <CardContent className="gap-4 grid grid-cols-2">
                     <div className="space-y-2">
                       <Label>Contact Name</Label>
                       <Input
@@ -749,7 +749,7 @@ export default function BuyersPage() {
                         placeholder="e.g., john@company.com"
                         className={formErrors.contact_email ? 'border-red-500' : ''}
                       />
-                      {formErrors.contact_email && <p className="text-sm text-red-500">{formErrors.contact_email}</p>}
+                      {formErrors.contact_email && <p className="text-red-500 text-sm">{formErrors.contact_email}</p>}
                     </div>
                     <div className="space-y-2">
                       <Label>Phone Number</Label>
@@ -765,13 +765,13 @@ export default function BuyersPage() {
                 {/* Financial Contact Card */}
                 <Card className="border-l-4 border-l-green-500">
                   <CardHeader className="pb-3">
-                    <CardTitle className="text-base flex items-center gap-2">
+                    <CardTitle className="flex items-center gap-2 text-base">
                       <DollarSign className="w-4 h-4" /> Financial Contact
                       <Badge variant="outline" className="ml-2 text-xs">Optional</Badge>
                     </CardTitle>
                     <CardDescription>For repayment tracking and financial communications</CardDescription>
                   </CardHeader>
-                  <CardContent className="grid grid-cols-2 gap-4">
+                  <CardContent className="gap-4 grid grid-cols-2">
                     <div className="space-y-2">
                       <Label>Contact Name</Label>
                       <Input
@@ -789,7 +789,7 @@ export default function BuyersPage() {
                         placeholder="e.g., finance@company.com"
                         className={formErrors.financial_contact_email ? 'border-red-500' : ''}
                       />
-                      {formErrors.financial_contact_email && <p className="text-sm text-red-500">{formErrors.financial_contact_email}</p>}
+                      {formErrors.financial_contact_email && <p className="text-red-500 text-sm">{formErrors.financial_contact_email}</p>}
                     </div>
                   </CardContent>
                 </Card>
@@ -798,14 +798,14 @@ export default function BuyersPage() {
 
             {/* Step 3: Address */}
             {createStep === 3 && (
-              <div className="space-y-6 animate-in slide-in-from-right-5">
+              <div className="slide-in-from-right-5 space-y-6 animate-in">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-orange-100 rounded-lg">
+                  <div className="bg-orange-100 p-2 rounded-lg">
                     <MapPin className="w-6 h-6 text-orange-600" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold">Physical Address</h3>
-                    <p className="text-sm text-muted-foreground">Enter the buyer's business address</p>
+                    <h3 className="font-semibold text-lg">Physical Address</h3>
+                    <p className="text-muted-foreground text-sm">Enter the buyer's business address</p>
                   </div>
                 </div>
 
@@ -818,7 +818,7 @@ export default function BuyersPage() {
                       placeholder="e.g., 123 Main Street, Suite 400"
                     />
                   </div>
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="gap-4 grid grid-cols-3">
                     <div className="space-y-2">
                       <Label>City</Label>
                       <Input
@@ -860,8 +860,8 @@ export default function BuyersPage() {
                   </div>
                 </div>
 
-                <div className="bg-muted/50 rounded-lg p-4 mt-6">
-                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                <div className="bg-muted/50 mt-6 p-4 rounded-lg">
+                  <p className="flex items-center gap-2 text-muted-foreground text-sm">
                     <AlertCircle className="w-4 h-4" />
                     Address is optional but recommended for compliance and delivery purposes.
                   </p>
@@ -871,14 +871,14 @@ export default function BuyersPage() {
 
             {/* Step 4: Configuration */}
             {createStep === 4 && (
-              <div className="space-y-6 animate-in slide-in-from-right-5">
+              <div className="slide-in-from-right-5 space-y-6 animate-in">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-purple-100 rounded-lg">
+                  <div className="bg-purple-100 p-2 rounded-lg">
                     <Settings2 className="w-6 h-6 text-purple-600" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold">Configuration</h3>
-                    <p className="text-sm text-muted-foreground">Set invoice eligibility and financial limits</p>
+                    <h3 className="font-semibold text-lg">Configuration</h3>
+                    <p className="text-muted-foreground text-sm">Set invoice eligibility and financial limits</p>
                   </div>
                 </div>
 
@@ -889,7 +889,7 @@ export default function BuyersPage() {
                     <CardDescription>Define which invoices can be processed for this buyer</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="gap-4 grid grid-cols-2">
                       <div className="space-y-2">
                         <Label className="flex items-center gap-2">
                           <DollarSign className="w-4 h-4 text-muted-foreground" />
@@ -901,7 +901,7 @@ export default function BuyersPage() {
                           onChange={(e) => setFormData({...formData, min_invoice_amount: Number(e.target.value)})}
                           className={formErrors.min_invoice_amount ? 'border-red-500' : ''}
                         />
-                        {formErrors.min_invoice_amount && <p className="text-sm text-red-500">{formErrors.min_invoice_amount}</p>}
+                        {formErrors.min_invoice_amount && <p className="text-red-500 text-sm">{formErrors.min_invoice_amount}</p>}
                       </div>
                       <div className="space-y-2">
                         <Label className="flex items-center gap-2">
@@ -915,7 +915,7 @@ export default function BuyersPage() {
                         />
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="gap-4 grid grid-cols-2">
                       <div className="space-y-2">
                         <Label className="flex items-center gap-2">
                           <Clock className="w-4 h-4 text-muted-foreground" />
@@ -927,7 +927,7 @@ export default function BuyersPage() {
                           onChange={(e) => setFormData({...formData, min_days_to_maturity: Number(e.target.value)})}
                           className={formErrors.min_days_to_maturity ? 'border-red-500' : ''}
                         />
-                        {formErrors.min_days_to_maturity && <p className="text-sm text-red-500">{formErrors.min_days_to_maturity}</p>}
+                        {formErrors.min_days_to_maturity && <p className="text-red-500 text-sm">{formErrors.min_days_to_maturity}</p>}
                       </div>
                       <div className="space-y-2">
                         <Label className="flex items-center gap-2">
@@ -950,7 +950,7 @@ export default function BuyersPage() {
                     <CardTitle className="text-base">Financial Configuration</CardTitle>
                     <CardDescription>Credit limits and rate card assignment</CardDescription>
                   </CardHeader>
-                  <CardContent className="grid grid-cols-2 gap-4">
+                  <CardContent className="gap-4 grid grid-cols-2">
                     <div className="space-y-2">
                       <Label>Credit Limit (R)</Label>
                       <Input
@@ -959,7 +959,7 @@ export default function BuyersPage() {
                         onChange={(e) => setFormData({...formData, credit_limit: e.target.value ? Number(e.target.value) : undefined})}
                         placeholder="Leave blank for no limit"
                       />
-                      <p className="text-xs text-muted-foreground">Maximum outstanding financed amount</p>
+                      <p className="text-muted-foreground text-xs">Maximum outstanding financed amount</p>
                     </div>
                     <div className="space-y-2">
                       <Label>Rate Card</Label>
@@ -973,7 +973,7 @@ export default function BuyersPage() {
                         <SelectContent>
                           {rateCards.map((rc) => (
                             <SelectItem key={rc.rate_card_id} value={rc.rate_card_id.toString()}>
-                              <div className="flex items-center justify-between w-full">
+                              <div className="flex justify-between items-center w-full">
                                 <span>{rc.name}</span>
                                 <Badge variant="secondary" className="ml-2">{rc.base_annual_rate}%</Badge>
                               </div>
@@ -981,7 +981,7 @@ export default function BuyersPage() {
                           ))}
                         </SelectContent>
                       </Select>
-                      <p className="text-xs text-muted-foreground">Can be assigned later after activation</p>
+                      <p className="text-muted-foreground text-xs">Can be assigned later after activation</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -990,26 +990,26 @@ export default function BuyersPage() {
 
             {/* Step 5: Review */}
             {createStep === 5 && (
-              <div className="space-y-6 animate-in slide-in-from-right-5">
+              <div className="slide-in-from-right-5 space-y-6 animate-in">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="p-2 bg-green-100 rounded-lg">
+                  <div className="bg-green-100 p-2 rounded-lg">
                     <Check className="w-6 h-6 text-green-600" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold">Review & Confirm</h3>
-                    <p className="text-sm text-muted-foreground">Review the information before creating the buyer</p>
+                    <h3 className="font-semibold text-lg">Review & Confirm</h3>
+                    <p className="text-muted-foreground text-sm">Review the information before creating the buyer</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="gap-6 grid grid-cols-2">
                   {/* Company Info */}
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium flex items-center gap-2">
+                      <CardTitle className="flex items-center gap-2 font-medium text-sm">
                         <Building2 className="w-4 h-4" /> Company
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="text-sm space-y-1">
+                    <CardContent className="space-y-1 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Name:</span>
                         <span className="font-medium">{formData.name || '-'}</span>
@@ -1032,11 +1032,11 @@ export default function BuyersPage() {
                   {/* Contact Info */}
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium flex items-center gap-2">
+                      <CardTitle className="flex items-center gap-2 font-medium text-sm">
                         <Users className="w-4 h-4" /> Contacts
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="text-sm space-y-1">
+                    <CardContent className="space-y-1 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Primary:</span>
                         <span>{formData.primary_contact_name || '-'}</span>
@@ -1055,7 +1055,7 @@ export default function BuyersPage() {
                   {/* Address */}
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium flex items-center gap-2">
+                      <CardTitle className="flex items-center gap-2 font-medium text-sm">
                         <MapPin className="w-4 h-4" /> Address
                       </CardTitle>
                     </CardHeader>
@@ -1074,11 +1074,11 @@ export default function BuyersPage() {
                   {/* Configuration */}
                   <Card>
                     <CardHeader className="pb-2">
-                      <CardTitle className="text-sm font-medium flex items-center gap-2">
+                      <CardTitle className="flex items-center gap-2 font-medium text-sm">
                         <Settings2 className="w-4 h-4" /> Configuration
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="text-sm space-y-1">
+                    <CardContent className="space-y-1 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Invoice Range:</span>
                         <span>R{formData.min_invoice_amount?.toLocaleString()} - R{formData.max_invoice_amount?.toLocaleString()}</span>
@@ -1095,8 +1095,8 @@ export default function BuyersPage() {
                   </Card>
                 </div>
 
-                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
-                  <p className="text-sm flex items-center gap-2">
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 p-4 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                  <p className="flex items-center gap-2 text-sm">
                     <AlertCircle className="w-4 h-4 text-yellow-600" />
                     <span>The buyer will be created in <strong>Draft</strong> status. You'll need to upload required documents and activate them before processing invoices.</span>
                   </p>
@@ -1106,11 +1106,11 @@ export default function BuyersPage() {
           </div>
 
           {/* Footer with Navigation */}
-          <div className="border-t bg-muted/30 p-4 flex justify-between items-center">
+          <div className="flex justify-between items-center bg-muted/30 p-4 border-t">
             <div>
               {createStep > 1 && (
                 <Button variant="ghost" onClick={prevStep}>
-                  <ChevronLeft className="w-4 h-4 mr-2" />
+                  <ChevronLeft className="mr-2 w-4 h-4" />
                   Back
                 </Button>
               )}
@@ -1122,12 +1122,12 @@ export default function BuyersPage() {
               {createStep < 5 ? (
                 <Button onClick={nextStep}>
                   Next
-                  <ChevronRight className="w-4 h-4 ml-2" />
+                  <ChevronRight className="ml-2 w-4 h-4" />
                 </Button>
               ) : (
                 <Button onClick={handleCreate} disabled={isPending} className="bg-green-600 hover:bg-green-700">
                   {isPending ? 'Creating...' : 'Create Buyer'}
-                  <Check className="w-4 h-4 ml-2" />
+                  <Check className="ml-2 w-4 h-4" />
                 </Button>
               )}
             </div>
