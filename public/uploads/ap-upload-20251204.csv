@@ -1,0 +1,5 @@
+Company Code,Vendor Number,Vendor Name,Document Number,Document Type,Document Date,Posting Date,Baseline Date,Net Due Date,Days Overdue,Amount (Doc Curr),Currency,Amount (Local Curr),Payment Terms,Payment Method,Assignment (PO #),Reference (Invoice #),Open Item,Text
+1000,200022,Impilo Medical Supplies,22004567,KR,2025-11-12,2025-11-12,2025-11-12,2026-01-26,-45,18500.00,ZAR,18500.00,0002 (45 days),T (EFT),PO-4512,INV-IMP-778,Yes,Quarterly consumables restock
+1000,200023,Platinum Catering Services,22004568,KR,2025-11-05,2025-11-05,2025-11-05,2025-12-20,-8,46250.00,ZAR,46250.00,0002 (45 days),T (EFT),PO-4468,INV-PLAT-532,Yes,Site canteen services November
+2000,200031,Kganya Security Solutions,33007890,KR,2025-11-18,2025-11-18,2025-11-18,2026-01-17,-54,28990.00,ZAR,28990.00,0003 (60 days),T (EFT),PO-6681,INV-KG-911,Yes,Perimeter security staffing
+2000,200032,Mpilo Engineering,33007891,KR,2025-11-14,2025-11-14,2025-11-14,2026-01-13,-48,512000.00,ZAR,512000.00,0003 (60 days),T (EFT),PO-6700,INV-MP-204,Yes,Conveyor maintenance and overhaul

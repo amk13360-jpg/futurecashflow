@@ -206,15 +206,23 @@ export async function uploadAPData(apDataRows: APDataRow[]) {
       const uploaded = []
       const errors = []
 
-      for (const row of apDataRows) {
+      for (const originalRow of apDataRows) {
         try {
+          const row = { ...originalRow };
+
           // Only process open items
           if (row["Open Item"]?.toLowerCase() !== "yes") {
             continue
           }
 
           // Validate that AP user can only upload for their own buyer
-          const rowCompanyCode = row["Company Code"]
+          let rowCompanyCode = row["Company Code"]
+          // Auto-fill missing company code with the AP user's buyer code to reduce template errors.
+          if (allowedBuyerCode && (!rowCompanyCode || rowCompanyCode.trim() === "")) {
+            rowCompanyCode = allowedBuyerCode;
+            row["Company Code"] = allowedBuyerCode;
+          }
+
           if (allowedBuyerCode && rowCompanyCode && rowCompanyCode !== allowedBuyerCode) {
             errors.push(`${row["Document Number"]}: You can only upload invoices for your company (${allowedBuyerCode}), not ${rowCompanyCode}`)
             continue
@@ -343,10 +351,18 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
       const errors = []
       const newSuppliers = []
 
-      for (const row of vendorDataRows) {
+      for (const originalRow of vendorDataRows) {
         try {
+          const row = { ...originalRow };
+
           // Validate that AP users only upload vendors for their company
-          const rowCompanyCode = row["Company Code"]
+          let rowCompanyCode = row["Company Code"]
+          // Auto-fill missing company code with the AP user's buyer code for convenience.
+          if (allowedBuyerCode && (!rowCompanyCode || rowCompanyCode.trim() === "")) {
+            rowCompanyCode = allowedBuyerCode;
+            row["Company Code"] = allowedBuyerCode;
+          }
+
           if (allowedBuyerCode && rowCompanyCode && rowCompanyCode !== allowedBuyerCode) {
             errors.push(`${row["Vendor Number"]}: You can only upload vendors for your company (${allowedBuyerCode}), not ${rowCompanyCode}`)
             continue

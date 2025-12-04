@@ -1,0 +1,4 @@
+Company Code,Vendor Number,Vendor Name,Document Number,Document Type,Document Date,Posting Date,Baseline Date,Net Due Date,Days Overdue,Amount (Doc Curr),Currency,Amount (Local Curr),Payment Terms,Payment Method,Assignment (PO #),Reference (Invoice #),Open Item,Text
+,300045,Orion Drilling Services,44001234,KR,2025-11-28,2025-11-28,2025-11-28,2026-01-12,-38,275000.00,ZAR,275000.00,0002 (45 days),T (EFT),PO-7812,INV-ORD-552,Yes,Underground drilling contract work
+,300046,Royal Logistics Group,44001235,KR,2025-11-24,2025-11-24,2025-11-24,2026-01-08,-34,61250.00,ZAR,61250.00,0002 (45 days),T (EFT),PO-7813,INV-RLG-884,Yes,Materials transport and handling
+,300047,Summit Catering Solutions,44001236,KR,2025-11-21,2025-11-21,2025-11-21,2026-01-05,-31,38990.00,ZAR,38990.00,0002 (45 days),T (EFT),PO-7814,INV-SUM-331,Yes,Site catering services December

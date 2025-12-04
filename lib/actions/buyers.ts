@@ -4,6 +4,7 @@ import { query, transaction } from '@/lib/db';
 import { getSession } from '@/lib/auth/session';
 import { revalidatePath } from 'next/cache';
 import { createAuditLog } from '@/lib/auth/audit';
+import { createUserForBuyer } from '@/lib/actions/buyer-users';
 
 // ============================================================================
 // Types
@@ -272,6 +273,43 @@ export async function createBuyer(input: CreateBuyerInput): Promise<{ success: b
 
     const buyerId = result.insertId;
 
+    let welcomeMessage: string | undefined;
+
+    if (input.contact_email) {
+      try {
+        const username = await generateUniqueUsername(
+          input.contact_email.split('@')[0] || '',
+          input.code,
+          buyerId
+        );
+
+        const apUserResult = await createUserForBuyer({
+          buyer_id: buyerId,
+          username,
+          email: input.contact_email,
+          full_name: input.primary_contact_name || input.name,
+          phone: input.contact_phone,
+          send_welcome_email: true
+        });
+
+        if (!apUserResult.success) {
+          await query('DELETE FROM buyers WHERE buyer_id = ?', [buyerId]);
+          return {
+            success: false,
+            message: apUserResult.message
+              ? `Failed to create AP user for buyer: ${apUserResult.message}`
+              : 'Failed to create AP user for buyer'
+          };
+        }
+
+        welcomeMessage = apUserResult.message;
+      } catch (userError) {
+        console.error('Error creating default AP user for buyer:', userError);
+        await query('DELETE FROM buyers WHERE buyer_id = ?', [buyerId]);
+        return { success: false, message: 'Failed to create AP user for buyer' };
+      }
+    }
+
     await createAuditLog({
       userId: session.userId,
       userType: 'admin',
@@ -282,10 +320,63 @@ export async function createBuyer(input: CreateBuyerInput): Promise<{ success: b
     });
 
     revalidatePath('/admin/buyers');
-    return { success: true, buyerId, message: 'Buyer created successfully' };
+
+    const messageParts = ['Buyer created successfully.'];
+    if (welcomeMessage) {
+      messageParts.push(welcomeMessage);
+    } else if (!input.contact_email) {
+      messageParts.push('No AP user was created because a primary contact email was not provided.');
+    }
+
+    return { success: true, buyerId, message: messageParts.join(' ') };
   } catch (error) {
     console.error('Error creating buyer:', error);
     return { success: false, message: 'Failed to create buyer' };
+  }
+}
+
+// Generate a candidate username based on contact details and ensure it is unique.
+async function generateUniqueUsername(emailPrefix: string, buyerCode: string, buyerId: number): Promise<string> {
+  const sanitize = (value: string) => value.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  const candidates: string[] = [];
+  const prefix = sanitize(emailPrefix);
+  if (prefix.length >= 3) {
+    candidates.push(prefix);
+  }
+
+  const codeCandidate = sanitize(buyerCode);
+  if (codeCandidate.length >= 3) {
+    candidates.push(codeCandidate);
+  }
+
+  candidates.push(`buyer${buyerId}`);
+
+  for (const base of candidates) {
+    const username = await ensureUniqueUsername(base);
+    if (username) {
+      return username;
+    }
+  }
+
+  return ensureUniqueUsername(`buyer${buyerId}`);
+}
+
+// Append an incrementing numeric suffix until the username no longer exists.
+async function ensureUniqueUsername(base: string): Promise<string> {
+  const trimmedBase = base.slice(0, 24) || 'buyer';
+  let candidate = trimmedBase;
+  let suffix = 0;
+
+  while (true) {
+    const existing = await query('SELECT user_id FROM users WHERE username = ? LIMIT 1', [candidate]) as any[];
+    if (existing.length === 0) {
+      return candidate;
+    }
+    suffix += 1;
+    const suffixStr = String(suffix);
+    const maxBaseLength = Math.max(1, 30 - suffixStr.length);
+    candidate = `${trimmedBase.slice(0, maxBaseLength)}${suffixStr}`;
   }
 }
 

@@ -1,0 +1,4 @@
+Company Code,Vendor Number,Vendor Name,Address,Contact Person,Contact Email,Contact Phone,Bank Country,Bank Name,Bank Key (Branch Code),Bank Account Number,IBAN,SWIFT/BIC,Default Payment Method,Default Payment Terms,VAT Registration No,Reconciliation G/L Account
+,300045,Orion Drilling Services,25 Platinum Drive Rustenburg,Sabelo Khumalo,accounts@oriondrill.co.za,+27 82 113 4590,ZA,First National Bank,250655,7765123408,,FIRNZAJJ,T (EFT),0002 (45 days),4881234509,200000
+,300046,Royal Logistics Group,17 Waterfall Crescent Midrand,Ayanda Dube,finance@royallogistics.co.za,+27 83 201 7745,ZA,Standard Bank,051001,4456012398,,SBZAZAJJ,T (EFT),0002 (45 days),4012785667,200000
+,300047,Summit Catering Solutions,Unit 9 Apex Park Boksburg,Karabo Molefe,karabo@summitcater.co.za,+27 82 667 1204,ZA,Nedbank,198765,9900451236,,NEDSZAJJ,T (EFT),0002 (45 days),4332109876,200000

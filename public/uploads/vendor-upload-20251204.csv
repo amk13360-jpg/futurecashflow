@@ -1,0 +1,5 @@
+Company Code,Vendor Number,Vendor Name,Address,Contact Person,Contact Email,Contact Phone,Bank Country,Bank Name,Bank Key (Branch Code),Bank Account Number,IBAN,SWIFT/BIC,Default Payment Method,Default Payment Terms,VAT Registration No,Reconciliation G/L Account
+1000,200022,Impilo Medical Supplies,18 Selati Street Sandton,Thandiwe Nkosi,thandiwe@impilomedical.co.za,+27 82 555 1987,ZA,First National Bank,250655,6287451190,,FIRNZAJJ,T (EFT),0002 (45 days),4879965012,200000
+1000,200023,Platinum Catering Services,Unit 4 Platinum Park Rustenburg,Neo Mokoena,accounts@platinumcatering.co.za,+27 73 202 3344,ZA,Standard Bank,051001,3300784501,,SBZAZAJJ,T (EFT),0002 (45 days),4712300456,200000
+2000,200031,Kganya Security Solutions,91 Commissioner Street Germiston,Lerato Molefe,finance@kganyasecurity.co.za,+27 79 144 2231,ZA,ABSA Bank,632005,4078812234,,ABSAZAJJ,T (EFT),0003 (60 days),4921187765,200000
+2000,200032,Mpilo Engineering,32 Modderfontein Road Edenvale,Sipho Dlamini,sipho@mpiloengineering.co.za,+27 82 776 3350,ZA,Nedbank,198765,1045987765,,NEDSZAJJ,T (EFT),0003 (60 days),4012399988,200000
