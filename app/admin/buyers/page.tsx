@@ -561,7 +561,7 @@ export default function BuyersPage() {
 
       {/* Create Buyer Dialog - Wizard Style */}
       <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetForm(); }}>
-        <DialogContent className="flex flex-col gap-0 bg-background shadow-2xl p-0 border border-border w-full max-w-[95vw] sm:max-w-[95vw] xl:max-w-[1500px] h-auto max-h-[95vh] overflow-hidden">
+        <DialogContent className="flex flex-col gap-0 bg-card text-foreground shadow-2xl p-0 border border-border w-full max-w-[95vw] sm:max-w-[95vw] xl:max-w-[1500px] h-auto max-h-[95vh] overflow-hidden">
           {/* Header with Progress */}
           <div className="bg-primary px-8 pt-8 pb-10 text-primary-foreground">
             <DialogTitle className="font-bold text-2xl">Add New Buyer</DialogTitle>
@@ -585,7 +585,7 @@ export default function BuyersPage() {
                         ? 'bg-primary-foreground text-primary border-primary-foreground shadow-lg scale-110' 
                         : createStep > item.step 
                           ? 'bg-primary border-primary text-primary-foreground' 
-                          : 'bg-transparent border-primary/40 text-primary/60'
+                          : 'bg-muted border-primary/30 text-primary/70'
                       }`}
                     onClick={() => item.step < createStep && setCreateStep(item.step)}
                   >
