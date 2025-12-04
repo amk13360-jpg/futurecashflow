@@ -225,7 +225,7 @@ export default async function AdminDashboardPage() {
           {/* Bank Changes Tab */}
           <TabsContent value="bank-changes">
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader className="flex flex-row justify-between items-center">
                 <div>
                   <CardTitle>Bank Detail Change Requests</CardTitle>
                   <CardDescription>Review and approve supplier bank account changes</CardDescription>

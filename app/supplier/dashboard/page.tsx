@@ -97,7 +97,7 @@ export default function SupplierDashboardPage() {
 
           <TabsContent value="offers">
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader className="flex flex-row justify-between items-center">
                 <div>
                   <CardTitle>Pending Offers</CardTitle>
                   <CardDescription>Review and accept early payment offers</CardDescription>

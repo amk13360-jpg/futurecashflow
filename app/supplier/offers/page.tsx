@@ -131,10 +131,10 @@ export default function SupplierOffersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-muted/30">
+      <div className="bg-muted/30 min-h-screen">
         <SupplierHeader />
-        <main className="container mx-auto px-4 py-8">
-          <div className="flex items-center justify-center min-h-[400px]">
+        <main className="mx-auto px-4 py-8 container">
+          <div className="flex justify-center items-center min-h-[400px]">
             <div className="text-muted-foreground">Loading offers...</div>
           </div>
         </main>
@@ -143,21 +143,21 @@ export default function SupplierOffersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="bg-muted/30 min-h-screen">
       <SupplierHeader />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="mx-auto px-4 py-8 container">
         <Link
           href="/supplier/dashboard"
-          className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6"
+          className="inline-flex items-center mb-6 text-muted-foreground hover:text-foreground text-sm"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ArrowLeft className="mr-2 w-4 h-4" />
           Back to dashboard
         </Link>
 
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-3xl font-bold">Early Payment Offers</h1>
+            <h1 className="font-bold text-3xl">Early Payment Offers</h1>
             <p className="text-muted-foreground">Select offers to accept for early payment</p>
           </div>
           {offers.length > 0 && (
@@ -165,12 +165,12 @@ export default function SupplierOffersPage() {
               <Button variant="outline" onClick={selectAll}>
                 {selectedOffers.size === offers.length ? (
                   <>
-                    <Square className="h-4 w-4 mr-2" />
+                    <Square className="mr-2 w-4 h-4" />
                     Deselect All
                   </>
                 ) : (
                   <>
-                    <CheckSquare className="h-4 w-4 mr-2" />
+                    <CheckSquare className="mr-2 w-4 h-4" />
                     Select All ({offers.length})
                   </>
                 )}
@@ -190,9 +190,9 @@ export default function SupplierOffersPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid lg:grid-cols-3 gap-6">
+          <div className="gap-6 grid lg:grid-cols-3">
             {/* Offers List */}
-            <div className="lg:col-span-2 space-y-4">
+            <div className="space-y-4 lg:col-span-2">
               {offers.map((offer) => (
                 <Card 
                   key={offer.offer_id}
@@ -221,12 +221,12 @@ export default function SupplierOffersPage() {
                             </p>
                           </div>
                           <Badge variant="outline">
-                            <Clock className="h-3 w-3 mr-1" />
+                            <Clock className="mr-1 w-3 h-3" />
                             Pending
                           </Badge>
                         </div>
                         
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div className="gap-4 grid grid-cols-2 md:grid-cols-4 text-sm">
                           <div>
                             <p className="text-muted-foreground">Invoice Amount</p>
                             <p className="font-semibold">
@@ -253,7 +253,7 @@ export default function SupplierOffersPage() {
                           </div>
                         </div>
 
-                        <div className="mt-3 pt-3 border-t flex justify-between items-center text-xs text-muted-foreground">
+                        <div className="flex justify-between items-center mt-3 pt-3 border-t text-muted-foreground text-xs">
                           <span>Expires: {new Date(offer.offer_expiry_date).toLocaleDateString()}</span>
                           <Link 
                             href={`/supplier/offers/${offer.offer_id}`}
@@ -272,10 +272,10 @@ export default function SupplierOffersPage() {
 
             {/* Summary Panel */}
             <div className="lg:col-span-1">
-              <Card className="sticky top-4">
+              <Card className="top-4 sticky">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <DollarSign className="h-5 w-5" />
+                    <DollarSign className="w-5 h-5" />
                     Selection Summary
                   </CardTitle>
                   <CardDescription>
@@ -284,8 +284,8 @@ export default function SupplierOffersPage() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {selectedOffers.size === 0 ? (
-                    <div className="text-center py-6 text-muted-foreground">
-                      <Square className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                    <div className="py-6 text-muted-foreground text-center">
+                      <Square className="opacity-50 mx-auto mb-2 w-12 h-12" />
                       <p>Select offers to see summary</p>
                     </div>
                   ) : (
@@ -313,7 +313,7 @@ export default function SupplierOffersPage() {
                       </div>
 
                       <Alert>
-                        <AlertTriangle className="h-4 w-4" />
+                        <AlertTriangle className="w-4 h-4" />
                         <AlertDescription className="text-xs">
                           By accepting, you agree to receive early payment at the discounted amount. 
                           You will need to sign a cession agreement.
@@ -326,7 +326,7 @@ export default function SupplierOffersPage() {
                         onClick={handleAcceptSelected}
                         disabled={isPending || selectedOffers.size === 0}
                       >
-                        <CheckCircle className="h-4 w-4 mr-2" />
+                        <CheckCircle className="mr-2 w-4 h-4" />
                         {isPending 
                           ? "Processing..." 
                           : `Accept ${selectedOffers.size} Offer${selectedOffers.size > 1 ? "s" : ""}`

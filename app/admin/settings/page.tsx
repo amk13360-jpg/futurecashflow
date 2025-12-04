@@ -176,56 +176,56 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-muted/30">
+      <div className="bg-muted/30 min-h-screen">
         <DashboardHeader />
-        <main className="container mx-auto px-4 py-8">
-          <div className="text-center py-12 text-muted-foreground">Loading settings...</div>
+        <main className="mx-auto px-4 py-8 container">
+          <div className="py-12 text-muted-foreground text-center">Loading settings...</div>
         </main>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="bg-muted/30 min-h-screen">
       <DashboardHeader />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="mx-auto px-4 py-8 container">
         <div className="mb-6">
           <Link
             href="/admin/dashboard"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
+            className="inline-flex items-center mb-4 text-muted-foreground hover:text-foreground text-sm"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="mr-2 w-4 h-4" />
             Back to dashboard
           </Link>
-          <h2 className="text-3xl font-bold">System Settings</h2>
+          <h2 className="font-bold text-3xl">System Settings</h2>
           <p className="text-muted-foreground">Configure platform parameters and system-wide settings</p>
         </div>
 
         <Tabs defaultValue="general" className="space-y-4">
           <TabsList>
             <TabsTrigger value="general">
-              <Settings className="h-4 w-4 mr-2" />
+              <Settings className="mr-2 w-4 h-4" />
               General
             </TabsTrigger>
             <TabsTrigger value="finance">
-              <DollarSign className="h-4 w-4 mr-2" />
+              <DollarSign className="mr-2 w-4 h-4" />
               Finance
             </TabsTrigger>
             <TabsTrigger value="notifications">
-              <Mail className="h-4 w-4 mr-2" />
+              <Mail className="mr-2 w-4 h-4" />
               Notifications
             </TabsTrigger>
             <TabsTrigger value="security">
-              <Shield className="h-4 w-4 mr-2" />
+              <Shield className="mr-2 w-4 h-4" />
               Security
             </TabsTrigger>
             <TabsTrigger value="users">
-              <Users className="h-4 w-4 mr-2" />
+              <Users className="mr-2 w-4 h-4" />
               Users
             </TabsTrigger>
             <TabsTrigger value="database">
-              <Database className="h-4 w-4 mr-2" />
+              <Database className="mr-2 w-4 h-4" />
               Database
             </TabsTrigger>
           </TabsList>
@@ -245,7 +245,7 @@ export default function SettingsPage() {
                     defaultValue={settings.platform_name || "FMF Supply Chain Finance"}
                     onBlur={(e) => handleSave("platform_name", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Display name for the platform</p>
+                  <p className="text-muted-foreground text-xs">Display name for the platform</p>
                 </div>
 
                 <div className="space-y-2">
@@ -256,7 +256,7 @@ export default function SettingsPage() {
                     defaultValue={settings.support_email || "support@fmfscf.com"}
                     onBlur={(e) => handleSave("support_email", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Email address for customer support</p>
+                  <p className="text-muted-foreground text-xs">Email address for customer support</p>
                 </div>
 
                 <div className="space-y-2">
@@ -266,13 +266,13 @@ export default function SettingsPage() {
                     defaultValue={settings.support_phone || "+27 11 123 4567"}
                     onBlur={(e) => handleSave("support_phone", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Phone number for customer support</p>
+                  <p className="text-muted-foreground text-xs">Phone number for customer support</p>
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                   <div className="space-y-0.5">
                     <Label>Maintenance Mode</Label>
-                    <p className="text-xs text-muted-foreground">Temporarily disable platform access</p>
+                    <p className="text-muted-foreground text-xs">Temporarily disable platform access</p>
                   </div>
                   <Switch
                     checked={settings.maintenance_mode === "true"}
@@ -298,7 +298,7 @@ export default function SettingsPage() {
                     defaultValue={settings.default_currency || "ZAR"}
                     onBlur={(e) => handleSave("default_currency", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Default currency code (e.g., ZAR, USD)</p>
+                  <p className="text-muted-foreground text-xs">Default currency code (e.g., ZAR, USD)</p>
                 </div>
 
                 <div className="space-y-2">
@@ -310,7 +310,7 @@ export default function SettingsPage() {
                     defaultValue={settings.min_discount_rate || "5.00"}
                     onBlur={(e) => handleSave("min_discount_rate", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Minimum annual discount rate for offers</p>
+                  <p className="text-muted-foreground text-xs">Minimum annual discount rate for offers</p>
                 </div>
 
                 <div className="space-y-2">
@@ -322,7 +322,7 @@ export default function SettingsPage() {
                     defaultValue={settings.max_discount_rate || "15.00"}
                     onBlur={(e) => handleSave("max_discount_rate", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Maximum annual discount rate for offers</p>
+                  <p className="text-muted-foreground text-xs">Maximum annual discount rate for offers</p>
                 </div>
 
                 <div className="space-y-2">
@@ -333,7 +333,7 @@ export default function SettingsPage() {
                     defaultValue={settings.offer_expiry_days || "7"}
                     onBlur={(e) => handleSave("offer_expiry_days", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Number of days before an offer expires</p>
+                  <p className="text-muted-foreground text-xs">Number of days before an offer expires</p>
                 </div>
 
                 <div className="space-y-2">
@@ -345,7 +345,7 @@ export default function SettingsPage() {
                     defaultValue={settings.min_invoice_amount || "1000.00"}
                     onBlur={(e) => handleSave("min_invoice_amount", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Minimum invoice amount for financing</p>
+                  <p className="text-muted-foreground text-xs">Minimum invoice amount for financing</p>
                 </div>
 
                 <div className="space-y-2">
@@ -357,7 +357,7 @@ export default function SettingsPage() {
                     defaultValue={settings.max_invoice_amount || "10000000.00"}
                     onBlur={(e) => handleSave("max_invoice_amount", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Maximum invoice amount for financing</p>
+                  <p className="text-muted-foreground text-xs">Maximum invoice amount for financing</p>
                 </div>
               </CardContent>
             </Card>
@@ -371,10 +371,10 @@ export default function SettingsPage() {
                 <CardDescription>Configure email and SMS notification preferences</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                   <div className="space-y-0.5">
                     <Label>Email Notifications</Label>
-                    <p className="text-xs text-muted-foreground">Send email notifications to users</p>
+                    <p className="text-muted-foreground text-xs">Send email notifications to users</p>
                   </div>
                   <Switch
                     checked={settings.email_notifications_enabled !== "false"}
@@ -382,10 +382,10 @@ export default function SettingsPage() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                   <div className="space-y-0.5">
                     <Label>SMS Notifications</Label>
-                    <p className="text-xs text-muted-foreground">Send SMS notifications to users</p>
+                    <p className="text-muted-foreground text-xs">Send SMS notifications to users</p>
                   </div>
                   <Switch
                     checked={settings.sms_notifications_enabled === "true"}
@@ -401,7 +401,7 @@ export default function SettingsPage() {
                     onBlur={(e) => handleSave("smtp_host", e.target.value)}
                     placeholder="smtp.example.com"
                   />
-                  <p className="text-xs text-muted-foreground">SMTP server hostname</p>
+                  <p className="text-muted-foreground text-xs">SMTP server hostname</p>
                 </div>
 
                 <div className="space-y-2">
@@ -412,7 +412,7 @@ export default function SettingsPage() {
                     defaultValue={settings.smtp_port || "587"}
                     onBlur={(e) => handleSave("smtp_port", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">SMTP server port</p>
+                  <p className="text-muted-foreground text-xs">SMTP server port</p>
                 </div>
 
                 <div className="space-y-2">
@@ -423,7 +423,7 @@ export default function SettingsPage() {
                     defaultValue={settings.from_email || "noreply@fmfscf.com"}
                     onBlur={(e) => handleSave("from_email", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Email address for outgoing notifications</p>
+                  <p className="text-muted-foreground text-xs">Email address for outgoing notifications</p>
                 </div>
               </CardContent>
             </Card>
@@ -445,7 +445,7 @@ export default function SettingsPage() {
                     defaultValue={settings.session_timeout_minutes || "30"}
                     onBlur={(e) => handleSave("session_timeout_minutes", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Automatic logout after inactivity</p>
+                  <p className="text-muted-foreground text-xs">Automatic logout after inactivity</p>
                 </div>
 
                 <div className="space-y-2">
@@ -456,7 +456,7 @@ export default function SettingsPage() {
                     defaultValue={settings.max_login_attempts || "5"}
                     onBlur={(e) => handleSave("max_login_attempts", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Lock account after failed attempts</p>
+                  <p className="text-muted-foreground text-xs">Lock account after failed attempts</p>
                 </div>
 
                 <div className="space-y-2">
@@ -467,13 +467,13 @@ export default function SettingsPage() {
                     defaultValue={settings.password_min_length || "8"}
                     onBlur={(e) => handleSave("password_min_length", e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground">Minimum characters for passwords</p>
+                  <p className="text-muted-foreground text-xs">Minimum characters for passwords</p>
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                   <div className="space-y-0.5">
                     <Label>Require Strong Passwords</Label>
-                    <p className="text-xs text-muted-foreground">Enforce uppercase, lowercase, numbers, and symbols</p>
+                    <p className="text-muted-foreground text-xs">Enforce uppercase, lowercase, numbers, and symbols</p>
                   </div>
                   <Switch
                     checked={settings.require_strong_passwords !== "false"}
@@ -481,10 +481,10 @@ export default function SettingsPage() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                   <div className="space-y-0.5">
                     <Label>Two-Factor Authentication</Label>
-                    <p className="text-xs text-muted-foreground">Require 2FA for admin users</p>
+                    <p className="text-muted-foreground text-xs">Require 2FA for admin users</p>
                   </div>
                   <Switch
                     checked={settings.require_2fa === "true"}
@@ -498,7 +498,7 @@ export default function SettingsPage() {
           {/* Users Management */}
           <TabsContent value="users">
             <Card>
-              <CardHeader className="flex flex-row items-center justify-between">
+              <CardHeader className="flex flex-row justify-between items-center">
                 <div>
                   <CardTitle>User Management</CardTitle>
                   <CardDescription>Manage system users and their permissions</CardDescription>
@@ -512,7 +512,7 @@ export default function SettingsPage() {
                 }}>
                   <DialogTrigger asChild>
                     <Button onClick={() => { setEditingUser(null); resetUserForm(); }}>
-                      <Plus className="h-4 w-4 mr-2" />
+                      <Plus className="mr-2 w-4 h-4" />
                       Add User
                     </Button>
                   </DialogTrigger>
@@ -523,7 +523,7 @@ export default function SettingsPage() {
                         {editingUser ? "Update user details and permissions" : "Add a new user to the system"}
                       </DialogDescription>
                     </DialogHeader>
-                    <div className="grid gap-4 py-4">
+                    <div className="gap-4 grid py-4">
                       {!editingUser && (
                         <div className="space-y-2">
                           <Label htmlFor="username">Username</Label>
@@ -615,8 +615,8 @@ export default function SettingsPage() {
               <CardContent>
                 <div className="space-y-4">
                   {users.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
-                      <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                    <div className="py-8 text-muted-foreground text-center">
+                      <Users className="opacity-50 mx-auto mb-3 w-12 h-12" />
                       <p>No users found</p>
                     </div>
                   ) : (
@@ -624,11 +624,11 @@ export default function SettingsPage() {
                       <table className="w-full">
                         <thead className="bg-muted/50">
                           <tr>
-                            <th className="text-left p-3 font-medium">User</th>
-                            <th className="text-left p-3 font-medium">Role</th>
-                            <th className="text-left p-3 font-medium">Buyer</th>
-                            <th className="text-left p-3 font-medium">Status</th>
-                            <th className="text-right p-3 font-medium">Actions</th>
+                            <th className="p-3 font-medium text-left">User</th>
+                            <th className="p-3 font-medium text-left">Role</th>
+                            <th className="p-3 font-medium text-left">Buyer</th>
+                            <th className="p-3 font-medium text-left">Status</th>
+                            <th className="p-3 font-medium text-right">Actions</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -637,7 +637,7 @@ export default function SettingsPage() {
                               <td className="p-3">
                                 <div>
                                   <p className="font-medium">{user.full_name || user.username}</p>
-                                  <p className="text-sm text-muted-foreground">{user.email}</p>
+                                  <p className="text-muted-foreground text-sm">{user.email}</p>
                                 </div>
                               </td>
                               <td className="p-3">
@@ -649,7 +649,7 @@ export default function SettingsPage() {
                                 {user.buyer_name ? (
                                   <span className="text-sm">{user.buyer_name} ({user.buyer_code})</span>
                                 ) : (
-                                  <span className="text-sm text-muted-foreground">—</span>
+                                  <span className="text-muted-foreground text-sm">—</span>
                                 )}
                               </td>
                               <td className="p-3">
@@ -665,7 +665,7 @@ export default function SettingsPage() {
                                     onClick={() => openEditDialog(user)}
                                     title="Edit user"
                                   >
-                                    <Edit className="h-4 w-4" />
+                                    <Edit className="w-4 h-4" />
                                   </Button>
                                   <Button
                                     variant="ghost"
@@ -676,7 +676,7 @@ export default function SettingsPage() {
                                     }}
                                     title="Reset password"
                                   >
-                                    <Key className="h-4 w-4" />
+                                    <Key className="w-4 h-4" />
                                   </Button>
                                   <Button
                                     variant="ghost"
@@ -684,7 +684,7 @@ export default function SettingsPage() {
                                     onClick={() => handleToggleStatus(user.user_id)}
                                     title={user.status === "active" ? "Deactivate" : "Activate"}
                                   >
-                                    <UserCog className="h-4 w-4" />
+                                    <UserCog className="w-4 h-4" />
                                   </Button>
                                   <Button
                                     variant="ghost"
@@ -693,7 +693,7 @@ export default function SettingsPage() {
                                     title="Delete user"
                                     className="text-red-600 hover:text-red-700"
                                   >
-                                    <Trash2 className="h-4 w-4" />
+                                    <Trash2 className="w-4 h-4" />
                                   </Button>
                                 </div>
                               </td>
@@ -714,7 +714,7 @@ export default function SettingsPage() {
                   <DialogTitle>Reset Password</DialogTitle>
                   <DialogDescription>Enter a new password for the user</DialogDescription>
                 </DialogHeader>
-                <div className="grid gap-4 py-4">
+                <div className="gap-4 grid py-4">
                   <div className="space-y-2">
                     <Label htmlFor="new-password">New Password</Label>
                     <Input
@@ -742,31 +742,31 @@ export default function SettingsPage() {
                 <CardDescription>Database initialization and maintenance</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="p-4 border rounded-lg bg-muted/50">
-                  <h4 className="font-medium mb-2">Database Status</h4>
-                  <p className="text-sm text-muted-foreground mb-4">
+                <div className="bg-muted/50 p-4 border rounded-lg">
+                  <h4 className="mb-2 font-medium">Database Status</h4>
+                  <p className="mb-4 text-muted-foreground text-sm">
                     The database schema must be initialized before using the platform. Run the SQL scripts in the
                     scripts folder in order.
                   </p>
                   <div className="space-y-2 text-sm">
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-blue-500" />
+                      <div className="bg-blue-500 rounded-full w-2 h-2" />
                       <span>01-create-database-schema.sql - Creates all tables</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-blue-500" />
+                      <div className="bg-blue-500 rounded-full w-2 h-2" />
                       <span>02-seed-initial-data.sql - Adds sample data</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-blue-500" />
+                      <div className="bg-blue-500 rounded-full w-2 h-2" />
                       <span>03-update-schema-for-ap-data.sql - Adds vendor fields</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-4 border rounded-lg bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-900">
-                  <h4 className="font-medium mb-2 text-amber-900 dark:text-amber-100">Important Note</h4>
-                  <p className="text-sm text-amber-800 dark:text-amber-200">
+                <div className="bg-amber-50 dark:bg-amber-950/20 p-4 border border-amber-200 dark:border-amber-900 rounded-lg">
+                  <h4 className="mb-2 font-medium text-amber-900 dark:text-amber-100">Important Note</h4>
+                  <p className="text-amber-800 dark:text-amber-200 text-sm">
                     If you're seeing 500 errors on the Reports page, it means the database tables haven't been created
                     yet. Please run the SQL scripts using your MySQL client or database management tool.
                   </p>
@@ -780,13 +780,13 @@ export default function SettingsPage() {
                     onBlur={(e) => handleSave("backup_frequency", e.target.value)}
                     placeholder="daily, weekly, monthly"
                   />
-                  <p className="text-xs text-muted-foreground">How often to backup the database</p>
+                  <p className="text-muted-foreground text-xs">How often to backup the database</p>
                 </div>
 
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                   <div className="space-y-0.5">
                     <Label>Enable Query Logging</Label>
-                    <p className="text-xs text-muted-foreground">Log all database queries for debugging</p>
+                    <p className="text-muted-foreground text-xs">Log all database queries for debugging</p>
                   </div>
                   <Switch
                     checked={settings.enable_query_logging === "true"}

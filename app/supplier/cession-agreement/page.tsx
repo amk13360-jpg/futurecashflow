@@ -20,21 +20,21 @@ export default async function SupplierCessionAgreementPage() {
     : [];
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="bg-muted/30 min-h-screen">
       <SupplierHeader supplierName={profile?.name} />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="mx-auto px-4 py-8 container">
         <Link
           href="/supplier/dashboard"
-          className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6"
+          className="inline-flex items-center mb-6 text-muted-foreground hover:text-foreground text-sm"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ArrowLeft className="mr-2 w-4 h-4" />
           Back to dashboard
         </Link>
 
-        <div className="max-w-4xl mx-auto">
+        <div className="mx-auto max-w-4xl">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Cession Agreements</h1>
+            <h1 className="mb-2 font-bold text-3xl">Cession Agreements</h1>
             <p className="text-muted-foreground">
               Manage your standing cession agreement and view invoice addendums
             </p>
@@ -43,10 +43,10 @@ export default async function SupplierCessionAgreementPage() {
           {/* Standing Cession Status */}
           <Card className="mb-8">
             <CardHeader>
-              <div className="flex items-center justify-between">
+              <div className="flex justify-between items-center">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-primary/10 rounded-lg">
-                    <Shield className="h-6 w-6 text-primary" />
+                  <div className="bg-primary/10 p-2 rounded-lg">
+                    <Shield className="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <CardTitle>Standing Cession Agreement</CardTitle>
@@ -61,11 +61,11 @@ export default async function SupplierCessionAgreementPage() {
                     className="capitalize"
                   >
                     {cessionStatus.standingCession?.status === 'approved' ? (
-                      <><CheckCircle className="h-3 w-3 mr-1" /> Active</>
+                      <><CheckCircle className="mr-1 w-3 h-3" /> Active</>
                     ) : cessionStatus.standingCession?.status === 'signed' ? (
-                      <><Clock className="h-3 w-3 mr-1" /> Pending Approval</>
+                      <><Clock className="mr-1 w-3 h-3" /> Pending Approval</>
                     ) : (
-                      <><Clock className="h-3 w-3 mr-1" /> {cessionStatus.standingCession?.status}</>
+                      <><Clock className="mr-1 w-3 h-3" /> {cessionStatus.standingCession?.status}</>
                     )}
                   </Badge>
                 )}
@@ -74,7 +74,7 @@ export default async function SupplierCessionAgreementPage() {
             <CardContent>
               {cessionStatus.hasStandingCession ? (
                 <div className="space-y-4">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                  <div className="gap-4 grid grid-cols-2 md:grid-cols-4 text-sm">
                     <div>
                       <p className="text-muted-foreground">Signed Date</p>
                       <p className="font-medium">
@@ -105,7 +105,7 @@ export default async function SupplierCessionAgreementPage() {
 
                   {cessionStatus.standingCession?.status === 'approved' && (
                     <Alert className="bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-800">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
+                      <CheckCircle className="w-4 h-4 text-green-600" />
                       <AlertDescription>
                         Your standing cession is active. When you accept offers, addendums will be 
                         automatically generated and attached to this agreement.
@@ -116,7 +116,7 @@ export default async function SupplierCessionAgreementPage() {
                   {cessionStatus.standingCession?.document_url && (
                     <Button variant="outline" asChild>
                       <a href={cessionStatus.standingCession.document_url} target="_blank">
-                        <Download className="h-4 w-4 mr-2" />
+                        <Download className="mr-2 w-4 h-4" />
                         View Signed Document
                       </a>
                     </Button>
@@ -125,23 +125,23 @@ export default async function SupplierCessionAgreementPage() {
               ) : (
                 <div className="space-y-4">
                   <Alert>
-                    <AlertTriangle className="h-4 w-4" />
+                    <AlertTriangle className="w-4 h-4" />
                     <AlertDescription>
                       You need to sign a standing cession agreement before you can accept offers.
                       This is a one-time agreement that covers all future invoice acceptances.
                     </AlertDescription>
                   </Alert>
 
-                  <div className="flex flex-col sm:flex-row gap-3">
+                  <div className="flex sm:flex-row flex-col gap-3">
                     <Button variant="outline" asChild>
                       <a href={templateUrl} download>
-                        <Download className="h-4 w-4 mr-2" />
+                        <Download className="mr-2 w-4 h-4" />
                         Download Template
                       </a>
                     </Button>
                     <Button asChild>
                       <Link href="/supplier/cession-agreement/upload">
-                        <Upload className="h-4 w-4 mr-2" />
+                        <Upload className="mr-2 w-4 h-4" />
                         Upload Signed Agreement
                       </Link>
                     </Button>
@@ -156,7 +156,7 @@ export default async function SupplierCessionAgreementPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
+                  <FileText className="w-5 h-5" />
                   Invoice Addendums
                 </CardTitle>
                 <CardDescription>
@@ -165,8 +165,8 @@ export default async function SupplierCessionAgreementPage() {
               </CardHeader>
               <CardContent>
                 {addendums.length === 0 ? (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                  <div className="py-8 text-muted-foreground text-center">
+                    <FileText className="opacity-50 mx-auto mb-3 w-12 h-12" />
                     <p>No addendums yet</p>
                     <p className="text-sm">Addendums will appear here when you accept offers</p>
                   </div>
@@ -175,24 +175,24 @@ export default async function SupplierCessionAgreementPage() {
                     {addendums.map((addendum) => (
                       <div 
                         key={addendum.cession_id} 
-                        className="flex items-center justify-between p-4 border rounded-lg"
+                        className="flex justify-between items-center p-4 border rounded-lg"
                       >
                         <div className="flex items-center gap-4">
-                          <div className="p-2 bg-muted rounded">
-                            <FileText className="h-5 w-5" />
+                          <div className="bg-muted p-2 rounded">
+                            <FileText className="w-5 h-5" />
                           </div>
                           <div>
                             <p className="font-medium">
                               Addendum #{addendum.cession_id}
                             </p>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-muted-foreground text-sm">
                               {addendum.trigger_reason === 'offer_acceptance' 
                                 ? 'Offer Acceptance' 
                                 : addendum.trigger_reason
                               } • {new Date(addendum.created_at).toLocaleDateString()}
                             </p>
                             {addendum.linked_invoice_ids && (
-                              <p className="text-xs text-muted-foreground mt-1">
+                              <p className="mt-1 text-muted-foreground text-xs">
                                 {JSON.parse(addendum.linked_invoice_ids).length} invoice(s) included
                               </p>
                             )}
@@ -205,7 +205,7 @@ export default async function SupplierCessionAgreementPage() {
                           {addendum.document_url && (
                             <Button variant="ghost" size="sm" asChild>
                               <a href={addendum.document_url} target="_blank">
-                                <Download className="h-4 w-4" />
+                                <Download className="w-4 h-4" />
                               </a>
                             </Button>
                           )}

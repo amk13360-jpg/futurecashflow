@@ -105,40 +105,40 @@ export default function BankChangesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-muted/30">
+      <div className="bg-muted/30 min-h-screen">
         <DashboardHeader />
-        <main className="container mx-auto px-4 py-8">
-          <div className="text-center py-12 text-muted-foreground">Loading...</div>
+        <main className="mx-auto px-4 py-8 container">
+          <div className="py-12 text-muted-foreground text-center">Loading...</div>
         </main>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="bg-muted/30 min-h-screen">
       <DashboardHeader />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="mx-auto px-4 py-8 container">
         <div className="mb-6">
           <Link
             href="/admin/dashboard"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
+            className="inline-flex items-center mb-4 text-muted-foreground hover:text-foreground text-sm"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="mr-2 w-4 h-4" />
             Back to dashboard
           </Link>
-          <h2 className="text-3xl font-bold">Bank Change Requests</h2>
+          <h2 className="font-bold text-3xl">Bank Change Requests</h2>
           <p className="text-muted-foreground">Review and approve supplier bank account changes</p>
         </div>
 
         <Tabs defaultValue="pending" className="space-y-4">
           <TabsList>
             <TabsTrigger value="pending">
-              <Clock className="h-4 w-4 mr-2" />
+              <Clock className="mr-2 w-4 h-4" />
               Pending ({pendingRequests.length})
             </TabsTrigger>
             <TabsTrigger value="processed">
-              <CheckCircle className="h-4 w-4 mr-2" />
+              <CheckCircle className="mr-2 w-4 h-4" />
               Processed ({processedRequests.length})
             </TabsTrigger>
           </TabsList>
@@ -161,10 +161,10 @@ export default function BankChangesPage() {
                 {pendingRequests.map((request) => (
                   <Card key={request.request_id}>
                     <CardHeader>
-                      <div className="flex items-center justify-between">
+                      <div className="flex justify-between items-center">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
-                            <CreditCard className="h-5 w-5 text-amber-600" />
+                          <div className="bg-amber-100 dark:bg-amber-900/30 p-2 rounded-lg">
+                            <CreditCard className="w-5 h-5 text-amber-600" />
                           </div>
                           <div>
                             <CardTitle className="text-lg">{request.supplier_name}</CardTitle>
@@ -172,17 +172,17 @@ export default function BankChangesPage() {
                           </div>
                         </div>
                         <Badge variant="secondary">
-                          <Clock className="h-3 w-3 mr-1" />
+                          <Clock className="mr-1 w-3 h-3" />
                           Pending Review
                         </Badge>
                       </div>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {/* Bank Details Comparison */}
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div className="p-4 bg-muted/50 rounded-lg">
+                      <div className="gap-4 grid md:grid-cols-2">
+                        <div className="bg-muted/50 p-4 rounded-lg">
                           <div className="flex items-center gap-2 mb-3">
-                            <Building2 className="h-4 w-4 text-muted-foreground" />
+                            <Building2 className="w-4 h-4 text-muted-foreground" />
                             <span className="font-medium text-sm">Current Bank Details</span>
                           </div>
                           <div className="space-y-2 text-sm">
@@ -201,10 +201,10 @@ export default function BankChangesPage() {
                           </div>
                         </div>
 
-                        <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                        <div className="bg-green-50 dark:bg-green-900/20 p-4 border border-green-200 dark:border-green-800 rounded-lg">
                           <div className="flex items-center gap-2 mb-3">
-                            <ArrowRightLeft className="h-4 w-4 text-green-600" />
-                            <span className="font-medium text-sm text-green-700 dark:text-green-400">New Bank Details</span>
+                            <ArrowRightLeft className="w-4 h-4 text-green-600" />
+                            <span className="font-medium text-green-700 dark:text-green-400 text-sm">New Bank Details</span>
                           </div>
                           <div className="space-y-2 text-sm">
                             <div className="flex justify-between">
@@ -225,16 +225,16 @@ export default function BankChangesPage() {
 
                       {/* Reason */}
                       {request.reason && (
-                        <div className="p-3 bg-muted/50 rounded-lg">
-                          <span className="text-sm text-muted-foreground">Reason for change: </span>
+                        <div className="bg-muted/50 p-3 rounded-lg">
+                          <span className="text-muted-foreground text-sm">Reason for change: </span>
                           <span className="text-sm">{request.reason}</span>
                         </div>
                       )}
 
                       {/* Warning */}
-                      <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg flex items-start gap-2">
-                        <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5" />
-                        <p className="text-sm text-amber-800 dark:text-amber-200">
+                      <div className="flex items-start gap-2 bg-amber-50 dark:bg-amber-900/20 p-3 border border-amber-200 dark:border-amber-800 rounded-lg">
+                        <AlertTriangle className="mt-0.5 w-4 h-4 text-amber-600" />
+                        <p className="text-amber-800 dark:text-amber-200 text-sm">
                           Approving this request will update the supplier's bank details for all future payments. 
                           Please verify the new account details before approving.
                         </p>
@@ -242,7 +242,7 @@ export default function BankChangesPage() {
 
                       {/* Actions */}
                       <div className="flex justify-between items-center pt-4 border-t">
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-muted-foreground text-xs">
                           Requested: {new Date(request.created_at).toLocaleString()}
                         </span>
                         <div className="flex gap-2">
@@ -254,14 +254,14 @@ export default function BankChangesPage() {
                             }}
                             disabled={isPending}
                           >
-                            <XCircle className="h-4 w-4 mr-2" />
+                            <XCircle className="mr-2 w-4 h-4" />
                             Reject
                           </Button>
                           <Button
                             onClick={() => handleApprove(request.request_id)}
                             disabled={isPending}
                           >
-                            <CheckCircle className="h-4 w-4 mr-2" />
+                            <CheckCircle className="mr-2 w-4 h-4" />
                             Approve Change
                           </Button>
                         </div>
@@ -290,7 +290,7 @@ export default function BankChangesPage() {
                 {processedRequests.map((request) => (
                   <Card key={request.request_id}>
                     <CardContent className="p-4">
-                      <div className="flex items-center justify-between">
+                      <div className="flex justify-between items-center">
                         <div className="flex items-center gap-4">
                           <div className={`p-2 rounded-lg ${
                             request.status === "approved" 
@@ -298,14 +298,14 @@ export default function BankChangesPage() {
                               : "bg-red-100 dark:bg-red-900/30"
                           }`}>
                             {request.status === "approved" ? (
-                              <CheckCircle className="h-5 w-5 text-green-600" />
+                              <CheckCircle className="w-5 h-5 text-green-600" />
                             ) : (
-                              <XCircle className="h-5 w-5 text-red-600" />
+                              <XCircle className="w-5 h-5 text-red-600" />
                             )}
                           </div>
                           <div>
                             <p className="font-medium">{request.supplier_name}</p>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-muted-foreground text-sm">
                               {request.new_bank_name} • {request.new_account_no}
                             </p>
                           </div>
@@ -314,18 +314,18 @@ export default function BankChangesPage() {
                           <Badge variant={request.status === "approved" ? "default" : "destructive"} className="capitalize">
                             {request.status}
                           </Badge>
-                          <p className="text-xs text-muted-foreground mt-1">
+                          <p className="mt-1 text-muted-foreground text-xs">
                             {request.reviewed_at ? new Date(request.reviewed_at).toLocaleString() : ""}
                           </p>
                           {request.reviewed_by_username && (
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-muted-foreground text-xs">
                               by {request.reviewed_by_username}
                             </p>
                           )}
                         </div>
                       </div>
                       {request.rejection_reason && (
-                        <div className="mt-3 p-2 bg-red-50 dark:bg-red-900/20 rounded text-sm text-red-800 dark:text-red-200">
+                        <div className="bg-red-50 dark:bg-red-900/20 mt-3 p-2 rounded text-red-800 dark:text-red-200 text-sm">
                           Rejection reason: {request.rejection_reason}
                         </div>
                       )}
