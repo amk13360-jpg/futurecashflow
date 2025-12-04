@@ -607,7 +607,8 @@ export default function BuyersPage() {
           </div>
 
           {/* Form Content */}
-          <div className="flex-1 p-8">
+          <div className="flex-1 overflow-y-auto bg-muted/30 p-8">
+            <div className="mx-auto max-w-6xl space-y-8">
             {/* Step 1: Company Information */}
             {createStep === 1 && (
               <div className="slide-in-from-right-5 space-y-6 animate-in">
@@ -750,7 +751,7 @@ export default function BuyersPage() {
                   </div>
                 </div>
 
-                <Card>
+                <Card className="border border-border/60 bg-card/95 shadow-sm">
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-2 text-base">
                       <Mail className="w-4 h-4" />
@@ -790,7 +791,7 @@ export default function BuyersPage() {
                   </CardContent>
                 </Card>
 
-                <Card>
+                <Card className="border border-border/60 bg-card/95 shadow-sm">
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-2 text-base">
                       <DollarSign className="w-4 h-4" />
@@ -837,7 +838,7 @@ export default function BuyersPage() {
                   </div>
                 </div>
 
-                <Card>
+                <Card className="border border-border/60 bg-card/95 shadow-sm">
                   <CardContent className="space-y-4 pt-6">
                     <div className="space-y-2">
                       <Label>Street Address</Label>
@@ -915,7 +916,7 @@ export default function BuyersPage() {
                   </div>
                 </div>
 
-                <Card>
+                <Card className="border border-border/60 bg-card/95 shadow-sm">
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-2 text-base">
                       <FileText className="w-4 h-4" />
@@ -1137,9 +1138,10 @@ export default function BuyersPage() {
               </div>
             )}
           </div>
+        </div>
 
-          {/* Footer with Navigation */}
-          <div className="flex justify-between items-center p-6 border-t">
+        {/* Footer with Navigation */}
+        <div className="flex justify-between items-center p-6 border-t border-border/70 bg-card/95">
             <div>
               {createStep > 1 && (
                 <Button variant="ghost" onClick={prevStep} className="gap-2">
