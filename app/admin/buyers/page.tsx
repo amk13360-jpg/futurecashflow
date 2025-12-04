@@ -552,12 +552,12 @@ export default function BuyersPage() {
       </Card>
 
       {/* Create Buyer Dialog - Wizard Style */}
-       <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetForm(); }}>
-        <DialogContent className="flex flex-col gap-0 bg-white dark:bg-slate-950 p-0 w-[90vw] max-w-6xl max-h-[90vh] overflow-hidden">
+      <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetForm(); }}>
+        <DialogContent className="flex flex-col gap-0 p-0 w-full max-w-[95vw] sm:max-w-[95vw] xl:max-w-[1500px] h-auto max-h-[95vh] bg-background border border-border shadow-2xl overflow-hidden">
           {/* Header with Progress */}
-          <div className="bg-linear-to-r from-blue-600 to-indigo-600 px-8 pt-8 pb-10">
-            <DialogTitle className="font-bold text-white text-2xl">Add New Buyer</DialogTitle>
-            <DialogDescription className="mt-1 text-blue-100">
+          <div className="bg-primary text-primary-foreground px-8 pt-8 pb-10">
+            <DialogTitle className="font-bold text-2xl">Add New Buyer</DialogTitle>
+            <DialogDescription className="mt-1 text-primary-foreground/80">
               Complete the steps below to onboard a new buyer
             </DialogDescription>
             
@@ -574,10 +574,10 @@ export default function BuyersPage() {
                   <div 
                     className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all cursor-pointer
                       ${createStep === item.step 
-                        ? 'bg-white text-blue-600 border-white shadow-lg scale-110' 
+                        ? 'bg-primary-foreground text-primary border-primary-foreground shadow-lg scale-110' 
                         : createStep > item.step 
-                          ? 'bg-blue-400 border-blue-400 text-white' 
-                          : 'border-blue-300 text-blue-200'
+                          ? 'bg-primary border-primary text-primary-foreground' 
+                          : 'bg-transparent border-primary/40 text-primary/60'
                       }`}
                     onClick={() => item.step < createStep && setCreateStep(item.step)}
                   >
@@ -587,11 +587,11 @@ export default function BuyersPage() {
                       <item.icon className="w-5 h-5" />
                     )}
                   </div>
-                  <span className={`hidden sm:block ml-2 text-sm font-medium ${createStep >= item.step ? 'text-white' : 'text-blue-200'}`}>
+                  <span className={`hidden sm:block ml-2 text-sm font-medium ${createStep >= item.step ? 'text-primary-foreground' : 'text-primary-foreground/70'}`}>
                     {item.label}
                   </span>
                   {index < 4 && (
-                    <div className={`hidden sm:block w-16 h-0.5 mx-4 ${createStep > item.step ? 'bg-blue-400' : 'bg-blue-300/50'}`} />
+                    <div className={`hidden sm:block w-16 h-0.5 mx-4 ${createStep > item.step ? 'bg-primary/70' : 'bg-primary/30'}`} />
                   )}
                 </div>
               ))}
@@ -604,8 +604,8 @@ export default function BuyersPage() {
             {createStep === 1 && (
               <div className="slide-in-from-right-5 space-y-6 animate-in">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-blue-100 p-2 rounded-lg">
-                    <Building2 className="w-6 h-6 text-blue-600" />
+                  <div className="bg-primary/10 p-2 rounded-lg">
+                    <Building2 className="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg">Company Information</h3>
@@ -733,8 +733,8 @@ export default function BuyersPage() {
             {createStep === 2 && (
               <div className="slide-in-from-right-5 space-y-6 animate-in">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-green-100 p-2 rounded-lg">
-                    <Users className="w-6 h-6 text-green-600" />
+                  <div className="bg-primary/10 p-2 rounded-lg">
+                    <Users className="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg">Contact Information</h3>
@@ -820,8 +820,8 @@ export default function BuyersPage() {
             {createStep === 3 && (
               <div className="slide-in-from-right-5 space-y-6 animate-in">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-orange-100 p-2 rounded-lg">
-                    <MapPin className="w-6 h-6 text-orange-600" />
+                  <div className="bg-primary/10 p-2 rounded-lg">
+                    <MapPin className="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg">Physical Address</h3>
@@ -882,11 +882,11 @@ export default function BuyersPage() {
                   </CardContent>
                 </Card>
 
-                <div className="flex items-start gap-3 bg-amber-50 dark:bg-amber-950/30 p-4 border border-amber-200 dark:border-amber-800 rounded-lg">
-                  <AlertCircle className="mt-0.5 w-5 h-5 text-amber-600" />
+                <div className="flex items-start gap-3 bg-primary/5 p-4 border border-primary/20 rounded-lg">
+                  <AlertCircle className="mt-0.5 w-5 h-5 text-primary" />
                   <div>
-                    <p className="font-medium text-amber-800 dark:text-amber-200 text-sm">Address is optional</p>
-                    <p className="text-amber-700 dark:text-amber-300 text-sm">
+                    <p className="font-medium text-primary text-sm">Address is optional</p>
+                    <p className="text-primary/70 text-sm">
                       However, providing a complete address is recommended for compliance and regulatory requirements.
                     </p>
                   </div>
@@ -898,8 +898,8 @@ export default function BuyersPage() {
             {createStep === 4 && (
               <div className="slide-in-from-right-5 space-y-6 animate-in">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-purple-100 p-2 rounded-lg">
-                    <Settings2 className="w-6 h-6 text-purple-600" />
+                  <div className="bg-primary/10 p-2 rounded-lg">
+                    <Settings2 className="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg">Configuration</h3>
@@ -1009,8 +1009,8 @@ export default function BuyersPage() {
             {createStep === 5 && (
               <div className="slide-in-from-right-5 space-y-6 animate-in">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="bg-green-100 p-2 rounded-lg">
-                    <Check className="w-6 h-6 text-green-600" />
+                  <div className="bg-primary/10 p-2 rounded-lg">
+                    <Check className="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-lg">Review & Confirm</h3>
@@ -1062,7 +1062,7 @@ export default function BuyersPage() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Email</span>
-                        <span className="text-blue-600">{formData.contact_email || '-'}</span>
+                        <span className="text-primary">{formData.contact_email || '-'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Phone</span>
