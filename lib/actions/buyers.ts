@@ -115,7 +115,7 @@ export async function getBuyers(filters?: {
         b.*,
         rc.name as rate_card_name,
         (SELECT COUNT(*) FROM users u WHERE u.buyer_id = b.buyer_id AND u.role = 'accounts_payable') as ap_user_count,
-        (SELECT COUNT(*) FROM suppliers s WHERE s.buyer_id = b.buyer_id) as supplier_count,
+        (SELECT COUNT(DISTINCT i.supplier_id) FROM invoices i WHERE i.buyer_id = b.buyer_id) as supplier_count,
         (SELECT COUNT(*) FROM invoices i WHERE i.buyer_id = b.buyer_id) as invoice_count,
         COALESCE((SELECT SUM(p.amount) FROM payments p 
           JOIN offers o ON p.offer_id = o.offer_id 
@@ -175,7 +175,7 @@ export async function getBuyerById(buyerId: number): Promise<{ success: boolean;
         b.*,
         rc.name as rate_card_name,
         (SELECT COUNT(*) FROM users u WHERE u.buyer_id = b.buyer_id AND u.role = 'accounts_payable') as ap_user_count,
-        (SELECT COUNT(*) FROM suppliers s WHERE s.buyer_id = b.buyer_id) as supplier_count,
+        (SELECT COUNT(DISTINCT i.supplier_id) FROM invoices i WHERE i.buyer_id = b.buyer_id) as supplier_count,
         (SELECT COUNT(*) FROM invoices i WHERE i.buyer_id = b.buyer_id) as invoice_count,
         COALESCE((SELECT SUM(p.amount) FROM payments p 
           JOIN offers o ON p.offer_id = o.offer_id 
