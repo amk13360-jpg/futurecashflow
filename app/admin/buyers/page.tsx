@@ -6,7 +6,7 @@ import {
   Building2, Plus, Search, Filter, MoreVertical, 
   CheckCircle2, XCircle, AlertCircle, Clock, Users,
   FileText, DollarSign, TrendingUp, Edit, Eye, Pause,
-  ChevronRight, ChevronLeft, MapPin, Phone, Mail, Settings2, Check, X
+  ChevronRight, ChevronLeft, MapPin, Phone, Mail, Settings2, Check, X, ArrowLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -54,6 +54,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import Link from 'next/link';
 import { toast } from 'sonner';
 import { 
   getBuyers, createBuyer, updateBuyer, activateBuyer, suspendBuyer,
@@ -355,6 +356,13 @@ export default function BuyersPage() {
           )}
         </div>
       )}
+      <Link
+        href="/admin/dashboard"
+        className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+      >
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Back to dashboard
+      </Link>
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
