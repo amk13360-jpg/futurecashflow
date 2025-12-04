@@ -358,9 +358,9 @@ export default function BuyersPage() {
       )}
       <Link
         href="/admin/dashboard"
-        className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
+        className="inline-flex items-center text-muted-foreground hover:text-foreground text-sm transition-colors"
       >
-        <ArrowLeft className="mr-2 h-4 w-4" />
+        <ArrowLeft className="mr-2 w-4 h-4" />
         Back to dashboard
       </Link>
       {/* Header */}
