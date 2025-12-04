@@ -338,8 +338,9 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
 
   try {
     // Get the buyer code for the logged-in AP user (for validation)
+    // Admins can upload for any company; AP users are restricted to their buyer
     let allowedBuyerCode: string | null = null
-    if (session.buyerId) {
+    if (session.role !== "admin" && session.buyerId) {
       const buyers = await query<Array<{ code: string }>>(`SELECT code FROM buyers WHERE buyer_id = ?`, [session.buyerId])
       if (buyers.length > 0) {
         allowedBuyerCode = buyers[0].code
@@ -355,7 +356,7 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
         try {
           const row = { ...originalRow };
 
-          // Validate that AP users only upload vendors for their company
+          // Validate that AP users only upload vendors for their company (admins bypass)
           let rowCompanyCode = row["Company Code"]
           // Auto-fill missing company code with the AP user's buyer code for convenience.
           if (allowedBuyerCode && (!rowCompanyCode || rowCompanyCode.trim() === "")) {
