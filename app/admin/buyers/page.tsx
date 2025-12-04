@@ -71,6 +71,7 @@ export default function BuyersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [riskFilter, setRiskFilter] = useState<string>('all');
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   
   // Dialog state
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -109,13 +110,24 @@ export default function BuyersPage() {
         getRateCards()
       ]);
 
+      console.log('Buyers result:', buyersResult);
+      console.log('Rate cards result:', rateCardsResult);
+
       if (buyersResult.success && buyersResult.data) {
         setBuyers(buyersResult.data);
+        setErrorMsg(null);
+      } else {
+        setBuyers([]);
+        setErrorMsg(buyersResult.message || 'Failed to load buyers');
+        console.error('Failed to load buyers:', buyersResult.message);
+        toast.error(buyersResult.message || 'Failed to load buyers');
       }
       if (rateCardsResult.success && rateCardsResult.data) {
         setRateCards(rateCardsResult.data);
       }
     } catch (error) {
+      setErrorMsg('Failed to load data');
+      console.error('Load data error:', error);
       toast.error('Failed to load data');
     } finally {
       setLoading(false);
@@ -335,6 +347,14 @@ export default function BuyersPage() {
 
   return (
     <div className="space-y-6 mx-auto p-6 container">
+      {errorMsg && (
+        <div className="mb-4 p-4 rounded-lg bg-red-100 text-red-800 border border-red-300">
+          <strong>Error:</strong> {errorMsg}
+          {errorMsg === 'Unauthorized' && (
+            <div className="mt-2 text-sm">You are not authorized to view buyers. Please log in as an admin user.</div>
+          )}
+        </div>
+      )}
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
