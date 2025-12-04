@@ -346,7 +346,12 @@ export async function reviewSupplierApplication(
     )
 
     if (status === "approved") {
-      await autoGenerateOffersForSupplier(supplierId, "admin_review")
+      // Generate offers - don't let this block token/email
+      try {
+        await autoGenerateOffersForSupplier(supplierId, "admin_review")
+      } catch (offerError) {
+        console.error(`[Admin] Failed to generate offers for supplier ${supplierId}:`, offerError)
+      }
       
       // Create access token and send approval email
       try {
