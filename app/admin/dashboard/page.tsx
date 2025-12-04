@@ -61,7 +61,7 @@ export default async function AdminDashboardPage() {
 
         {/* Quick Actions */}
         <div className="gap-4 grid md:grid-cols-4 mb-8">
-          <Card className="bg-gradient-to-br from-blue-50 dark:from-blue-950 to-transparent border-blue-200 dark:border-blue-800">
+          <Card className="bg-linear-to-br from-blue-50 dark:from-blue-950 to-transparent border-blue-200 dark:border-blue-800">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Package className="w-5 h-5 text-blue-600" />
@@ -79,7 +79,7 @@ export default async function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-purple-50 dark:from-purple-950 to-transparent border-purple-200 dark:border-purple-800">
+          <Card className="bg-linear-to-br from-purple-50 dark:from-purple-950 to-transparent border-purple-200 dark:border-purple-800">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Building2 className="w-5 h-5 text-purple-600" />
