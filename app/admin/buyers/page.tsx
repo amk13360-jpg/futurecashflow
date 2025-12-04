@@ -571,18 +571,18 @@ export default function BuyersPage() {
 
       {/* Create Buyer Dialog - Wizard Style */}
       <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetForm(); }}>
-        <DialogContent className="flex h-auto max-h-[95vh] w-full max-w-[95vw] flex-col gap-0 overflow-hidden border border-border/80 bg-background p-0 text-foreground shadow-2xl sm:max-w-[95vw] xl:max-w-[1440px]">
+        <DialogContent className="flex flex-col gap-0 bg-background shadow-2xl p-0 border border-border/80 w-full max-w-[95vw] sm:max-w-[95vw] xl:max-w-[1440px] h-auto max-h-[95vh] overflow-hidden text-foreground">
           {/* Header with Progress */}
-          <div className="border-b border-border/60 bg-card px-8 py-8 text-card-foreground">
+          <div className="bg-card px-8 py-8 border-border/60 border-b text-card-foreground">
             <DialogHeader className="gap-1 text-left">
-              <DialogTitle className="text-2xl font-semibold">Add New Buyer</DialogTitle>
-              <DialogDescription className="mt-1 text-base text-muted-foreground">
+              <DialogTitle className="font-semibold text-2xl">Add New Buyer</DialogTitle>
+              <DialogDescription className="mt-1 text-muted-foreground text-base">
                 Complete the steps below to onboard a new buyer.
               </DialogDescription>
             </DialogHeader>
 
-            <div className="mt-6 rounded-xl border border-border/60 bg-muted/40 p-4">
-              <ol className="grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
+            <div className="bg-muted/40 mt-6 p-4 border border-border/60 rounded-xl">
+              <ol className="gap-4 grid sm:grid-cols-3 lg:grid-cols-5">
                 {createSteps.map((item) => {
                   const Icon = item.icon;
                   const isCurrent = createStep === item.step;
@@ -613,14 +613,14 @@ export default function BuyersPage() {
                         aria-current={isCurrent ? 'step' : undefined}
                       >
                         {isCompleted ? (
-                          <CheckCircle2 className="h-5 w-5" />
+                          <CheckCircle2 className="w-5 h-5" />
                         ) : (
-                          <Icon className="h-5 w-5" />
+                          <Icon className="w-5 h-5" />
                         )}
                       </button>
                       <div className="flex flex-col">
                         <span className={labelClasses}>{item.label}</span>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-muted-foreground text-xs">
                           Step {item.step} of {totalCreateSteps}
                         </span>
                       </div>
@@ -632,8 +632,8 @@ export default function BuyersPage() {
           </div>
 
           {/* Form Content */}
-          <div className="flex-1 overflow-y-auto bg-muted/20 px-8 py-8">
-            <div className="mx-auto max-w-6xl space-y-8">
+          <div className="flex-1 bg-muted/20 px-8 py-8 overflow-y-auto">
+            <div className="space-y-8 mx-auto max-w-6xl">
             {/* Step 1: Company Information */}
             {createStep === 1 && (
               <div className="slide-in-from-right-5 space-y-6 animate-in">
@@ -776,7 +776,7 @@ export default function BuyersPage() {
                   </div>
                 </div>
 
-                <Card className="border-border/60 shadow-sm">
+                <Card className="shadow-sm border-border/60">
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-2 text-base">
                       <Mail className="w-4 h-4" />
@@ -816,7 +816,7 @@ export default function BuyersPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="border-border/60 shadow-sm">
+                <Card className="shadow-sm border-border/60">
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-2 text-base">
                       <DollarSign className="w-4 h-4" />
@@ -863,7 +863,7 @@ export default function BuyersPage() {
                   </div>
                 </div>
 
-                <Card className="border-border/60 shadow-sm">
+                <Card className="shadow-sm border-border/60">
                   <CardContent className="space-y-4 pt-6">
                     <div className="space-y-2">
                       <Label>Street Address</Label>
@@ -916,7 +916,7 @@ export default function BuyersPage() {
                   </CardContent>
                 </Card>
 
-                <div className="flex items-start gap-3 rounded-lg border border-border/60 bg-card/60 p-4">
+                <div className="flex items-start gap-3 bg-card/60 p-4 border border-border/60 rounded-lg">
                   <AlertCircle className="mt-0.5 w-5 h-5 text-primary" />
                   <div>
                     <p className="font-medium text-primary text-sm">Address is optional</p>
@@ -941,7 +941,7 @@ export default function BuyersPage() {
                   </div>
                 </div>
 
-                <Card className="border-border/60 shadow-sm">
+                <Card className="shadow-sm border-border/60">
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-2 text-base">
                       <FileText className="w-4 h-4" />
@@ -1166,7 +1166,7 @@ export default function BuyersPage() {
         </div>
 
         {/* Footer with Navigation */}
-        <div className="flex items-center justify-between border-t border-border/60 bg-card px-6 py-6">
+        <div className="flex justify-between items-center bg-card px-6 py-6 border-border/60 border-t">
           <div>
             {createStep > 1 && (
               <Button variant="ghost" onClick={prevStep} className="gap-2">
@@ -1192,7 +1192,7 @@ export default function BuyersPage() {
               >
                 {isPending ? (
                   <>
-                    <div className="border-b-2 border-primary-foreground rounded-full w-4 h-4 animate-spin" />
+                    <div className="border-primary-foreground border-b-2 rounded-full w-4 h-4 animate-spin" />
                     Creating...
                   </>
                 ) : (
