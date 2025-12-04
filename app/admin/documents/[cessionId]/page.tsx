@@ -32,6 +32,11 @@ export default async function DocumentReviewPage({ params }: DocumentReviewPageP
     }
 
     await reviewCessionAgreement(cessionId, status)
+
+    if (status === "approved") {
+      redirect(`/admin/applications/${cession.supplier_id}`)
+    }
+
     redirect("/admin/dashboard")
   }
 
