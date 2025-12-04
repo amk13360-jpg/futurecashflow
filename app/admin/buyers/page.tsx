@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { 
   Building2, Plus, Search, Filter, MoreVertical, 
   CheckCircle2, XCircle, AlertCircle, Clock, Users,
-  FileText, DollarSign, TrendingUp, Edit, Eye, Pause
+  FileText, DollarSign, TrendingUp, Edit, Eye, Pause,
+  ChevronRight, ChevronLeft, MapPin, Phone, Mail, Settings2, Check, X
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,6 +30,13 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from '@/components/ui/sheet';
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -44,6 +52,8 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { 
   getBuyers, createBuyer, updateBuyer, activateBuyer, suspendBuyer,
@@ -68,6 +78,8 @@ export default function BuyersPage() {
   const [showSuspendDialog, setShowSuspendDialog] = useState(false);
   const [selectedBuyer, setSelectedBuyer] = useState<BuyerWithStats | null>(null);
   const [suspendReason, setSuspendReason] = useState('');
+  const [createStep, setCreateStep] = useState(1);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   
   // Form state
   const [formData, setFormData] = useState<Partial<CreateBuyerInput>>({
@@ -202,6 +214,55 @@ export default function BuyersPage() {
       max_days_to_maturity: 90,
       active_status: 'draft'
     });
+    setCreateStep(1);
+    setFormErrors({});
+  }
+
+  // Validate current step
+  function validateStep(step: number): boolean {
+    const errors: Record<string, string> = {};
+    
+    if (step === 1) {
+      if (!formData.name?.trim()) errors.name = 'Business name is required';
+      if (!formData.code?.trim()) errors.code = 'Buyer code is required';
+      if (formData.code && formData.code.length < 3) errors.code = 'Code must be at least 3 characters';
+    }
+    
+    if (step === 2) {
+      if (!formData.contact_email?.trim()) errors.contact_email = 'Primary email is required';
+      if (formData.contact_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.contact_email)) {
+        errors.contact_email = 'Invalid email format';
+      }
+      if (formData.financial_contact_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.financial_contact_email)) {
+        errors.financial_contact_email = 'Invalid email format';
+      }
+    }
+    
+    if (step === 4) {
+      if (formData.min_invoice_amount && formData.max_invoice_amount) {
+        if (formData.min_invoice_amount >= formData.max_invoice_amount) {
+          errors.min_invoice_amount = 'Min must be less than max';
+        }
+      }
+      if (formData.min_days_to_maturity && formData.max_days_to_maturity) {
+        if (formData.min_days_to_maturity >= formData.max_days_to_maturity) {
+          errors.min_days_to_maturity = 'Min must be less than max';
+        }
+      }
+    }
+    
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
+
+  function nextStep() {
+    if (validateStep(createStep)) {
+      setCreateStep(prev => Math.min(prev + 1, 5));
+    }
+  }
+
+  function prevStep() {
+    setCreateStep(prev => Math.max(prev - 1, 1));
   }
 
   function openEditDialog(buyer: BuyerWithStats) {
@@ -470,37 +531,83 @@ export default function BuyersPage() {
         </CardContent>
       </Card>
 
-      {/* Create Buyer Dialog */}
-      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Add New Buyer</DialogTitle>
-            <DialogDescription>
-              Create a new buyer profile. Required fields are marked with *.
+      {/* Create Buyer Dialog - Wizard Style */}
+      <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetForm(); }}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-0">
+          {/* Header with Progress */}
+          <div className="bg-linear-to-r from-blue-600 to-indigo-600 text-white p-6">
+            <DialogTitle className="text-2xl font-bold text-white">Add New Buyer</DialogTitle>
+            <DialogDescription className="text-blue-100 mt-1">
+              Complete the steps below to onboard a new buyer
             </DialogDescription>
-          </DialogHeader>
-          
-          <div className="gap-4 grid py-4">
-            <Tabs defaultValue="basic">
-              <TabsList className="grid grid-cols-4 w-full">
-                <TabsTrigger value="basic">Basic Info</TabsTrigger>
-                <TabsTrigger value="contact">Contact</TabsTrigger>
-                <TabsTrigger value="address">Address</TabsTrigger>
-                <TabsTrigger value="config">Configuration</TabsTrigger>
-              </TabsList>
+            
+            {/* Progress Stepper */}
+            <div className="flex items-center justify-between mt-6">
+              {[
+                { step: 1, label: 'Company', icon: Building2 },
+                { step: 2, label: 'Contacts', icon: Users },
+                { step: 3, label: 'Address', icon: MapPin },
+                { step: 4, label: 'Settings', icon: Settings2 },
+                { step: 5, label: 'Review', icon: Check },
+              ].map((item, index) => (
+                <div key={item.step} className="flex items-center">
+                  <div 
+                    className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all cursor-pointer
+                      ${createStep === item.step 
+                        ? 'bg-white text-blue-600 border-white shadow-lg scale-110' 
+                        : createStep > item.step 
+                          ? 'bg-blue-400 border-blue-400 text-white' 
+                          : 'border-blue-300 text-blue-200'
+                      }`}
+                    onClick={() => item.step < createStep && setCreateStep(item.step)}
+                  >
+                    {createStep > item.step ? (
+                      <CheckCircle2 className="w-5 h-5" />
+                    ) : (
+                      <item.icon className="w-5 h-5" />
+                    )}
+                  </div>
+                  <span className={`hidden sm:block ml-2 text-sm font-medium ${createStep >= item.step ? 'text-white' : 'text-blue-200'}`}>
+                    {item.label}
+                  </span>
+                  {index < 4 && (
+                    <div className={`hidden sm:block w-12 h-0.5 mx-3 ${createStep > item.step ? 'bg-blue-400' : 'bg-blue-300/50'}`} />
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
 
-              <TabsContent value="basic" className="space-y-4 mt-4">
-                <div className="gap-4 grid grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Legal Business Name *</Label>
+          {/* Form Content */}
+          <div className="flex-1 overflow-y-auto p-6">
+            {/* Step 1: Company Information */}
+            {createStep === 1 && (
+              <div className="space-y-6 animate-in slide-in-from-right-5">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <Building2 className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold">Company Information</h3>
+                    <p className="text-sm text-muted-foreground">Enter the buyer's business details</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="col-span-2 sm:col-span-1 space-y-2">
+                    <Label htmlFor="name" className="flex items-center gap-1">
+                      Legal Business Name <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="name"
                       value={formData.name || ''}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
                       placeholder="e.g., Anglo American Platinum Ltd"
+                      className={formErrors.name ? 'border-red-500' : ''}
                     />
+                    {formErrors.name && <p className="text-sm text-red-500">{formErrors.name}</p>}
                   </div>
-                  <div className="space-y-2">
+                  <div className="col-span-2 sm:col-span-1 space-y-2">
                     <Label htmlFor="trading_name">Trading Name</Label>
                     <Input
                       id="trading_name"
@@ -510,15 +617,21 @@ export default function BuyersPage() {
                     />
                   </div>
                 </div>
-                <div className="gap-4 grid grid-cols-2">
+
+                <div className="grid grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="code">Buyer Code / Mine Code *</Label>
+                    <Label htmlFor="code" className="flex items-center gap-1">
+                      Buyer Code <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="code"
                       value={formData.code || ''}
                       onChange={(e) => setFormData({...formData, code: e.target.value.toUpperCase()})}
                       placeholder="e.g., AAP001"
+                      className={formErrors.code ? 'border-red-500' : ''}
                     />
+                    {formErrors.code && <p className="text-sm text-red-500">{formErrors.code}</p>}
+                    <p className="text-xs text-muted-foreground">Unique identifier for this buyer</p>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="registration_no">Company Registration No</Label>
@@ -530,9 +643,10 @@ export default function BuyersPage() {
                     />
                   </div>
                 </div>
-                <div className="gap-4 grid grid-cols-3">
+
+                <div className="grid grid-cols-3 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="tax_id">Tax ID / VAT Number</Label>
+                    <Label htmlFor="tax_id">VAT Number</Label>
                     <Input
                       id="tax_id"
                       value={formData.tax_id || ''}
@@ -541,7 +655,7 @@ export default function BuyersPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="industry">Industry Sector</Label>
+                    <Label>Industry Sector</Label>
                     <Select 
                       value={formData.industry_sector} 
                       onValueChange={(v: any) => setFormData({...formData, industry_sector: v})}
@@ -550,18 +664,18 @@ export default function BuyersPage() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="mining">Mining</SelectItem>
-                        <SelectItem value="manufacturing">Manufacturing</SelectItem>
-                        <SelectItem value="retail">Retail</SelectItem>
-                        <SelectItem value="construction">Construction</SelectItem>
-                        <SelectItem value="agriculture">Agriculture</SelectItem>
-                        <SelectItem value="services">Services</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
+                        <SelectItem value="mining">⛏️ Mining</SelectItem>
+                        <SelectItem value="manufacturing">🏭 Manufacturing</SelectItem>
+                        <SelectItem value="retail">🛒 Retail</SelectItem>
+                        <SelectItem value="construction">🏗️ Construction</SelectItem>
+                        <SelectItem value="agriculture">🌾 Agriculture</SelectItem>
+                        <SelectItem value="services">💼 Services</SelectItem>
+                        <SelectItem value="other">📦 Other</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="risk_tier">Risk Tier</Label>
+                    <Label>Risk Tier</Label>
                     <Select 
                       value={formData.risk_tier} 
                       onValueChange={(v: any) => setFormData({...formData, risk_tier: v})}
@@ -570,164 +684,285 @@ export default function BuyersPage() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="A">Tier A (Premium)</SelectItem>
-                        <SelectItem value="B">Tier B (Standard)</SelectItem>
-                        <SelectItem value="C">Tier C (Higher Risk)</SelectItem>
+                        <SelectItem value="A">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-blue-500" />
+                            Tier A - Premium
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="B">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-purple-500" />
+                            Tier B - Standard
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="C">
+                          <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-orange-500" />
+                            Tier C - Higher Risk
+                          </div>
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
-              </TabsContent>
+              </div>
+            )}
 
-              <TabsContent value="contact" className="space-y-4 mt-4">
-                <div className="gap-4 grid grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="primary_contact_name">Primary Contact Name</Label>
-                    <Input
-                      id="primary_contact_name"
-                      value={formData.primary_contact_name || ''}
-                      onChange={(e) => setFormData({...formData, primary_contact_name: e.target.value})}
-                    />
+            {/* Step 2: Contact Information */}
+            {createStep === 2 && (
+              <div className="space-y-6 animate-in slide-in-from-right-5">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    <Users className="w-6 h-6 text-green-600" />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="contact_email">Primary Contact Email *</Label>
-                    <Input
-                      id="contact_email"
-                      type="email"
-                      value={formData.contact_email || ''}
-                      onChange={(e) => setFormData({...formData, contact_email: e.target.value})}
-                    />
+                  <div>
+                    <h3 className="text-lg font-semibold">Contact Information</h3>
+                    <p className="text-sm text-muted-foreground">Add primary and financial contacts</p>
                   </div>
                 </div>
-                <div className="gap-4 grid grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="contact_phone">Primary Contact Phone</Label>
-                    <Input
-                      id="contact_phone"
-                      value={formData.contact_phone || ''}
-                      onChange={(e) => setFormData({...formData, contact_phone: e.target.value})}
-                      placeholder="+27 11 123 4567"
-                    />
-                  </div>
-                </div>
-                <div className="mt-4 pt-4 border-t">
-                  <h4 className="mb-4 font-medium">Financial Contact (for repayment tracking)</h4>
-                  <div className="gap-4 grid grid-cols-2">
+
+                {/* Primary Contact Card */}
+                <Card className="border-l-4 border-l-blue-500">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Mail className="w-4 h-4" /> Primary Contact
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="financial_contact_name">Financial Contact Name</Label>
+                      <Label>Contact Name</Label>
                       <Input
-                        id="financial_contact_name"
-                        value={formData.financial_contact_name || ''}
-                        onChange={(e) => setFormData({...formData, financial_contact_name: e.target.value})}
+                        value={formData.primary_contact_name || ''}
+                        onChange={(e) => setFormData({...formData, primary_contact_name: e.target.value})}
+                        placeholder="e.g., John Smith"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="financial_contact_email">Financial Contact Email</Label>
+                      <Label className="flex items-center gap-1">
+                        Email Address <span className="text-red-500">*</span>
+                      </Label>
                       <Input
-                        id="financial_contact_email"
+                        type="email"
+                        value={formData.contact_email || ''}
+                        onChange={(e) => setFormData({...formData, contact_email: e.target.value})}
+                        placeholder="e.g., john@company.com"
+                        className={formErrors.contact_email ? 'border-red-500' : ''}
+                      />
+                      {formErrors.contact_email && <p className="text-sm text-red-500">{formErrors.contact_email}</p>}
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Phone Number</Label>
+                      <Input
+                        value={formData.contact_phone || ''}
+                        onChange={(e) => setFormData({...formData, contact_phone: e.target.value})}
+                        placeholder="+27 11 123 4567"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Financial Contact Card */}
+                <Card className="border-l-4 border-l-green-500">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <DollarSign className="w-4 h-4" /> Financial Contact
+                      <Badge variant="outline" className="ml-2 text-xs">Optional</Badge>
+                    </CardTitle>
+                    <CardDescription>For repayment tracking and financial communications</CardDescription>
+                  </CardHeader>
+                  <CardContent className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Contact Name</Label>
+                      <Input
+                        value={formData.financial_contact_name || ''}
+                        onChange={(e) => setFormData({...formData, financial_contact_name: e.target.value})}
+                        placeholder="e.g., Jane Doe"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Email Address</Label>
+                      <Input
                         type="email"
                         value={formData.financial_contact_email || ''}
                         onChange={(e) => setFormData({...formData, financial_contact_email: e.target.value})}
+                        placeholder="e.g., finance@company.com"
+                        className={formErrors.financial_contact_email ? 'border-red-500' : ''}
+                      />
+                      {formErrors.financial_contact_email && <p className="text-sm text-red-500">{formErrors.financial_contact_email}</p>}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {/* Step 3: Address */}
+            {createStep === 3 && (
+              <div className="space-y-6 animate-in slide-in-from-right-5">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-orange-100 rounded-lg">
+                    <MapPin className="w-6 h-6 text-orange-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold">Physical Address</h3>
+                    <p className="text-sm text-muted-foreground">Enter the buyer's business address</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Street Address</Label>
+                    <Input
+                      value={formData.physical_address_street || ''}
+                      onChange={(e) => setFormData({...formData, physical_address_street: e.target.value})}
+                      placeholder="e.g., 123 Main Street, Suite 400"
+                    />
+                  </div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label>City</Label>
+                      <Input
+                        value={formData.physical_address_city || ''}
+                        onChange={(e) => setFormData({...formData, physical_address_city: e.target.value})}
+                        placeholder="e.g., Johannesburg"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Province</Label>
+                      <Select 
+                        value={formData.physical_address_province || ''} 
+                        onValueChange={(v) => setFormData({...formData, physical_address_province: v})}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select province" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Gauteng">Gauteng</SelectItem>
+                          <SelectItem value="Western Cape">Western Cape</SelectItem>
+                          <SelectItem value="KwaZulu-Natal">KwaZulu-Natal</SelectItem>
+                          <SelectItem value="Eastern Cape">Eastern Cape</SelectItem>
+                          <SelectItem value="Mpumalanga">Mpumalanga</SelectItem>
+                          <SelectItem value="Limpopo">Limpopo</SelectItem>
+                          <SelectItem value="North West">North West</SelectItem>
+                          <SelectItem value="Free State">Free State</SelectItem>
+                          <SelectItem value="Northern Cape">Northern Cape</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Postal Code</Label>
+                      <Input
+                        value={formData.physical_address_postal || ''}
+                        onChange={(e) => setFormData({...formData, physical_address_postal: e.target.value})}
+                        placeholder="e.g., 2000"
                       />
                     </div>
                   </div>
                 </div>
-              </TabsContent>
 
-              <TabsContent value="address" className="space-y-4 mt-4">
-                <div className="space-y-2">
-                  <Label htmlFor="street">Street Address</Label>
-                  <Input
-                    id="street"
-                    value={formData.physical_address_street || ''}
-                    onChange={(e) => setFormData({...formData, physical_address_street: e.target.value})}
-                  />
+                <div className="bg-muted/50 rounded-lg p-4 mt-6">
+                  <p className="text-sm text-muted-foreground flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4" />
+                    Address is optional but recommended for compliance and delivery purposes.
+                  </p>
                 </div>
-                <div className="gap-4 grid grid-cols-3">
-                  <div className="space-y-2">
-                    <Label htmlFor="city">City</Label>
-                    <Input
-                      id="city"
-                      value={formData.physical_address_city || ''}
-                      onChange={(e) => setFormData({...formData, physical_address_city: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="province">Province</Label>
-                    <Input
-                      id="province"
-                      value={formData.physical_address_province || ''}
-                      onChange={(e) => setFormData({...formData, physical_address_province: e.target.value})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="postal">Postal Code</Label>
-                    <Input
-                      id="postal"
-                      value={formData.physical_address_postal || ''}
-                      onChange={(e) => setFormData({...formData, physical_address_postal: e.target.value})}
-                    />
-                  </div>
-                </div>
-              </TabsContent>
+              </div>
+            )}
 
-              <TabsContent value="config" className="space-y-4 mt-4">
-                <h4 className="font-medium">Invoice Eligibility Criteria</h4>
-                <div className="gap-4 grid grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="min_amount">Min Invoice Amount (R)</Label>
-                    <Input
-                      id="min_amount"
-                      type="number"
-                      value={formData.min_invoice_amount || 1000}
-                      onChange={(e) => setFormData({...formData, min_invoice_amount: Number(e.target.value)})}
-                    />
+            {/* Step 4: Configuration */}
+            {createStep === 4 && (
+              <div className="space-y-6 animate-in slide-in-from-right-5">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-purple-100 rounded-lg">
+                    <Settings2 className="w-6 h-6 text-purple-600" />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="max_amount">Max Invoice Amount (R)</Label>
-                    <Input
-                      id="max_amount"
-                      type="number"
-                      value={formData.max_invoice_amount || 5000000}
-                      onChange={(e) => setFormData({...formData, max_invoice_amount: Number(e.target.value)})}
-                    />
+                  <div>
+                    <h3 className="text-lg font-semibold">Configuration</h3>
+                    <p className="text-sm text-muted-foreground">Set invoice eligibility and financial limits</p>
                   </div>
                 </div>
-                <div className="gap-4 grid grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="min_days">Min Days to Maturity</Label>
-                    <Input
-                      id="min_days"
-                      type="number"
-                      value={formData.min_days_to_maturity || 7}
-                      onChange={(e) => setFormData({...formData, min_days_to_maturity: Number(e.target.value)})}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="max_days">Max Days to Maturity</Label>
-                    <Input
-                      id="max_days"
-                      type="number"
-                      value={formData.max_days_to_maturity || 90}
-                      onChange={(e) => setFormData({...formData, max_days_to_maturity: Number(e.target.value)})}
-                    />
-                  </div>
-                </div>
-                <div className="mt-4 pt-4 border-t">
-                  <h4 className="mb-4 font-medium">Financial Configuration</h4>
-                  <div className="gap-4 grid grid-cols-2">
+
+                {/* Invoice Eligibility */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base">Invoice Eligibility Criteria</CardTitle>
+                    <CardDescription>Define which invoices can be processed for this buyer</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="flex items-center gap-2">
+                          <DollarSign className="w-4 h-4 text-muted-foreground" />
+                          Min Invoice Amount (R)
+                        </Label>
+                        <Input
+                          type="number"
+                          value={formData.min_invoice_amount || 1000}
+                          onChange={(e) => setFormData({...formData, min_invoice_amount: Number(e.target.value)})}
+                          className={formErrors.min_invoice_amount ? 'border-red-500' : ''}
+                        />
+                        {formErrors.min_invoice_amount && <p className="text-sm text-red-500">{formErrors.min_invoice_amount}</p>}
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="flex items-center gap-2">
+                          <DollarSign className="w-4 h-4 text-muted-foreground" />
+                          Max Invoice Amount (R)
+                        </Label>
+                        <Input
+                          type="number"
+                          value={formData.max_invoice_amount || 5000000}
+                          onChange={(e) => setFormData({...formData, max_invoice_amount: Number(e.target.value)})}
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="flex items-center gap-2">
+                          <Clock className="w-4 h-4 text-muted-foreground" />
+                          Min Days to Maturity
+                        </Label>
+                        <Input
+                          type="number"
+                          value={formData.min_days_to_maturity || 7}
+                          onChange={(e) => setFormData({...formData, min_days_to_maturity: Number(e.target.value)})}
+                          className={formErrors.min_days_to_maturity ? 'border-red-500' : ''}
+                        />
+                        {formErrors.min_days_to_maturity && <p className="text-sm text-red-500">{formErrors.min_days_to_maturity}</p>}
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="flex items-center gap-2">
+                          <Clock className="w-4 h-4 text-muted-foreground" />
+                          Max Days to Maturity
+                        </Label>
+                        <Input
+                          type="number"
+                          value={formData.max_days_to_maturity || 90}
+                          onChange={(e) => setFormData({...formData, max_days_to_maturity: Number(e.target.value)})}
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Financial Configuration */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base">Financial Configuration</CardTitle>
+                    <CardDescription>Credit limits and rate card assignment</CardDescription>
+                  </CardHeader>
+                  <CardContent className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="credit_limit">Credit Limit (R)</Label>
+                      <Label>Credit Limit (R)</Label>
                       <Input
-                        id="credit_limit"
                         type="number"
                         value={formData.credit_limit || ''}
                         onChange={(e) => setFormData({...formData, credit_limit: e.target.value ? Number(e.target.value) : undefined})}
                         placeholder="Leave blank for no limit"
                       />
+                      <p className="text-xs text-muted-foreground">Maximum outstanding financed amount</p>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="rate_card">Rate Card</Label>
+                      <Label>Rate Card</Label>
                       <Select 
                         value={formData.rate_card_id?.toString() || ''} 
                         onValueChange={(v) => setFormData({...formData, rate_card_id: v ? Number(v) : undefined})}
@@ -738,26 +973,165 @@ export default function BuyersPage() {
                         <SelectContent>
                           {rateCards.map((rc) => (
                             <SelectItem key={rc.rate_card_id} value={rc.rate_card_id.toString()}>
-                              {rc.name} ({rc.base_annual_rate}%)
+                              <div className="flex items-center justify-between w-full">
+                                <span>{rc.name}</span>
+                                <Badge variant="secondary" className="ml-2">{rc.base_annual_rate}%</Badge>
+                              </div>
                             </SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
+                      <p className="text-xs text-muted-foreground">Can be assigned later after activation</p>
                     </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+
+            {/* Step 5: Review */}
+            {createStep === 5 && (
+              <div className="space-y-6 animate-in slide-in-from-right-5">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    <Check className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold">Review & Confirm</h3>
+                    <p className="text-sm text-muted-foreground">Review the information before creating the buyer</p>
                   </div>
                 </div>
-              </TabsContent>
-            </Tabs>
+
+                <div className="grid grid-cols-2 gap-6">
+                  {/* Company Info */}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-medium flex items-center gap-2">
+                        <Building2 className="w-4 h-4" /> Company
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm space-y-1">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Name:</span>
+                        <span className="font-medium">{formData.name || '-'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Code:</span>
+                        <span className="font-mono">{formData.code || '-'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Industry:</span>
+                        <span className="capitalize">{formData.industry_sector || '-'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Risk Tier:</span>
+                        {formData.risk_tier && getRiskBadge(formData.risk_tier)}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Contact Info */}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-medium flex items-center gap-2">
+                        <Users className="w-4 h-4" /> Contacts
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm space-y-1">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Primary:</span>
+                        <span>{formData.primary_contact_name || '-'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Email:</span>
+                        <span className="text-blue-600">{formData.contact_email || '-'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Phone:</span>
+                        <span>{formData.contact_phone || '-'}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Address */}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-medium flex items-center gap-2">
+                        <MapPin className="w-4 h-4" /> Address
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm">
+                      {formData.physical_address_street ? (
+                        <p>
+                          {formData.physical_address_street}<br/>
+                          {formData.physical_address_city}, {formData.physical_address_province} {formData.physical_address_postal}
+                        </p>
+                      ) : (
+                        <p className="text-muted-foreground">Not provided</p>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Configuration */}
+                  <Card>
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-sm font-medium flex items-center gap-2">
+                        <Settings2 className="w-4 h-4" /> Configuration
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm space-y-1">
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Invoice Range:</span>
+                        <span>R{formData.min_invoice_amount?.toLocaleString()} - R{formData.max_invoice_amount?.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Maturity:</span>
+                        <span>{formData.min_days_to_maturity} - {formData.max_days_to_maturity} days</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">Credit Limit:</span>
+                        <span>{formData.credit_limit ? `R${formData.credit_limit.toLocaleString()}` : 'No limit'}</span>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+                  <p className="text-sm flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-yellow-600" />
+                    <span>The buyer will be created in <strong>Draft</strong> status. You'll need to upload required documents and activate them before processing invoices.</span>
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handleCreate} disabled={isPending}>
-              {isPending ? 'Creating...' : 'Create Buyer'}
-            </Button>
-          </DialogFooter>
+          {/* Footer with Navigation */}
+          <div className="border-t bg-muted/30 p-4 flex justify-between items-center">
+            <div>
+              {createStep > 1 && (
+                <Button variant="ghost" onClick={prevStep}>
+                  <ChevronLeft className="w-4 h-4 mr-2" />
+                  Back
+                </Button>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
+                Cancel
+              </Button>
+              {createStep < 5 ? (
+                <Button onClick={nextStep}>
+                  Next
+                  <ChevronRight className="w-4 h-4 ml-2" />
+                </Button>
+              ) : (
+                <Button onClick={handleCreate} disabled={isPending} className="bg-green-600 hover:bg-green-700">
+                  {isPending ? 'Creating...' : 'Create Buyer'}
+                  <Check className="w-4 h-4 ml-2" />
+                </Button>
+              )}
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 

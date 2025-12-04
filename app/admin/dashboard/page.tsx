@@ -61,12 +61,14 @@ export default async function AdminDashboardPage() {
 
         {/* Quick Actions */}
         <div className="gap-4 grid md:grid-cols-4 mb-8">
-          <Card className="bg-linear-to-br from-blue-50 dark:from-blue-950 to-transparent border-blue-200 dark:border-blue-800">
+          <Card className="group hover:shadow-md transition-all duration-200 hover:border-blue-300 dark:hover:border-blue-700">
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Package className="w-5 h-5 text-blue-600" />
-                Offer Batches
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg group-hover:scale-110 transition-transform">
+                  <Package className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+              </div>
+              <CardTitle className="text-lg mt-3">Offer Batches</CardTitle>
               <CardDescription>Create and manage offers for suppliers</CardDescription>
             </CardHeader>
             <CardContent>
@@ -79,16 +81,18 @@ export default async function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-linear-to-br from-purple-50 dark:from-purple-950 to-transparent border-purple-200 dark:border-purple-800">
+          <Card className="group hover:shadow-md transition-all duration-200 hover:border-purple-300 dark:hover:border-purple-700">
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <Building2 className="w-5 h-5 text-purple-600" />
-                Buyers
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-lg group-hover:scale-110 transition-transform">
+                  <Building2 className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                </div>
+              </div>
+              <CardTitle className="text-lg mt-3">Buyers</CardTitle>
               <CardDescription>Manage buyer profiles and settings</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button asChild className="w-full" variant="outline">
+              <Button asChild className="w-full">
                 <Link href="/admin/buyers">
                   Manage Buyers
                   <ArrowRight className="ml-2 w-4 h-4" />
@@ -97,16 +101,18 @@ export default async function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="group hover:shadow-md transition-all duration-200 hover:border-green-300 dark:hover:border-green-700">
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <FileText className="w-5 h-5" />
-                Invoices
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <div className="p-2 bg-green-100 dark:bg-green-900 rounded-lg group-hover:scale-110 transition-transform">
+                  <FileText className="w-5 h-5 text-green-600 dark:text-green-400" />
+                </div>
+              </div>
+              <CardTitle className="text-lg mt-3">Invoices</CardTitle>
               <CardDescription>View and manage all invoices</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" asChild className="w-full">
+              <Button asChild className="w-full">
                 <Link href="/admin/invoices">
                   View Invoices
                   <ArrowRight className="ml-2 w-4 h-4" />
@@ -115,16 +121,18 @@ export default async function AdminDashboardPage() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="group hover:shadow-md transition-all duration-200 hover:border-orange-300 dark:hover:border-orange-700">
             <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg">
-                <DollarSign className="w-5 h-5" />
-                Payments
-              </CardTitle>
+              <div className="flex items-center justify-between">
+                <div className="p-2 bg-orange-100 dark:bg-orange-900 rounded-lg group-hover:scale-110 transition-transform">
+                  <DollarSign className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                </div>
+              </div>
+              <CardTitle className="text-lg mt-3">Payments</CardTitle>
               <CardDescription>Track and process payments</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" asChild className="w-full">
+              <Button asChild className="w-full">
                 <Link href="/admin/payments">
                   View Payments
                   <ArrowRight className="ml-2 w-4 h-4" />
