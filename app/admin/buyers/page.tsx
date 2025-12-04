@@ -94,6 +94,16 @@ export default function BuyersPage() {
     active_status: 'draft'
   });
 
+  const createSteps = [
+    { step: 1, label: 'Company', icon: Building2 },
+    { step: 2, label: 'Contacts', icon: Users },
+    { step: 3, label: 'Address', icon: MapPin },
+    { step: 4, label: 'Settings', icon: Settings2 },
+    { step: 5, label: 'Review', icon: Check },
+  ] as const;
+
+  const totalCreateSteps = createSteps.length;
+
   // Load data
   useEffect(() => {
     loadData();
@@ -270,7 +280,7 @@ export default function BuyersPage() {
 
   function nextStep() {
     if (validateStep(createStep)) {
-      setCreateStep(prev => Math.min(prev + 1, 5));
+      setCreateStep(prev => Math.min(prev + 1, totalCreateSteps));
     }
   }
 
@@ -561,54 +571,69 @@ export default function BuyersPage() {
 
       {/* Create Buyer Dialog - Wizard Style */}
       <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetForm(); }}>
-        <DialogContent className="flex flex-col gap-0 bg-card shadow-2xl p-0 border border-border w-full max-w-[95vw] sm:max-w-[95vw] xl:max-w-[1500px] h-auto max-h-[95vh] overflow-hidden text-foreground">
+        <DialogContent className="flex h-auto max-h-[95vh] w-full max-w-[95vw] flex-col gap-0 overflow-hidden border border-border/80 bg-background p-0 text-foreground shadow-2xl sm:max-w-[95vw] xl:max-w-[1440px]">
           {/* Header with Progress */}
-          <div className="bg-primary px-8 pt-8 pb-10 text-primary-foreground">
-            <DialogTitle className="font-bold text-2xl">Add New Buyer</DialogTitle>
-            <DialogDescription className="mt-1 text-primary-foreground/80">
-              Complete the steps below to onboard a new buyer
-            </DialogDescription>
-            
-            {/* Progress Stepper */}
-            <div className="flex justify-between items-center mt-6">
-              {[
-                { step: 1, label: 'Company', icon: Building2 },
-                { step: 2, label: 'Contacts', icon: Users },
-                { step: 3, label: 'Address', icon: MapPin },
-                { step: 4, label: 'Settings', icon: Settings2 },
-                { step: 5, label: 'Review', icon: Check },
-              ].map((item, index) => (
-                <div key={item.step} className="flex items-center">
-                  <div 
-                    className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all cursor-pointer
-                      ${createStep === item.step 
-                        ? 'bg-primary-foreground text-primary border-primary-foreground shadow-lg scale-110' 
-                        : createStep > item.step 
-                          ? 'bg-primary border-primary text-primary-foreground' 
-                          : 'bg-muted border-primary/30 text-primary/70'
-                      }`}
-                    onClick={() => item.step < createStep && setCreateStep(item.step)}
-                  >
-                    {createStep > item.step ? (
-                      <CheckCircle2 className="w-5 h-5" />
-                    ) : (
-                      <item.icon className="w-5 h-5" />
-                    )}
-                  </div>
-                  <span className={`hidden sm:block ml-2 text-sm font-medium ${createStep >= item.step ? 'text-primary-foreground' : 'text-primary-foreground/70'}`}>
-                    {item.label}
-                  </span>
-                  {index < 4 && (
-                    <div className={`hidden sm:block w-16 h-0.5 mx-4 ${createStep > item.step ? 'bg-primary/70' : 'bg-primary/30'}`} />
-                  )}
-                </div>
-              ))}
+          <div className="border-b border-border/60 bg-card px-8 py-8 text-card-foreground">
+            <DialogHeader className="gap-1 text-left">
+              <DialogTitle className="text-2xl font-semibold">Add New Buyer</DialogTitle>
+              <DialogDescription className="mt-1 text-base text-muted-foreground">
+                Complete the steps below to onboard a new buyer.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="mt-6 rounded-xl border border-border/60 bg-muted/40 p-4">
+              <ol className="grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                {createSteps.map((item) => {
+                  const Icon = item.icon;
+                  const isCurrent = createStep === item.step;
+                  const isCompleted = createStep > item.step;
+                  const circleClasses = [
+                    'flex h-10 w-10 items-center justify-center rounded-full border text-sm font-semibold transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
+                    isCurrent
+                      ? 'border-primary bg-primary text-primary-foreground shadow-sm'
+                      : isCompleted
+                        ? 'border-primary/60 bg-primary/10 text-primary'
+                        : 'border-border bg-background text-muted-foreground',
+                  ].join(' ');
+                  const labelClasses = [
+                    'text-sm font-semibold',
+                    isCurrent ? 'text-foreground' : 'text-muted-foreground',
+                  ].join(' ');
+
+                  return (
+                    <li key={item.step} className="flex items-center gap-3">
+                      <button
+                        type="button"
+                        className={circleClasses}
+                        onClick={() => {
+                          if (isCompleted) {
+                            setCreateStep(item.step);
+                          }
+                        }}
+                        aria-current={isCurrent ? 'step' : undefined}
+                      >
+                        {isCompleted ? (
+                          <CheckCircle2 className="h-5 w-5" />
+                        ) : (
+                          <Icon className="h-5 w-5" />
+                        )}
+                      </button>
+                      <div className="flex flex-col">
+                        <span className={labelClasses}>{item.label}</span>
+                        <span className="text-xs text-muted-foreground">
+                          Step {item.step} of {totalCreateSteps}
+                        </span>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ol>
             </div>
           </div>
 
           {/* Form Content */}
-          <div className="flex-1 bg-muted/30 p-8 overflow-y-auto">
-            <div className="space-y-8 mx-auto max-w-6xl">
+          <div className="flex-1 overflow-y-auto bg-muted/20 px-8 py-8">
+            <div className="mx-auto max-w-6xl space-y-8">
             {/* Step 1: Company Information */}
             {createStep === 1 && (
               <div className="slide-in-from-right-5 space-y-6 animate-in">
@@ -751,7 +776,7 @@ export default function BuyersPage() {
                   </div>
                 </div>
 
-                <Card className="bg-card/95 shadow-sm border border-border/60">
+                <Card className="border-border/60 shadow-sm">
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-2 text-base">
                       <Mail className="w-4 h-4" />
@@ -791,7 +816,7 @@ export default function BuyersPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="bg-card/95 shadow-sm border border-border/60">
+                <Card className="border-border/60 shadow-sm">
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-2 text-base">
                       <DollarSign className="w-4 h-4" />
@@ -838,7 +863,7 @@ export default function BuyersPage() {
                   </div>
                 </div>
 
-                <Card className="bg-card/95 shadow-sm border border-border/60">
+                <Card className="border-border/60 shadow-sm">
                   <CardContent className="space-y-4 pt-6">
                     <div className="space-y-2">
                       <Label>Street Address</Label>
@@ -891,11 +916,11 @@ export default function BuyersPage() {
                   </CardContent>
                 </Card>
 
-                <div className="flex items-start gap-3 bg-primary/5 p-4 border border-primary/20 rounded-lg">
+                <div className="flex items-start gap-3 rounded-lg border border-border/60 bg-card/60 p-4">
                   <AlertCircle className="mt-0.5 w-5 h-5 text-primary" />
                   <div>
                     <p className="font-medium text-primary text-sm">Address is optional</p>
-                    <p className="text-primary/70 text-sm">
+                    <p className="text-muted-foreground text-sm">
                       However, providing a complete address is recommended for compliance and regulatory requirements.
                     </p>
                   </div>
@@ -916,7 +941,7 @@ export default function BuyersPage() {
                   </div>
                 </div>
 
-                <Card className="bg-card/95 shadow-sm border border-border/60">
+                <Card className="border-border/60 shadow-sm">
                   <CardHeader className="pb-4">
                     <CardTitle className="flex items-center gap-2 text-base">
                       <FileText className="w-4 h-4" />
@@ -1015,7 +1040,7 @@ export default function BuyersPage() {
             )}
 
             {/* Step 5: Review */}
-            {createStep === 5 && (
+            {createStep === totalCreateSteps && (
               <div className="slide-in-from-right-5 space-y-6 animate-in">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="bg-primary/10 p-2 rounded-lg">
@@ -1141,45 +1166,45 @@ export default function BuyersPage() {
         </div>
 
         {/* Footer with Navigation */}
-        <div className="flex justify-between items-center bg-card/95 p-6 border-border/70 border-t">
-            <div>
-              {createStep > 1 && (
-                <Button variant="ghost" onClick={prevStep} className="gap-2">
-                  <ChevronLeft className="w-4 h-4" />
-                  Back
-                </Button>
-              )}
-            </div>
-            <div className="flex items-center gap-3">
-              <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
-                Cancel
+        <div className="flex items-center justify-between border-t border-border/60 bg-card px-6 py-6">
+          <div>
+            {createStep > 1 && (
+              <Button variant="ghost" onClick={prevStep} className="gap-2">
+                <ChevronLeft className="w-4 h-4" />
+                Back
               </Button>
-              {createStep < 5 ? (
-                <Button onClick={nextStep} className="gap-2">
-                  Continue
-                  <ChevronRight className="w-4 h-4" />
-                </Button>
-              ) : (
-                <Button 
-                  onClick={handleCreate} 
-                  disabled={isPending} 
-                  className="gap-2 bg-green-600 hover:bg-green-700"
-                >
-                  {isPending ? (
-                    <>
-                      <div className="border-white border-b-2 rounded-full w-4 h-4 animate-spin" />
-                      Creating...
-                    </>
-                  ) : (
-                    <>
-                      Create Buyer
-                      <Check className="w-4 h-4" />
-                    </>
-                  )}
-                </Button>
-              )}
-            </div>
+            )}
           </div>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" onClick={() => setShowCreateDialog(false)}>
+              Cancel
+            </Button>
+            {createStep < totalCreateSteps ? (
+              <Button onClick={nextStep} className="gap-2">
+                Continue
+                <ChevronRight className="w-4 h-4" />
+              </Button>
+            ) : (
+              <Button
+                onClick={handleCreate}
+                disabled={isPending}
+                className="gap-2"
+              >
+                {isPending ? (
+                  <>
+                    <div className="border-b-2 border-primary-foreground rounded-full w-4 h-4 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  <>
+                    Create Buyer
+                    <Check className="w-4 h-4" />
+                  </>
+                )}
+              </Button>
+            )}
+          </div>
+        </div>
         </DialogContent>
       </Dialog>
 
