@@ -348,7 +348,7 @@ export default function BuyersPage() {
   return (
     <div className="space-y-6 mx-auto p-6 container">
       {errorMsg && (
-        <div className="mb-4 p-4 rounded-lg bg-red-100 text-red-800 border border-red-300">
+        <div className="bg-red-100 mb-4 p-4 border border-red-300 rounded-lg text-red-800">
           <strong>Error:</strong> {errorMsg}
           {errorMsg === 'Unauthorized' && (
             <div className="mt-2 text-sm">You are not authorized to view buyers. Please log in as an admin user.</div>
