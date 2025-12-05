@@ -571,11 +571,11 @@ export default function BuyersPage() {
 
       {/* Create Buyer Dialog - Wizard Style */}
       <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetForm(); }}>
-        <DialogContent className="flex flex-col gap-0 bg-white dark:bg-black shadow-2xl p-0 border border-border/80 w-full max-w-[95vw] sm:max-w-[95vw] xl:max-w-[1440px] h-auto max-h-[95vh] overflow-hidden text-foreground dark:text-white">
+        <DialogContent className="flex flex-col gap-0 bg-card shadow-2xl p-0 border border-border/80 w-full max-w-[95vw] sm:max-w-[95vw] xl:max-w-[1440px] h-auto max-h-[95vh] overflow-hidden text-card-foreground">
           {/* Header with Progress */}
-          <div className="bg-white dark:bg-black px-8 py-8 border-border/60 border-b text-foreground dark:text-white">
+          <div className="bg-card px-8 py-8 border-border/60 border-b">
             <DialogHeader className="gap-1 text-left">
-              <DialogTitle className="font-semibold text-2xl">Add New Buyer</DialogTitle>
+              <DialogTitle className="font-semibold text-2xl text-foreground">Add New Buyer</DialogTitle>
               <DialogDescription className="mt-1 text-muted-foreground text-base">
                 Complete the steps below to onboard a new buyer.
               </DialogDescription>
@@ -632,7 +632,7 @@ export default function BuyersPage() {
           </div>
 
           {/* Form Content */}
-          <div className="flex-1 bg-muted/20 px-8 py-8 overflow-y-auto">
+          <div className="flex-1 bg-background px-8 py-8 overflow-y-auto text-foreground">
             <div className="space-y-8 mx-auto max-w-6xl">
             {/* Step 1: Company Information */}
             {createStep === 1 && (
@@ -642,7 +642,7 @@ export default function BuyersPage() {
                     <Building2 className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Company Information</h3>
+                    <h3 className="font-semibold text-lg text-foreground">Company Information</h3>
                     <p className="text-muted-foreground text-sm">Enter the buyer's business details</p>
                   </div>
                 </div>
@@ -1166,7 +1166,7 @@ export default function BuyersPage() {
         </div>
 
         {/* Footer with Navigation */}
-        <div className="flex justify-between items-center bg-white dark:bg-black px-6 py-6 border-border/60 border-t text-foreground dark:text-white">
+        <div className="flex justify-between items-center bg-card px-6 py-6 border-border/60 border-t">
           <div>
             {createStep > 1 && (
               <Button variant="ghost" onClick={prevStep} className="gap-2">
