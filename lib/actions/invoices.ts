@@ -388,7 +388,7 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
                 name = ?, address = ?, contact_person = ?, contact_email = ?, contact_phone = ?,
                 bank_country = ?, bank_name = ?, bank_key_branch_code = ?, bank_account_no = ?,
                 iban = ?, swift_bic = ?, default_payment_method = ?, default_payment_terms = ?,
-                vat_no = ?, reconciliation_gl_account = ?
+                vat_no = ?, registration_no = ?, reconciliation_gl_account = ?
               WHERE supplier_id = ?`,
               [
                 row["Vendor Name"],
@@ -405,6 +405,7 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
                 toNullable(row["Default Payment Method"]),
                 toNullable(row["Default Payment Terms"]),
                 toNullable(row["VAT Registration No"]),
+                toNullable(row["Registration No"]),
                 toNullable(row["Reconciliation G/L Account"]),
                 supplierId,
               ],
@@ -416,9 +417,9 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
               `INSERT INTO suppliers (
                 vendor_number, company_code, name, address, contact_person, contact_email, contact_phone,
                 bank_country, bank_name, bank_key_branch_code, bank_account_no, iban, swift_bic,
-                default_payment_method, default_payment_terms, vat_no, reconciliation_gl_account,
+                default_payment_method, default_payment_terms, vat_no, registration_no, reconciliation_gl_account,
                 onboarding_status, active_status
-              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'active')`,
+              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', 'active')`,
               [
                 row["Vendor Number"],
                 row["Company Code"],
@@ -436,6 +437,7 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
                 toNullable(row["Default Payment Method"]),
                 toNullable(row["Default Payment Terms"]),
                 toNullable(row["VAT Registration No"]),
+                toNullable(row["Registration No"]),
                 toNullable(row["Reconciliation G/L Account"]),
               ],
             );

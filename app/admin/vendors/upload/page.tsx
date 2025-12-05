@@ -92,7 +92,7 @@ export default function VendorUploadPage() {
                     <br />
                     Company Code, Vendor Number, Vendor Name, Address, Contact Person, Contact Email, Contact Phone,
                     Bank Country, Bank Name, Bank Key (Branch Code), Bank Account Number, IBAN, SWIFT/BIC, Default
-                    Payment Method, Default Payment Terms, VAT Registration No, Reconciliation G/L Account
+                    Payment Method, Default Payment Terms, VAT Registration No, Registration No, Reconciliation G/L Account
                   </AlertDescription>
                 </Alert>
 
