@@ -575,7 +575,7 @@ export default function BuyersPage() {
           {/* Header with Progress */}
           <div className="bg-card px-8 py-8 border-border/60 border-b">
             <DialogHeader className="gap-1 text-left">
-              <DialogTitle className="font-semibold text-2xl text-foreground">Add New Buyer</DialogTitle>
+              <DialogTitle className="font-semibold text-foreground text-2xl">Add New Buyer</DialogTitle>
               <DialogDescription className="mt-1 text-muted-foreground text-base">
                 Complete the steps below to onboard a new buyer.
               </DialogDescription>
@@ -642,7 +642,7 @@ export default function BuyersPage() {
                     <Building2 className="w-6 h-6 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg text-foreground">Company Information</h3>
+                    <h3 className="font-semibold text-foreground text-lg">Company Information</h3>
                     <p className="text-muted-foreground text-sm">Enter the buyer's business details</p>
                   </div>
                 </div>
