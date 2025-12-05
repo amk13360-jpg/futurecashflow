@@ -604,7 +604,7 @@ export async function getInvoicesForSession() {
     if (session.role === "accounts_payable" && session.buyerId) {
       const invoices = await query(
         `SELECT i.invoice_id, i.document_number, i.reference_invoice, i.document_date, 
-          CAST(i.due_date AS CHAR) as due_date, i.amount_local_curr, i.net_due_date, i.amount_doc_curr, i.currency, i.text_description, i.status, 
+          CAST(i.due_date AS CHAR) as due_date, i.amount, i.amount_local_curr, i.net_due_date, i.amount_doc_curr, i.currency, i.text_description, i.status, 
           i.uploaded_at, i.payment_terms, i.vendor_number, i.company_code,
           s.name as supplier_name,
           COUNT(o.offer_id) as offer_count
