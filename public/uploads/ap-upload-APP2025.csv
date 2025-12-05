@@ -1,0 +1,9 @@
+Company Code,Vendor Number,Vendor Name,Document Number,Document Type,Document Date,Posting Date,Baseline Date,Net Due Date,Days Overdue,Amount (Doc Curr),Currency,Amount (Local Curr),Payment Terms,Payment Method,Assignment (PO #),Reference (Invoice #),Open Item,Text
+APP2025,VND-SWE-001,Gumede Construction (Pty) Ltd,5100001001,KR,2025-11-25,2025-11-25,2025-11-25,2026-01-09,0,125000.00,ZAR,125000.00,0002 (45 days),T (EFT),PO-2025-001,INV-GC-2025-001,X,Concrete supplies for Phase 1
+APP2025,VND-SWE-001,Gumede Construction (Pty) Ltd,5100001002,KR,2025-11-28,2025-11-28,2025-11-28,2026-01-12,0,87500.50,ZAR,87500.50,0002 (45 days),T (EFT),PO-2025-002,INV-GC-2025-002,X,Steel reinforcement materials
+APP2025,VND-SWE-002,Zulu Mining Supplies CC,5100001003,KR,2025-11-20,2025-11-20,2025-11-20,2026-01-19,0,450000.00,ZAR,450000.00,0003 (60 days),T (EFT),PO-2025-003,INV-ZM-2025-001,X,Mining equipment rental Q4
+APP2025,VND-SWE-002,Zulu Mining Supplies CC,5100001004,KR,2025-11-22,2025-11-22,2025-11-22,2026-01-21,0,175000.00,ZAR,175000.00,0003 (60 days),T (EFT),PO-2025-004,INV-ZM-2025-002,X,Safety gear and PPE supplies
+APP2025,VND-SWE-003,Ndlovu Transport Services,5100001005,KR,2025-11-15,2025-11-15,2025-11-15,2025-12-30,0,320000.00,ZAR,320000.00,0002 (45 days),T (EFT),PO-2025-005,INV-NT-2025-001,X,Freight services November
+APP2025,VND-SWE-003,Ndlovu Transport Services,5100001006,KR,2025-11-18,2025-11-18,2025-11-18,2026-01-02,0,280000.00,ZAR,280000.00,0002 (45 days),T (EFT),PO-2025-006,INV-NT-2025-002,X,Heavy equipment transport
+APP2025,VND-SWE-004,Dlamini Engineering Works,5100001007,KR,2025-11-10,2025-11-10,2025-11-10,2025-12-10,0,550000.00,ZAR,550000.00,0001 (30 days),T (EFT),PO-2025-007,INV-DE-2025-001,X,Fabrication and welding services
+APP2025,VND-SWE-005,Mkhize Electrical Contractors,5100001008,KR,2025-11-12,2025-11-12,2025-11-12,2026-01-11,0,195000.00,ZAR,195000.00,0003 (60 days),T (EFT),PO-2025-008,INV-ME-2025-001,X,Electrical installation Phase 2

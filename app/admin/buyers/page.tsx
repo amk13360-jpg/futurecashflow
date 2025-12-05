@@ -91,7 +91,7 @@ export default function BuyersPage() {
     max_invoice_amount: 5000000,
     min_days_to_maturity: 7,
     max_days_to_maturity: 90,
-    active_status: 'draft'
+    active_status: 'active'
   });
 
   const createSteps = [
@@ -235,7 +235,7 @@ export default function BuyersPage() {
       max_invoice_amount: 5000000,
       min_days_to_maturity: 7,
       max_days_to_maturity: 90,
-      active_status: 'draft'
+      active_status: 'active'
     });
     setCreateStep(1);
     setFormErrors({});

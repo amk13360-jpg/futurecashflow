@@ -268,7 +268,7 @@ export async function createBuyer(input: CreateBuyerInput): Promise<{ success: b
       input.credit_limit || null,
       rateCardId || null,
       session.userId,
-      input.active_status || 'draft'
+      input.active_status || 'active'
     ]) as any;
 
     const buyerId = result.insertId;
