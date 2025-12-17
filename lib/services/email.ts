@@ -20,6 +20,11 @@ export interface SendEmailParams {
 export async function sendEmail(params: SendEmailParams): Promise<boolean> {
   const { to, subject, html, text } = params;
 
+  console.log(`[Email Service] Attempting to send email to: ${to}`);
+  console.log(`[Email Service] Subject: ${subject}`);
+  console.log(`[Email Service] Connection string configured: ${!!connectionString}`);
+  console.log(`[Email Service] Sender address: ${senderAddress}`);
+
   try {
     const client = getEmailClient();
     

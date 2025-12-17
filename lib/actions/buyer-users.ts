@@ -154,6 +154,7 @@ export async function createUserForBuyer(input: CreateUserForBuyerInput): Promis
     // Send welcome email if requested
     if (input.send_welcome_email !== false) {
       try {
+        console.log(`[Create User] Attempting to send welcome email to: ${input.email}`);
         await sendWelcomeEmailInternal(
           input.email,
           input.full_name,
@@ -162,6 +163,7 @@ export async function createUserForBuyer(input: CreateUserForBuyerInput): Promis
           tempPassword,
           buyer.name
         );
+        console.log(`[Create User] Welcome email sent successfully`);
 
         // Log email sent
         await createAuditLog({
