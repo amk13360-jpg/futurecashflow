@@ -78,7 +78,7 @@ export default function HomePage() {
         {/* Footer - subtle at bottom */}
         <footer className="right-0 bottom-4 left-0 absolute text-center">
           <p className="text-muted-foreground text-xs">
-            © 2025 Future Cashflow (Pty) Ltd · Registered Credit Provider NCRCP18174
+            © 2025 Future Mining Finance (Pty) Ltd · Registered Credit Provider NCRCP18174
           </p>
         </footer>
       </div>
