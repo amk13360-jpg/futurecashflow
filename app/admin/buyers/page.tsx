@@ -1210,7 +1210,7 @@ export default function BuyersPage() {
 
       {/* Edit Buyer Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-background text-foreground border-border/80">
+        <DialogContent className="bg-background border-border/80 max-w-3xl max-h-[90vh] overflow-y-auto text-foreground">
           <DialogHeader>
             <DialogTitle className="text-foreground">Edit Buyer: {selectedBuyer?.name}</DialogTitle>
             <DialogDescription className="text-muted-foreground">
@@ -1221,7 +1221,7 @@ export default function BuyersPage() {
           {/* Same form content as create dialog */}
           <div className="gap-4 grid py-4 text-foreground">
             <Tabs defaultValue="basic">
-              <TabsList className="grid grid-cols-4 w-full bg-muted">
+              <TabsList className="grid grid-cols-4 bg-muted w-full">
                 <TabsTrigger value="basic" className="data-[state=active]:bg-background data-[state=active]:text-foreground">Basic Info</TabsTrigger>
                 <TabsTrigger value="contact" className="data-[state=active]:bg-background data-[state=active]:text-foreground">Contact</TabsTrigger>
                 <TabsTrigger value="address" className="data-[state=active]:bg-background data-[state=active]:text-foreground">Address</TabsTrigger>
@@ -1482,7 +1482,7 @@ export default function BuyersPage() {
 
       {/* Suspend Buyer Dialog */}
       <Dialog open={showSuspendDialog} onOpenChange={setShowSuspendDialog}>
-        <DialogContent className="bg-background text-foreground border-border/80">
+        <DialogContent className="bg-background border-border/80 text-foreground">
           <DialogHeader>
             <DialogTitle className="text-foreground">Suspend Buyer</DialogTitle>
             <DialogDescription className="text-muted-foreground">
