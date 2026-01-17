@@ -29,13 +29,13 @@ export default async function AdminDashboardPage() {
       <main className="mx-auto px-4 py-8 container">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight mb-2">Dashboard</h1>
+          <h1 className="mb-2 font-bold text-3xl tracking-tight">Dashboard</h1>
           <p className="text-muted-foreground">Welcome back! Here's your platform overview.</p>
         </div>
 
         {/* Metrics Overview */}
         <section className="mb-8" aria-labelledby="metrics-heading">
-          <h2 id="metrics-heading" className="text-lg font-semibold mb-4 text-foreground">Key Metrics</h2>
+          <h2 id="metrics-heading" className="mb-4 font-semibold text-foreground text-lg">Key Metrics</h2>
           <div className="gap-4 grid md:grid-cols-2 lg:grid-cols-4">
             <MetricCard
               title="Pending Documents"
@@ -70,16 +70,16 @@ export default async function AdminDashboardPage() {
 
         {/* Quick Actions */}
         <section className="mb-8" aria-labelledby="actions-heading">
-          <h2 id="actions-heading" className="text-lg font-semibold mb-4 text-foreground">Quick Actions</h2>
+          <h2 id="actions-heading" className="mb-4 font-semibold text-foreground text-lg">Quick Actions</h2>
           <div className="gap-4 grid md:grid-cols-2 lg:grid-cols-4">
-            <Card className="group border-l-4 border-l-blue-500 hover:shadow-lg hover:border-l-blue-600 transition-all duration-300 hover:-translate-y-1">
+            <Card className="group hover:shadow-lg border-l-4 border-l-blue-500 hover:border-l-blue-600 transition-all hover:-translate-y-1 duration-300">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-center">
                   <div className="bg-blue-100 dark:bg-blue-900/40 p-2.5 rounded-lg group-hover:scale-110 transition-transform duration-300">
                     <Package className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                   </div>
                 </div>
-                <CardTitle className="mt-3 text-base font-semibold">Offer Batches</CardTitle>
+                <CardTitle className="mt-3 font-semibold text-base">Offer Batches</CardTitle>
                 <CardDescription className="text-xs">Create and manage offers for suppliers</CardDescription>
               </CardHeader>
               <CardContent>
@@ -92,14 +92,14 @@ export default async function AdminDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="group border-l-4 border-l-purple-500 hover:shadow-lg hover:border-l-purple-600 transition-all duration-300 hover:-translate-y-1">
+            <Card className="group hover:shadow-lg border-l-4 border-l-purple-500 hover:border-l-purple-600 transition-all hover:-translate-y-1 duration-300">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-center">
                   <div className="bg-purple-100 dark:bg-purple-900/40 p-2.5 rounded-lg group-hover:scale-110 transition-transform duration-300">
                     <Building2 className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                   </div>
                 </div>
-                <CardTitle className="mt-3 text-base font-semibold">Buyers</CardTitle>
+                <CardTitle className="mt-3 font-semibold text-base">Buyers</CardTitle>
                 <CardDescription className="text-xs">Manage buyer profiles and settings</CardDescription>
               </CardHeader>
               <CardContent>
@@ -112,14 +112,14 @@ export default async function AdminDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="group border-l-4 border-l-green-500 hover:shadow-lg hover:border-l-green-600 transition-all duration-300 hover:-translate-y-1">
+            <Card className="group hover:shadow-lg border-l-4 border-l-green-500 hover:border-l-green-600 transition-all hover:-translate-y-1 duration-300">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-center">
                   <div className="bg-green-100 dark:bg-green-900/40 p-2.5 rounded-lg group-hover:scale-110 transition-transform duration-300">
                     <FileText className="w-5 h-5 text-green-600 dark:text-green-400" />
                   </div>
                 </div>
-                <CardTitle className="mt-3 text-base font-semibold">Invoices</CardTitle>
+                <CardTitle className="mt-3 font-semibold text-base">Invoices</CardTitle>
                 <CardDescription className="text-xs">View and manage all invoices</CardDescription>
               </CardHeader>
               <CardContent>
@@ -132,14 +132,14 @@ export default async function AdminDashboardPage() {
               </CardContent>
             </Card>
 
-            <Card className="group border-l-4 border-l-amber-500 hover:shadow-lg hover:border-l-amber-600 transition-all duration-300 hover:-translate-y-1">
+            <Card className="group hover:shadow-lg border-l-4 border-l-amber-500 hover:border-l-amber-600 transition-all hover:-translate-y-1 duration-300">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-center">
                   <div className="bg-amber-100 dark:bg-amber-900/40 p-2.5 rounded-lg group-hover:scale-110 transition-transform duration-300">
                     <DollarSign className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                   </div>
                 </div>
-                <CardTitle className="mt-3 text-base font-semibold">Payments</CardTitle>
+                <CardTitle className="mt-3 font-semibold text-base">Payments</CardTitle>
                 <CardDescription className="text-xs">Track and process payments</CardDescription>
               </CardHeader>
               <CardContent>
@@ -184,10 +184,10 @@ export default async function AdminDashboardPage() {
                   ) : (
                     <div className="space-y-3">
                       {pendingCessions.map((cession: any) => (
-                        <div key={cession.cession_id} className="flex justify-between items-center p-4 border rounded-lg hover:bg-muted/30 transition-colors duration-200">
+                        <div key={cession.cession_id} className="flex justify-between items-center hover:bg-muted/30 p-4 border rounded-lg transition-colors duration-200">
                           <div className="flex-1">
                             <h4 className="font-semibold text-sm">{cession.supplier_name}</h4>
-                            <p className="text-muted-foreground text-xs mt-1">{cession.contact_email}</p>
+                            <p className="mt-1 text-muted-foreground text-xs">{cession.contact_email}</p>
                             <div className="flex items-center gap-2 mt-2">
                               <Badge variant="outline" className="text-xs">{cession.document_type}</Badge>
                               <span className="text-muted-foreground text-xs">
