@@ -505,7 +505,7 @@ export default function BuyersPage() {
                 </TableRow>
               ) : (
                 buyers.map((buyer) => (
-                  <TableRow key={buyer.buyer_id}>
+                  <TableRow key={buyer.buyer_id} className="group">
                     <TableCell>
                       <div>
                         <div className="font-medium">{buyer.name}</div>
@@ -529,7 +529,7 @@ export default function BuyersPage() {
                     <TableCell className="text-center">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
+                          <Button variant="ghost" size="icon" className="opacity-100 hover:bg-accent">
                             <MoreVertical className="w-4 h-4" />
                           </Button>
                         </DropdownMenuTrigger>
