@@ -61,10 +61,10 @@ export function LoadingOverlay({
     <div className="relative">
       {children}
       {isLoading && (
-        <div className="absolute inset-0 bg-background/80 dark:bg-background/70 backdrop-blur-sm rounded-lg flex flex-col items-center justify-center gap-3 z-50">
+        <div className="z-50 absolute inset-0 flex flex-col justify-center items-center gap-3 bg-background/80 dark:bg-background/70 backdrop-blur-sm rounded-lg">
           <LoadingSpinner size="md" className="text-primary" />
           {message && (
-            <p className="text-sm font-medium text-muted-foreground">{message}</p>
+            <p className="font-medium text-muted-foreground text-sm">{message}</p>
           )}
         </div>
       )}
@@ -86,7 +86,7 @@ export function LoadingButton({
   return (
     <button
       disabled={isLoading || disabled}
-      className="inline-flex items-center justify-center gap-2"
+      className="inline-flex justify-center items-center gap-2"
       {...props}
     >
       {isLoading && <LoadingSpinner size="sm" />}

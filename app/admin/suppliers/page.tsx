@@ -5,8 +5,9 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Search, Filter, Download, Eye } from "lucide-react"
+import { Search, Filter, Download, Eye, Users } from "lucide-react"
 import { getSession } from "@/lib/auth/session"
+import { EmptyState } from "@/components/ui/empty-state"
 import Link from "next/link"
 
 export default async function SuppliersPage() {
@@ -46,7 +47,7 @@ export default async function SuppliersPage() {
           <div className="flex justify-between items-center mb-4">
             <div>
               <h1 className="font-bold text-3xl tracking-tight">All Suppliers</h1>
-              <p className="text-muted-foreground mt-1">Manage and view all registered suppliers across the platform</p>
+              <p className="mt-1 text-muted-foreground">Manage and view all registered suppliers across the platform</p>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm">
@@ -127,7 +128,7 @@ export default async function SuppliersPage() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline" className="text-xs font-medium">{supplier.risk_tier || "N/A"}</Badge>
+                          <Badge variant="outline" className="font-medium text-xs">{supplier.risk_tier || "N/A"}</Badge>
                         </TableCell>
                         <TableCell>{getStatusBadge(supplier.onboarding_status)}</TableCell>
                         <TableCell>{getActiveStatusBadge(supplier.active_status)}</TableCell>

@@ -89,28 +89,18 @@ function FormItem({ className, ...props }: React.ComponentProps<'div'>) {
 
 function FormLabel({
   className,
-  required,
   ...props
-}: React.ComponentProps<typeof LabelPrimitive.Root> & { required?: boolean }) {
+}: React.ComponentProps<typeof LabelPrimitive.Root>) {
   const { error, formItemId } = useFormField()
 
   return (
     <Label
       data-slot="form-label"
       data-error={!!error}
-      className={cn(
-        'transition-colors duration-200',
-        'data-[error=true]:text-destructive',
-        className
-      )}
+      className={cn('data-[error=true]:text-destructive', className)}
       htmlFor={formItemId}
       {...props}
-    >
-      <span className="flex items-center gap-1">
-        {props.children}
-        {required && <span className="text-destructive font-semibold" aria-label="required">*</span>}
-      </span>
-    </Label>
+    />
   )
 }
 
@@ -133,16 +123,13 @@ function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
 }
 
 function FormDescription({ className, ...props }: React.ComponentProps<'p'>) {
-  const { formDescriptionId, error } = useFormField()
+  const { formDescriptionId } = useFormField()
 
   return (
     <p
       data-slot="form-description"
       id={formDescriptionId}
-      className={cn(
-        'text-sm transition-colors duration-200',
-        error ? 'text-muted-foreground line-through' : 'text-muted-foreground'
-      )}
+      className={cn('text-muted-foreground text-sm', className)}
       {...props}
     />
   )
@@ -160,17 +147,9 @@ function FormMessage({ className, ...props }: React.ComponentProps<'p'>) {
     <p
       data-slot="form-message"
       id={formMessageId}
-      className={cn(
-        'text-destructive text-sm font-medium',
-        'flex items-center gap-1.5 mt-1.5 pl-3 py-2',
-        'bg-destructive/5 dark:bg-destructive/10',
-        'border-l-2 border-destructive',
-        'rounded-sm',
-        className
-      )}
+      className={cn('text-destructive text-sm', className)}
       {...props}
     >
-      <span className="text-lg leading-none">⚠</span>
       {body}
     </p>
   )

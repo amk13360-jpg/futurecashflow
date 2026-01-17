@@ -1,52 +1,19 @@
-# Dependencies
 node_modules/
-/.pnp
-.pnp.js
-
-# Testing
-/coverage
-
-# Production
-/build
-/dist
-/.next
-/out
-
-# Misc
-.DS_Store
-*.pem
+.next/
+dist/
+build/
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# Environment variables
 .env
 .env.local
 .env.*.local
-
-# IDE
+.DS_Store
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
-.project
-.classpath
-
-# OS
-Thumbs.db
-.DS_Store
-
-# Logs
-logs/
-webapp_logs/
-
-# Build artifacts
-dist/
-build/
-
-# Cache
-.cache/
-.eslintcache
+.vercel
+out/
+.turbo/
+.pnpm-debug.log
+pnpm-lock.yaml

@@ -505,7 +505,7 @@ export default function BuyersPage() {
                 </TableRow>
               ) : (
                 buyers.map((buyer) => (
-                  <TableRow key={buyer.buyer_id} className="group">
+                  <TableRow key={buyer.buyer_id}>
                     <TableCell>
                       <div>
                         <div className="font-medium">{buyer.name}</div>
@@ -529,7 +529,7 @@ export default function BuyersPage() {
                     <TableCell className="text-center">
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="opacity-100 hover:bg-accent">
+                          <Button variant="ghost" size="icon">
                             <MoreVertical className="w-4 h-4" />
                           </Button>
                         </DropdownMenuTrigger>
@@ -571,7 +571,7 @@ export default function BuyersPage() {
 
       {/* Create Buyer Dialog - Wizard Style */}
       <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetForm(); }}>
-        <DialogContent className="flex flex-col gap-0 bg-white dark:bg-charcoal shadow-2xl p-0 border border-gray-200 dark:border-gray-700 w-full max-w-[95vw] sm:max-w-[95vw] xl:max-w-[1440px] h-auto max-h-[95vh] overflow-hidden text-foreground dark:text-white">
+        <DialogContent className="flex flex-col gap-0 bg-card shadow-2xl p-0 border border-border/80 w-full max-w-[95vw] sm:max-w-[95vw] xl:max-w-[1440px] h-auto max-h-[95vh] overflow-hidden text-card-foreground">
           {/* Header with Progress */}
           <div className="bg-card px-8 py-8 border-border/60 border-b">
             <DialogHeader className="gap-1 text-left">
@@ -1210,7 +1210,7 @@ export default function BuyersPage() {
 
       {/* Edit Buyer Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-white dark:bg-charcoal border border-gray-200 dark:border-gray-700">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Buyer: {selectedBuyer?.name}</DialogTitle>
             <DialogDescription>
@@ -1482,7 +1482,7 @@ export default function BuyersPage() {
 
       {/* Suspend Buyer Dialog */}
       <Dialog open={showSuspendDialog} onOpenChange={setShowSuspendDialog}>
-        <DialogContent className="bg-white dark:bg-charcoal border border-gray-200 dark:border-gray-700">
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Suspend Buyer</DialogTitle>
             <DialogDescription>

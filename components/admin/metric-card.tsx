@@ -56,24 +56,24 @@ export function MetricCard({
   const styles = variantStyles[variant]
   
   return (
-    <Card className={cn("border-l-4 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1", styles.card)}>
-      <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{title}</CardTitle>
+    <Card className={cn("hover:shadow-lg border-l-4 hover:scale-[1.02] transition-all hover:-translate-y-1 duration-300", styles.card)}>
+      <CardHeader className="flex flex-row justify-between items-center pb-2">
+        <CardTitle className="font-semibold text-muted-foreground text-sm uppercase tracking-wide">{title}</CardTitle>
         <div className={cn("p-2.5 rounded-lg transition-transform duration-300", styles.iconBg)}>
-          <Icon className={cn("h-5 w-5", styles.icon)} />
+          <Icon className={cn("w-5 h-5", styles.icon)} />
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-3xl font-bold tracking-tight">{value}</div>
-        {description && <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{description}</p>}
+        <div className="font-bold text-3xl tracking-tight">{value}</div>
+        {description && <p className="mt-2 text-muted-foreground text-xs leading-relaxed">{description}</p>}
         {trend && (
           <div className={cn(
-            "flex items-center gap-1.5 mt-3 text-xs font-semibold",
+            "flex items-center gap-1.5 mt-3 font-semibold text-xs",
             trend.isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"
           )}>
             <span className="text-sm">{trend.isPositive ? "↑" : "↓"}</span>
             <span>{Math.abs(trend.value)}%</span>
-            <span className="text-muted-foreground font-normal">{trend.label}</span>
+            <span className="font-normal text-muted-foreground">{trend.label}</span>
           </div>
         )}
       </CardContent>

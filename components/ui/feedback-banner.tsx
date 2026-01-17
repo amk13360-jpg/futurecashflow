@@ -74,7 +74,7 @@ export function FeedbackBanner({
   return (
     <div
       className={cn(
-        'flex items-start gap-3 p-4 rounded-lg border',
+        'flex items-start gap-3 p-4 border rounded-lg',
         'transition-all duration-200 animate-in fade-in slide-in-from-top-2',
         styles.container,
         className
@@ -82,11 +82,11 @@ export function FeedbackBanner({
       role={type === 'error' ? 'alert' : 'status'}
       aria-live={type === 'error' ? 'assertive' : 'polite'}
     >
-      <Icon className={cn('h-5 w-5 mt-0.5 flex-shrink-0', styles.icon)} />
+      <Icon className={cn('flex-shrink-0 mt-0.5 w-5 h-5', styles.icon)} />
       
       <div className="flex-1 min-w-0">
         {title && (
-          <h3 className={cn('font-semibold text-sm mb-1', styles.title)}>
+          <h3 className={cn('mb-1 font-semibold text-sm', styles.title)}>
             {title}
           </h3>
         )}
@@ -94,7 +94,7 @@ export function FeedbackBanner({
           {message}
         </p>
         {description && (
-          <p className={cn('text-xs mt-1 opacity-90', styles.message)}>
+          <p className={cn('opacity-90 mt-1 text-xs', styles.message)}>
             {description}
           </p>
         )}
@@ -110,7 +110,7 @@ export function FeedbackBanner({
           )}
           aria-label="Dismiss message"
         >
-          <X className="h-4 w-4 opacity-60 hover:opacity-100" />
+          <X className="opacity-60 hover:opacity-100 w-4 h-4" />
         </button>
       )}
     </div>
@@ -130,7 +130,7 @@ export function FieldFeedback({
   return (
     <div
       className={cn(
-        'flex items-center gap-2 p-2 rounded-md text-xs font-medium',
+        'flex items-center gap-2 p-2 rounded-md font-medium text-xs',
         isError
           ? 'bg-red-50 dark:bg-red-950/30 text-red-700 dark:text-red-300'
           : 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-700 dark:text-emerald-300'
@@ -138,9 +138,9 @@ export function FieldFeedback({
       role={isError ? 'alert' : 'status'}
     >
       {isError ? (
-        <AlertCircle className="h-4 w-4" />
+        <AlertCircle className="w-4 h-4" />
       ) : (
-        <CheckCircle2 className="h-4 w-4" />
+        <CheckCircle2 className="w-4 h-4" />
       )}
       {message}
     </div>

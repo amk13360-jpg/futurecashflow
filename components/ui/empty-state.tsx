@@ -34,7 +34,7 @@ export function EmptyState({
   const styles = variantStyles[variant]
   
   return (
-    <div className={cn("py-16 px-4 text-center", className)}>
+    <div className={cn("px-4 py-16 text-center", className)}>
       {Icon && (
         <div className={cn("inline-flex justify-center items-center mb-6 rounded-2xl w-20 h-20 animate-in fade-in zoom-in-50", styles.iconBg)}>
           <Icon className={cn("w-10 h-10", styles.icon)} />
@@ -42,10 +42,10 @@ export function EmptyState({
       )}
       <h3 className="mb-2 font-semibold text-foreground text-lg tracking-tight">{title}</h3>
       {description && (
-        <p className="mb-8 text-muted-foreground text-sm max-w-sm mx-auto leading-relaxed">{description}</p>
+        <p className="mx-auto mb-8 max-w-sm text-muted-foreground text-sm leading-relaxed">{description}</p>
       )}
       {children && (
-        <div className="flex justify-center gap-3 flex-wrap">
+        <div className="flex flex-wrap justify-center gap-3">
           {children}
         </div>
       )}
