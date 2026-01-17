@@ -352,6 +352,7 @@ export default async function AdminDashboardPage() {
             </Card>
           </TabsContent>
         </Tabs>
+        </section>
 
         {/* Quick Actions */}
         <div className="gap-4 grid md:grid-cols-3 mt-8">
