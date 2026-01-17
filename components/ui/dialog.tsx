@@ -83,7 +83,7 @@ function DialogContent({
 const DialogHeader: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => (
   <div
     data-slot="dialog-header"
-    className={cn('flex flex-col gap-2 sm:text-left text-center text-gray-900 dark:text-gray-50', className)}
+    className={cn('flex flex-col gap-2 text-gray-900 dark:text-gray-50 sm:text-left text-center', className)}
     {...props}
   />
 );
@@ -106,7 +106,7 @@ function DialogTitle({
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn('font-semibold text-lg leading-none text-gray-900 dark:text-gray-50', className)}
+      className={cn('font-semibold text-gray-900 dark:text-gray-50 text-lg leading-none', className)}
       {...props}
     />
   )
