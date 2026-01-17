@@ -571,9 +571,9 @@ export default function BuyersPage() {
 
       {/* Create Buyer Dialog - Wizard Style */}
       <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetForm(); }}>
-        <DialogContent className="flex flex-col gap-0 bg-card shadow-2xl p-0 border border-border/80 w-full max-w-[95vw] sm:max-w-[95vw] xl:max-w-[1440px] h-auto max-h-[95vh] overflow-hidden text-card-foreground">
+        <DialogContent className="flex flex-col gap-0 bg-background shadow-2xl p-0 border border-border/80 w-full max-w-[95vw] sm:max-w-[95vw] xl:max-w-[1440px] h-auto max-h-[95vh] overflow-hidden text-foreground">
           {/* Header with Progress */}
-          <div className="bg-card px-8 py-8 border-border/60 border-b">
+          <div className="bg-muted/30 px-8 py-8 border-border/60 border-b">
             <DialogHeader className="gap-1 text-left">
               <DialogTitle className="font-semibold text-foreground text-2xl">Add New Buyer</DialogTitle>
               <DialogDescription className="mt-1 text-muted-foreground text-base">
@@ -1166,7 +1166,7 @@ export default function BuyersPage() {
         </div>
 
         {/* Footer with Navigation */}
-        <div className="flex justify-between items-center bg-card px-6 py-6 border-border/60 border-t">
+        <div className="flex justify-between items-center bg-muted/30 px-6 py-6 border-border/60 border-t">
           <div>
             {createStep > 1 && (
               <Button variant="ghost" onClick={prevStep} className="gap-2">
@@ -1210,25 +1210,25 @@ export default function BuyersPage() {
 
       {/* Edit Buyer Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-background text-foreground border-border/80">
           <DialogHeader>
-            <DialogTitle>Edit Buyer: {selectedBuyer?.name}</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-foreground">Edit Buyer: {selectedBuyer?.name}</DialogTitle>
+            <DialogDescription className="text-muted-foreground">
               Update buyer profile information.
             </DialogDescription>
           </DialogHeader>
           
           {/* Same form content as create dialog */}
-          <div className="gap-4 grid py-4">
+          <div className="gap-4 grid py-4 text-foreground">
             <Tabs defaultValue="basic">
-              <TabsList className="grid grid-cols-4 w-full">
-                <TabsTrigger value="basic">Basic Info</TabsTrigger>
-                <TabsTrigger value="contact">Contact</TabsTrigger>
-                <TabsTrigger value="address">Address</TabsTrigger>
-                <TabsTrigger value="config">Configuration</TabsTrigger>
+              <TabsList className="grid grid-cols-4 w-full bg-muted">
+                <TabsTrigger value="basic" className="data-[state=active]:bg-background data-[state=active]:text-foreground">Basic Info</TabsTrigger>
+                <TabsTrigger value="contact" className="data-[state=active]:bg-background data-[state=active]:text-foreground">Contact</TabsTrigger>
+                <TabsTrigger value="address" className="data-[state=active]:bg-background data-[state=active]:text-foreground">Address</TabsTrigger>
+                <TabsTrigger value="config" className="data-[state=active]:bg-background data-[state=active]:text-foreground">Configuration</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="basic" className="space-y-4 mt-4">
+              <TabsContent value="basic" className="space-y-4 mt-4 text-foreground">
                 <div className="gap-4 grid grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="edit_name">Legal Business Name *</Label>
@@ -1482,10 +1482,10 @@ export default function BuyersPage() {
 
       {/* Suspend Buyer Dialog */}
       <Dialog open={showSuspendDialog} onOpenChange={setShowSuspendDialog}>
-        <DialogContent>
+        <DialogContent className="bg-background text-foreground border-border/80">
           <DialogHeader>
-            <DialogTitle>Suspend Buyer</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-foreground">Suspend Buyer</DialogTitle>
+            <DialogDescription className="text-muted-foreground">
               Are you sure you want to suspend {selectedBuyer?.name}? This will prevent invoice processing for this buyer.
             </DialogDescription>
           </DialogHeader>
