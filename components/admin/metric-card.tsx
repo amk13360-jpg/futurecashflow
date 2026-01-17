@@ -56,23 +56,24 @@ export function MetricCard({
   const styles = variantStyles[variant]
   
   return (
-    <Card className={cn("transition-all duration-200 hover:shadow-lg hover:scale-[1.02]", styles.card)}>
+    <Card className={cn("border-l-4 transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1", styles.card)}>
       <CardHeader className="flex flex-row items-center justify-between pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
-        <div className={cn("p-2 rounded-lg", styles.iconBg)}>
+        <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{title}</CardTitle>
+        <div className={cn("p-2.5 rounded-lg transition-transform duration-300", styles.iconBg)}>
           <Icon className={cn("h-5 w-5", styles.icon)} />
         </div>
       </CardHeader>
       <CardContent>
-        <div className="text-3xl font-bold">{value}</div>
-        {description && <p className="text-xs text-muted-foreground mt-1">{description}</p>}
+        <div className="text-3xl font-bold tracking-tight">{value}</div>
+        {description && <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{description}</p>}
         {trend && (
           <div className={cn(
-            "flex items-center gap-1 mt-2 text-xs font-medium",
+            "flex items-center gap-1.5 mt-3 text-xs font-semibold",
             trend.isPositive ? "text-emerald-600 dark:text-emerald-400" : "text-red-600 dark:text-red-400"
           )}>
-            <span>{trend.isPositive ? "↑" : "↓"} {Math.abs(trend.value)}%</span>
-            <span className="text-muted-foreground">{trend.label}</span>
+            <span className="text-sm">{trend.isPositive ? "↑" : "↓"}</span>
+            <span>{Math.abs(trend.value)}%</span>
+            <span className="text-muted-foreground font-normal">{trend.label}</span>
           </div>
         )}
       </CardContent>

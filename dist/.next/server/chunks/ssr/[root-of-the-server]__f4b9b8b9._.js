@@ -1,0 +1,46 @@
+module.exports=[30782,a=>{"use strict";var b=a.i(66879);async function c(a){await (0,b.query)(`INSERT INTO audit_logs (user_id, user_type, action, entity_type, entity_id, details, ip_address, user_agent)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,[a.userId||null,a.userType,a.action,a.entityType||null,a.entityId||null,a.details||null,a.ipAddress||null,a.userAgent||null])}a.s(["createAuditLog",()=>c])},66680,(a,b,c)=>{b.exports=a.x("node:crypto",()=>require("node:crypto"))},60526,(a,b,c)=>{b.exports=a.x("node:os",()=>require("node:os"))},12057,(a,b,c)=>{b.exports=a.x("node:util",()=>require("node:util"))},59639,(a,b,c)=>{b.exports=a.x("node:process",()=>require("node:process"))},47299,(a,b,c)=>{b.exports=a.x("node:http",()=>require("node:http"))},43698,(a,b,c)=>{b.exports=a.x("node:https",()=>require("node:https"))},27028,(a,b,c)=>{b.exports=a.x("node:zlib",()=>require("node:zlib"))},81111,(a,b,c)=>{b.exports=a.x("node:stream",()=>require("node:stream"))},49719,(a,b,c)=>{b.exports=a.x("assert",()=>require("assert"))},70722,(a,b,c)=>{b.exports=a.x("tty",()=>require("tty"))},21517,(a,b,c)=>{b.exports=a.x("http",()=>require("http"))},24836,(a,b,c)=>{b.exports=a.x("https",()=>require("https"))},79029,a=>{"use strict";var b=a.i(37936),c=a.i(66879),d=a.i(53058);a.i(70396);var e=a.i(73727),f=a.i(98335);async function g(){let a=await (0,d.getSession)();a&&"admin"===a.role||(0,e.redirect)("/login/admin");try{let[a]=await (0,c.query)("SELECT COUNT(*) as count FROM cession_agreements WHERE status = 'pending'"),[b]=await (0,c.query)("SELECT COUNT(*) as count FROM suppliers WHERE onboarding_status IN ('pending', 'documents_submitted')"),[d]=await (0,c.query)("SELECT COUNT(*) as count FROM suppliers WHERE onboarding_status = 'approved'"),[e]=await (0,c.query)(`SELECT COALESCE(SUM(amount), 0) as total FROM payments 
+       WHERE status = 'completed' AND completed_date >= DATE_SUB(NOW(), INTERVAL 48 HOUR)`);return{pendingDocuments:a.count,totalApplications:b.count,registeredSuppliers:d.count,paymentsIssued48h:e.total}}catch(a){throw console.error("[v0] Error fetching dashboard metrics:",a),a}}async function h(){let a=await (0,d.getSession)();a&&"admin"===a.role||(0,e.redirect)("/login/admin");try{return await (0,c.query)(`SELECT supplier_id, name, vat_no, contact_email, contact_phone, 
+              onboarding_status, created_at
+       FROM suppliers 
+       WHERE onboarding_status IN ('pending', 'documents_submitted')
+       ORDER BY created_at DESC`)}catch(a){throw console.error("[v0] Error fetching pending applications:",a),a}}async function i(){let a=await (0,d.getSession)();a&&"admin"===a.role||(0,e.redirect)("/login/admin");try{return await (0,c.query)(`SELECT c.cession_id, c.supplier_id, c.document_url, c.document_type, 
+              c.signed_date, c.status, c.created_at,
+              s.name as supplier_name, s.contact_email
+       FROM cession_agreements c
+       JOIN suppliers s ON c.supplier_id = s.supplier_id
+       WHERE c.status IN ('pending', 'signed')
+       ORDER BY c.created_at DESC`)}catch(a){throw console.error("[v0] Error fetching pending cessions:",a),a}}async function j(a){let b=await (0,d.getSession)();b&&"admin"===b.role||(0,e.redirect)("/login/admin");try{return(await (0,c.query)(`SELECT c.cession_id, c.supplier_id, c.document_url, c.document_type,
+              c.version, c.signed_date, c.status, c.approved_by, c.approved_at,
+              c.created_at, c.updated_at,
+              s.name as supplier_name, s.contact_email, s.contact_person, s.address
+       FROM cession_agreements c
+       JOIN suppliers s ON c.supplier_id = s.supplier_id
+       WHERE c.cession_id = ?
+       LIMIT 1`,[a]))[0]||null}catch(a){throw console.error("[v0] Error fetching cession agreement:",a),a}}async function k(a,b){let f=await (0,d.getSession)();f&&"admin"===f.role||(0,e.redirect)("/login/admin");try{await (0,c.query)(`UPDATE cession_agreements
+       SET status = ?, approved_by = ?, approved_at = NOW()
+       WHERE cession_id = ?`,[b,f.userId,a])}catch(a){throw console.error("[v0] Error updating cession status:",a),a}}async function l(){let a=await (0,d.getSession)();a&&"admin"===a.role||(0,e.redirect)("/login/admin");try{return await (0,c.query)(`SELECT b.request_id, b.supplier_id, b.new_bank_name, b.new_account_no,
+              b.new_branch_code, b.reason, b.status, b.created_at,
+              s.name as supplier_name, s.contact_email
+       FROM bank_change_requests b
+       JOIN suppliers s ON b.supplier_id = s.supplier_id
+       WHERE b.status = 'pending'
+       ORDER BY b.created_at DESC`)}catch(a){throw console.error("[v0] Error fetching bank change requests:",a),a}}async function m(a){let b=await (0,d.getSession)();b&&"admin"===b.role||(0,e.redirect)("/login/admin");try{return(await (0,c.query)(`SELECT s.*, b.name AS buyer_name
+       FROM suppliers s
+       LEFT JOIN buyers b ON s.company_code = b.code
+       WHERE s.supplier_id = ?
+       LIMIT 1`,[a]))[0]||null}catch(a){throw console.error("[v0] Error fetching supplier application:",a),a}}async function n(a,b){let g=await (0,d.getSession)();g&&"admin"===g.role||(0,e.redirect)("/login/admin");try{await (0,c.query)(`UPDATE suppliers
+       SET onboarding_status = ?, updated_at = NOW()
+       WHERE supplier_id = ?`,[b,a]),"approved"===b&&await (0,f.autoGenerateOffersForSupplier)(a,"admin_review")}catch(a){throw console.error("[v0] Error updating supplier status:",a),a}}async function o(){let a=await (0,d.getSession)();a&&"admin"===a.role||(0,e.redirect)("/login/admin");try{return await (0,c.query)(`SELECT supplier_id, name, vat_no, contact_email, contact_phone,
+              bank_name, bank_account_no, risk_tier, onboarding_status, 
+              active_status, created_at
+       FROM suppliers 
+       ORDER BY created_at DESC`)}catch(a){throw console.error("[v0] Error fetching suppliers:",a),a}}async function p(){let a=await (0,d.getSession)();a&&"admin"===a.role||(0,e.redirect)("/login/admin");try{return await (0,c.query)(`SELECT p.payment_id, p.amount, p.currency, p.payment_reference,
+              p.status, p.scheduled_date, p.completed_date, p.batch_id,
+              s.name as supplier_name, s.contact_email
+       FROM payments p
+       JOIN suppliers s ON p.supplier_id = s.supplier_id
+       ORDER BY p.created_at DESC
+       LIMIT 50`)}catch(a){throw console.error("[v0] Error fetching recent payments:",a),a}}(0,a.i(13095).ensureServerEntryExports)([g,h,i,j,k,l,m,n,o,p]),(0,b.registerServerReference)(g,"0057cc89344ab5622fd1e5387d6361dd6fea55b878",null),(0,b.registerServerReference)(h,"007cfce902119340838672c1c59e19764167ac7787",null),(0,b.registerServerReference)(i,"009f926954cbdb164daa0a8e98265ac438c0ad8d52",null),(0,b.registerServerReference)(j,"40628a6c7d831073de1ae0be24c25368c6294bb3cd",null),(0,b.registerServerReference)(k,"603a9b93702c85e549a2732187045092fb8b01f841",null),(0,b.registerServerReference)(l,"009b2f32f5b7d87b9c5f1228505e0a4097e5160c72",null),(0,b.registerServerReference)(m,"401ce668b05bbb47fc8746e9d647b9d7e28df99d40",null),(0,b.registerServerReference)(n,"602926fdd02efb421f6f52c9565eabf603835620fc",null),(0,b.registerServerReference)(o,"00b80418c70d4912363a21fbd68211dad48aa9697d",null),(0,b.registerServerReference)(p,"00fa0e5ff1242bf8ba935e5319690bba5a48621026",null),a.s(["getAllSuppliers",()=>o,"getBankChangeRequests",()=>l,"getCessionById",()=>j,"getDashboardMetrics",()=>g,"getPendingApplications",()=>h,"getPendingCessions",()=>i,"getRecentPayments",()=>p,"getSupplierApplicationById",()=>m,"reviewCessionAgreement",()=>k,"reviewSupplierApplication",()=>n])},39672,a=>{"use strict";var b=a.i(79029),c=a.i(98335);a.s([],49615),a.i(49615),a.s(["003ad8e96bfdebff735456a7300aed92599e1da89a",()=>c.getAllInvoices,"0057cc89344ab5622fd1e5387d6361dd6fea55b878",()=>b.getDashboardMetrics,"0066af6cea6691bc14d18ecf966b184601c5c6be69",()=>c.getInvoicesForBuyer,"007cfce902119340838672c1c59e19764167ac7787",()=>b.getPendingApplications,"009b2f32f5b7d87b9c5f1228505e0a4097e5160c72",()=>b.getBankChangeRequests,"009f926954cbdb164daa0a8e98265ac438c0ad8d52",()=>b.getPendingCessions,"00b80418c70d4912363a21fbd68211dad48aa9697d",()=>b.getAllSuppliers,"00fa0e5ff1242bf8ba935e5319690bba5a48621026",()=>b.getRecentPayments,"4008e930a620d45c580df6d3f42f07d8216ba46acd",()=>c.uploadAPData,"401ce668b05bbb47fc8746e9d647b9d7e28df99d40",()=>b.getSupplierApplicationById,"404c1f334ed77834a3ff34ede52762c31fae5e22b1",()=>c.autoGenerateOffersForEligibleInvoices,"405a9df61edce68ba311ecc195c0500af5361afe0c",()=>c.generateOffers,"40628a6c7d831073de1ae0be24c25368c6294bb3cd",()=>b.getCessionById,"406d8d8af54ac20947efa718c0caea7ce7f78b1eab",()=>c.parseVendorDataCSV,"40bc9e614a60054cf5513969220f28aa4aa34d6637",()=>c.parseAPDataCSV,"40d10928863c60eca99ffdbb65323399dcc0bb304c",()=>c.uploadVendorData,"602926fdd02efb421f6f52c9565eabf603835620fc",()=>b.reviewSupplierApplication,"603a9b93702c85e549a2732187045092fb8b01f841",()=>b.reviewCessionAgreement,"60def5a81e96a510e52330aaf1c073f2106ac8d460",()=>c.autoGenerateOffersForSupplier],39672)}];
+
+//# sourceMappingURL=%5Broot-of-the-server%5D__f4b9b8b9._.js.map

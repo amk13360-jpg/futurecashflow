@@ -41,48 +41,49 @@ export default async function SuppliersPage() {
       <DashboardHeader userName={session?.username} />
 
       <main className="mx-auto px-4 py-8 container">
-        <div className="mb-6">
+        {/* Page Header */}
+        <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
             <div>
-              <h1 className="font-bold text-3xl">All Suppliers</h1>
-              <p className="text-muted-foreground">Manage and view all registered suppliers</p>
+              <h1 className="font-bold text-3xl tracking-tight">All Suppliers</h1>
+              <p className="text-muted-foreground mt-1">Manage and view all registered suppliers across the platform</p>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline">
+              <Button variant="outline" size="sm">
                 <Download className="mr-2 w-4 h-4" />
                 Export
               </Button>
               <Link href="/admin/dashboard">
-                <Button variant="outline">Back to Dashboard</Button>
+                <Button variant="outline" size="sm">Back to Dashboard</Button>
               </Link>
             </div>
           </div>
-
-          {/* Search and Filter Bar */}
-          <Card className="mb-6">
-            <CardContent className="pt-6">
-              <div className="flex gap-4">
-                <div className="relative flex-1">
-                  <Search className="top-1/2 left-3 absolute w-4 h-4 text-muted-foreground -translate-y-1/2 transform" />
-                  <Input placeholder="Search by name, VAT number, or email..." className="pl-10" />
-                </div>
-                <Button variant="outline">
-                  <Filter className="mr-2 w-4 h-4" />
-                  Filter
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
         </div>
+
+        {/* Search and Filter Bar */}
+        <Card className="mb-6 border-t-2 border-t-primary/20">
+          <CardContent className="pt-6">
+            <div className="flex gap-3">
+              <div className="relative flex-1">
+                <Search className="top-1/2 left-3 absolute w-4 h-4 text-muted-foreground -translate-y-1/2 transform" />
+                <Input placeholder="Search by name, VAT number, or email..." className="pl-10" />
+              </div>
+              <Button variant="outline" className="gap-2">
+                <Filter className="w-4 h-4" />
+                <span className="hidden sm:inline">Filter</span>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Suppliers Table */}
         <Card>
-          <CardHeader>
+          <CardHeader className="border-b">
             <CardTitle>Supplier List ({suppliers.length})</CardTitle>
-            <CardDescription>Complete list of all suppliers in the system</CardDescription>
+            <CardDescription>Complete list of all suppliers in the system with their current status</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="border rounded-md">
+          <CardContent className="pt-6">
+            <div className="border rounded-lg overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -100,37 +101,41 @@ export default async function SuppliersPage() {
                 <TableBody>
                   {suppliers.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={9} className="py-8 text-muted-foreground text-center">
-                        No suppliers found
+                      <TableCell colSpan={9} className="py-8">
+                        <EmptyState
+                          icon={Users}
+                          title="No suppliers yet"
+                          description="Get started by inviting your first supplier to the platform"
+                        />
                       </TableCell>
                     </TableRow>
                   ) : (
                     suppliers.map((supplier: any) => (
-                      <TableRow key={supplier.supplier_id}>
-                        <TableCell className="font-medium">{supplier.name}</TableCell>
-                        <TableCell>{supplier.vat_no || "N/A"}</TableCell>
+                      <TableRow key={supplier.supplier_id} className="group">
+                        <TableCell className="font-semibold text-sm">{supplier.name}</TableCell>
+                        <TableCell className="text-sm">{supplier.vat_no || "—"}</TableCell>
                         <TableCell>
                           <div className="text-sm">
-                            <div>{supplier.contact_email}</div>
-                            <div className="text-muted-foreground">{supplier.contact_phone}</div>
+                            <div className="font-medium">{supplier.contact_email}</div>
+                            <div className="text-muted-foreground text-xs">{supplier.contact_phone}</div>
                           </div>
                         </TableCell>
                         <TableCell>
                           <div className="text-sm">
-                            <div>{supplier.bank_name || "N/A"}</div>
-                            <div className="text-muted-foreground">{supplier.bank_account_no || ""}</div>
+                            <div className="font-medium">{supplier.bank_name || "—"}</div>
+                            <div className="text-muted-foreground text-xs">{supplier.bank_account_no || ""}</div>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline">{supplier.risk_tier || "N/A"}</Badge>
+                          <Badge variant="outline" className="text-xs font-medium">{supplier.risk_tier || "N/A"}</Badge>
                         </TableCell>
                         <TableCell>{getStatusBadge(supplier.onboarding_status)}</TableCell>
                         <TableCell>{getActiveStatusBadge(supplier.active_status)}</TableCell>
-                        <TableCell className="text-muted-foreground text-sm">
-                          {new Date(supplier.created_at).toLocaleDateString()}
+                        <TableCell className="text-muted-foreground text-xs">
+                          {new Date(supplier.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button variant="ghost" size="sm" asChild>
+                          <Button variant="ghost" size="sm" asChild className="opacity-0 group-hover:opacity-100 transition-opacity">
                             <Link href={`/admin/applications/${supplier.supplier_id}`}>
                               <Eye className="mr-1 w-4 h-4" />
                               View

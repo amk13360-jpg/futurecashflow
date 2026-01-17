@@ -1,0 +1,35 @@
+{
+  "node": {
+    "006b2732ad141f714d2479d9a43d3ed7bddcff3ee1": {
+      "workers": {
+        "app/admin/settings/page": {
+          "moduleId": 2170,
+          "async": false,
+          "exportedName": "getSystemSettings",
+          "filename": "lib/actions/settings.ts"
+        }
+      },
+      "layer": {
+        "app/admin/settings/page": "action-browser"
+      },
+      "exportedName": "getSystemSettings",
+      "filename": "lib/actions/settings.ts"
+    },
+    "60d42256ab67befd1ec5ab513bc5b65a7630e85a57": {
+      "workers": {
+        "app/admin/settings/page": {
+          "moduleId": 2170,
+          "async": false,
+          "exportedName": "updateSystemSetting",
+          "filename": "lib/actions/settings.ts"
+        }
+      },
+      "layer": {
+        "app/admin/settings/page": "action-browser"
+      },
+      "exportedName": "updateSystemSetting",
+      "filename": "lib/actions/settings.ts"
+    }
+  },
+  "edge": {}
+}

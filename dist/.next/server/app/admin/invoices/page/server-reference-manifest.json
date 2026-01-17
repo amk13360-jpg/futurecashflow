@@ -1,0 +1,35 @@
+{
+  "node": {
+    "003ad8e96bfdebff735456a7300aed92599e1da89a": {
+      "workers": {
+        "app/admin/invoices/page": {
+          "moduleId": 28242,
+          "async": false,
+          "exportedName": "getAllInvoices",
+          "filename": "lib/actions/invoices.ts"
+        }
+      },
+      "layer": {
+        "app/admin/invoices/page": "action-browser"
+      },
+      "exportedName": "getAllInvoices",
+      "filename": "lib/actions/invoices.ts"
+    },
+    "405a9df61edce68ba311ecc195c0500af5361afe0c": {
+      "workers": {
+        "app/admin/invoices/page": {
+          "moduleId": 28242,
+          "async": false,
+          "exportedName": "generateOffers",
+          "filename": "lib/actions/invoices.ts"
+        }
+      },
+      "layer": {
+        "app/admin/invoices/page": "action-browser"
+      },
+      "exportedName": "generateOffers",
+      "filename": "lib/actions/invoices.ts"
+    }
+  },
+  "edge": {}
+}

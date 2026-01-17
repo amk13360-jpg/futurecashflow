@@ -1,0 +1,305 @@
+{
+  "node": {
+    "60d3f16238b1bcf9dcf5d62d8ff901c85ec9a4da47": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "$$RSC_SERVER_ACTION_0",
+          "filename": "app/admin/documents/[cessionId]/page.tsx"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "$$RSC_SERVER_ACTION_0",
+      "filename": "app/admin/documents/[cessionId]/page.tsx"
+    },
+    "0057cc89344ab5622fd1e5387d6361dd6fea55b878": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "getDashboardMetrics",
+          "filename": "lib/actions/admin.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "getDashboardMetrics",
+      "filename": "lib/actions/admin.ts"
+    },
+    "007cfce902119340838672c1c59e19764167ac7787": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "getPendingApplications",
+          "filename": "lib/actions/admin.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "getPendingApplications",
+      "filename": "lib/actions/admin.ts"
+    },
+    "009b2f32f5b7d87b9c5f1228505e0a4097e5160c72": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "getBankChangeRequests",
+          "filename": "lib/actions/admin.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "getBankChangeRequests",
+      "filename": "lib/actions/admin.ts"
+    },
+    "009f926954cbdb164daa0a8e98265ac438c0ad8d52": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "getPendingCessions",
+          "filename": "lib/actions/admin.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "getPendingCessions",
+      "filename": "lib/actions/admin.ts"
+    },
+    "00b80418c70d4912363a21fbd68211dad48aa9697d": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "getAllSuppliers",
+          "filename": "lib/actions/admin.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "getAllSuppliers",
+      "filename": "lib/actions/admin.ts"
+    },
+    "00fa0e5ff1242bf8ba935e5319690bba5a48621026": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "getRecentPayments",
+          "filename": "lib/actions/admin.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "getRecentPayments",
+      "filename": "lib/actions/admin.ts"
+    },
+    "401ce668b05bbb47fc8746e9d647b9d7e28df99d40": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "getSupplierApplicationById",
+          "filename": "lib/actions/admin.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "getSupplierApplicationById",
+      "filename": "lib/actions/admin.ts"
+    },
+    "40628a6c7d831073de1ae0be24c25368c6294bb3cd": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "getCessionById",
+          "filename": "lib/actions/admin.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "getCessionById",
+      "filename": "lib/actions/admin.ts"
+    },
+    "602926fdd02efb421f6f52c9565eabf603835620fc": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "reviewSupplierApplication",
+          "filename": "lib/actions/admin.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "reviewSupplierApplication",
+      "filename": "lib/actions/admin.ts"
+    },
+    "603a9b93702c85e549a2732187045092fb8b01f841": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "reviewCessionAgreement",
+          "filename": "lib/actions/admin.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "reviewCessionAgreement",
+      "filename": "lib/actions/admin.ts"
+    },
+    "003ad8e96bfdebff735456a7300aed92599e1da89a": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "getAllInvoices",
+          "filename": "lib/actions/invoices.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "getAllInvoices",
+      "filename": "lib/actions/invoices.ts"
+    },
+    "0066af6cea6691bc14d18ecf966b184601c5c6be69": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "getInvoicesForBuyer",
+          "filename": "lib/actions/invoices.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "getInvoicesForBuyer",
+      "filename": "lib/actions/invoices.ts"
+    },
+    "4008e930a620d45c580df6d3f42f07d8216ba46acd": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "uploadAPData",
+          "filename": "lib/actions/invoices.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "uploadAPData",
+      "filename": "lib/actions/invoices.ts"
+    },
+    "404c1f334ed77834a3ff34ede52762c31fae5e22b1": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "autoGenerateOffersForEligibleInvoices",
+          "filename": "lib/actions/invoices.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "autoGenerateOffersForEligibleInvoices",
+      "filename": "lib/actions/invoices.ts"
+    },
+    "405a9df61edce68ba311ecc195c0500af5361afe0c": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "generateOffers",
+          "filename": "lib/actions/invoices.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "generateOffers",
+      "filename": "lib/actions/invoices.ts"
+    },
+    "406d8d8af54ac20947efa718c0caea7ce7f78b1eab": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "parseVendorDataCSV",
+          "filename": "lib/actions/invoices.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "parseVendorDataCSV",
+      "filename": "lib/actions/invoices.ts"
+    },
+    "40bc9e614a60054cf5513969220f28aa4aa34d6637": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "parseAPDataCSV",
+          "filename": "lib/actions/invoices.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "parseAPDataCSV",
+      "filename": "lib/actions/invoices.ts"
+    },
+    "40d10928863c60eca99ffdbb65323399dcc0bb304c": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "uploadVendorData",
+          "filename": "lib/actions/invoices.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "uploadVendorData",
+      "filename": "lib/actions/invoices.ts"
+    },
+    "60def5a81e96a510e52330aaf1c073f2106ac8d460": {
+      "workers": {
+        "app/admin/documents/[cessionId]/page": {
+          "moduleId": 5219,
+          "async": false,
+          "exportedName": "autoGenerateOffersForSupplier",
+          "filename": "lib/actions/invoices.ts"
+        }
+      },
+      "layer": {
+        "app/admin/documents/[cessionId]/page": "rsc"
+      },
+      "exportedName": "autoGenerateOffersForSupplier",
+      "filename": "lib/actions/invoices.ts"
+    }
+  },
+  "edge": {}
+}

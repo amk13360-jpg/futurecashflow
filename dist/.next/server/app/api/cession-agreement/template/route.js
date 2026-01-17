@@ -1,0 +1,10 @@
+var R=require("../../../../chunks/[turbopack]_runtime.js")("server/app/api/cession-agreement/template/route.js")
+R.c("server/chunks/[root-of-the-server]__47d221be._.js")
+R.c("server/chunks/_2329a6b5._.js")
+R.c("server/chunks/_657832d3._.js")
+R.c("server/chunks/node_modules_ab7323ab._.js")
+R.c("server/chunks/[root-of-the-server]__37180cd5._.js")
+R.c("server/chunks/[root-of-the-server]__116a0bcc._.js")
+R.c("server/chunks/_next-internal_server_app_api_cession-agreement_template_route_actions_f6478099.js")
+R.m(43812)
+module.exports=R.m(43812).exports

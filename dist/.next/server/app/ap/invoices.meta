@@ -1,0 +1,15 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/ap/layout,_N_T_/ap/invoices/layout,_N_T_/ap/invoices/page,_N_T_/ap/invoices"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/ap/invoices/__PAGE__",
+    "/ap/invoices",
+    "/ap",
+    "/_index"
+  ]
+}

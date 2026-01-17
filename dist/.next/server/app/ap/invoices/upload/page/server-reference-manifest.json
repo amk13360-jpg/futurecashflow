@@ -1,0 +1,35 @@
+{
+  "node": {
+    "40bc9e614a60054cf5513969220f28aa4aa34d6637": {
+      "workers": {
+        "app/ap/invoices/upload/page": {
+          "moduleId": 50751,
+          "async": false,
+          "exportedName": "parseAPDataCSV",
+          "filename": "lib/actions/invoices.ts"
+        }
+      },
+      "layer": {
+        "app/ap/invoices/upload/page": "action-browser"
+      },
+      "exportedName": "parseAPDataCSV",
+      "filename": "lib/actions/invoices.ts"
+    },
+    "4008e930a620d45c580df6d3f42f07d8216ba46acd": {
+      "workers": {
+        "app/ap/invoices/upload/page": {
+          "moduleId": 50751,
+          "async": false,
+          "exportedName": "uploadAPData",
+          "filename": "lib/actions/invoices.ts"
+        }
+      },
+      "layer": {
+        "app/ap/invoices/upload/page": "action-browser"
+      },
+      "exportedName": "uploadAPData",
+      "filename": "lib/actions/invoices.ts"
+    }
+  },
+  "edge": {}
+}

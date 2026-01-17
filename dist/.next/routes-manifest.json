@@ -1,0 +1,261 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/admin/applications/[supplierId]",
+      "regex": "^/admin/applications/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPsupplierId": "nxtPsupplierId"
+      },
+      "namedRegex": "^/admin/applications/(?<nxtPsupplierId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/admin/documents/[cessionId]",
+      "regex": "^/admin/documents/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcessionId": "nxtPcessionId"
+      },
+      "namedRegex": "^/admin/documents/(?<nxtPcessionId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/supplier/offers/[offerId]",
+      "regex": "^/supplier/offers/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPofferId": "nxtPofferId"
+      },
+      "namedRegex": "^/supplier/offers/(?<nxtPofferId>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/admin/dashboard",
+      "regex": "^/admin/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/dashboard(?:/)?$"
+    },
+    {
+      "page": "/admin/invoices",
+      "regex": "^/admin/invoices(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/invoices(?:/)?$"
+    },
+    {
+      "page": "/admin/payments",
+      "regex": "^/admin/payments(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/payments(?:/)?$"
+    },
+    {
+      "page": "/admin/reports",
+      "regex": "^/admin/reports(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/reports(?:/)?$"
+    },
+    {
+      "page": "/admin/settings",
+      "regex": "^/admin/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/settings(?:/)?$"
+    },
+    {
+      "page": "/admin/suppliers",
+      "regex": "^/admin/suppliers(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/suppliers(?:/)?$"
+    },
+    {
+      "page": "/admin/vendors/upload",
+      "regex": "^/admin/vendors/upload(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/vendors/upload(?:/)?$"
+    },
+    {
+      "page": "/ap/dashboard",
+      "regex": "^/ap/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ap/dashboard(?:/)?$"
+    },
+    {
+      "page": "/ap/invoices",
+      "regex": "^/ap/invoices(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ap/invoices(?:/)?$"
+    },
+    {
+      "page": "/ap/invoices/upload",
+      "regex": "^/ap/invoices/upload(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ap/invoices/upload(?:/)?$"
+    },
+    {
+      "page": "/ap/reports",
+      "regex": "^/ap/reports(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ap/reports(?:/)?$"
+    },
+    {
+      "page": "/ap/vendors/upload",
+      "regex": "^/ap/vendors/upload(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ap/vendors/upload(?:/)?$"
+    },
+    {
+      "page": "/api/auth/login/admin",
+      "regex": "^/api/auth/login/admin(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/login/admin(?:/)?$"
+    },
+    {
+      "page": "/api/auth/login/ap",
+      "regex": "^/api/auth/login/ap(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/login/ap(?:/)?$"
+    },
+    {
+      "page": "/api/auth/logout",
+      "regex": "^/api/auth/logout(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/logout(?:/)?$"
+    },
+    {
+      "page": "/api/auth/supplier/verify-token",
+      "regex": "^/api/auth/supplier/verify\\-token(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/supplier/verify\\-token(?:/)?$"
+    },
+    {
+      "page": "/api/auth/verify-otp",
+      "regex": "^/api/auth/verify\\-otp(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auth/verify\\-otp(?:/)?$"
+    },
+    {
+      "page": "/api/cession-agreement/template",
+      "regex": "^/api/cession\\-agreement/template(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/cession\\-agreement/template(?:/)?$"
+    },
+    {
+      "page": "/api/cession-agreement/upload",
+      "regex": "^/api/cession\\-agreement/upload(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/cession\\-agreement/upload(?:/)?$"
+    },
+    {
+      "page": "/api/invoices",
+      "regex": "^/api/invoices(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/invoices(?:/)?$"
+    },
+    {
+      "page": "/api/payments",
+      "regex": "^/api/payments(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/payments(?:/)?$"
+    },
+    {
+      "page": "/api/suppliers",
+      "regex": "^/api/suppliers(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/suppliers(?:/)?$"
+    },
+    {
+      "page": "/landing",
+      "regex": "^/landing(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/landing(?:/)?$"
+    },
+    {
+      "page": "/login/admin",
+      "regex": "^/login/admin(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login/admin(?:/)?$"
+    },
+    {
+      "page": "/login/ap",
+      "regex": "^/login/ap(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login/ap(?:/)?$"
+    },
+    {
+      "page": "/supplier/access",
+      "regex": "^/supplier/access(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/supplier/access(?:/)?$"
+    },
+    {
+      "page": "/supplier/cession-agreement",
+      "regex": "^/supplier/cession\\-agreement(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/supplier/cession\\-agreement(?:/)?$"
+    },
+    {
+      "page": "/supplier/cession-agreement/upload",
+      "regex": "^/supplier/cession\\-agreement/upload(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/supplier/cession\\-agreement/upload(?:/)?$"
+    },
+    {
+      "page": "/supplier/dashboard",
+      "regex": "^/supplier/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/supplier/dashboard(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

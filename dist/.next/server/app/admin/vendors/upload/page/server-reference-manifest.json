@@ -1,0 +1,35 @@
+{
+  "node": {
+    "406d8d8af54ac20947efa718c0caea7ce7f78b1eab": {
+      "workers": {
+        "app/admin/vendors/upload/page": {
+          "moduleId": 94404,
+          "async": false,
+          "exportedName": "parseVendorDataCSV",
+          "filename": "lib/actions/invoices.ts"
+        }
+      },
+      "layer": {
+        "app/admin/vendors/upload/page": "action-browser"
+      },
+      "exportedName": "parseVendorDataCSV",
+      "filename": "lib/actions/invoices.ts"
+    },
+    "40d10928863c60eca99ffdbb65323399dcc0bb304c": {
+      "workers": {
+        "app/admin/vendors/upload/page": {
+          "moduleId": 94404,
+          "async": false,
+          "exportedName": "uploadVendorData",
+          "filename": "lib/actions/invoices.ts"
+        }
+      },
+      "layer": {
+        "app/admin/vendors/upload/page": "action-browser"
+      },
+      "exportedName": "uploadVendorData",
+      "filename": "lib/actions/invoices.ts"
+    }
+  },
+  "edge": {}
+}

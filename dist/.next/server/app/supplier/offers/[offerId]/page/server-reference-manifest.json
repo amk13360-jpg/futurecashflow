@@ -1,0 +1,35 @@
+{
+  "node": {
+    "60e56ca80e58855deec4bfd262f1e3fbf6d8337a0b": {
+      "workers": {
+        "app/supplier/offers/[offerId]/page": {
+          "moduleId": 54666,
+          "async": false,
+          "exportedName": "acceptOffer",
+          "filename": "lib/actions/suppliers.ts"
+        }
+      },
+      "layer": {
+        "app/supplier/offers/[offerId]/page": "action-browser"
+      },
+      "exportedName": "acceptOffer",
+      "filename": "lib/actions/suppliers.ts"
+    },
+    "401079e38e6cde25f5df2dc424061f240e35caf509": {
+      "workers": {
+        "app/supplier/offers/[offerId]/page": {
+          "moduleId": 54666,
+          "async": false,
+          "exportedName": "rejectOffer",
+          "filename": "lib/actions/suppliers.ts"
+        }
+      },
+      "layer": {
+        "app/supplier/offers/[offerId]/page": "action-browser"
+      },
+      "exportedName": "rejectOffer",
+      "filename": "lib/actions/suppliers.ts"
+    }
+  },
+  "edge": {}
+}

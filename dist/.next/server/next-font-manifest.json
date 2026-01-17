@@ -1,0 +1,79 @@
+{
+  "app": {
+    "[project]/app/(public)/landing/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/_not-found/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/admin/applications/[supplierId]/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/admin/dashboard/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/admin/documents/[cessionId]/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/admin/invoices/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/admin/payments/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/admin/reports/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/admin/settings/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/admin/suppliers/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/admin/vendors/upload/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/ap/dashboard/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/ap/invoices/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/ap/invoices/upload/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/ap/reports/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/ap/vendors/upload/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/login/admin/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/login/ap/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/supplier/access/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/supplier/cession-agreement/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/supplier/cession-agreement/upload/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/supplier/dashboard/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ],
+    "[project]/app/supplier/offers/[offerId]/page": [
+      "static/media/83afe278b6a6bb3c.p.3a6ba036.woff2"
+    ]
+  },
+  "appUsingSizeAdjust": false,
+  "pages": {},
+  "pagesUsingSizeAdjust": false
+}

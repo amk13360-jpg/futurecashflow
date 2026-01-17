@@ -1,0 +1,95 @@
+{
+  "node": {
+    "4041d4f0f0f82d2588df0a17ceae54d73003b2d92b": {
+      "workers": {
+        "app/admin/reports/page": {
+          "moduleId": 87169,
+          "async": false,
+          "exportedName": "getOfferAcceptanceSummary",
+          "filename": "lib/actions/reports.ts"
+        }
+      },
+      "layer": {
+        "app/admin/reports/page": "action-browser"
+      },
+      "exportedName": "getOfferAcceptanceSummary",
+      "filename": "lib/actions/reports.ts"
+    },
+    "40e60838d1c9301be03b4a34080e00e30752d462cf": {
+      "workers": {
+        "app/admin/reports/page": {
+          "moduleId": 87169,
+          "async": false,
+          "exportedName": "getDisbursementTracker",
+          "filename": "lib/actions/reports.ts"
+        }
+      },
+      "layer": {
+        "app/admin/reports/page": "action-browser"
+      },
+      "exportedName": "getDisbursementTracker",
+      "filename": "lib/actions/reports.ts"
+    },
+    "00393ab2bb2a82c8fa7254e1f05ef551c22e32071b": {
+      "workers": {
+        "app/admin/reports/page": {
+          "moduleId": 87169,
+          "async": false,
+          "exportedName": "getSupplierStatusReport",
+          "filename": "lib/actions/reports.ts"
+        }
+      },
+      "layer": {
+        "app/admin/reports/page": "action-browser"
+      },
+      "exportedName": "getSupplierStatusReport",
+      "filename": "lib/actions/reports.ts"
+    },
+    "4053b3da884a8dcf386432101e833a968ba7e7f12e": {
+      "workers": {
+        "app/admin/reports/page": {
+          "moduleId": 87169,
+          "async": false,
+          "exportedName": "getAuditHistory",
+          "filename": "lib/actions/reports.ts"
+        }
+      },
+      "layer": {
+        "app/admin/reports/page": "action-browser"
+      },
+      "exportedName": "getAuditHistory",
+      "filename": "lib/actions/reports.ts"
+    },
+    "00bb621a689d5f157f926b81d4ed689b55053fa0be": {
+      "workers": {
+        "app/admin/reports/page": {
+          "moduleId": 87169,
+          "async": false,
+          "exportedName": "getSystemStatistics",
+          "filename": "lib/actions/reports.ts"
+        }
+      },
+      "layer": {
+        "app/admin/reports/page": "action-browser"
+      },
+      "exportedName": "getSystemStatistics",
+      "filename": "lib/actions/reports.ts"
+    },
+    "6008dcd9ce67f2d085b54a1d14f08f6d1b7d75aec3": {
+      "workers": {
+        "app/admin/reports/page": {
+          "moduleId": 87169,
+          "async": false,
+          "exportedName": "exportReportToCSV",
+          "filename": "lib/actions/reports.ts"
+        }
+      },
+      "layer": {
+        "app/admin/reports/page": "action-browser"
+      },
+      "exportedName": "exportReportToCSV",
+      "filename": "lib/actions/reports.ts"
+    }
+  },
+  "edge": {}
+}

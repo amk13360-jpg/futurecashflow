@@ -27,177 +27,191 @@ export default async function AdminDashboardPage() {
       <DashboardHeader userName={session?.fullName || session?.username} />
 
       <main className="mx-auto px-4 py-8 container">
-        {/* Metrics Overview */}
-        <div className="gap-4 grid md:grid-cols-2 lg:grid-cols-4 mb-8">
-          <MetricCard
-            title="Pending Documents"
-            value={metrics.pendingDocuments}
-            icon={FileText}
-            description="Cession agreements awaiting review"
-            variant="warning"
-          />
-          <MetricCard
-            title="Total Applications"
-            value={metrics.totalApplications}
-            icon={Clock}
-            description="Supplier onboarding in progress"
-            variant="info"
-          />
-          <MetricCard
-            title="Registered Suppliers"
-            value={metrics.registeredSuppliers}
-            icon={Users}
-            description="Approved and active suppliers"
-            variant="success"
-          />
-          <MetricCard
-            title="48h Payments Issued"
-            value={`R ${metrics.paymentsIssued48h.toLocaleString()}`}
-            icon={DollarSign}
-            description="Last 48 hours"
-            variant="primary"
-          />
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold tracking-tight mb-2">Dashboard</h1>
+          <p className="text-muted-foreground">Welcome back! Here's your platform overview.</p>
         </div>
+
+        {/* Metrics Overview */}
+        <section className="mb-8" aria-labelledby="metrics-heading">
+          <h2 id="metrics-heading" className="text-lg font-semibold mb-4 text-foreground">Key Metrics</h2>
+          <div className="gap-4 grid md:grid-cols-2 lg:grid-cols-4">
+            <MetricCard
+              title="Pending Documents"
+              value={metrics.pendingDocuments}
+              icon={FileText}
+              description="Cession agreements awaiting review"
+              variant="warning"
+            />
+            <MetricCard
+              title="Total Applications"
+              value={metrics.totalApplications}
+              icon={Clock}
+              description="Supplier onboarding in progress"
+              variant="info"
+            />
+            <MetricCard
+              title="Registered Suppliers"
+              value={metrics.registeredSuppliers}
+              icon={Users}
+              description="Approved and active suppliers"
+              variant="success"
+            />
+            <MetricCard
+              title="48h Payments Issued"
+              value={`R ${metrics.paymentsIssued48h.toLocaleString()}`}
+              icon={DollarSign}
+              description="Last 48 hours"
+              variant="primary"
+            />
+          </div>
+        </section>
 
         {/* Quick Actions */}
-        <div className="gap-4 grid md:grid-cols-4 mb-8">
-          <Card className="group hover:shadow-md hover:border-blue-300 dark:hover:border-blue-700 transition-all duration-200">
-            <CardHeader className="pb-3">
-              <div className="flex justify-between items-center">
-                <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded-lg group-hover:scale-110 transition-transform">
-                  <Package className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+        <section className="mb-8" aria-labelledby="actions-heading">
+          <h2 id="actions-heading" className="text-lg font-semibold mb-4 text-foreground">Quick Actions</h2>
+          <div className="gap-4 grid md:grid-cols-2 lg:grid-cols-4">
+            <Card className="group border-l-4 border-l-blue-500 hover:shadow-lg hover:border-l-blue-600 transition-all duration-300 hover:-translate-y-1">
+              <CardHeader className="pb-3">
+                <div className="flex justify-between items-center">
+                  <div className="bg-blue-100 dark:bg-blue-900/40 p-2.5 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                    <Package className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  </div>
                 </div>
-              </div>
-              <CardTitle className="mt-3 text-lg">Offer Batches</CardTitle>
-              <CardDescription>Create and manage offers for suppliers</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button asChild className="w-full">
-                <Link href="/admin/offer-batches">
-                  Manage Offer Batches
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="group hover:shadow-md hover:border-purple-300 dark:hover:border-purple-700 transition-all duration-200">
-            <CardHeader className="pb-3">
-              <div className="flex justify-between items-center">
-                <div className="bg-purple-100 dark:bg-purple-900 p-2 rounded-lg group-hover:scale-110 transition-transform">
-                  <Building2 className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                </div>
-              </div>
-              <CardTitle className="mt-3 text-lg">Buyers</CardTitle>
-              <CardDescription>Manage buyer profiles and settings</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button asChild className="w-full">
-                <Link href="/admin/buyers">
-                  Manage Buyers
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="group hover:shadow-md hover:border-green-300 dark:hover:border-green-700 transition-all duration-200">
-            <CardHeader className="pb-3">
-              <div className="flex justify-between items-center">
-                <div className="bg-green-100 dark:bg-green-900 p-2 rounded-lg group-hover:scale-110 transition-transform">
-                  <FileText className="w-5 h-5 text-green-600 dark:text-green-400" />
-                </div>
-              </div>
-              <CardTitle className="mt-3 text-lg">Invoices</CardTitle>
-              <CardDescription>View and manage all invoices</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button asChild className="w-full">
-                <Link href="/admin/invoices">
-                  View Invoices
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="group hover:shadow-md hover:border-orange-300 dark:hover:border-orange-700 transition-all duration-200">
-            <CardHeader className="pb-3">
-              <div className="flex justify-between items-center">
-                <div className="bg-orange-100 dark:bg-orange-900 p-2 rounded-lg group-hover:scale-110 transition-transform">
-                  <DollarSign className="w-5 h-5 text-orange-600 dark:text-orange-400" />
-                </div>
-              </div>
-              <CardTitle className="mt-3 text-lg">Payments</CardTitle>
-              <CardDescription>Track and process payments</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button asChild className="w-full">
-                <Link href="/admin/payments">
-                  View Payments
-                  <ArrowRight className="ml-2 w-4 h-4" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Content Tabs */}
-        <Tabs defaultValue="documents" className="space-y-4">
-          <TabsList>
-            <TabsTrigger value="documents">Document Review ({pendingCessions.length})</TabsTrigger>
-            <TabsTrigger value="applications">Applications ({pendingApplications.length})</TabsTrigger>
-            <TabsTrigger value="bank-changes">Bank Changes ({bankChangeRequests.length})</TabsTrigger>
-            <TabsTrigger value="suppliers">All Suppliers</TabsTrigger>
-            <TabsTrigger value="payments">Payments</TabsTrigger>
-          </TabsList>
-
-          {/* Document Review Tab */}
-          <TabsContent value="documents">
-            <Card>
-              <CardHeader>
-                <CardTitle>Pending Cession Agreements</CardTitle>
-                <CardDescription>Review and approve supplier cession agreements</CardDescription>
+                <CardTitle className="mt-3 text-base font-semibold">Offer Batches</CardTitle>
+                <CardDescription className="text-xs">Create and manage offers for suppliers</CardDescription>
               </CardHeader>
               <CardContent>
-                {pendingCessions.length === 0 ? (
-                  <EmptyState
-                    icon={CheckCircle}
-                    title="All caught up!"
-                    description="No pending documents to review"
-                    variant="success"
-                  />
-                ) : (
-                  <div className="space-y-4">
-                    {pendingCessions.map((cession: any) => (
-                      <div key={cession.cession_id} className="flex justify-between items-center p-4 border rounded-lg">
-                        <div className="flex-1">
-                          <h4 className="font-medium">{cession.supplier_name}</h4>
-                          <p className="text-muted-foreground text-sm">{cession.contact_email}</p>
-                          <div className="flex items-center gap-2 mt-2">
-                            <Badge variant="outline">{cession.document_type}</Badge>
-                            <span className="text-muted-foreground text-xs">
-                              Submitted {new Date(cession.created_at).toLocaleDateString()}
-                            </span>
+                <Button asChild className="w-full" size="sm">
+                  <Link href="/admin/offer-batches">
+                    Manage
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="group border-l-4 border-l-purple-500 hover:shadow-lg hover:border-l-purple-600 transition-all duration-300 hover:-translate-y-1">
+              <CardHeader className="pb-3">
+                <div className="flex justify-between items-center">
+                  <div className="bg-purple-100 dark:bg-purple-900/40 p-2.5 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                    <Building2 className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                  </div>
+                </div>
+                <CardTitle className="mt-3 text-base font-semibold">Buyers</CardTitle>
+                <CardDescription className="text-xs">Manage buyer profiles and settings</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button asChild className="w-full" size="sm">
+                  <Link href="/admin/buyers">
+                    Manage
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="group border-l-4 border-l-green-500 hover:shadow-lg hover:border-l-green-600 transition-all duration-300 hover:-translate-y-1">
+              <CardHeader className="pb-3">
+                <div className="flex justify-between items-center">
+                  <div className="bg-green-100 dark:bg-green-900/40 p-2.5 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                    <FileText className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  </div>
+                </div>
+                <CardTitle className="mt-3 text-base font-semibold">Invoices</CardTitle>
+                <CardDescription className="text-xs">View and manage all invoices</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button asChild className="w-full" size="sm">
+                  <Link href="/admin/invoices">
+                    View
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="group border-l-4 border-l-amber-500 hover:shadow-lg hover:border-l-amber-600 transition-all duration-300 hover:-translate-y-1">
+              <CardHeader className="pb-3">
+                <div className="flex justify-between items-center">
+                  <div className="bg-amber-100 dark:bg-amber-900/40 p-2.5 rounded-lg group-hover:scale-110 transition-transform duration-300">
+                    <DollarSign className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  </div>
+                </div>
+                <CardTitle className="mt-3 text-base font-semibold">Payments</CardTitle>
+                <CardDescription className="text-xs">Track and process payments</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button asChild className="w-full" size="sm">
+                  <Link href="/admin/payments">
+                    View
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Main Content Tabs */}
+        <section aria-labelledby="tabs-heading">
+          <h2 id="tabs-heading" className="sr-only">Content Sections</h2>
+          <Tabs defaultValue="documents" className="space-y-6">
+            <TabsList className="bg-muted/50 border">
+              <TabsTrigger value="documents">Document Review ({pendingCessions.length})</TabsTrigger>
+              <TabsTrigger value="applications">Applications ({pendingApplications.length})</TabsTrigger>
+              <TabsTrigger value="bank-changes">Bank Changes ({bankChangeRequests.length})</TabsTrigger>
+              <TabsTrigger value="suppliers">All Suppliers</TabsTrigger>
+              <TabsTrigger value="payments">Payments</TabsTrigger>
+            </TabsList>
+
+            {/* Document Review Tab */}
+            <TabsContent value="documents">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Pending Cession Agreements</CardTitle>
+                  <CardDescription>Review and approve supplier cession agreements</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {pendingCessions.length === 0 ? (
+                    <EmptyState
+                      icon={CheckCircle}
+                      title="All caught up!"
+                      description="No pending documents to review"
+                      variant="success"
+                    />
+                  ) : (
+                    <div className="space-y-3">
+                      {pendingCessions.map((cession: any) => (
+                        <div key={cession.cession_id} className="flex justify-between items-center p-4 border rounded-lg hover:bg-muted/30 transition-colors duration-200">
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-sm">{cession.supplier_name}</h4>
+                            <p className="text-muted-foreground text-xs mt-1">{cession.contact_email}</p>
+                            <div className="flex items-center gap-2 mt-2">
+                              <Badge variant="outline" className="text-xs">{cession.document_type}</Badge>
+                              <span className="text-muted-foreground text-xs">
+                                Submitted {new Date(cession.created_at).toLocaleDateString()}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            {cession.document_url && (
+                              <Button size="sm" variant="outline" asChild>
+                                <Link href={cession.document_url} target="_blank">
+                                  View
+                                </Link>
+                              </Button>
+                            )}
+                            <Button size="sm" asChild>
+                              <Link href={`/admin/documents/${cession.cession_id}`}>Review</Link>
+                            </Button>
                           </div>
                         </div>
-                        <div className="flex gap-2">
-                          {cession.document_url && (
-                            <Button size="sm" variant="outline" asChild>
-                              <Link href={cession.document_url} target="_blank">
-                                View Document
-                              </Link>
-                            </Button>
-                          )}
-                          <Button size="sm" asChild>
-                            <Link href={`/admin/documents/${cession.cession_id}`}>Review</Link>
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
             </Card>
           </TabsContent>
 

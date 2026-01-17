@@ -1,5 +1,3 @@
-'use server';
-
 import { NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/services/email';
 

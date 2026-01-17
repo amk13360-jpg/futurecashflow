@@ -1,0 +1,16 @@
+{
+  "headers": {
+    "x-nextjs-stale-time": "300",
+    "x-nextjs-prerender": "1",
+    "x-next-cache-tags": "_N_T_/layout,_N_T_/ap/layout,_N_T_/ap/vendors/layout,_N_T_/ap/vendors/upload/layout,_N_T_/ap/vendors/upload/page,_N_T_/ap/vendors/upload"
+  },
+  "segmentPaths": [
+    "/_tree",
+    "/_full",
+    "/ap/vendors/upload/__PAGE__",
+    "/ap/vendors/upload",
+    "/ap/vendors",
+    "/ap",
+    "/_index"
+  ]
+}
