@@ -60,7 +60,7 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          'top-[50%] left-[50%] z-50 fixed gap-4 grid bg-background shadow-lg p-6 border border-border rounded-lg w-full max-w-[calc(100%-2rem)] sm:max-w-lg text-foreground translate-x-[-50%] translate-y-[-50%] data-[state=closed]:animate-out data-[state=open]:animate-in duration-200 data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+          'top-[50%] left-[50%] z-50 fixed gap-4 grid bg-white dark:bg-slate-950 shadow-lg p-6 border border-gray-200 dark:border-gray-800 rounded-lg w-full max-w-[calc(100%-2rem)] sm:max-w-lg text-gray-900 dark:text-gray-50 translate-x-[-50%] translate-y-[-50%] data-[state=closed]:animate-out data-[state=open]:animate-in duration-200 data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
           className,
         )}
         {...props}
@@ -83,7 +83,7 @@ function DialogContent({
 const DialogHeader: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => (
   <div
     data-slot="dialog-header"
-    className={cn('flex flex-col gap-2 sm:text-left text-center', className)}
+    className={cn('flex flex-col gap-2 sm:text-left text-center text-gray-900 dark:text-gray-50', className)}
     {...props}
   />
 );
@@ -106,7 +106,7 @@ function DialogTitle({
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn('font-semibold text-lg leading-none', className)}
+      className={cn('font-semibold text-lg leading-none text-gray-900 dark:text-gray-50', className)}
       {...props}
     />
   )
@@ -119,7 +119,7 @@ function DialogDescription({
   return (
     <DialogPrimitive.Description
       data-slot="dialog-description"
-      className={cn('text-muted-foreground text-sm', className)}
+      className={cn('text-gray-600 dark:text-gray-400 text-sm', className)}
       {...props}
     />
   )

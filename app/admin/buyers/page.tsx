@@ -1210,25 +1210,25 @@ export default function BuyersPage() {
 
       {/* Edit Buyer Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="bg-background border-border/80 max-w-3xl max-h-[90vh] overflow-y-auto text-foreground">
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-foreground">Edit Buyer: {selectedBuyer?.name}</DialogTitle>
-            <DialogDescription className="text-muted-foreground">
+            <DialogTitle>Edit Buyer: {selectedBuyer?.name}</DialogTitle>
+            <DialogDescription>
               Update buyer profile information.
             </DialogDescription>
           </DialogHeader>
           
           {/* Same form content as create dialog */}
-          <div className="gap-4 grid py-4 text-foreground">
+          <div className="gap-4 grid py-4">
             <Tabs defaultValue="basic">
-              <TabsList className="grid grid-cols-4 bg-muted w-full">
-                <TabsTrigger value="basic" className="data-[state=active]:bg-background data-[state=active]:text-foreground">Basic Info</TabsTrigger>
-                <TabsTrigger value="contact" className="data-[state=active]:bg-background data-[state=active]:text-foreground">Contact</TabsTrigger>
-                <TabsTrigger value="address" className="data-[state=active]:bg-background data-[state=active]:text-foreground">Address</TabsTrigger>
-                <TabsTrigger value="config" className="data-[state=active]:bg-background data-[state=active]:text-foreground">Configuration</TabsTrigger>
+              <TabsList className="grid grid-cols-4 w-full">
+                <TabsTrigger value="basic">Basic Info</TabsTrigger>
+                <TabsTrigger value="contact">Contact</TabsTrigger>
+                <TabsTrigger value="address">Address</TabsTrigger>
+                <TabsTrigger value="config">Configuration</TabsTrigger>
               </TabsList>
 
-              <TabsContent value="basic" className="space-y-4 mt-4 text-foreground">
+              <TabsContent value="basic" className="space-y-4 mt-4">
                 <div className="gap-4 grid grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="edit_name">Legal Business Name *</Label>
@@ -1482,10 +1482,10 @@ export default function BuyersPage() {
 
       {/* Suspend Buyer Dialog */}
       <Dialog open={showSuspendDialog} onOpenChange={setShowSuspendDialog}>
-        <DialogContent className="bg-background border-border/80 text-foreground">
+        <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-foreground">Suspend Buyer</DialogTitle>
-            <DialogDescription className="text-muted-foreground">
+            <DialogTitle>Suspend Buyer</DialogTitle>
+            <DialogDescription>
               Are you sure you want to suspend {selectedBuyer?.name}? This will prevent invoice processing for this buyer.
             </DialogDescription>
           </DialogHeader>
