@@ -47,7 +47,7 @@ export default function DocumentReviewClient({ cession }: DocumentReviewClientPr
   }
 
   return (
-    <div className="bg-background flex items-center justify-center min-h-screen py-8">
+    <div className="flex justify-center items-center bg-background py-8 min-h-screen">
       <div className="space-y-6 w-full max-w-3xl">
         <div className="flex justify-between items-center">
           <div>

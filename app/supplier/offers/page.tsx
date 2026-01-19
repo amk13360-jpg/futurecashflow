@@ -248,7 +248,7 @@ export default function SupplierOffersPage() {
                           <div>
                             <p className="text-muted-foreground">Tenor</p>
                             <p className="font-medium">{offer.days_to_maturity} days</p>
-                            <p className="text-xs text-muted-foreground">Applied to 70% of invoice</p>
+                            <p className="text-muted-foreground text-xs">Applied to 70% of invoice</p>
                           </div>
                         </div>
 

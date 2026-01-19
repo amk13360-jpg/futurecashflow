@@ -59,42 +59,42 @@ export default function APReportsPage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="bg-muted/30 min-h-screen">
       <DashboardHeader />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="mx-auto px-4 py-8 container">
         <div className="mb-6">
-          <h2 className="text-3xl font-bold">Uploaded Data</h2>
+          <h2 className="font-bold text-3xl">Uploaded Data</h2>
           <p className="text-muted-foreground">View your uploaded vendors and invoice data</p>
         </div>
 
         {error && (
           <Alert variant="destructive" className="mb-6">
-            <AlertCircle className="h-4 w-4" />
+            <AlertCircle className="w-4 h-4" />
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
 
-        <div className="grid md:grid-cols-2 gap-4 mb-6">
+        <div className="gap-4 grid md:grid-cols-2 mb-6">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Total Invoices</CardTitle>
+              <CardTitle className="font-medium text-muted-foreground text-sm">Total Invoices</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{loading ? "..." : stats?.totalInvoices || 0}</div>
-              <p className="text-xs text-muted-foreground mt-1">All uploaded invoices</p>
+              <div className="font-bold text-2xl">{loading ? "..." : stats?.totalInvoices || 0}</div>
+              <p className="mt-1 text-muted-foreground text-xs">All uploaded invoices</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Total Amount</CardTitle>
+              <CardTitle className="font-medium text-muted-foreground text-sm">Total Amount</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">
+              <div className="font-bold text-2xl">
                 {loading ? "..." : `R ${(stats?.totalAmount || 0).toLocaleString()}`}
               </div>
-              <p className="text-xs text-muted-foreground mt-1">Total invoice value</p>
+              <p className="mt-1 text-muted-foreground text-xs">Total invoice value</p>
             </CardContent>
           </Card>
         </div>
@@ -113,41 +113,41 @@ export default function APReportsPage() {
               </CardHeader>
               <CardContent>
                 {loading ? (
-                  <div className="text-center py-8 text-muted-foreground">Loading...</div>
+                  <div className="py-8 text-muted-foreground text-center">Loading...</div>
                 ) : stats && Array.isArray(stats.invoices) && stats.invoices.length > 0 ? (
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
-                        <tr className="border-b border-muted-foreground/20">
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Invoice #</th>
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Vendor</th>
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Amount</th>
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Due Date</th>
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Status</th>
+                        <tr className="border-muted-foreground/20 border-b">
+                          <th className="px-4 py-3 font-semibold text-muted-foreground text-sm text-left">Invoice #</th>
+                          <th className="px-4 py-3 font-semibold text-muted-foreground text-sm text-left">Vendor</th>
+                          <th className="px-4 py-3 font-semibold text-muted-foreground text-sm text-left">Amount</th>
+                          <th className="px-4 py-3 font-semibold text-muted-foreground text-sm text-left">Due Date</th>
+                          <th className="px-4 py-3 font-semibold text-muted-foreground text-sm text-left">Status</th>
                         </tr>
                       </thead>
                       <tbody>
                         {stats.invoices.map((inv: any) => (
-                          <tr key={inv.invoice_id} className="border-b border-muted-foreground/10 hover:bg-muted/10 transition-colors">
-                            <td className="py-3 px-4 font-semibold">{inv.reference_invoice || inv.document_number || 'N/A'}</td>
-                            <td className="py-3 px-4">{inv.supplier_name || `Vendor ${inv.vendor_number}` || 'Unknown'}</td>
-                            <td className="py-3 px-4 font-bold text-accent-green">
+                          <tr key={inv.invoice_id} className="hover:bg-muted/10 border-muted-foreground/10 border-b transition-colors">
+                            <td className="px-4 py-3 font-semibold">{inv.reference_invoice || inv.document_number || 'N/A'}</td>
+                            <td className="px-4 py-3">{inv.supplier_name || `Vendor ${inv.vendor_number}` || 'Unknown'}</td>
+                            <td className="px-4 py-3 font-bold text-accent-green">
                               {inv.currency || 'ZAR'} {(inv.amount && !isNaN(Number(inv.amount))) ? Number(inv.amount).toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'}
                             </td>
-                            <td className="py-3 px-4 text-sm">
+                            <td className="px-4 py-3 text-sm">
                               {inv.due_date && !isNaN(new Date(inv.due_date).getTime()) ? new Date(inv.due_date).toLocaleDateString("en-ZA") : 'N/A'}
                             </td>
-                            <td className="py-3 px-4">{inv.status || 'Unknown'}</td>
+                            <td className="px-4 py-3">{inv.status || 'Unknown'}</td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                  <div className="py-8 text-muted-foreground text-center">
+                    <FileText className="opacity-50 mx-auto mb-3 w-12 h-12" />
                     <p>No invoice data available</p>
-                    <p className="text-sm mt-1">Upload AP data to generate reports</p>
+                    <p className="mt-1 text-sm">Upload AP data to generate reports</p>
                     <Button className="mt-4" onClick={() => (window.location.href = "/ap/invoices/upload")}> 
                       Upload AP Data
                     </Button>
@@ -165,37 +165,37 @@ export default function APReportsPage() {
               </CardHeader>
               <CardContent>
                 {loading ? (
-                  <div className="text-center py-8 text-muted-foreground">Loading...</div>
+                  <div className="py-8 text-muted-foreground text-center">Loading...</div>
                 ) : stats && Array.isArray(stats.vendors) && stats.vendors.length > 0 ? (
                   <div className="overflow-x-auto">
                     <table className="w-full">
                       <thead>
-                        <tr className="border-b border-muted-foreground/20">
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Vendor Name</th>
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Contact Person</th>
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Email</th>
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Phone</th>
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Status</th>
+                        <tr className="border-muted-foreground/20 border-b">
+                          <th className="px-4 py-3 font-semibold text-muted-foreground text-sm text-left">Vendor Name</th>
+                          <th className="px-4 py-3 font-semibold text-muted-foreground text-sm text-left">Contact Person</th>
+                          <th className="px-4 py-3 font-semibold text-muted-foreground text-sm text-left">Email</th>
+                          <th className="px-4 py-3 font-semibold text-muted-foreground text-sm text-left">Phone</th>
+                          <th className="px-4 py-3 font-semibold text-muted-foreground text-sm text-left">Status</th>
                         </tr>
                       </thead>
                       <tbody>
                         {stats.vendors.map((vendor: any) => (
-                          <tr key={vendor.supplier_id} className="border-b border-muted-foreground/10 hover:bg-muted/10 transition-colors">
-                            <td className="py-3 px-4 font-semibold">{vendor.name}</td>
-                            <td className="py-3 px-4">{vendor.contact_person}</td>
-                            <td className="py-3 px-4">{vendor.contact_email}</td>
-                            <td className="py-3 px-4">{vendor.contact_phone}</td>
-                            <td className="py-3 px-4">{vendor.onboarding_status}</td>
+                          <tr key={vendor.supplier_id} className="hover:bg-muted/10 border-muted-foreground/10 border-b transition-colors">
+                            <td className="px-4 py-3 font-semibold">{vendor.name}</td>
+                            <td className="px-4 py-3">{vendor.contact_person}</td>
+                            <td className="px-4 py-3">{vendor.contact_email}</td>
+                            <td className="px-4 py-3">{vendor.contact_phone}</td>
+                            <td className="px-4 py-3">{vendor.onboarding_status}</td>
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
                 ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                  <div className="py-8 text-muted-foreground text-center">
+                    <FileText className="opacity-50 mx-auto mb-3 w-12 h-12" />
                     <p>No vendor data available</p>
-                    <p className="text-sm mt-1">Upload vendor data to generate reports</p>
+                    <p className="mt-1 text-sm">Upload vendor data to generate reports</p>
                     <Button className="mt-4" onClick={() => (window.location.href = "/ap/vendors/upload")}> 
                       Upload Vendor Data
                     </Button>

@@ -58,26 +58,26 @@ export default function InvoicesPage() {
   const totalAmount = invoices.reduce((sum: number, inv: any) => sum + Number(inv.amount || 0), 0)
 
   return (
-  <div className="min-h-screen bg-muted/30 text-foreground">
+  <div className="bg-muted/30 min-h-screen text-foreground">
       <DashboardHeader />
 
-  <main className="container mx-auto px-4 py-8 max-w-7xl">
+  <main className="mx-auto px-4 py-8 max-w-7xl container">
         <div className="mb-8">
           <Link
             href="/ap/dashboard"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors"
+            className="inline-flex items-center mb-4 text-muted-foreground hover:text-foreground text-sm transition-colors"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="mr-2 w-4 h-4" />
             Back to dashboard
           </Link>
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="flex sm:flex-row flex-col sm:justify-between sm:items-center gap-4">
             <div>
-              <h1 className="text-4xl font-bold text-foreground">Invoices</h1>
-              <p className="text-lg text-muted-foreground mt-1">View and track your uploaded invoices</p>
+              <h1 className="font-bold text-foreground text-4xl">Invoices</h1>
+              <p className="mt-1 text-muted-foreground text-lg">View and track your uploaded invoices</p>
             </div>
             <Link href="/ap/invoices/upload">
-              <Button size="lg" className="gap-2 font-semibold px-6">
-                <Upload className="h-5 w-5" />
+              <Button size="lg" className="gap-2 px-6 font-semibold">
+                <Upload className="w-5 h-5" />
                 Upload Invoices
               </Button>
             </Link>
@@ -87,7 +87,7 @@ export default function InvoicesPage() {
         {loading && <SkeletonTable rows={5} />}
 
         {!loading && invoices.length > 0 && (
-          <div className="grid md:grid-cols-2 gap-4 mb-8">
+          <div className="gap-4 grid md:grid-cols-2 mb-8">
             <MetricCard
               title="Total Invoices"
               value={invoices.length}
@@ -106,21 +106,21 @@ export default function InvoicesPage() {
         {!loading && (
         <Card className="shadow-lg">
           <CardHeader className="border-b">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex sm:flex-row flex-col sm:justify-between sm:items-center gap-4">
               <div>
                 <CardTitle className="text-2xl">All Invoices ({invoices.length})</CardTitle>
                 <CardDescription>View all uploaded invoices</CardDescription>
               </div>
               <div className="flex gap-2">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Search className="top-1/2 left-3 absolute w-4 h-4 text-muted-foreground -translate-y-1/2" />
                   <Input placeholder="Search invoices..." className="pl-9 w-64" />
                 </div>
                 <Button variant="outline" size="icon">
-                  <Filter className="h-4 w-4" />
+                  <Filter className="w-4 h-4" />
                 </Button>
                 <Button variant="outline" size="icon">
-                  <Download className="h-4 w-4" />
+                  <Download className="w-4 h-4" />
                 </Button>
               </div>
             </div>
@@ -134,7 +134,7 @@ export default function InvoicesPage() {
               >
                 <Link href="/ap/invoices/upload">
                   <Button size="lg" className="gap-2">
-                    <Upload className="h-5 w-5" />
+                    <Upload className="w-5 h-5" />
                     Upload Your First Invoice
                   </Button>
                 </Link>
@@ -144,57 +144,57 @@ export default function InvoicesPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-b">
-                      <th className="text-left py-4 px-4 font-semibold text-sm text-muted-foreground">Invoice #</th>
-                      <th className="text-left py-4 px-4 font-semibold text-sm text-muted-foreground">Vendor</th>
-                      <th className="text-left py-4 px-4 font-semibold text-sm text-muted-foreground">Amount</th>
-                      <th className="text-left py-4 px-4 font-semibold text-sm text-muted-foreground">Due Date</th>
-                      <th className="text-left py-4 px-4 font-semibold text-sm text-muted-foreground">Status</th>
-                      <th className="text-left py-4 px-4 font-semibold text-sm text-muted-foreground">Offers</th>
-                      <th className="text-right py-4 px-4 font-semibold text-sm text-muted-foreground">Actions</th>
+                      <th className="px-4 py-4 font-semibold text-muted-foreground text-sm text-left">Invoice #</th>
+                      <th className="px-4 py-4 font-semibold text-muted-foreground text-sm text-left">Vendor</th>
+                      <th className="px-4 py-4 font-semibold text-muted-foreground text-sm text-left">Amount</th>
+                      <th className="px-4 py-4 font-semibold text-muted-foreground text-sm text-left">Due Date</th>
+                      <th className="px-4 py-4 font-semibold text-muted-foreground text-sm text-left">Status</th>
+                      <th className="px-4 py-4 font-semibold text-muted-foreground text-sm text-left">Offers</th>
+                      <th className="px-4 py-4 font-semibold text-muted-foreground text-sm text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {invoices.map((invoice: any) => (
-                      <tr key={invoice.invoice_id} className="border-b hover:bg-muted/50 transition-colors">
-                        <td className="py-4 px-4">
+                      <tr key={invoice.invoice_id} className="hover:bg-muted/50 border-b transition-colors">
+                        <td className="px-4 py-4">
                           <div className="font-semibold">{invoice.reference_invoice || invoice.document_number}</div>
-                          <div className="text-xs text-muted-foreground">Doc: {invoice.document_number}</div>
+                          <div className="text-muted-foreground text-xs">Doc: {invoice.document_number}</div>
                         </td>
-                        <td className="py-4 px-4">
+                        <td className="px-4 py-4">
                           <div className="font-medium">{invoice.supplier_name || `Vendor ${invoice.vendor_number}`}</div>
-                          <div className="text-xs text-muted-foreground">#{invoice.vendor_number}</div>
+                          <div className="text-muted-foreground text-xs">#{invoice.vendor_number}</div>
                         </td>
-                        <td className="py-4 px-4">
+                        <td className="px-4 py-4">
                           <div className="font-bold text-emerald-600 dark:text-emerald-400">
                             {invoice.currency}{" "}
                             {Number(invoice.amount).toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                           </div>
                           {invoice.payment_terms && (
-                            <div className="text-xs text-muted-foreground">{invoice.payment_terms}</div>
+                            <div className="text-muted-foreground text-xs">{invoice.payment_terms}</div>
                           )}
                         </td>
-                        <td className="py-4 px-4">
-                          <div className="text-sm text-muted-foreground">
+                        <td className="px-4 py-4">
+                          <div className="text-muted-foreground text-sm">
                             {new Date(invoice.due_date).toLocaleDateString("en-ZA")}
                           </div>
                         </td>
-                        <td className="py-4 px-4">
+                        <td className="px-4 py-4">
                           <Badge
                             variant={invoice.status === "offered" ? "default" : invoice.status === "matched" ? "secondary" : "outline"}
                           >
                             {invoice.status}
                           </Badge>
                         </td>
-                        <td className="py-4 px-4">
+                        <td className="px-4 py-4">
                           {invoice.offer_count > 0 ? (
                             <Badge variant="outline" className="gap-1">
                               {invoice.offer_count} offer{invoice.offer_count !== 1 ? "s" : ""}
                             </Badge>
                           ) : (
-                            <span className="text-sm text-muted-foreground">No offers</span>
+                            <span className="text-muted-foreground text-sm">No offers</span>
                           )}
                         </td>
-                        <td className="py-4 px-4 text-right">
+                        <td className="px-4 py-4 text-right">
                           <Button
                             variant="ghost"
                             size="sm"
