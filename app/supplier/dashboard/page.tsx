@@ -21,7 +21,9 @@ export default function SupplierDashboardPage() {
   
   const pendingOffers = offers.filter((o: any) => o.status === "sent");
   const acceptedOffers = offers.filter((o: any) => o.status === "accepted");
-  const needsCessionAgreement = !cessionAgreement || (cessionAgreement.status !== "signed" && cessionAgreement.status !== "approved");
+  // Show alert only when there is no cession agreement record.
+  // If the supplier has uploaded (status 'pending' or 'uploaded'), hide the action required banner.
+  const needsCessionAgreement = !cessionAgreement;
 
   // Calculate total value of accepted offers (ensure numeric conversion from Decimal/string)
   const totalAcceptedValue = acceptedOffers.reduce((sum: number, o: any) => {
