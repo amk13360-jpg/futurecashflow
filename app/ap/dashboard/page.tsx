@@ -29,8 +29,7 @@ export default function APDashboardPage() {
             const amount = Number(inv.amount_doc_curr ?? inv.amount_local_curr ?? inv.amount ?? 0)
             return sum + (Number.isFinite(amount) ? amount : 0)
           }, 0)
-          const pendingOffers = invoices.filter((inv: any) => inv.status === "offered").length
-          setStats({ totalInvoices, totalValue, pendingOffers })
+          setStats({ totalInvoices, totalValue })
           setLoading(false)
         }
       } catch (err: any) {
@@ -57,12 +56,10 @@ export default function APDashboardPage() {
           <div className="relative bg-card shadow-xl p-8 border rounded-2xl">
             <div className="flex items-center gap-3 mb-4">
               <div className="bg-primary rounded-full w-1 h-12" />
-              <h1 className="font-bold text-foreground text-4xl md:text-5xl">
-                Welcome back, <span className="text-primary">{session?.fullName || session?.username || "User"}</span>
-              </h1>
+              <h1 className="font-bold text-foreground text-4xl md:text-5xl">Accounts Payable Dashboard</h1>
             </div>
             <p className="ml-7 text-muted-foreground text-lg md:text-xl">
-              Manage your invoices, vendors, and track supplier financing offers
+              Please upload your vendor and accounts payable data
             </p>
           </div>
         </div>
@@ -74,7 +71,7 @@ export default function APDashboardPage() {
         )}
 
         {/* Stats Cards */}
-        <div className="gap-6 grid md:grid-cols-3 mb-8">
+        <div className="gap-6 grid md:grid-cols-2 mb-8">
           <Card className="bg-emerald-500/10 shadow-xl hover:shadow-2xl border-emerald-500/20 hover:scale-[1.02] transition-all duration-300">
             <CardHeader>
               <div className="flex justify-between items-center">
@@ -83,17 +80,6 @@ export default function APDashboardPage() {
                   <CardTitle className="mt-2 font-bold text-foreground text-4xl">{loading ? "..." : stats?.totalInvoices || 0}</CardTitle>
                 </div>
                 <CheckCircle2 className="w-12 h-12 text-emerald-600 dark:text-emerald-400" />
-              </div>
-            </CardHeader>
-          </Card>
-          <Card className="bg-amber-500/10 shadow-xl hover:shadow-2xl border-amber-500/20 hover:scale-[1.02] transition-all duration-300">
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <div>
-                  <CardDescription className="font-medium text-amber-600 dark:text-amber-400">Pending Offers</CardDescription>
-                  <CardTitle className="mt-2 font-bold text-foreground text-4xl">{loading ? "..." : stats?.pendingOffers || 0}</CardTitle>
-                </div>
-                <Clock className="w-12 h-12 text-amber-600 dark:text-amber-400" />
               </div>
             </CardHeader>
           </Card>
@@ -111,7 +97,7 @@ export default function APDashboardPage() {
         </div>
 
         {/* Action Cards */}
-        <div className="gap-6 grid md:grid-cols-2 lg:grid-cols-4 mb-8">
+        <div className="gap-6 grid md:grid-cols-2 lg:grid-cols-3 mb-8">
           <Card className="bg-card/50 hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
             <CardHeader>
               <div className="flex justify-center items-center bg-primary/10 mb-4 rounded-xl w-14 h-14">
@@ -135,7 +121,7 @@ export default function APDashboardPage() {
               </div>
               <CardTitle className="text-foreground text-xl">Upload Invoices</CardTitle>
               <CardDescription className="text-muted-foreground">
-                Upload approved invoices for supplier matching
+                Upload approved invoices for processing
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -148,27 +134,11 @@ export default function APDashboardPage() {
           </Card>
           <Card className="bg-card/50 hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
             <CardHeader>
-              <div className="flex justify-center items-center bg-emerald-500/10 mb-4 rounded-xl w-14 h-14">
-                <FileText className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
-              </div>
-              <CardTitle className="text-foreground text-xl">View Invoices</CardTitle>
-              <CardDescription className="text-muted-foreground">Track uploaded invoices and offer status</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link href="/ap/invoices">
-                <Button variant="outline" className="w-full font-semibold" size="lg">
-                  View All
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-          <Card className="bg-card/50 hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
-            <CardHeader>
               <div className="flex justify-center items-center bg-muted mb-4 rounded-xl w-14 h-14">
                 <BarChart3 className="w-7 h-7 text-muted-foreground" />
               </div>
               <CardTitle className="text-foreground text-xl">Reports</CardTitle>
-              <CardDescription className="text-muted-foreground">View acceptance rates and statistics</CardDescription>
+              <CardDescription className="text-muted-foreground">View uploaded vendors and invoices</CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/ap/reports">

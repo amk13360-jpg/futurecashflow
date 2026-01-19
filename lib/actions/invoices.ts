@@ -15,6 +15,20 @@ type OfferGenerationResults = {
   errors: string[]
 }
 
+async function isAutoOffersEnabled(): Promise<boolean> {
+  try {
+    const rows = await query<RowDataPacket[]>(
+      `SELECT setting_value FROM system_settings WHERE setting_key = 'enable_auto_offers' LIMIT 1`
+    )
+    if (!rows || rows.length === 0) return false
+    const v = String((rows as any)[0].setting_value || '').toLowerCase()
+    return v === '1' || v === 'true' || v === 'yes'
+  } catch (error) {
+    console.error('[v0] Failed to read enable_auto_offers setting, defaulting to false', error)
+    return false
+  }
+}
+
 // Parse AP invoice CSV text into APDataRow[]
 export async function parseAPDataCSV(csvText: string): Promise<APDataRow[]> {
   const lines = csvText.trim().split("\n")
@@ -320,8 +334,9 @@ export async function uploadAPData(apDataRows: APDataRow[]) {
       details: `Uploaded ${results.uploaded.length} invoices, ${results.errors.length} errors`,
     })
 
-    // Automatically generate offers for any invoices that became eligible after this upload
-    await autoGenerateOffersForEligibleInvoices("ap_upload")
+    // NOTE: Automatic offer generation is DISABLED
+    // Admin must manually release offers via releaseOffersForSupplier()
+    // await autoGenerateOffersForEligibleInvoices("ap_upload")
 
     return results
   } catch (error) {
@@ -550,14 +565,14 @@ export async function getInvoicesForBuyer() {
   const buyerCode = buyers[0].code
 
   try {
+    // AP users must not see offers. Return invoice list without offer data.
     const invoices = await query(
       `SELECT i.invoice_id, i.document_number, i.reference_invoice, i.document_date, 
         CAST(i.due_date AS CHAR) as due_date, i.amount, i.amount_local_curr, i.net_due_date, i.amount_doc_curr, i.currency, i.text_description, i.status, 
         i.uploaded_at, i.payment_terms, i.vendor_number, i.company_code,
         s.name as supplier_name,
-        COUNT(o.offer_id) as offer_count
+        0 as offer_count
        FROM invoices i
-       LEFT JOIN offers o ON i.invoice_id = o.invoice_id
        LEFT JOIN suppliers s ON i.vendor_number = s.vendor_number AND i.company_code = s.company_code
        WHERE i.buyer_id = ?
        GROUP BY i.invoice_id
@@ -602,14 +617,14 @@ export async function getInvoicesForSession() {
 
     // AP user sees only their buyer's invoices
     if (session.role === "accounts_payable" && session.buyerId) {
+      // AP users must not see offers. Do not join offers table and expose offer details.
       const invoices = await query(
         `SELECT i.invoice_id, i.document_number, i.reference_invoice, i.document_date, 
           CAST(i.due_date AS CHAR) as due_date, i.amount, i.amount_local_curr, i.net_due_date, i.amount_doc_curr, i.currency, i.text_description, i.status, 
           i.uploaded_at, i.payment_terms, i.vendor_number, i.company_code,
           s.name as supplier_name,
-          COUNT(o.offer_id) as offer_count
+          0 as offer_count
          FROM invoices i
-         LEFT JOIN offers o ON i.invoice_id = o.invoice_id
          LEFT JOIN suppliers s ON i.vendor_number = s.vendor_number AND i.company_code = s.company_code
          WHERE i.buyer_id = ?
          GROUP BY i.invoice_id
@@ -692,8 +707,10 @@ async function createOffersForInvoices(invoiceIds: number[]): Promise<OfferGener
           continue
         }
 
-        const discountAmount = (invoice.amount * annualRate * daysToMaturity) / (365 * 100)
-        const netPaymentAmount = invoice.amount - discountAmount
+        // Offers apply to 70% of the invoice value only. Calculate absolute discount on that portion.
+        const baseAmount = Number(invoice.amount) * 0.7
+        const discountAmount = (baseAmount * annualRate * daysToMaturity) / (365 * 100)
+        const netPaymentAmount = baseAmount - discountAmount
 
         const offerExpiryDate = new Date()
         offerExpiryDate.setDate(offerExpiryDate.getDate() + expiryDays)
@@ -780,6 +797,11 @@ export async function generateOffers(invoiceIds: number[]) {
 
 export async function autoGenerateOffersForEligibleInvoices(triggerSource = "system") {
   try {
+    const enabled = await isAutoOffersEnabled()
+    if (!enabled) {
+      console.log('[v0] Auto offer generation is disabled by system setting; skipping autoGenerateOffersForEligibleInvoices')
+      return { created: [], errors: [] }
+    }
     const eligibleInvoices = await query<RowDataPacket[]>(
       `SELECT i.invoice_id
        FROM invoices i
@@ -812,6 +834,11 @@ export async function autoGenerateOffersForEligibleInvoices(triggerSource = "sys
 
 export async function autoGenerateOffersForSupplier(supplierId: number, triggerSource = "supplier") {
   try {
+    const enabled = await isAutoOffersEnabled()
+    if (!enabled) {
+      console.log('[v0] Auto offer generation is disabled by system setting; skipping autoGenerateOffersForSupplier')
+      return { created: [], errors: [] }
+    }
     const eligibleInvoices = await query<RowDataPacket[]>(
       `SELECT i.invoice_id
        FROM invoices i
@@ -839,6 +866,40 @@ export async function autoGenerateOffersForSupplier(supplierId: number, triggerS
     return results
   } catch (error) {
     console.error("[v0] Error auto-generating offers for supplier:", error)
+    throw error
+  }
+}
+
+// Admin-invokable manual release: bypass feature-flag and generate offers for a supplier
+export async function manualGenerateOffersForSupplier(supplierId: number, triggerSource = "admin_manual_release") {
+  try {
+    const eligibleInvoices = await query<RowDataPacket[]>(
+      `SELECT i.invoice_id
+       FROM invoices i
+       JOIN suppliers s ON i.vendor_number = s.vendor_number AND i.company_code = s.company_code
+       LEFT JOIN offers o ON o.invoice_id = i.invoice_id
+       WHERE s.supplier_id = ?
+         AND s.onboarding_status = 'approved'
+         AND i.status = 'matched'
+         AND i.due_date > NOW()
+         AND o.offer_id IS NULL`,
+      [supplierId],
+    )
+
+    const invoiceIds = eligibleInvoices.map((row) => Number(row.invoice_id)).filter((id) => !Number.isNaN(id))
+    const results = await createOffersForInvoices(invoiceIds)
+
+    if (results.created.length > 0 || results.errors.length > 0) {
+      await createAuditLog({
+        userType: "admin",
+        action: "MANUAL_OFFERS_GENERATED",
+        details: `Manually generated ${results.created.length} offers, ${results.errors.length} errors (supplier: ${supplierId})`,
+      })
+    }
+
+    return results
+  } catch (error) {
+    console.error("[v0] Error manual-generating offers for supplier:", error)
     throw error
   }
 }

@@ -225,9 +225,11 @@ export async function createOfferBatch(
             continue
           }
 
+          // Offer should apply to 70% of the invoice value only. Compute absolute discount on that portion.
           const invoiceAmount = Number(invoice.amount)
-          const discountAmount = (invoiceAmount * annualRate * daysToMaturity) / (365 * 100)
-          const netPaymentAmount = invoiceAmount - discountAmount
+          const baseAmount = invoiceAmount * 0.7
+          const discountAmount = (baseAmount * annualRate * daysToMaturity) / (365 * 100)
+          const netPaymentAmount = baseAmount - discountAmount
 
           // Create offer with batch_id
           await connection.execute(

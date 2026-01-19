@@ -246,10 +246,9 @@ export default function SupplierOffersPage() {
                             </p>
                           </div>
                           <div>
-                            <p className="text-muted-foreground">Rate / Days</p>
-                            <p className="font-medium">
-                              {offer.annual_rate}% / {offer.days_to_maturity}d
-                            </p>
+                            <p className="text-muted-foreground">Tenor</p>
+                            <p className="font-medium">{offer.days_to_maturity} days</p>
+                            <p className="text-xs text-muted-foreground">Applied to 70% of invoice</p>
                           </div>
                         </div>
 

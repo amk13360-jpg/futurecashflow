@@ -60,10 +60,6 @@ export default function AdminLoginPage() {
         <div className="-bottom-40 -left-40 absolute bg-primary/10 blur-3xl rounded-full w-72 h-72"></div>
       </div>
       <div className="w-full max-w-md">
-        <Link href="/" className="inline-flex items-center mb-6 text-muted-foreground hover:text-foreground text-sm">
-          <ArrowLeft className="mr-2 w-4 h-4" />
-          Back to home
-        </Link>
         <Card className="bg-card shadow-none border-0 text-foreground">
           <CardHeader className="text-center">
             <div className="flex justify-center items-center mb-4">

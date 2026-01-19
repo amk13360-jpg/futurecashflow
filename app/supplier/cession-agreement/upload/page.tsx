@@ -1,11 +1,14 @@
-"use client" 
+"use client"
 import React from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function SupplierCessionAgreementUploadPage() {
   const [uploading, setUploading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -28,12 +31,18 @@ export default function SupplierCessionAgreementUploadPage() {
       });
       const data = await res.json();
       if (data.success) {
-        window.location.href = "/supplier/dashboard";
+        toast.success("✓ Cession agreement uploaded successfully. Dashboard updated.")
+        // Navigate to dashboard which will fetch fresh server state
+        router.push("/supplier/dashboard")
       } else {
-        setError(data.error || "Upload failed");
+        const msg = data.error || data.details || "Upload failed"
+        toast.error("✗ " + msg)
+        setError(msg);
       }
     } catch (err: any) {
-      setError("Upload failed");
+      const msg = err?.message || "Upload failed"
+      toast.error("✗ " + msg)
+      setError(msg);
     }
     setUploading(false);
   }

@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { BarChart3, TrendingUp, DollarSign, FileText, AlertCircle } from "lucide-react"
+import { FileText, AlertCircle } from "lucide-react"
 
 export default function APReportsPage() {
   const [loading, setLoading] = useState(true)
@@ -40,9 +40,7 @@ export default function APReportsPage() {
             const amount = inv.amount || 0;
             return sum + (isNaN(Number(amount)) ? 0 : Number(amount));
           }, 0)
-          const pendingInvoices = invoices.filter((inv: any) => inv.status === "pending").length
-          const processedInvoices = invoices.filter((inv: any) => inv.status === "matched" || inv.status === "offered").length
-          setStats({ totalInvoices, totalAmount, pendingInvoices, processedInvoices, invoices, vendors, payments })
+          setStats({ totalInvoices, totalAmount, invoices, vendors })
           setLoading(false)
         }
       } catch (err: any) {
@@ -66,8 +64,8 @@ export default function APReportsPage() {
 
       <main className="container mx-auto px-4 py-8">
         <div className="mb-6">
-          <h2 className="text-3xl font-bold">AP Reports & Analytics</h2>
-          <p className="text-muted-foreground">View reports and analytics for accounts payable operations</p>
+          <h2 className="text-3xl font-bold">Uploaded Data</h2>
+          <p className="text-muted-foreground">View your uploaded vendors and invoice data</p>
         </div>
 
         {error && (
@@ -77,7 +75,7 @@ export default function APReportsPage() {
           </Alert>
         )}
 
-        <div className="grid md:grid-cols-4 gap-4 mb-6">
+        <div className="grid md:grid-cols-2 gap-4 mb-6">
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-sm font-medium text-muted-foreground">Total Invoices</CardTitle>
@@ -99,87 +97,19 @@ export default function APReportsPage() {
               <p className="text-xs text-muted-foreground mt-1">Total invoice value</p>
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Pending</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{loading ? "..." : stats?.pendingInvoices || 0}</div>
-              <p className="text-xs text-muted-foreground mt-1">Awaiting processing</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-muted-foreground">Processed</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{loading ? "..." : stats?.processedInvoices || 0}</div>
-              <p className="text-xs text-muted-foreground mt-1">Successfully processed</p>
-            </CardContent>
-          </Card>
         </div>
 
-        <Tabs defaultValue="overview" className="space-y-4">
+        <Tabs defaultValue="invoices" className="space-y-4">
           <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="invoices">Invoice Reports</TabsTrigger>
-            <TabsTrigger value="vendors">Vendor Reports</TabsTrigger>
-            <TabsTrigger value="payments">Payment Reports</TabsTrigger>
+            <TabsTrigger value="invoices">Uploaded Invoices</TabsTrigger>
+            <TabsTrigger value="vendors">Uploaded Vendors</TabsTrigger>
           </TabsList>
-
-          <TabsContent value="overview" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Reports Overview</CardTitle>
-                <CardDescription>Summary of available reports and analytics</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <Alert>
-                  <FileText className="h-4 w-4" />
-                  <AlertDescription>
-                    Reports are generated based on your uploaded AP data and vendor information. Upload data to see
-                    detailed analytics.
-                  </AlertDescription>
-                </Alert>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="p-4 border rounded-lg">
-                    <BarChart3 className="h-8 w-8 text-primary mb-2" />
-                    <h3 className="font-semibold mb-1">Invoice Analytics</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Track invoice volumes, amounts, and processing times
-                    </p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <TrendingUp className="h-8 w-8 text-primary mb-2" />
-                    <h3 className="font-semibold mb-1">Vendor Performance</h3>
-                    <p className="text-sm text-muted-foreground">Monitor vendor activity and payment patterns</p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <DollarSign className="h-8 w-8 text-primary mb-2" />
-                    <h3 className="font-semibold mb-1">Payment Reports</h3>
-                    <p className="text-sm text-muted-foreground">Analyze payment schedules and cash flow</p>
-                  </div>
-
-                  <div className="p-4 border rounded-lg">
-                    <FileText className="h-8 w-8 text-primary mb-2" />
-                    <h3 className="font-semibold mb-1">Compliance Reports</h3>
-                    <p className="text-sm text-muted-foreground">Audit trails and regulatory compliance</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
           <TabsContent value="invoices" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Invoice Reports</CardTitle>
-                <CardDescription>Detailed invoice analytics and reports</CardDescription>
+                <CardTitle>Uploaded Invoices</CardTitle>
+                <CardDescription>View all invoices from your AP data uploads</CardDescription>
               </CardHeader>
               <CardContent>
                 {loading ? (
@@ -230,8 +160,8 @@ export default function APReportsPage() {
           <TabsContent value="vendors" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Vendor Reports</CardTitle>
-                <CardDescription>Vendor analytics and performance metrics</CardDescription>
+                <CardTitle>Uploaded Vendors</CardTitle>
+                <CardDescription>View all vendors from your vendor data uploads</CardDescription>
               </CardHeader>
               <CardContent>
                 {loading ? (
@@ -275,54 +205,6 @@ export default function APReportsPage() {
             </Card>
           </TabsContent>
 
-          <TabsContent value="payments" className="space-y-4">
-            <Card>
-              <CardHeader>
-                <CardTitle>Payment Reports</CardTitle>
-                <CardDescription>Payment analytics and cash flow reports</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {loading ? (
-                  <div className="text-center py-8 text-muted-foreground">Loading...</div>
-                ) : stats && Array.isArray(stats.payments) && stats.payments.length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b border-muted-foreground/20">
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Payment Ref</th>
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Amount</th>
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Currency</th>
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Status</th>
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Scheduled</th>
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Completed</th>
-                          <th className="text-left py-3 px-4 font-semibold text-sm text-muted-foreground">Buyer</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {stats.payments.map((pay: any) => (
-                          <tr key={pay.payment_id} className="border-b border-muted-foreground/10 hover:bg-muted/10 transition-colors">
-                            <td className="py-3 px-4 font-semibold">{pay.payment_reference}</td>
-                            <td className="py-3 px-4 font-bold text-accent-green">{pay.amount}</td>
-                            <td className="py-3 px-4">{pay.currency}</td>
-                            <td className="py-3 px-4">{pay.status}</td>
-                            <td className="py-3 px-4 text-sm">{pay.scheduled_date ? new Date(pay.scheduled_date).toLocaleDateString("en-ZA") : "-"}</td>
-                            <td className="py-3 px-4 text-sm">{pay.completed_date ? new Date(pay.completed_date).toLocaleDateString("en-ZA") : "-"}</td>
-                            <td className="py-3 px-4">{pay.buyer_name}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-muted-foreground">
-                    <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                    <p>No payment data available</p>
-                    <p className="text-sm mt-1">Process invoices to generate payment reports</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </TabsContent>
         </Tabs>
       </main>
     </div>

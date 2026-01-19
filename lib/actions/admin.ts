@@ -3,8 +3,9 @@
 import { query } from "@/lib/db"
 import { getSession } from "@/lib/auth/session"
 import { redirect } from "next/navigation"
-import { autoGenerateOffersForSupplier } from "@/lib/actions/invoices"
+import { manualGenerateOffersForSupplier } from "@/lib/actions/invoices"
 import { sendSupplierApprovalEmail } from "@/lib/services/email"
+import { createAuditLog } from "@/lib/auth/audit"
 import { randomBytes } from "crypto"
 
 // Generate a secure random token
@@ -151,11 +152,8 @@ export async function reviewCessionAgreement(cessionId: number, status: "approve
         [cessionId],
       )
 
-      const supplier = suppliers[0]
-      if (supplier && supplier.onboarding_status !== "approved") {
-        // Reuse supplier approval workflow so emails/offers stay consistent
-        await reviewSupplierApplication(supplier.supplier_id, "approved")
-      }
+      // NOTE: Cession approval no longer triggers automatic supplier approval/offer creation
+      // Admin must explicitly manage supplier approval and offer release separately
     }
   } catch (error) {
     console.error("[v0] Error updating cession status:", error)
@@ -346,13 +344,8 @@ export async function reviewSupplierApplication(
     )
 
     if (status === "approved") {
-      // Generate offers - don't let this block token/email
-      try {
-        await autoGenerateOffersForSupplier(supplierId, "admin_review")
-      } catch (offerError) {
-        console.error(`[Admin] Failed to generate offers for supplier ${supplierId}:`, offerError)
-      }
-      
+      // NOTE: Automatic offer creation is DISABLED
+      // Only admin can manually release offers via releaseOffersForSupplier()
       // Create access token and send approval email
       try {
         // Get supplier details
@@ -452,5 +445,43 @@ export async function getRecentPayments() {
   } catch (error) {
     console.error("[v0] Error fetching recent payments:", error)
     throw error
+  }
+}
+
+/**
+ * ADMIN ONLY: Manually release offers for a supplier
+ * This is the ONLY way offers can be created in the system
+ * Automatic offer creation is disabled entirely
+ */
+export async function releaseOffersForSupplier(
+  supplierId: number,
+  invoiceIds?: number[],
+): Promise<{ success: boolean; offersCreated?: number; error?: string }> {
+  const session = await getSession()
+  if (!session || session.role !== "admin") {
+    redirect("/login/admin")
+  }
+
+  try {
+    const result = await manualGenerateOffersForSupplier(supplierId, "admin_manual_release")
+    
+    await createAuditLog({
+      userType: "admin",
+      action: "MANUAL_OFFERS_RELEASED",
+      entityType: "supplier",
+      entityId: supplierId,
+      details: `Admin manually released ${result.created.length} offers for supplier ${supplierId}`,
+    })
+
+    return {
+      success: true,
+      offersCreated: result.created.length,
+    }
+  } catch (error: any) {
+    console.error("[Admin] Error releasing offers:", error)
+    return {
+      success: false,
+      error: error.message || "Failed to release offers",
+    }
   }
 }

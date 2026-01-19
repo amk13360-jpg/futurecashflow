@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Upload, ArrowLeft, Search, Filter, Download, FileText, TrendingUp, Clock } from "lucide-react"
+import { Upload, ArrowLeft, Search, Filter, Download, FileText, TrendingUp } from "lucide-react"
 import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
@@ -56,8 +56,6 @@ export default function InvoicesPage() {
   }, [])
 
   const totalAmount = invoices.reduce((sum: number, inv: any) => sum + Number(inv.amount || 0), 0)
-  const offeredCount = invoices.filter((inv: any) => inv.status === "offered").length
-  const matchedCount = invoices.filter((inv: any) => inv.status === "matched").length
 
   return (
   <div className="min-h-screen bg-muted/30 text-foreground">
@@ -89,7 +87,7 @@ export default function InvoicesPage() {
         {loading && <SkeletonTable rows={5} />}
 
         {!loading && invoices.length > 0 && (
-          <div className="grid md:grid-cols-3 gap-4 mb-8">
+          <div className="grid md:grid-cols-2 gap-4 mb-8">
             <MetricCard
               title="Total Invoices"
               value={invoices.length}
@@ -102,12 +100,6 @@ export default function InvoicesPage() {
               icon={TrendingUp}
               variant="success"
             />
-            <MetricCard
-              title="With Offers"
-              value={offeredCount}
-              icon={Clock}
-              variant="warning"
-            />
           </div>
         )}
 
@@ -117,7 +109,7 @@ export default function InvoicesPage() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
                 <CardTitle className="text-2xl">All Invoices ({invoices.length})</CardTitle>
-                <CardDescription>Invoices uploaded and their offer status</CardDescription>
+                <CardDescription>View all uploaded invoices</CardDescription>
               </div>
               <div className="flex gap-2">
                 <div className="relative">

@@ -6,9 +6,15 @@ export async function middleware(request: NextRequest) {
 	const { pathname } = request.nextUrl
 
 	// Public routes that don't require authentication
-	const publicRoutes = ["/", "/landing", "/login/admin", "/login/ap", "/supplier/access"]
+	// NOTE: /login/admin is INTENTIONALLY NOT listed here - it's protected and non-discoverable
+	const publicRoutes = ["/", "/landing", "/login/ap", "/supplier/access", "/login/supplier"]
 
 	if (publicRoutes.includes(pathname) || pathname.startsWith("/(public)") || pathname.startsWith("/_next") || pathname.startsWith("/api")) {
+		return NextResponse.next()
+	}
+
+	// Protect admin login path - only allow direct access, no redirects to reveal it
+	if (pathname === "/login/admin") {
 		return NextResponse.next()
 	}
 
@@ -30,13 +36,20 @@ export async function middleware(request: NextRequest) {
 			return NextResponse.redirect(new URL(loginUrl, request.url))
 		}
 
-		// Check role-based access
-		if (pathname.startsWith("/admin") && session.role !== "admin") {
-			return NextResponse.redirect(new URL("/ap/dashboard", request.url))
+		// Strict role-based access control - prevent cross-role access
+		if (pathname.startsWith("/admin")) {
+			if (session.role !== "admin") {
+				// Do not redirect to home - prevent enumeration. Redirect to their own dashboard
+				const redirectUrl = session.role === "accounts_payable" ? "/ap/dashboard" : "/"
+				return NextResponse.redirect(new URL(redirectUrl, request.url))
+			}
 		}
 
-		if (pathname.startsWith("/ap") && session.role !== "accounts_payable") {
-			return NextResponse.redirect(new URL("/admin/dashboard", request.url))
+		if (pathname.startsWith("/ap")) {
+			if (session.role !== "accounts_payable") {
+				// Do not redirect to admin. Redirect to home
+				return NextResponse.redirect(new URL("/", request.url))
+			}
 		}
 
 		return NextResponse.next()
