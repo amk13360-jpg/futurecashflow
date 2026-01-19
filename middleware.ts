@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
 
 	// Public routes that don't require authentication
 	// NOTE: /login/admin is INTENTIONALLY NOT listed here - it's protected and non-discoverable
-	const publicRoutes = ["/", "/landing", "/login/ap", "/supplier/access", "/login/supplier"]
+	const publicRoutes = ["/", "/landing", "/login/ap", "/supplier/access"]
 
 	if (publicRoutes.includes(pathname) || pathname.startsWith("/(public)") || pathname.startsWith("/_next") || pathname.startsWith("/api")) {
 		return NextResponse.next()

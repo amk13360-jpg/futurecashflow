@@ -63,7 +63,7 @@ export default function HomePage() {
                 Accounts Payable Login
               </Button>
             </Link>
-            <Link href="/login/supplier" passHref>
+            <Link href="/supplier/access" passHref>
               <Button 
                 size="lg" 
                 variant="outline" 

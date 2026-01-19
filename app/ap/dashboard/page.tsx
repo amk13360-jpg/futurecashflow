@@ -70,31 +70,7 @@ export default function APDashboardPage() {
           </div>
         )}
 
-        {/* Stats Cards */}
-        <div className="gap-6 grid md:grid-cols-2 mb-8">
-          <Card className="bg-emerald-500/10 shadow-xl hover:shadow-2xl border-emerald-500/20 hover:scale-[1.02] transition-all duration-300">
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <div>
-                  <CardDescription className="font-medium text-emerald-600 dark:text-emerald-400">Total Invoices</CardDescription>
-                  <CardTitle className="mt-2 font-bold text-foreground text-4xl">{loading ? "..." : stats?.totalInvoices || 0}</CardTitle>
-                </div>
-                <CheckCircle2 className="w-12 h-12 text-emerald-600 dark:text-emerald-400" />
-              </div>
-            </CardHeader>
-          </Card>
-          <Card className="bg-primary/10 shadow-xl hover:shadow-2xl border-primary/20 hover:scale-[1.02] transition-all duration-300">
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <div>
-                  <CardDescription className="font-medium text-primary">Total Value</CardDescription>
-                  <CardTitle className="mt-2 font-bold text-foreground text-4xl">R {loading ? "..." : (stats?.totalValue || 0).toLocaleString("en-ZA", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</CardTitle>
-                </div>
-                <TrendingUp className="w-12 h-12 text-primary" />
-              </div>
-            </CardHeader>
-          </Card>
-        </div>
+        
 
         {/* Action Cards */}
         <div className="gap-6 grid md:grid-cols-2 lg:grid-cols-3 mb-8">

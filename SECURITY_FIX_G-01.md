@@ -33,7 +33,7 @@ Admin, Buyer (AP), and Supplier login paths were exposed or discoverable to othe
 **Architecture:**
 - **Admin Login:** `/login/admin` (non-discoverable, no public links)
 - **AP Login:** `/login/ap` (discoverable from home page)
-- **Supplier Login:** `/login/supplier` (discoverable from home page)
+- **Supplier Login:** `/supplier/access` (discoverable from home page)
 
 ## Access Control Rules
 
