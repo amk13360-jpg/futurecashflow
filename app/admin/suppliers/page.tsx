@@ -38,7 +38,7 @@ export default async function SuppliersPage() {
   }
 
   return (
-    <div className="bg-muted/30 min-h-screen">
+    <div className="bg-background min-h-screen">
       <DashboardHeader userName={session?.username} />
 
       <main className="mx-auto px-4 py-8 container">

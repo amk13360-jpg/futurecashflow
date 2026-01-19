@@ -551,7 +551,7 @@ export default function BuyersPage() {
                           )}
                           {buyer.active_status === 'active' && (
                             <DropdownMenuItem 
-                              className="text-red-600"
+                              className="text-red-600 focus:bg-red-50 focus:text-red-600"
                               onClick={() => { setSelectedBuyer(buyer); setShowSuspendDialog(true); }}
                             >
                               <Pause className="mr-2 w-4 h-4" />
