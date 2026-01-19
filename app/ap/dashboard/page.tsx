@@ -110,6 +110,22 @@ export default function APDashboardPage() {
           </Card>
           <Card className="bg-card/50 hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
             <CardHeader>
+              <div className="flex justify-center items-center bg-accent-green/10 mb-4 rounded-xl w-14 h-14">
+                <FileText className="w-7 h-7 text-accent-green" />
+              </div>
+              <CardTitle className="text-foreground text-xl">View Invoices</CardTitle>
+              <CardDescription className="text-muted-foreground">Track uploaded invoices and offer status</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/ap/invoices">
+                <Button variant="outline" className="w-full font-semibold" size="lg">
+                  View All
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+          <Card className="bg-card/50 hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
+            <CardHeader>
               <div className="flex justify-center items-center bg-muted mb-4 rounded-xl w-14 h-14">
                 <BarChart3 className="w-7 h-7 text-muted-foreground" />
               </div>
