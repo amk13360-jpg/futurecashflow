@@ -390,6 +390,10 @@ Future Cashflow Team
     }
 
     const client = getEmailClient()
+    console.log(`[Email Service] Sending welcome email to: ${recipientEmail}`)
+    console.log(`[Email Service] Sender: ${senderAddress}`)
+    console.log(`[Email Service] Access link: ${accessLink}`)
+    
     const poller = await client.beginSend(emailMessage)
     const result = await poller.pollUntilDone()
 
@@ -397,11 +401,17 @@ Future Cashflow Team
       console.log(`[Email Service] Welcome email sent successfully to ${recipientEmail}`)
       return true
     } else {
-      console.error(`[Email Service] Failed to send welcome email. Status: ${result.status}`)
+      console.error(`[Email Service] Failed to send welcome email. Status: ${result.status}`, result)
       return false
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("[Email Service] Error sending welcome email:", error)
+    console.error("[Email Service] Error details:", {
+      message: error?.message,
+      code: error?.code,
+      statusCode: error?.statusCode,
+      details: error?.details
+    })
     return false
   }
 }

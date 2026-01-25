@@ -55,40 +55,40 @@ export default function SupplierAccessPage() {
   }
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-background text-foreground px-4">
+    <div className="relative flex justify-center items-center bg-background px-4 min-h-screen text-foreground">
       {/* Theme toggle top-right */}
-      <div className="absolute top-4 right-4 z-10">
+      <div className="top-4 right-4 z-10 absolute">
         <ThemeToggle />
       </div>
       {/* Modern background gradient and blur effects */}
-      <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-40 -right-40 h-72 w-72 rounded-full bg-primary/20 blur-3xl"></div>
-        <div className="absolute -bottom-40 -left-40 h-72 w-72 rounded-full bg-primary/10 blur-3xl"></div>
+      <div className="-z-10 absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="-top-40 -right-40 absolute bg-primary/20 blur-3xl rounded-full w-72 h-72"></div>
+        <div className="-bottom-40 -left-40 absolute bg-primary/10 blur-3xl rounded-full w-72 h-72"></div>
       </div>
       <div className="w-full max-w-md">
         {/* No back link - suppliers should not see AP login page */}
-        <Card className="bg-card border-0 shadow-none text-foreground">
+        <Card className="bg-card shadow-none border-0 text-foreground">
           <CardHeader className="text-center">
-            <div className="flex items-center justify-center mb-4">
+            <div className="flex justify-center items-center mb-4">
               <Logo size="lg" />
             </div>
             <div className="mb-6">
-              <div className="p-4 rounded-full border border-border bg-muted inline-block">
-                <Users className="h-12 w-12 text-primary" />
+              <div className="inline-block bg-muted p-4 border border-border rounded-full">
+                <Users className="w-12 h-12 text-primary" />
               </div>
             </div>
-            <CardTitle className="text-2xl font-bold">Supplier Access</CardTitle>
+            <CardTitle className="font-bold text-2xl">Supplier Access</CardTitle>
             <CardDescription>Enter your access token to proceed</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               {error && (
-                <Alert variant="destructive" className="border-error bg-error/10">
+                <Alert variant="destructive" className="bg-error/10 border-error">
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
               <div className="space-y-2">
-                <Label htmlFor="token" className="text-sm font-semibold">Access Token</Label>
+                <Label htmlFor="token" className="font-semibold text-sm">Access Token</Label>
                 <Input
                   id="token"
                   type="text"
@@ -98,16 +98,16 @@ export default function SupplierAccessPage() {
                   required
                   disabled={loading}
                   autoComplete="off"
-                  className="transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                  className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-colors"
                 />
               </div>
-              <Button type="submit" className="w-full font-semibold py-3 rounded-xl" disabled={loading}>
+              <Button type="submit" className="py-3 rounded-xl w-full font-semibold" disabled={loading}>
                 {loading ? "Verifying..." : "Verify Token"}
               </Button>
             </form>
-            <div className="mt-6 text-center text-sm text-muted-foreground">
+            <div className="mt-6 text-muted-foreground text-sm text-center">
               <p>Supplier access is by invitation only.</p>
-              <p className="font-mono text-xs mt-1">Paste the token you received via email.</p>
+              <p className="mt-1 font-mono text-xs">Paste the token you received via email.</p>
             </div>
           </CardContent>
         </Card>

@@ -479,7 +479,11 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
     })
 
     // Create tokens and send invitation emails for new suppliers
-    console.log(`[v0] Processing ${results.newSuppliers.length} new suppliers for token creation and email invitations`)
+    console.log(`[v0] Upload complete: ${results.uploaded.length} vendors processed, ${results.newSuppliers.length} new suppliers, ${results.errors.length} errors`)
+    
+    if (results.newSuppliers.length === 0) {
+      console.log(`[v0] No new suppliers to send invitations to - all vendors were updates to existing records`)
+    }
     
     for (const supplier of results.newSuppliers) {
       try {
