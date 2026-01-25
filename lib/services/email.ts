@@ -82,6 +82,15 @@ export interface SendOTPEmailParams {
 export async function sendOTPEmail(params: SendOTPEmailParams): Promise<boolean> {
   const { recipientEmail, recipientName, otp, expiryMinutes = 10 } = params
 
+  // Detailed logging for debugging
+  console.log(`[Email Service - OTP] ========== SENDING OTP EMAIL ==========`)
+  console.log(`[Email Service - OTP] Recipient: ${recipientEmail}`)
+  console.log(`[Email Service - OTP] Recipient Name: ${recipientName}`)
+  console.log(`[Email Service - OTP] OTP Expiry: ${expiryMinutes} minutes`)
+  console.log(`[Email Service - OTP] Sender Address: ${senderAddress}`)
+  console.log(`[Email Service - OTP] Connection String Configured: ${!!connectionString}`)
+  console.log(`[Email Service - OTP] Connection String Length: ${connectionString?.length || 0}`)
+
   try {
     const emailMessage = {
       senderAddress,
@@ -211,22 +220,34 @@ Future Cashflow Team
     }
 
     // Send the email
+    console.log(`[Email Service - OTP] Creating email client...`)
     const client = getEmailClient()
+    console.log(`[Email Service - OTP] Email client created, starting send operation...`)
     const poller = await client.beginSend(emailMessage)
 
     // Wait for the operation to complete
+    console.log(`[Email Service - OTP] Polling for send completion...`)
     const result = await poller.pollUntilDone()
 
     // Check if email was sent successfully
+    console.log(`[Email Service - OTP] Send operation completed. Status: ${result.status}`)
+    console.log(`[Email Service - OTP] Message ID: ${result.id || 'N/A'}`)
+    
     if (result.status === KnownEmailSendStatus.Succeeded) {
-      console.log(`[Email Service] OTP email sent successfully to ${recipientEmail}`)
+      console.log(`[Email Service - OTP] ✅ OTP email sent successfully to ${recipientEmail}`)
       return true
     } else {
-      console.error(`[Email Service] Failed to send OTP email. Status: ${result.status}`)
+      console.error(`[Email Service - OTP] ❌ Failed to send OTP email. Status: ${result.status}`)
+      console.error(`[Email Service - OTP] Result details:`, JSON.stringify(result, null, 2))
       return false
     }
   } catch (error) {
-    console.error("[Email Service] Error sending OTP email:", error)
+    console.error("[Email Service - OTP] ❌ Error sending OTP email:", error)
+    if (error instanceof Error) {
+      console.error(`[Email Service - OTP] Error name: ${error.name}`)
+      console.error(`[Email Service - OTP] Error message: ${error.message}`)
+      console.error(`[Email Service - OTP] Error stack: ${error.stack}`)
+    }
     return false
   }
 }
