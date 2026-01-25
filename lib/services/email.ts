@@ -1,7 +1,7 @@
 import { EmailClient, KnownEmailSendStatus } from "@azure/communication-email"
 
 const connectionString = process.env.AZURE_COMMUNICATION_CONNECTION_STRING || ""
-const senderAddress = process.env.AZURE_COMMUNICATION_SENDER || "DoNotReply@ccd12bc5-9970-4050-8117-1aec566c8db9.azurecomm.net"
+const senderAddress = process.env.AZURE_COMMUNICATION_SENDER || "DoNotReply@56279b88-458b-44e2-9d6c-9f867fcdf491.azurecomm.net"
 
 // ============================================================================
 // Generic Email Interface
