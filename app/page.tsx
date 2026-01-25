@@ -52,8 +52,8 @@ export default function HomePage() {
             Supply Chain Finance for the Mining Industry
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex sm:flex-row flex-col justify-center items-center gap-4">
+          {/* CTA Button - AP Login Only */}
+          <div className="flex justify-center items-center">
             <Link href="/login/ap" passHref>
               <Button 
                 size="lg" 
@@ -63,16 +63,8 @@ export default function HomePage() {
                 Accounts Payable Login
               </Button>
             </Link>
-            <Link href="/supplier/access" passHref>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="hover:shadow-lg px-8 py-6 rounded-full min-w-[200px] font-semibold text-lg hover:scale-105 transition-all duration-200"
-              >
-                Supplier Login
-              </Button>
-            </Link>
           </div>
+          {/* Note: Suppliers access the platform via email invitation link only */}
         </main>
 
         {/* Footer - subtle at bottom */}

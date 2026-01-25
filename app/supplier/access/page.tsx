@@ -3,13 +3,12 @@
 import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Users, ArrowLeft } from "lucide-react"
+import { Users } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Logo } from "@/components/ui/logo"
 
@@ -67,10 +66,7 @@ export default function SupplierAccessPage() {
         <div className="absolute -bottom-40 -left-40 h-72 w-72 rounded-full bg-primary/10 blur-3xl"></div>
       </div>
       <div className="w-full max-w-md">
-        <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to home
-        </Link>
+        {/* No back link - suppliers should not see AP login page */}
         <Card className="bg-card border-0 shadow-none text-foreground">
           <CardHeader className="text-center">
             <div className="flex items-center justify-center mb-4">
