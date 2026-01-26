@@ -68,25 +68,25 @@ export default function AdminInvoicesPage() {
   const eligibleInvoices = invoices.filter((inv) => inv.status === "matched")
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="bg-muted/30 min-h-screen">
       <DashboardHeader />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="mx-auto px-4 py-8 container">
         <div className="mb-6">
           <Link
             href="/admin/dashboard"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
+            className="inline-flex items-center mb-4 text-muted-foreground hover:text-foreground text-sm"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="mr-2 w-4 h-4" />
             Back to dashboard
           </Link>
-          <div className="flex items-center justify-between">
+          <div className="flex justify-between items-center">
             <div>
-              <h2 className="text-3xl font-bold">Invoice Management</h2>
+              <h2 className="font-bold text-3xl">Invoice Management</h2>
               <p className="text-muted-foreground">Review invoices and generate offers</p>
             </div>
             <Button onClick={handleGenerateOffers} disabled={selectedInvoices.length === 0 || generating}>
-              <Send className="h-4 w-4 mr-2" />
+              <Send className="mr-2 w-4 h-4" />
               {generating ? "Generating..." : `Generate Offers (${selectedInvoices.length})`}
             </Button>
           </div>
@@ -133,7 +133,7 @@ export default function AdminInvoicesPage() {
                         <h4 className="font-medium">{invoice.invoice_number}</h4>
                         <Badge variant={invoice.status === "offered" ? "default" : "secondary"}>{invoice.status}</Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground mt-1">
+                      <p className="mt-1 text-muted-foreground text-sm">
                         {invoice.supplier_name} • {invoice.buyer_name} ({invoice.company_code})
                       </p>
                       <div className="flex items-center gap-4 mt-2 text-sm">
