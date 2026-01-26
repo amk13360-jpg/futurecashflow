@@ -91,8 +91,16 @@ export default function OfferBatchesPage() {
 
     setProcessing(true)
     try {
-      // Pass null instead of undefined for optional date (undefined serializes incorrectly in Server Actions)
-      const scheduledAt = scheduledDate ? new Date(scheduledDate) : null
+      // Validate and normalize scheduled date
+      if (sendMode === "scheduled" && !scheduledDate) {
+        toast.error("Please select a scheduled date/time")
+        setProcessing(false)
+        return
+      }
+      // Only pass a date when in scheduled mode, else force null
+      const scheduledAt = sendMode === "scheduled"
+        ? (scheduledDate ? new Date(scheduledDate) : null)
+        : null
       const result = await createOfferBatch(
         selectedSupplier.supplier_id,
         selectedInvoices,
@@ -516,7 +524,14 @@ export default function OfferBatchesPage() {
               {/* Send Mode */}
               <div className="space-y-2">
                 <Label>Send Mode</Label>
-                <Select value={sendMode} onValueChange={(v) => setSendMode(v as any)}>
+                <Select 
+                  value={sendMode} 
+                  onValueChange={(v) => {
+                    const mode = v as "auto" | "review" | "scheduled"
+                    setSendMode(mode)
+                    if (mode !== "scheduled") setScheduledDate("")
+                  }}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
