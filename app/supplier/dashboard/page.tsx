@@ -1,4 +1,4 @@
-import { getSupplierOffers, getSupplierProfile, getSupplierCessionAgreement } from "@/lib/actions/suppliers"
+import { getSupplierOffers, getSupplierProfile, getSupplierCessionAgreement, getSupplierPayments } from "@/lib/actions/suppliers"
 import { SupplierHeader } from "@/components/supplier/supplier-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -14,10 +14,12 @@ export default function SupplierDashboardPage() {
   const profilePromise = getSupplierProfile();
   const offersPromise = getSupplierOffers();
   const cessionAgreementPromise = getSupplierCessionAgreement();
+  const paymentsPromise = getSupplierPayments();
   
   const profile = use(profilePromise);
   const offers = use(offersPromise);
   const cessionAgreement = use(cessionAgreementPromise);
+  const payments = use(paymentsPromise);
   
   const pendingOffers = offers.filter((o: any) => o.status === "sent");
   const acceptedOffers = offers.filter((o: any) => o.status === "accepted");
@@ -226,11 +228,51 @@ export default function SupplierDashboardPage() {
                 <CardDescription>Track your disbursements</CardDescription>
               </CardHeader>
               <CardContent>
-                <EmptyState
-                  icon={DollarSign}
-                  title="No payments yet"
-                  description="Payment history will appear here after you accept offers"
-                />
+                {payments.length === 0 ? (
+                  <EmptyState
+                    icon={DollarSign}
+                    title="No payments yet"
+                    description="Payment history will appear here after you accept offers"
+                  />
+                ) : (
+                  <div className="space-y-3">
+                    {payments.map((payment: any) => (
+                      <div key={payment.payment_id} className="flex justify-between items-center p-4 border rounded-lg">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <h4 className="font-medium">{payment.invoice_number}</h4>
+                            <Badge
+                              variant={
+                                payment.status === "completed"
+                                  ? "default"
+                                  : payment.status === "failed"
+                                    ? "destructive"
+                                    : "secondary"
+                              }
+                            >
+                              {payment.status}
+                            </Badge>
+                          </div>
+                          <p className="mt-1 text-muted-foreground text-sm">
+                            {payment.buyer_name} • Ref: {payment.payment_reference}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-green-600">
+                            {payment.currency} {parseFloat(payment.amount).toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
+                          </p>
+                          <p className="text-muted-foreground text-xs">
+                            {payment.completed_date
+                              ? new Date(payment.completed_date).toLocaleDateString()
+                              : payment.scheduled_date
+                                ? `Scheduled: ${new Date(payment.scheduled_date).toLocaleDateString()}`
+                                : "Pending"}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
