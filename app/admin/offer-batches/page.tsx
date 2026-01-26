@@ -71,6 +71,7 @@ export default function OfferBatchesPage() {
       setEligibleGroups(groupsData)
       setBatches(batchesData)
     } catch (error: any) {
+      console.error("[OfferBatches UI] Load error:", error)
       toast.error(error.message || "Failed to load data")
     } finally {
       setLoading(false)
