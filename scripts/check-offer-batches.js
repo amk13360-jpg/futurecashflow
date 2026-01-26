@@ -1,6 +1,6 @@
 const mysql = require('mysql2/promise');
 
-async function testQuery() {
+async function fixDatabase() {
   const conn = await mysql.createConnection({
     host: 'futurefinancecashflow.mysql.database.azure.com',
     user: 'FMadmin',
@@ -9,55 +9,71 @@ async function testQuery() {
     ssl: { rejectUnauthorized: true }
   });
 
-  console.log('=== TESTING THE EXACT QUERY THAT FAILS ===\n');
+  console.log('╔══════════════════════════════════════════════════════════════════╗');
+  console.log('║                    DATABASE FIX SCRIPT                           ║');
+  console.log('╚══════════════════════════════════════════════════════════════════╝\n');
 
-  try {
-    // Test getEligibleInvoicesForBatching query
-    console.log('Testing getEligibleInvoicesForBatching query...');
-    const [invoices] = await conn.execute(`
-      SELECT 
-        i.invoice_id, i.invoice_number, i.amount, i.due_date, i.company_code,
-        s.supplier_id, s.name as supplier_name, s.contact_email as supplier_email,
-        b.buyer_id, b.name as buyer_name, b.code as buyer_code,
-        DATEDIFF(i.due_date, CURDATE()) as days_to_maturity
-      FROM invoices i
-      JOIN suppliers s ON i.vendor_number = s.vendor_number AND i.company_code = s.company_code
-      JOIN buyers b ON b.code = i.company_code
-      WHERE i.status = 'matched' 
-        AND s.onboarding_status = 'approved'
-        AND DATEDIFF(i.due_date, CURDATE()) > 0
-      ORDER BY s.supplier_id, i.due_date
-    `);
-    console.log('SUCCESS! Found', invoices.length, 'eligible invoices');
-    if (invoices.length > 0) console.table(invoices.slice(0, 3));
-  } catch (err) {
-    console.log('ERROR in getEligibleInvoicesForBatching:', err.message);
+  // 1. Check for orphaned offered invoices (offered but no offer record)
+  console.log('1️⃣  Checking for orphaned "offered" invoices...');
+  const [orphaned] = await conn.execute(`
+    SELECT i.invoice_id, i.invoice_number, i.status
+    FROM invoices i
+    LEFT JOIN offers o ON i.invoice_id = o.invoice_id
+    WHERE i.status = 'offered' AND o.offer_id IS NULL
+  `);
+  console.log(`   Found ${orphaned.length} orphaned invoices`);
+  if (orphaned.length > 0) {
+    console.table(orphaned);
   }
 
-  try {
-    // Test getOfferBatches query
-    console.log('\nTesting getOfferBatches query...');
-    const [batches] = await conn.execute(`
-      SELECT 
-        ob.*,
-        s.name as supplier_name, s.contact_email as supplier_email,
-        b.name as buyer_name
-      FROM offer_batches ob
-      JOIN suppliers s ON ob.supplier_id = s.supplier_id
-      JOIN buyers b ON ob.buyer_id = b.buyer_id
-      ORDER BY ob.created_at DESC
-    `);
-    console.log('SUCCESS! Found', batches.length, 'batches');
-  } catch (err) {
-    console.log('ERROR in getOfferBatches:', err.message);
-  }
+  // 2. Reset orphaned invoices back to 'matched'
+  console.log('\n2️⃣  Resetting orphaned invoices to "matched"...');
+  const [resetResult] = await conn.execute(`
+    UPDATE invoices 
+    SET status = 'matched' 
+    WHERE status = 'offered' 
+      AND invoice_id NOT IN (SELECT invoice_id FROM offers)
+  `);
+  console.log(`   Reset ${resetResult.affectedRows} invoices`);
 
-  // Check buyers table
-  console.log('\n=== BUYERS TABLE ===');
-  const [buyers] = await conn.execute('SELECT * FROM buyers');
-  console.table(buyers);
+  // 3. Delete empty batches
+  console.log('\n3️⃣  Deleting empty offer batches...');
+  const [deleteResult] = await conn.execute(`
+    DELETE FROM offer_batches WHERE invoice_count = 0
+  `);
+  console.log(`   Deleted ${deleteResult.affectedRows} empty batches`);
+
+  // 4. Verification
+  console.log('\n╔══════════════════════════════════════════════════════════════════╗');
+  console.log('║                       VERIFICATION                               ║');
+  console.log('╚══════════════════════════════════════════════════════════════════╝\n');
+
+  console.log('📊 Current Invoice Status:');
+  const [invoices] = await conn.execute(`
+    SELECT invoice_id, invoice_number, status, vendor_number
+    FROM invoices WHERE company_code = 'AAP1001'
+    ORDER BY invoice_id
+  `);
+  console.table(invoices);
+
+  console.log('\n📊 Current Offer Batches:');
+  const [batches] = await conn.execute('SELECT * FROM offer_batches');
+  console.log(`   Total batches: ${batches.length}`);
+
+  console.log('\n📊 Eligible for Batching:');
+  const [eligible] = await conn.execute(`
+    SELECT COUNT(*) as count
+    FROM invoices i
+    JOIN suppliers s ON i.vendor_number = s.vendor_number AND i.company_code = s.company_code
+    WHERE i.status = 'matched' 
+      AND s.onboarding_status = 'approved'
+      AND i.due_date > CURDATE()
+  `);
+  console.log(`   ${eligible[0].count} invoices ready for offer batching`);
 
   await conn.end();
+
+  console.log('\n✅ Database fix complete!');
 }
 
-testQuery().catch(console.error);
+fixDatabase().catch(console.error);

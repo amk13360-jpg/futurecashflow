@@ -75,7 +75,7 @@ export default function SupplierDashboardPage() {
             variant="success"
           />
           <MetricCard
-            title="Total Received"
+            title="Total Offered"
             value={`R ${totalAcceptedValue.toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
             icon={DollarSign}
             variant="primary"

@@ -9,8 +9,16 @@ export default function ThemeRoot({ children }: { children: React.ReactNode }) {
     setMounted(true)
   }, [])
 
-  // Prevent hydration mismatch by not rendering until mounted
-  if (!mounted) return null
-
-  return <ThemeProvider attribute="class" defaultTheme="system" enableSystem>{children}</ThemeProvider>
+  // Render children immediately but only apply theme after mount to prevent hydration mismatch
+  // Using suppressHydrationWarning on the html element instead of returning null
+  return (
+    <ThemeProvider 
+      attribute="class" 
+      defaultTheme="system" 
+      enableSystem
+      disableTransitionOnChange
+    >
+      {children}
+    </ThemeProvider>
+  )
 }
