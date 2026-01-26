@@ -99,12 +99,16 @@ export default function OfferBatchesPage() {
 
       toast.success(`Batch created with ${result.offersCreated} offers`)
       if (result.errors.length > 0) {
-        toast.warning(`${result.errors.length} invoices had errors`)
+        // Show each error as a separate toast
+        result.errors.forEach((err) => {
+          toast.warning(err)
+        })
       }
 
       setCreateDialogOpen(false)
       loadData()
     } catch (error: any) {
+      console.error('[OfferBatches UI] Error creating batch:', error)
       toast.error(error.message || "Failed to create batch")
     } finally {
       setProcessing(false)

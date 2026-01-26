@@ -200,6 +200,8 @@ export async function createOfferBatch(
       for (const invoiceId of invoiceIds) {
         try {
           // Get invoice details
+          console.log(`[OfferBatches] Processing invoice ${invoiceId} for supplier ${supplierId}`)
+          
           const [invoices] = await connection.execute<RowDataPacket[]>(
             `SELECT i.*, s.supplier_id
              FROM invoices i
@@ -209,7 +211,8 @@ export async function createOfferBatch(
           )
 
           if (invoices.length === 0) {
-            errors.push(`Invoice ${invoiceId}: Not found or not eligible`)
+            console.log(`[OfferBatches] Invoice ${invoiceId} not found or not eligible for supplier ${supplierId}`)
+            errors.push(`Invoice ${invoiceId}: Not found or not eligible (may already be offered or wrong supplier)`)
             continue
           }
 
@@ -274,6 +277,18 @@ export async function createOfferBatch(
          WHERE batch_id = ?`,
         [totalInvoiceAmount, totalDiscountAmount, totalNetPayment, offersCreated, batchId]
       )
+
+      // If no offers were created, delete the batch and throw error
+      if (offersCreated === 0) {
+        await connection.execute(`DELETE FROM offer_batches WHERE batch_id = ?`, [batchId])
+        const errorMsg = errors.length > 0 
+          ? `No offers could be created. Errors: ${errors.join('; ')}` 
+          : 'No eligible invoices found for this supplier'
+        console.error(`[OfferBatches] ${errorMsg}`)
+        throw new Error(errorMsg)
+      }
+
+      console.log(`[OfferBatches] Batch ${batchId} created: ${offersCreated} offers, R${totalNetPayment.toFixed(2)}`)
 
       // If auto-send, generate token and send email
       if (sendMode === "auto" && offersCreated > 0) {
