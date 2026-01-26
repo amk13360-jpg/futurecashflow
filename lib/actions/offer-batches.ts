@@ -124,7 +124,7 @@ export async function createOfferBatch(
   supplierId: number,
   invoiceIds: number[],
   sendMode: "auto" | "review" | "scheduled" = "review",
-  scheduledSendAt?: Date
+  scheduledSendAt: Date | null = null
 ): Promise<{ batchId: number; offersCreated: number; errors: string[] }> {
   const session = await getSession()
   if (!session || session.role !== "admin") {
@@ -133,6 +133,46 @@ export async function createOfferBatch(
 
   if (invoiceIds.length === 0) {
     throw new Error("No invoices selected for batch")
+  }
+
+  // Normalize and validate scheduled date to avoid "$undefined" or invalid values crossing the server action boundary
+  let normalizedScheduledSendAt: Date | null = null
+  try {
+    if (sendMode === "scheduled") {
+      // Accept Date, string ISO, or null. Treat "$undefined"/empty as null.
+      const raw: unknown = scheduledSendAt as unknown
+      if (raw === null || raw === undefined) {
+        normalizedScheduledSendAt = null
+      } else if (typeof raw === "string") {
+        const s = raw.trim()
+        if (s === "" || s === "$undefined") {
+          normalizedScheduledSendAt = null
+        } else {
+          const parsed = new Date(s)
+          if (Number.isNaN(parsed.getTime())) {
+            throw new Error("Invalid scheduled date format")
+          }
+          normalizedScheduledSendAt = parsed
+        }
+      } else if (raw instanceof Date) {
+        if (Number.isNaN(raw.getTime())) {
+          throw new Error("Invalid scheduled date")
+        }
+        normalizedScheduledSendAt = raw
+      } else {
+        throw new Error("Unsupported scheduled date type")
+      }
+
+      if (!normalizedScheduledSendAt) {
+        throw new Error("Scheduled send date required for 'scheduled' mode")
+      }
+    } else {
+      // For non-scheduled modes, force null to avoid serialization pitfalls
+      normalizedScheduledSendAt = null
+    }
+  } catch (e) {
+    console.error("[OfferBatches] Scheduled date normalization error:", e)
+    throw e
   }
 
   try {
@@ -188,7 +228,7 @@ export async function createOfferBatch(
           invoiceIds.length,
           sendMode === "auto" ? "sent" : "pending_review",
           sendMode,
-          scheduledSendAt || null,
+          normalizedScheduledSendAt,
           offerExpiryDate,
           session.userId,
         ]

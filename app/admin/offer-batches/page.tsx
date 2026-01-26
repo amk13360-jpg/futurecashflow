@@ -91,11 +91,13 @@ export default function OfferBatchesPage() {
 
     setProcessing(true)
     try {
+      // Pass null instead of undefined for optional date (undefined serializes incorrectly in Server Actions)
+      const scheduledAt = scheduledDate ? new Date(scheduledDate) : null
       const result = await createOfferBatch(
         selectedSupplier.supplier_id,
         selectedInvoices,
         sendMode,
-        scheduledDate ? new Date(scheduledDate) : undefined
+        scheduledAt
       )
 
       toast.success(`Batch created with ${result.offersCreated} offers`)
