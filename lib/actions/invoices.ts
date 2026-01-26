@@ -697,7 +697,7 @@ async function createOffersForInvoices(invoiceIds: number[]): Promise<OfferGener
 
         // Check if supplier is approved
         if (invoice.onboarding_status !== "approved") {
-          errors.push(`Invoice ${invoiceId}: Supplier not approved`)
+          errors.push(`Invoice ${invoiceId}: Supplier not approved (current status: ${invoice.onboarding_status}). Supplier must complete onboarding and be approved by admin.`)
           continue
         }
 

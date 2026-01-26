@@ -43,13 +43,22 @@ export default function AdminInvoicesPage() {
     setGenerating(true)
     try {
       const result = await generateOffers(selectedInvoices)
-      toast.success(`Generated ${result.created.length} offers`)
+      if (result.created.length > 0) {
+        toast.success(`Generated ${result.created.length} offers`)
+      }
       if (result.errors.length > 0) {
-        toast.error(`${result.errors.length} errors occurred`)
+        // Show each error as a separate toast for better visibility
+        result.errors.forEach((error: string) => {
+          toast.error(error)
+        })
+      }
+      if (result.created.length === 0 && result.errors.length === 0) {
+        toast.warning("No offers were generated. Invoices may not be eligible.")
       }
       setSelectedInvoices([])
       loadInvoices()
     } catch (error: any) {
+      console.error("Generate offers error:", error)
       toast.error(error.message || "Failed to generate offers")
     } finally {
       setGenerating(false)
