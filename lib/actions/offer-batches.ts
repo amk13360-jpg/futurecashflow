@@ -124,8 +124,10 @@ export async function createOfferBatch(
   supplierId: number,
   invoiceIds: number[],
   sendMode: "auto" | "review" | "scheduled" = "review",
-  scheduledSendAt: Date | null = null
+  scheduledSendAt?: string | null  // Accept ISO string or null (not Date - better for serialization)
 ): Promise<{ batchId: number; offersCreated: number; errors: string[] }> {
+  console.log("[OfferBatches] createOfferBatch called:", { supplierId, invoiceIds, sendMode, scheduledSendAt, typeOf: typeof scheduledSendAt })
+  
   const session = await getSession()
   if (!session || session.role !== "admin") {
     throw new Error("Unauthorized - Admin access required")
@@ -135,16 +137,15 @@ export async function createOfferBatch(
     throw new Error("No invoices selected for batch")
   }
 
-  // Normalize and validate scheduled date to avoid "$undefined" or invalid values crossing the server action boundary
+  // Normalize and validate scheduled date
   let normalizedScheduledSendAt: Date | null = null
   try {
     if (sendMode === "scheduled") {
-      // Accept Date, string ISO, or null. Treat "$undefined"/empty as null.
-      const raw: unknown = scheduledSendAt as unknown
-      if (raw === null || raw === undefined) {
+      // Accept string ISO or null. Treat "$undefined"/empty as null.
+      if (scheduledSendAt === null || scheduledSendAt === undefined) {
         normalizedScheduledSendAt = null
-      } else if (typeof raw === "string") {
-        const s = raw.trim()
+      } else if (typeof scheduledSendAt === "string") {
+        const s = scheduledSendAt.trim()
         if (s === "" || s === "$undefined") {
           normalizedScheduledSendAt = null
         } else {
@@ -154,13 +155,13 @@ export async function createOfferBatch(
           }
           normalizedScheduledSendAt = parsed
         }
-      } else if (raw instanceof Date) {
-        if (Number.isNaN(raw.getTime())) {
-          throw new Error("Invalid scheduled date")
-        }
-        normalizedScheduledSendAt = raw
       } else {
-        throw new Error("Unsupported scheduled date type")
+        // Handle edge case of Date object being passed
+        const parsed = new Date(scheduledSendAt as any)
+        if (Number.isNaN(parsed.getTime())) {
+          throw new Error("Invalid scheduled date format")
+        }
+        normalizedScheduledSendAt = parsed
       }
 
       if (!normalizedScheduledSendAt) {

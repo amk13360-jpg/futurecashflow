@@ -97,9 +97,10 @@ export default function OfferBatchesPage() {
         setProcessing(false)
         return
       }
-      // Only pass a date when in scheduled mode, else force null
-      const scheduledAt = sendMode === "scheduled"
-        ? (scheduledDate ? new Date(scheduledDate) : null)
+      // Only pass a date string when in scheduled mode, else pass null
+      // Use ISO string instead of Date for better Next.js serialization
+      const scheduledAt: string | null = sendMode === "scheduled"
+        ? (scheduledDate ? new Date(scheduledDate).toISOString() : null)
         : null
       // Log the payload before submit for verification
       const payload = {
@@ -108,7 +109,7 @@ export default function OfferBatchesPage() {
         sendMode,
         scheduledSendAt: scheduledAt,
       }
-      console.log("[OfferBatches UI] CreateBatch payload", payload)
+      console.log("[OfferBatches UI] CreateBatch payload", JSON.stringify(payload))
       const result = await createOfferBatch(
         selectedSupplier.supplier_id,
         selectedInvoices,
