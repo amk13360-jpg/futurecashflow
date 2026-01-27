@@ -2,16 +2,8 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
-
-// Logo with brand blue (no animation)
-export const LogoIcon = ({ className = "w-12 h-12" }) => (
-  <div className="relative">
-    <svg aria-hidden="true" className={className} fill="currentColor" viewBox="0 0 80 80">
-      <path d="M40 8L16 32H26L40 18L54 32H64L40 8Z" />
-      <path d="M40 28L16 52H26L40 38L54 52H64L40 28Z" />
-    </svg>
-  </div>
-)
+import { Logo } from "@/components/ui/logo"
+import { BRAND } from "@/lib/constants/brand"
 
 // Header
 const Header = () => {
@@ -32,19 +24,9 @@ export default function HomePage() {
       <Header />
       <div className="relative flex flex-col justify-center items-center h-full">
         <main className="flex flex-col justify-center items-center mx-auto p-4 max-w-4xl text-center">
-          {/* Hero Logo */}
-          <div className="flex justify-center items-center gap-4 mb-6">
-            {/* Chevrons */}
-            <span className="flex flex-col">
-              <svg width="64" height="64" viewBox="0 0 40 40" fill="none">
-                <path d="M20 8L12 16H16L20 12L24 16H28L20 8Z" className="fill-blue-600" />
-                <path d="M20 18L12 26H16L20 22L24 26H28L20 18Z" className="fill-blue-600" />
-              </svg>
-            </span>
-            {/* Brand Name with Divider */}
-            <span className="font-bold text-blue-600 text-3xl md:text-4xl lg:text-5xl">Future</span>
-            <div className="bg-blue-600 w-px h-10 md:h-12"></div>
-            <span className="font-bold text-blue-600 text-3xl md:text-4xl lg:text-5xl">Cashflow</span>
+          {/* Hero Logo - Using standardized Logo component */}
+          <div className="mb-6">
+            <Logo size="xl" className="scale-125" />
           </div>
 
           {/* Tagline */}
@@ -70,7 +52,7 @@ export default function HomePage() {
         {/* Footer - subtle at bottom */}
         <footer className="right-0 bottom-4 left-0 absolute text-center">
           <p className="text-muted-foreground text-xs">
-            © 2025 Future Mining Finance (Pty) Ltd · Registered Credit Provider NCRCP18174
+            {BRAND.footerText}
           </p>
         </footer>
       </div>

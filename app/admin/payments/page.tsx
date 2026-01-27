@@ -15,9 +15,10 @@ import {
   markPaymentsCompleted,
   getRepayments,
 } from "@/lib/actions/payments"
-import { DollarSign, Download, CheckCircle, ArrowLeft, Clock } from "lucide-react"
+import { DollarSign, Download, CheckCircle, ArrowLeft, Clock, FileSpreadsheet } from "lucide-react"
 import Link from "next/link"
 import { toast } from "sonner"
+import * as XLSX from "xlsx"
 
 export default function PaymentsPage() {
   const [queue, setQueue] = useState<any[]>([])
@@ -122,6 +123,101 @@ export default function PaymentsPage() {
   const queuedPayments = payments.filter((p) => p.status === "queued")
   const processingPayments = payments.filter((p) => p.status === "processing")
 
+  // Excel Export Functions
+  const exportPaymentQueueToExcel = () => {
+    if (queue.length === 0) {
+      toast.error("No data to export")
+      return
+    }
+
+    const exportData = queue.map((item: any) => ({
+      "Offer ID": item.offer_id,
+      "Invoice Number": item.invoice_number,
+      "Supplier Name": item.supplier_name,
+      "Buyer Name": item.buyer_name,
+      "Net Payment Amount": item.net_payment_amount,
+      "Currency": item.currency,
+      "Bank Name": item.bank_name,
+      "Account Number": item.bank_account_no,
+      "Branch Code": item.bank_branch_code || "",
+      "Accepted Date": item.accepted_at ? new Date(item.accepted_at).toLocaleDateString() : "",
+    }))
+
+    const ws = XLSX.utils.json_to_sheet(exportData)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, "Payment Queue")
+    
+    // Auto-size columns
+    const colWidths = Object.keys(exportData[0] || {}).map(key => ({ wch: Math.max(key.length, 15) }))
+    ws["!cols"] = colWidths
+
+    XLSX.writeFile(wb, `Payment_Queue_${new Date().toISOString().split("T")[0]}.xlsx`)
+    toast.success(`Exported ${queue.length} records to Excel`)
+  }
+
+  const exportPaymentsToExcel = () => {
+    if (payments.length === 0) {
+      toast.error("No data to export")
+      return
+    }
+
+    const exportData = payments.map((payment: any) => ({
+      "Payment ID": payment.payment_id,
+      "Payment Reference": payment.payment_reference,
+      "Status": payment.status,
+      "Supplier Name": payment.supplier_name,
+      "Invoice Number": payment.invoice_number,
+      "Amount": payment.amount,
+      "Currency": payment.currency,
+      "Payment Method": payment.payment_method || "EFT",
+      "Batch ID": payment.batch_id || "",
+      "Scheduled Date": payment.scheduled_date ? new Date(payment.scheduled_date).toLocaleDateString() : "",
+      "Completed Date": payment.completed_date ? new Date(payment.completed_date).toLocaleDateString() : "",
+      "Created At": payment.created_at ? new Date(payment.created_at).toLocaleDateString() : "",
+    }))
+
+    const ws = XLSX.utils.json_to_sheet(exportData)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, "All Payments")
+    
+    const colWidths = Object.keys(exportData[0] || {}).map(key => ({ wch: Math.max(key.length, 15) }))
+    ws["!cols"] = colWidths
+
+    XLSX.writeFile(wb, `All_Payments_${new Date().toISOString().split("T")[0]}.xlsx`)
+    toast.success(`Exported ${payments.length} records to Excel`)
+  }
+
+  const exportRepaymentsToExcel = () => {
+    if (repayments.length === 0) {
+      toast.error("No data to export")
+      return
+    }
+
+    const exportData = repayments.map((repayment: any) => ({
+      "Repayment ID": repayment.repayment_id,
+      "Invoice Number": repayment.invoice_number,
+      "Buyer Name": repayment.buyer_name,
+      "Buyer Code": repayment.buyer_code,
+      "Supplier Name": repayment.supplier_name,
+      "Status": repayment.status,
+      "Expected Amount": repayment.expected_amount,
+      "Received Amount": repayment.received_amount || 0,
+      "Due Date": repayment.due_date ? new Date(repayment.due_date).toLocaleDateString() : "",
+      "Received Date": repayment.received_date ? new Date(repayment.received_date).toLocaleDateString() : "",
+      "Reconciliation Reference": repayment.reconciliation_reference || "",
+    }))
+
+    const ws = XLSX.utils.json_to_sheet(exportData)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, "Repayments")
+    
+    const colWidths = Object.keys(exportData[0] || {}).map(key => ({ wch: Math.max(key.length, 15) }))
+    ws["!cols"] = colWidths
+
+    XLSX.writeFile(wb, `Repayments_${new Date().toISOString().split("T")[0]}.xlsx`)
+    toast.success(`Exported ${repayments.length} records to Excel`)
+  }
+
   return (
     <div className="min-h-screen bg-muted/30">
       <DashboardHeader />
@@ -155,10 +251,21 @@ export default function PaymentsPage() {
                     <CardTitle>Payment Queue</CardTitle>
                     <CardDescription>Accepted offers ready for payment processing</CardDescription>
                   </div>
-                  <Button onClick={handleQueuePayments} disabled={selectedOffers.length === 0 || processing}>
-                    <CheckCircle className="h-4 w-4 mr-2" />
-                    {processing ? "Processing..." : `Queue Payments (${selectedOffers.length})`}
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button 
+                      onClick={exportPaymentQueueToExcel} 
+                      variant="outline" 
+                      disabled={queue.length === 0}
+                      className="bg-transparent"
+                    >
+                      <FileSpreadsheet className="h-4 w-4 mr-2" />
+                      Export Excel
+                    </Button>
+                    <Button onClick={handleQueuePayments} disabled={selectedOffers.length === 0 || processing}>
+                      <CheckCircle className="h-4 w-4 mr-2" />
+                      {processing ? "Processing..." : `Queue Payments (${selectedOffers.length})`}
+                    </Button>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
@@ -216,6 +323,15 @@ export default function PaymentsPage() {
                     </CardDescription>
                   </div>
                   <div className="flex gap-2">
+                    <Button
+                      onClick={exportPaymentsToExcel}
+                      variant="outline"
+                      disabled={payments.length === 0}
+                      className="bg-transparent"
+                    >
+                      <FileSpreadsheet className="h-4 w-4 mr-2" />
+                      Export Excel
+                    </Button>
                     <Button
                       onClick={handleGenerateBatch}
                       disabled={selectedPayments.length === 0 || processing}
@@ -299,8 +415,21 @@ export default function PaymentsPage() {
           <TabsContent value="repayments">
             <Card>
               <CardHeader>
-                <CardTitle>Repayment Tracking</CardTitle>
-                <CardDescription>Track buyer repayments on invoice due dates</CardDescription>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Repayment Tracking</CardTitle>
+                    <CardDescription>Track buyer repayments on invoice due dates</CardDescription>
+                  </div>
+                  <Button 
+                    onClick={exportRepaymentsToExcel} 
+                    variant="outline" 
+                    disabled={repayments.length === 0}
+                    className="bg-transparent"
+                  >
+                    <FileSpreadsheet className="h-4 w-4 mr-2" />
+                    Export Excel
+                  </Button>
+                </div>
               </CardHeader>
               <CardContent>
                 {loading ? (
