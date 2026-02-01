@@ -93,11 +93,11 @@ export default async function AdminDashboardPage() {
  </CardContent>
  </Card>
 
- <Card className="group hover:shadow-lg border-l-4 border-l-purple-500 hover:border-l-purple-600 transition-all hover:-translate-y-1 duration-300">
+ <Card className="group hover:shadow-lg border-l-4 border-l-info hover:border-l-info transition-all hover:-translate-y-1 duration-300">
  <CardHeader className="pb-3">
  <div className="flex justify-between items-center">
- <div className="bg-purple-100 dark:bg-purple-900/40 p-2.5 rounded-lg group-hover:scale-110 transition-transform duration-300">
- <Building2 className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+ <div className="bg-info-bg p-2.5 rounded-lg group-hover:scale-110 transition-transform duration-300">
+ <Building2 className="w-5 h-5 text-info" />
  </div>
  </div>
  <CardTitle className="mt-3 font-semibold text-base">Buyers</CardTitle>

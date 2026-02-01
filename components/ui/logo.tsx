@@ -1,5 +1,6 @@
 "use client"
 
+import type React from "react"
 import { cn } from "@/lib/utils"
 
 /**
@@ -47,8 +48,8 @@ import { cn } from "@/lib/utils"
 
 // Brand color constants
 const BRAND_COLORS = {
- primary: "text-info",
- primaryBg: "bg-blue-600",
+ primary: "text-brand-blue",
+ primaryBg: "bg-brand-blue",
  light: "text-white",
  lightBg: "bg-white",
  dark: "text-gray-900",
@@ -76,7 +77,7 @@ export function LogoIcon({
  variant = "adaptive",
  style,
 }: LogoIconProps) {
- const colorClass = BRAND_COLORS.primary
+ const colorClass = variant === "dark" ? BRAND_COLORS.light : BRAND_COLORS.primary
 
  return (
  <svg 
@@ -175,12 +176,12 @@ export function Logo({
  : "text-muted-foreground dark:text-white"
 
  const dividerColorClass = variant === "dark" || variant === "light" || variant === "adaptive" || variant === "blue"
- ? BRAND_COLORS.primaryBg
+ ? (variant === "dark" ? "bg-white" : BRAND_COLORS.primaryBg)
  : BRAND_COLORS.primaryBg
 
- const blueTextStyle = variant === "blue" ? { color: "var(--info)" } : undefined
+ const blueTextStyle = variant === "blue" ? { color: "var(--brand-blue)" } : undefined
  const blueDividerStyle = variant === "blue" ? { backgroundColor: "var(--brand-blue)" } : undefined
- const blueIconStyle = variant === "blue" ? { color: "var(--info)" } : undefined
+ const blueIconStyle = variant === "blue" ? { color: "var(--brand-blue)" } : undefined
 
  return (
  <div className={cn("flex items-center", sizes.gap, className)}>
