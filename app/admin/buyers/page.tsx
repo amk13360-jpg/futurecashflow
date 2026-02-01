@@ -534,7 +534,10 @@ export default function BuyersPage() {
  <MoreVertical className="w-4 h-4" />
  </Button>
  </DropdownMenuTrigger>
- <DropdownMenuContent align="end">
+ <DropdownMenuContent
+ align="end"
+ className="bg-popover text-popover-foreground border border-border shadow-lg"
+ >
  <DropdownMenuItem onClick={() => router.push(`/admin/buyers/${buyer.buyer_id}`)}>
  <Eye className="mr-2 w-4 h-4" />
  View Details
