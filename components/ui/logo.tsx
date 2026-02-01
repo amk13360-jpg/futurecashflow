@@ -1,6 +1,5 @@
 "use client"
 
-import type React from "react"
 import { cn } from "@/lib/utils"
 
 /**
@@ -63,7 +62,6 @@ type LogoVariant = "adaptive" | "light" | "dark" | "blue"
 interface LogoIconProps {
  className?: string
  variant?: LogoVariant
- style?: React.CSSProperties
 }
 
 /**
@@ -75,15 +73,18 @@ interface LogoIconProps {
 export function LogoIcon({ 
  className = "h-10 w-10", 
  variant = "adaptive",
- style,
 }: LogoIconProps) {
- const colorClass = variant === "dark" ? BRAND_COLORS.light : BRAND_COLORS.primary
-
+ const colorClass =
+  variant === "dark"
+   ? BRAND_COLORS.light
+   : variant === "adaptive"
+    ? "text-brand-blue dark:text-white"
+    : BRAND_COLORS.primary
+ 
  return (
  <svg 
  aria-hidden="true" 
  className={cn("shrink-0", colorClass, className)} 
- style={style}
  fill="currentColor" 
  viewBox="0 0 80 80"
  role="img"
@@ -176,27 +177,26 @@ export function Logo({
  : "text-muted-foreground dark:text-white"
 
  const dividerColorClass = variant === "dark" || variant === "light" || variant === "adaptive" || variant === "blue"
- ? (variant === "dark" ? "bg-white" : BRAND_COLORS.primaryBg)
+ ? (variant === "adaptive"
+   ? "bg-brand-blue dark:bg-white"
+   : variant === "dark"
+    ? "bg-white"
+    : BRAND_COLORS.primaryBg)
  : BRAND_COLORS.primaryBg
-
- const blueTextStyle = variant === "blue" ? { color: "var(--brand-blue)" } : undefined
- const blueDividerStyle = variant === "blue" ? { backgroundColor: "var(--brand-blue)" } : undefined
- const blueIconStyle = variant === "blue" ? { color: "var(--brand-blue)" } : undefined
 
  return (
  <div className={cn("flex items-center", sizes.gap, className)}>
  <LogoIcon 
  className={cn(sizes.icon, iconClassName)} 
  variant={variant}
- style={blueIconStyle}
  />
  {showText && (
  <>
- <span className={cn(sizes.text, "font-bold", textColorClass)} style={blueTextStyle}>
+ <span className={cn(sizes.text, "font-bold", textColorClass)}>
  Future
  </span>
- <div className={cn("w-px", sizes.divider, dividerColorClass)} style={blueDividerStyle} />
- <span className={cn(sizes.text, "font-normal", secondaryTextColorClass)} style={blueTextStyle}>
+ <div className={cn("w-px", sizes.divider, dividerColorClass)} />
+ <span className={cn(sizes.text, "font-normal", secondaryTextColorClass)}>
  Cashflow
  </span>
  </>
