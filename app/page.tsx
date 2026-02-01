@@ -11,7 +11,9 @@ const Header = () => {
     <header className="top-0 right-0 left-0 z-50 fixed bg-background/80 backdrop-blur-sm border-b">
       <div className="mx-auto px-4 py-4 container">
         <div className="flex justify-end items-center">
-          <ThemeToggle />
+          <div className="rounded-full border bg-muted/40 px-2 py-1 shadow-sm">
+            <ThemeToggle className="h-9 rounded-full px-3 text-xs" />
+          </div>
         </div>
       </div>
     </header>

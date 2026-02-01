@@ -58,7 +58,9 @@ export default function SupplierAccessPage() {
     <div className="relative flex justify-center items-center bg-background px-4 min-h-screen text-foreground">
       {/* Theme toggle top-right */}
       <div className="top-4 right-4 z-10 absolute">
-        <ThemeToggle />
+        <div className="rounded-full border bg-muted/40 px-2 py-1 shadow-sm">
+          <ThemeToggle className="h-9 rounded-full px-3 text-xs" />
+        </div>
       </div>
       {/* Modern background gradient and blur effects */}
       <div className="-z-10 absolute inset-0 overflow-hidden pointer-events-none">
