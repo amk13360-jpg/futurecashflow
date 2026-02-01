@@ -212,3 +212,17 @@ button, a, [role="button"] {
   background-color: var(--primary);
   color: var(--primary-foreground);
 }
+
+/* Force opaque dropdown surfaces so options never blend with page content */
+[data-slot="select-content"],
+[data-slot="dropdown-menu-content"],
+[data-slot="dropdown-menu-sub-content"] {
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+  border: 1px solid var(--border);
+  opacity: 1;
+  z-index: 200;
+}
+[data-slot="select-viewport"] {
+  background-color: var(--popover);
+}
