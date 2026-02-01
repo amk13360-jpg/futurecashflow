@@ -78,7 +78,7 @@ export function LogoIcon({
   variant === "dark"
    ? BRAND_COLORS.light
    : variant === "adaptive"
-    ? "text-brand-blue dark:text-white"
+    ? "text-brand-blue"
     : variant === "blue"
       ? "text-brand-blue"
       : BRAND_COLORS.primary
@@ -87,6 +87,7 @@ export function LogoIcon({
  <svg 
  aria-hidden="true" 
  className={cn("shrink-0", colorClass, className)} 
+ style={variant === "blue" ? { color: "var(--brand-blue)" } : undefined}
  fill="currentColor" 
  viewBox="0 0 80 80"
  role="img"
@@ -175,12 +176,12 @@ export function Logo({
  : variant === "dark"
  ? "text-white"
  : variant === "light"
- ? "text-gray-700"
- : "text-gray-600 dark:text-white"
+ ? "text-black"
+ : "text-black dark:text-white"
 
  const dividerColorClass = variant === "dark" || variant === "light" || variant === "adaptive" || variant === "blue"
  ? (variant === "adaptive"
-   ? "bg-brand-blue dark:bg-white"
+   ? "bg-brand-blue"
    : variant === "dark"
     ? "bg-white"
     : "bg-brand-blue")
@@ -195,10 +196,15 @@ export function Logo({
  {showText && (
  <>
  <span className={cn(sizes.text, "font-bold", textColorClass)}>
+ <span style={variant === "blue" ? { color: "var(--brand-blue)" } : undefined}>
  Future
  </span>
- <div className={cn("w-px", sizes.divider, dividerColorClass)} />
- <span className={cn(sizes.text, "font-normal", secondaryTextColorClass)}>
+ </span>
+ <div
+ className={cn("w-px", sizes.divider, dividerColorClass)}
+ style={variant === "blue" ? { backgroundColor: "var(--brand-blue)" } : undefined}
+ />
+ <span className={cn(sizes.text, "font-normal", secondaryTextColorClass)} style={variant === "blue" ? { color: "var(--brand-blue)" } : undefined}>
  Cashflow
  </span>
  </>
