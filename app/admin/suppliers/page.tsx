@@ -29,7 +29,7 @@ export default async function SuppliersPage() {
   const getActiveStatusBadge = (status: string) => {
     const isActive = (status || "").toLowerCase() === "active"
     return isActive ? (
-      <Badge variant="default" className="bg-green-600">
+      <Badge variant="default" className="bg-success-bg text-success-foreground border border-success-border">
         Active
       </Badge>
     ) : (
