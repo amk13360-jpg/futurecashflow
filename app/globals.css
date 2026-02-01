@@ -226,3 +226,31 @@ button, a, [role="button"] {
 [data-slot="select-viewport"] {
   background-color: var(--popover);
 }
+
+/* Sonner toast colors (force solid backgrounds for all variants) */
+.toaster [data-sonner-toast],
+.toaster [data-toast] {
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+  border-color: var(--border);
+}
+.toaster [data-type="success"] {
+  background-color: var(--success);
+  color: #ffffff;
+  border-color: var(--success);
+}
+.toaster [data-type="warning"] {
+  background-color: var(--warning);
+  color: #ffffff;
+  border-color: var(--warning);
+}
+.toaster [data-type="error"] {
+  background-color: var(--error);
+  color: #ffffff;
+  border-color: var(--error);
+}
+.toaster [data-type="info"] {
+  background-color: var(--info);
+  color: #ffffff;
+  border-color: var(--info);
+}
