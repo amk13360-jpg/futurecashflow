@@ -38,7 +38,7 @@ function DialogOverlay({
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
       className={cn(
-        'z-50 fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+        'z-50 fixed inset-0 bg-overlay backdrop-blur-sm data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
         className,
       )}
       {...props}
@@ -60,7 +60,7 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          'top-[50%] left-[50%] z-50 fixed gap-4 grid bg-white dark:bg-slate-950 shadow-lg p-6 border border-gray-200 dark:border-gray-800 rounded-lg w-full max-w-[calc(100%-2rem)] sm:max-w-lg text-gray-900 dark:text-gray-50 translate-x-[-50%] translate-y-[-50%] data-[state=closed]:animate-out data-[state=open]:animate-in duration-200 data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+          'top-[50%] left-[50%] z-50 fixed gap-4 grid bg-popover text-popover-foreground shadow-lg p-6 border border-border rounded-lg w-full max-w-[calc(100%-2rem)] sm:max-w-lg translate-x-[-50%] translate-y-[-50%] data-[state=closed]:animate-out data-[state=open]:animate-in duration-200 data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
           className,
         )}
         {...props}
@@ -83,7 +83,7 @@ function DialogContent({
 const DialogHeader: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ className, ...props }) => (
   <div
     data-slot="dialog-header"
-    className={cn('flex flex-col gap-2 text-gray-900 dark:text-gray-50 sm:text-left text-center', className)}
+    className={cn('flex flex-col gap-2 text-popover-foreground sm:text-left text-center', className)}
     {...props}
   />
 );
@@ -106,7 +106,7 @@ function DialogTitle({
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn('font-semibold text-gray-900 dark:text-gray-50 text-lg leading-none', className)}
+      className={cn('font-semibold text-popover-foreground text-lg leading-none', className)}
       {...props}
     />
   )
@@ -119,7 +119,7 @@ function DialogDescription({
   return (
     <DialogPrimitive.Description
       data-slot="dialog-description"
-      className={cn('text-gray-600 dark:text-gray-400 text-sm', className)}
+      className={cn('text-muted-foreground text-sm', className)}
       {...props}
     />
   )

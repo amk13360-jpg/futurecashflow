@@ -5,20 +5,21 @@
 :root {
   /* Modern Fintech / Tech‑Industrial Elegance (Light) */
   /* Core brand */
-  --brand-blue: #3594F7;
-  --brand-blue-hover: #1E7BE5;
+  --brand-blue: #2563eb;
+  --brand-blue-hover: #1d4ed8;
   --brand-blue-soft: #B4C5D6;
   --accent-red: #FF4D4F;
   --accent-green: #27AE60;
   --accent-yellow: #F2C94C;
+  --accent-green-token: #10b981;
 
   /* Semantic accents */
   --success: var(--accent-green);
   --success-foreground: var(--white);
   --warning: var(--accent-yellow);
   --warning-foreground: #0F172A;
-  --info: #8B5CF6; /* elegant violet accent for info */
-  --info-foreground: var(--white);
+  --info: #2563eb;
+  --info-foreground: #1e3a8a;
 
   /* Neutrals */
   --white: #FEFEFE;
@@ -45,11 +46,12 @@
   --accent-foreground: #0F172A;
   --destructive: var(--accent-red);
   --destructive-foreground: var(--white);
-  --error: var(--accent-red);
-  --error-foreground: var(--white);
+  --error: #dc2626;
+  --error-foreground: #991b1b;
   --border: var(--mediumgray);
   --input: var(--white);
   --ring: var(--brand-blue);
+  --overlay: rgba(0, 0, 0, 0.5);
 
   /* Charts (light) */
   --chart-1: var(--brand-blue);
@@ -69,6 +71,25 @@
   --sidebar-accent-foreground: #0F172A;
   --sidebar-border: var(--mediumgray);
   --sidebar-ring: var(--brand-blue);
+
+  /* Semantic status tokens (light) */
+  --success: #16a34a;
+  --success-bg: #f0fdf4;
+  --success-border: #bbf7d0;
+  --success-foreground: #166534;
+
+  --warning: #d97706;
+  --warning-bg: #fffbeb;
+  --warning-border: #fcd34d;
+  --warning-foreground: #92400e;
+
+  --info-bg: #eff6ff;
+  --info-border: #bfdbfe;
+
+  --error-bg: #fef2f2;
+  --error-border: #fecaca;
+
+  --accent-green: var(--accent-green-token);
 }
 
 .dark {
@@ -76,7 +97,7 @@
   --foreground: #E6E6E6;
   --card: var(--charcoal);
   --card-foreground: #E6E6E6;
-  --popover: var(--charcoal);
+  --popover: #1e293b;
   --popover-foreground: #E6E6E6;
   --primary: var(--brand-blue);
   --primary-foreground: #F5FAFF;
@@ -88,17 +109,18 @@
   --accent-foreground: #E6E6E6;
   --destructive: var(--accent-red);
   --destructive-foreground: #FFFFFF;
-  --error: var(--accent-red);
-  --error-foreground: #FFFFFF;
-  --success: var(--accent-green);
-  --success-foreground: #0B0F14;
-  --warning: #EAC94B; /* slightly tuned for dark */
-  --warning-foreground: #0B0F14;
-  --info: #7C3AED; /* deeper violet on dark */
-  --info-foreground: #F5FAFF;
+  --error: #f87171;
+  --error-foreground: #fca5a5;
+  --success: #4ade80;
+  --success-foreground: #86efac;
+  --warning: #fbbf24;
+  --warning-foreground: #fcd34d;
+  --info: #60a5fa;
+  --info-foreground: #93c5fd;
   --border: var(--darkgray);
   --input: var(--darkgray);
   --ring: var(--brand-blue);
+  --overlay: rgba(0, 0, 0, 0.6);
 
   /* Charts (dark) */
   --chart-1: var(--brand-blue);
@@ -115,6 +137,21 @@
   --sidebar-accent-foreground: #E6E6E6;
   --sidebar-border: var(--darkgray);
   --sidebar-ring: var(--brand-blue);
+
+  /* Semantic status tokens (dark) */
+  --success-bg: rgba(34, 197, 94, 0.12);
+  --success-border: rgba(34, 197, 94, 0.3);
+
+  --warning-bg: rgba(245, 158, 11, 0.12);
+  --warning-border: rgba(245, 158, 11, 0.3);
+
+  --info-bg: rgba(59, 130, 246, 0.12);
+  --info-border: rgba(59, 130, 246, 0.3);
+
+  --error-bg: rgba(239, 68, 68, 0.12);
+  --error-border: rgba(239, 68, 68, 0.3);
+
+  --accent-green: #34d399;
 }
 
 

@@ -57,7 +57,7 @@ const BRAND_COLORS = {
   wordmarkSecondary: "text-muted-foreground",
 } as const
 
-type LogoVariant = "default" | "light" | "dark"
+type LogoVariant = "adaptive" | "light" | "dark" | "blue"
 
 interface LogoIconProps {
   className?: string
@@ -72,13 +72,9 @@ interface LogoIconProps {
  */
 export function LogoIcon({ 
   className = "h-10 w-10", 
-  variant = "default" 
+  variant = "adaptive" 
 }: LogoIconProps) {
-  const colorClass = variant === "light" 
-    ? BRAND_COLORS.light 
-    : variant === "dark" 
-      ? BRAND_COLORS.dark 
-      : BRAND_COLORS.primary
+  const colorClass = BRAND_COLORS.primary
 
   return (
     <svg 
@@ -155,27 +151,29 @@ export function Logo({
   iconClassName, 
   showText = true, 
   size = "md",
-  variant = "default"
+  variant = "adaptive"
 }: LogoProps) {
   const sizes = sizeClasses[size]
-  
-  const textColorClass = variant === "light" 
-    ? BRAND_COLORS.light 
-    : variant === "dark" 
-      ? BRAND_COLORS.dark 
-      : BRAND_COLORS.wordmarkPrimary
 
-  const secondaryTextColorClass = variant === "light"
-    ? BRAND_COLORS.light
+  const textColorClass = variant === "blue"
+    ? "text-blue-600"
     : variant === "dark"
-      ? BRAND_COLORS.dark
-      : BRAND_COLORS.wordmarkSecondary
+      ? "text-white"
+      : variant === "light"
+        ? "text-gray-900"
+        : "text-foreground dark:text-white"
 
-  const dividerColorClass = variant === "light"
-    ? BRAND_COLORS.lightBg
+  const secondaryTextColorClass = variant === "blue"
+    ? "text-blue-600"
     : variant === "dark"
-      ? "bg-gray-900"
-      : BRAND_COLORS.primaryBg
+      ? "text-white"
+      : variant === "light"
+        ? "text-gray-700"
+        : "text-muted-foreground dark:text-white"
+
+  const dividerColorClass = variant === "dark" || variant === "light" || variant === "adaptive" || variant === "blue"
+    ? BRAND_COLORS.primaryBg
+    : BRAND_COLORS.primaryBg
 
   return (
     <div className={cn("flex items-center", sizes.gap, className)}>
@@ -189,7 +187,7 @@ export function Logo({
             Future
           </span>
           <div className={cn("w-px", sizes.divider, dividerColorClass)} />
-          <span className={cn(sizes.text, "font-bold", secondaryTextColorClass)}>
+          <span className={cn(sizes.text, "font-normal", secondaryTextColorClass)}>
             Cashflow
           </span>
         </>
@@ -240,8 +238,8 @@ export function FooterLogo({
 export function getEmailLogoHtml(variant: "light" | "dark" = "dark"): string {
   const iconColor = "#2563eb"
   const dividerColor = "#2563eb"
-  const futureColor = variant === "light" ? "#ffffff" : "#111827"
-  const cashflowColor = variant === "light" ? "#d1d5db" : "#6b7280"
+  const futureColor = variant === "light" ? "#111827" : "#ffffff"
+  const cashflowColor = variant === "light" ? "#4b5563" : "#ffffff"
   
   return `
     <div style="text-align: center; padding: 20px;">
@@ -254,13 +252,13 @@ export function getEmailLogoHtml(variant: "light" | "dark" = "dark"): string {
             </svg>
           </td>
           <td style="vertical-align: middle; padding-right: 8px;">
-            <span style="font-size: 24px; font-weight: bold; color: ${futureColor}; font-family: system-ui, -apple-system, sans-serif;">Future</span>
+            <span style="font-size: 24px; font-weight: 700; color: ${futureColor}; font-family: system-ui, -apple-system, sans-serif;">Future</span>
           </td>
           <td style="vertical-align: middle; padding: 0 8px;">
             <div style="width: 1px; height: 32px; background-color: ${dividerColor};"></div>
           </td>
           <td style="vertical-align: middle; padding-left: 8px;">
-            <span style="font-size: 24px; font-weight: bold; color: ${cashflowColor}; font-family: system-ui, -apple-system, sans-serif;">Cashflow</span>
+            <span style="font-size: 24px; font-weight: 400; color: ${cashflowColor}; font-family: system-ui, -apple-system, sans-serif;">Cashflow</span>
           </td>
         </tr>
       </table>

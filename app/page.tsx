@@ -26,7 +26,7 @@ export default function HomePage() {
         <main className="flex flex-col justify-center items-center mx-auto p-4 max-w-4xl text-center">
           {/* Hero Logo - Using standardized Logo component */}
           <div className="mb-6">
-            <Logo size="xl" variant="default" className="scale-125" />
+            <Logo size="xl" variant="blue" className="scale-125" />
           </div>
 
           {/* Tagline */}

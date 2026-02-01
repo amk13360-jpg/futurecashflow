@@ -23,7 +23,7 @@ export function SupplierHeader({ supplierName }: SupplierHeaderProps) {
       <div className="mx-auto px-4 py-4 container">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <Logo size="md" variant="default" />
+            <Logo size="md" variant="adaptive" />
             {supplierName && <span className="ml-2 text-muted-foreground text-sm">{supplierName}</span>}
           </div>
           <div className="flex items-center gap-4">

@@ -42,7 +42,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
       <div className="mx-auto px-4 py-4 container">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <Logo size="md" variant="default" />
+            <Logo size="md" variant="adaptive" />
             <span className="ml-2 text-muted-foreground text-sm">
               {sessionRole === 'admin' ? 'Admin Dashboard' : sessionRole === 'accounts_payable' ? 'Accounts Payable Dashboard' : sessionRole === 'supplier' ? 'Supplier Dashboard' : 'Dashboard'}
             </span>
