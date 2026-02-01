@@ -111,7 +111,7 @@ export default function APLoginPage() {
         <Card className="bg-card shadow-none border-0 text-foreground">
           <CardHeader className="text-center">
             <div className="flex justify-center items-center mb-4">
-              <Logo size="lg" />
+              <Logo size="lg" variant="default" />
             </div>
             <CardTitle className="font-bold text-2xl">Accounts Payable Login</CardTitle>
             <CardDescription>

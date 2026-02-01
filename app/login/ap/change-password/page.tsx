@@ -97,7 +97,7 @@ export default function ChangePasswordPage() {
         <Card className="bg-card shadow-lg border-0 text-foreground">
           <CardHeader className="text-center">
             <div className="flex justify-center items-center mb-4">
-              <Logo size="lg" />
+              <Logo size="lg" variant="default" />
             </div>
             <div className="flex justify-center mb-4">
               <div className="flex justify-center items-center bg-primary/10 rounded-full w-16 h-16">
