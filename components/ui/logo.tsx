@@ -79,7 +79,9 @@ export function LogoIcon({
    ? BRAND_COLORS.light
    : variant === "adaptive"
     ? "text-brand-blue dark:text-white"
-    : BRAND_COLORS.primary
+    : variant === "blue"
+      ? "text-brand-blue"
+      : BRAND_COLORS.primary
  
  return (
  <svg 
@@ -161,27 +163,27 @@ export function Logo({
  const sizes = sizeClasses[size]
 
  const textColorClass = variant === "blue"
- ? "text-info"
+ ? "text-brand-blue"
  : variant === "dark"
  ? "text-white"
  : variant === "light"
  ? "text-gray-900"
- : "text-foreground dark:text-white"
+ : "text-gray-900 dark:text-white"
 
  const secondaryTextColorClass = variant === "blue"
- ? "text-info"
+ ? "text-brand-blue"
  : variant === "dark"
  ? "text-white"
  : variant === "light"
  ? "text-gray-700"
- : "text-muted-foreground dark:text-white"
+ : "text-gray-600 dark:text-white"
 
  const dividerColorClass = variant === "dark" || variant === "light" || variant === "adaptive" || variant === "blue"
  ? (variant === "adaptive"
    ? "bg-brand-blue dark:bg-white"
    : variant === "dark"
     ? "bg-white"
-    : BRAND_COLORS.primaryBg)
+    : "bg-brand-blue")
  : BRAND_COLORS.primaryBg
 
  return (
