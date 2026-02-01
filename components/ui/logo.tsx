@@ -53,6 +53,8 @@ const BRAND_COLORS = {
   lightBg: "bg-white",
   dark: "text-gray-900",
   muted: "text-gray-400",
+  wordmarkPrimary: "text-foreground",
+  wordmarkSecondary: "text-muted-foreground",
 } as const
 
 type LogoVariant = "default" | "light" | "dark"
@@ -161,7 +163,13 @@ export function Logo({
     ? BRAND_COLORS.light 
     : variant === "dark" 
       ? BRAND_COLORS.dark 
-      : BRAND_COLORS.primary
+      : BRAND_COLORS.wordmarkPrimary
+
+  const secondaryTextColorClass = variant === "light"
+    ? BRAND_COLORS.light
+    : variant === "dark"
+      ? BRAND_COLORS.dark
+      : BRAND_COLORS.wordmarkSecondary
 
   const dividerColorClass = variant === "light"
     ? BRAND_COLORS.lightBg
@@ -181,7 +189,7 @@ export function Logo({
             Future
           </span>
           <div className={cn("w-px", sizes.divider, dividerColorClass)} />
-          <span className={cn(sizes.text, "font-bold", textColorClass)}>
+          <span className={cn(sizes.text, "font-bold", secondaryTextColorClass)}>
             Cashflow
           </span>
         </>
@@ -230,28 +238,29 @@ export function FooterLogo({
  * Includes inline styles for email client compatibility.
  */
 export function getEmailLogoHtml(variant: "light" | "dark" = "dark"): string {
-  const bgColor = variant === "light" ? "#1e40af" : "#ffffff"
-  const textColor = variant === "light" ? "#ffffff" : "#2563eb"
-  const borderColor = variant === "light" ? "#ffffff" : "#2563eb"
+  const iconColor = "#2563eb"
+  const dividerColor = "#2563eb"
+  const futureColor = variant === "light" ? "#ffffff" : "#111827"
+  const cashflowColor = variant === "light" ? "#d1d5db" : "#6b7280"
   
   return `
     <div style="text-align: center; padding: 20px;">
       <table cellpadding="0" cellspacing="0" border="0" align="center">
         <tr>
           <td style="vertical-align: middle; padding-right: 12px;">
-            <svg width="48" height="48" viewBox="0 0 80 80" fill="${textColor}">
+            <svg width="48" height="48" viewBox="0 0 80 80" fill="${iconColor}">
               <path d="M40 8L16 32H26L40 18L54 32H64L40 8Z"/>
               <path d="M40 28L16 52H26L40 38L54 52H64L40 28Z"/>
             </svg>
           </td>
           <td style="vertical-align: middle; padding-right: 8px;">
-            <span style="font-size: 24px; font-weight: bold; color: ${textColor}; font-family: system-ui, -apple-system, sans-serif;">Future</span>
+            <span style="font-size: 24px; font-weight: bold; color: ${futureColor}; font-family: system-ui, -apple-system, sans-serif;">Future</span>
           </td>
           <td style="vertical-align: middle; padding: 0 8px;">
-            <div style="width: 1px; height: 32px; background-color: ${borderColor};"></div>
+            <div style="width: 1px; height: 32px; background-color: ${dividerColor};"></div>
           </td>
           <td style="vertical-align: middle; padding-left: 8px;">
-            <span style="font-size: 24px; font-weight: bold; color: ${textColor}; font-family: system-ui, -apple-system, sans-serif;">Cashflow</span>
+            <span style="font-size: 24px; font-weight: bold; color: ${cashflowColor}; font-family: system-ui, -apple-system, sans-serif;">Cashflow</span>
           </td>
         </tr>
       </table>
