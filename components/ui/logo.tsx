@@ -62,6 +62,7 @@ type LogoVariant = "adaptive" | "light" | "dark" | "blue"
 interface LogoIconProps {
  className?: string
  variant?: LogoVariant
+ style?: React.CSSProperties
 }
 
 /**
@@ -72,7 +73,8 @@ interface LogoIconProps {
  */
 export function LogoIcon({ 
  className = "h-10 w-10", 
- variant = "adaptive" 
+ variant = "adaptive",
+ style,
 }: LogoIconProps) {
  const colorClass = BRAND_COLORS.primary
 
@@ -80,6 +82,7 @@ export function LogoIcon({
  <svg 
  aria-hidden="true" 
  className={cn("shrink-0", colorClass, className)} 
+ style={style}
  fill="currentColor" 
  viewBox="0 0 80 80"
  role="img"
@@ -175,19 +178,24 @@ export function Logo({
  ? BRAND_COLORS.primaryBg
  : BRAND_COLORS.primaryBg
 
+ const blueTextStyle = variant === "blue" ? { color: "var(--info)" } : undefined
+ const blueDividerStyle = variant === "blue" ? { backgroundColor: "var(--brand-blue)" } : undefined
+ const blueIconStyle = variant === "blue" ? { color: "var(--info)" } : undefined
+
  return (
  <div className={cn("flex items-center", sizes.gap, className)}>
  <LogoIcon 
  className={cn(sizes.icon, iconClassName)} 
  variant={variant}
+ style={blueIconStyle}
  />
  {showText && (
  <>
- <span className={cn(sizes.text, "font-bold", textColorClass)}>
+ <span className={cn(sizes.text, "font-bold", textColorClass)} style={blueTextStyle}>
  Future
  </span>
- <div className={cn("w-px", sizes.divider, dividerColorClass)} />
- <span className={cn(sizes.text, "font-normal", secondaryTextColorClass)}>
+ <div className={cn("w-px", sizes.divider, dividerColorClass)} style={blueDividerStyle} />
+ <span className={cn(sizes.text, "font-normal", secondaryTextColorClass)} style={blueTextStyle}>
  Cashflow
  </span>
  </>
