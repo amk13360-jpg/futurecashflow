@@ -87,7 +87,7 @@ export function SupplierHeader({ supplierName }: SupplierHeaderProps) {
               <div
                 className="
                   absolute right-0 top-[calc(100%+8px)] z-50
-                  w-56 rounded-xl border border-border bg-popover text-popover-foreground
+                  w-56 rounded-xl border border-border bg-popover/100 text-popover-foreground
                   shadow-lg animate-in fade-in-0 zoom-in-95
                 "
               >
