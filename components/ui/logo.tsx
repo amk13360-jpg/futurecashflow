@@ -169,7 +169,7 @@ export function Logo({
  ? "text-white"
  : variant === "light"
  ? "text-gray-900"
- : "text-gray-900 dark:text-white"
+ : "text-black dark:text-white"
 
  const secondaryTextColorClass = variant === "blue"
  ? "text-brand-blue"
