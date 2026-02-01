@@ -5,9 +5,10 @@ import { useRouter } from 'next/navigation';
 import { 
   Building2, Plus, Search, Filter, MoreVertical, 
   CheckCircle2, XCircle, AlertCircle, Clock, Users,
-  FileText, DollarSign, TrendingUp, Edit, Eye, Pause,
+  FileText, TrendingUp, Edit, Eye, Pause,
   ChevronRight, ChevronLeft, MapPin, Phone, Mail, Settings2, Check, X, ArrowLeft
 } from 'lucide-react';
+import { RandIcon } from '@/components/ui/rand-icon';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -571,7 +572,7 @@ export default function BuyersPage() {
 
       {/* Create Buyer Dialog - Wizard Style */}
       <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetForm(); }}>
-        <DialogContent className="flex flex-col gap-0 bg-background shadow-2xl p-0 border border-border/80 w-full max-w-[95vw] sm:max-w-[95vw] xl:max-w-[1440px] h-auto max-h-[95vh] overflow-hidden text-foreground">
+        <DialogContent className="flex flex-col gap-0 bg-popover shadow-2xl p-0 border border-border w-full max-w-[95vw] sm:max-w-[95vw] xl:max-w-[1440px] h-auto max-h-[95vh] overflow-hidden text-popover-foreground">
           {/* Header with Progress */}
           <div className="bg-muted/30 px-8 py-8 border-border/60 border-b">
             <DialogHeader className="gap-1 text-left">
@@ -818,10 +819,10 @@ export default function BuyersPage() {
 
                 <Card className="shadow-sm border-border/60">
                   <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <DollarSign className="w-4 h-4" />
-                      Financial Contact
-                      <Badge variant="outline" className="ml-auto text-xs">Optional</Badge>
+                      <CardTitle className="flex items-center gap-2 text-base">
+                        <RandIcon className="w-4 h-4" />
+                        Financial Contact
+                        <Badge variant="outline" className="ml-auto text-xs">Optional</Badge>
                     </CardTitle>
                     <CardDescription>For repayment tracking and financial communications</CardDescription>
                   </CardHeader>
@@ -995,10 +996,10 @@ export default function BuyersPage() {
 
                 <Card>
                   <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <DollarSign className="w-4 h-4" />
-                      Financial Configuration
-                    </CardTitle>
+                      <CardTitle className="flex items-center gap-2 text-base">
+                        <RandIcon className="w-4 h-4" />
+                        Financial Configuration
+                      </CardTitle>
                     <CardDescription>Credit limits and rate card assignment</CardDescription>
                   </CardHeader>
                   <CardContent className="gap-4 grid grid-cols-2">
@@ -1210,7 +1211,7 @@ export default function BuyersPage() {
 
       {/* Edit Buyer Dialog */}
       <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="bg-popover text-popover-foreground max-w-3xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Buyer: {selectedBuyer?.name}</DialogTitle>
             <DialogDescription>
@@ -1482,7 +1483,7 @@ export default function BuyersPage() {
 
       {/* Suspend Buyer Dialog */}
       <Dialog open={showSuspendDialog} onOpenChange={setShowSuspendDialog}>
-        <DialogContent>
+        <DialogContent className="bg-popover text-popover-foreground">
           <DialogHeader>
             <DialogTitle>Suspend Buyer</DialogTitle>
             <DialogDescription>

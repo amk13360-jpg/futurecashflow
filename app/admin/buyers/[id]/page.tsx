@@ -4,9 +4,10 @@ import { useEffect, useState, useTransition } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { 
   Building2, ArrowLeft, Edit, Users, FileText, History, 
-  DollarSign, TrendingUp, CheckCircle2, Clock, AlertCircle,
+  TrendingUp, CheckCircle2, Clock, AlertCircle,
   Upload, Eye, Trash2, Plus, Mail, Key, UserPlus
 } from 'lucide-react';
+import { RandIcon } from '@/components/ui/rand-icon';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -497,10 +498,10 @@ export default function BuyerDetailsPage() {
             {/* Financial Config */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <DollarSign className="w-5 h-5" />
-                  Financial Configuration
-                </CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <RandIcon className="w-5 h-5" />
+                    Financial Configuration
+                  </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="gap-4 grid grid-cols-2">
@@ -811,7 +812,7 @@ export default function BuyerDetailsPage() {
 
       {/* Add User Dialog */}
       <Dialog open={showAddUserDialog} onOpenChange={setShowAddUserDialog}>
-        <DialogContent>
+        <DialogContent className="bg-popover text-popover-foreground">
           <DialogHeader>
             <DialogTitle>Add AP User</DialogTitle>
             <DialogDescription>
@@ -886,7 +887,7 @@ export default function BuyerDetailsPage() {
 
       {/* Upload Document Dialog */}
       <Dialog open={showUploadDocDialog} onOpenChange={setShowUploadDocDialog}>
-        <DialogContent>
+        <DialogContent className="bg-popover text-popover-foreground">
           <DialogHeader>
             <DialogTitle>Upload Document</DialogTitle>
             <DialogDescription>

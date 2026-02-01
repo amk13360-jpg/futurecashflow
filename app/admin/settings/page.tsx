@@ -11,7 +11,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { ArrowLeft, Settings, DollarSign, Mail, Shield, Database, Users, Plus, Edit, Trash2, Key, UserCog } from "lucide-react"
+import { ArrowLeft, Settings, Mail, Shield, Database, Users, Plus, Edit, Trash2, Key, UserCog, Eye, EyeOff } from "lucide-react"
+import { RandIcon } from "@/components/ui/rand-icon"
 import Link from "next/link"
 import { toast } from "sonner"
 import { getSystemSettings, updateSystemSetting } from "@/lib/actions/settings"
@@ -29,6 +30,8 @@ export default function SettingsPage() {
   const [showUserDialog, setShowUserDialog] = useState(false)
   const [showPasswordDialog, setShowPasswordDialog] = useState(false)
   const [editingUser, setEditingUser] = useState<User | null>(null)
+  const [showUserPassword, setShowUserPassword] = useState(false)
+  const [showResetPassword, setShowResetPassword] = useState(false)
   const [userForm, setUserForm] = useState({
     username: "",
     full_name: "",
@@ -209,7 +212,7 @@ export default function SettingsPage() {
               General
             </TabsTrigger>
             <TabsTrigger value="finance">
-              <DollarSign className="mr-2 w-4 h-4" />
+              <RandIcon className="mr-2 w-4 h-4" />
               Finance
             </TabsTrigger>
             <TabsTrigger value="notifications">
@@ -516,7 +519,7 @@ export default function SettingsPage() {
                       Add User
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="sm:max-w-[425px]">
+                  <DialogContent className="bg-popover text-popover-foreground sm:max-w-[425px]">
                     <DialogHeader>
                       <DialogTitle>{editingUser ? "Edit User" : "Create New User"}</DialogTitle>
                       <DialogDescription>
@@ -557,13 +560,24 @@ export default function SettingsPage() {
                       {!editingUser && (
                         <div className="space-y-2">
                           <Label htmlFor="password">Password</Label>
-                          <Input
-                            id="password"
-                            type="password"
-                            value={userForm.password}
-                            onChange={(e) => setUserForm({ ...userForm, password: e.target.value })}
-                            placeholder="••••••••"
-                          />
+                          <div className="relative">
+                            <Input
+                              id="password"
+                              type={showUserPassword ? "text" : "password"}
+                              value={userForm.password}
+                              onChange={(e) => setUserForm({ ...userForm, password: e.target.value })}
+                              placeholder="????????????????????????"
+                              className="pr-10"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setShowUserPassword((prev) => !prev)}
+                              className="top-1/2 right-3 absolute -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                              aria-label={showUserPassword ? "Hide password" : "Show password"}
+                            >
+                              {showUserPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
+                          </div>
                         </div>
                       )}
                       <div className="space-y-2">
@@ -706,13 +720,24 @@ export default function SettingsPage() {
                 </div>
               </CardContent>
             </Card>
-
-            {/* Password Reset Dialog */}
-            <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Reset Password</DialogTitle>
-                  <DialogDescription>Enter a new password for the user</DialogDescription>
+                    <div className="relative">
+                      <Input
+                        id="new-password"
+                        type={showResetPassword ? "text" : "password"}
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="????????????????????????"
+                        className="pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowResetPassword((prev) => !prev)}
+                        className="top-1/2 right-3 absolute -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        aria-label={showResetPassword ? "Hide password" : "Show password"}
+                      >
+                        {showResetPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
                 </DialogHeader>
                 <div className="gap-4 grid py-4">
                   <div className="space-y-2">

@@ -16,11 +16,11 @@ import {
   Clock, 
   ArrowLeft, 
   FileText, 
-  DollarSign,
   AlertTriangle,
   CheckSquare,
   Square
 } from "lucide-react"
+import { RandIcon } from "@/components/ui/rand-icon"
 import Link from "next/link"
 import { toast } from "sonner"
 
@@ -273,10 +273,10 @@ export default function SupplierOffersPage() {
             <div className="lg:col-span-1">
               <Card className="top-4 sticky">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <DollarSign className="w-5 h-5" />
-                    Selection Summary
-                  </CardTitle>
+                    <CardTitle className="flex items-center gap-2">
+                      <RandIcon className="w-5 h-5" />
+                      Selection Summary
+                    </CardTitle>
                   <CardDescription>
                     {selectedOffers.size} of {offers.length} offers selected
                   </CardDescription>

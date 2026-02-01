@@ -339,7 +339,7 @@ export default function BankChangesPage() {
 
         {/* Reject Dialog */}
         <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
-          <DialogContent>
+          <DialogContent className="bg-popover text-popover-foreground">
             <DialogHeader>
               <DialogTitle>Reject Bank Change Request</DialogTitle>
               <DialogDescription>

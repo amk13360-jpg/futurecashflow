@@ -11,7 +11,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { EmptyState } from "@/components/ui/empty-state"
-import { FileText, Users, DollarSign, CheckCircle, Clock, Package, ArrowRight, Building2 } from "lucide-react"
+import { FileText, Users, CheckCircle, Clock, Package, ArrowRight, Building2 } from "lucide-react"
+import { RandIcon } from "@/components/ui/rand-icon"
 import Link from "next/link"
 import { getSession } from "@/lib/auth/session"
 
@@ -61,7 +62,7 @@ export default async function AdminDashboardPage() {
             <MetricCard
               title="48h Payments Issued"
               value={`R ${metrics.paymentsIssued48h.toLocaleString()}`}
-              icon={DollarSign}
+              icon={RandIcon}
               description="Last 48 hours"
               variant="primary"
             />
@@ -136,7 +137,7 @@ export default async function AdminDashboardPage() {
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-center">
                   <div className="bg-amber-100 dark:bg-amber-900/40 p-2.5 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                    <DollarSign className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                    <RandIcon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                   </div>
                 </div>
                 <CardTitle className="mt-3 font-semibold text-base">Payments</CardTitle>

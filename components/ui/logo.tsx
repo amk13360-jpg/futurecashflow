@@ -211,7 +211,7 @@ interface FooterLogoProps {
 export function FooterLogo({ 
   className, 
   showLegal = true,
-  variant = "default" 
+  variant = "adaptive" 
 }: FooterLogoProps) {
   const textColorClass = variant === "light" 
     ? "text-gray-300" 

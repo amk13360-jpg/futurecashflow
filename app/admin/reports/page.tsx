@@ -17,7 +17,8 @@ import {
   getSystemStatistics,
   exportReportToCSV,
 } from "@/lib/actions/reports"
-import { FileText, Download, ArrowLeft, TrendingUp, DollarSign, Users, Activity } from "lucide-react"
+import { FileText, Download, ArrowLeft, TrendingUp, Users, Activity } from "lucide-react"
+import { RandIcon } from "@/components/ui/rand-icon"
 import Link from "next/link"
 import { toast } from "sonner"
 
@@ -227,7 +228,7 @@ export default function ReportsPage() {
               Offer Acceptance
             </TabsTrigger>
             <TabsTrigger value="disbursements">
-              <DollarSign className="h-4 w-4 mr-2" />
+              <RandIcon className="h-4 w-4 mr-2" />
               Disbursements
             </TabsTrigger>
             <TabsTrigger value="suppliers">
@@ -333,7 +334,7 @@ export default function ReportsPage() {
                   <div className="text-center py-12 text-muted-foreground">Loading...</div>
                 ) : disbursements.length === 0 ? (
                   <div className="text-center py-12 text-muted-foreground">
-                    <DollarSign className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                    <RandIcon className="h-12 w-12 mx-auto mb-3 opacity-50" />
                     <p>No disbursement data available</p>
                   </div>
                 ) : (

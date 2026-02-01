@@ -38,8 +38,9 @@ import {
 } from "@/lib/actions/offer-batches"
 import { 
   ArrowLeft, Package, Send, Clock, CheckCircle2, XCircle, 
-  Users, FileText, DollarSign, Eye, Trash2, RefreshCw 
+  Users, FileText, Eye, Trash2, RefreshCw 
 } from "lucide-react"
+import { RandIcon } from "@/components/ui/rand-icon"
 import Link from "next/link"
 import { toast } from "sonner"
 
@@ -346,10 +347,10 @@ export default function OfferBatchesPage() {
                               <FileText className="w-4 h-4 text-muted-foreground" />
                               {group.invoice_count} invoices
                             </span>
-                            <span className="flex items-center gap-1">
-                              <DollarSign className="w-4 h-4 text-muted-foreground" />
-                              R {group.total_amount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
-                            </span>
+                              <span className="flex items-center gap-1">
+                                <RandIcon className="w-4 h-4 text-muted-foreground" />
+                                R {group.total_amount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
+                              </span>
                           </div>
                         </div>
                         <Button onClick={() => handleOpenCreateDialog(group)}>
@@ -506,7 +507,7 @@ export default function OfferBatchesPage() {
 
       {/* Create Batch Dialog */}
       <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="bg-popover text-popover-foreground max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Create Offer Batch</DialogTitle>
             <DialogDescription>
@@ -647,7 +648,7 @@ export default function OfferBatchesPage() {
 
       {/* View Batch Dialog */}
       <Dialog open={viewBatchDialogOpen} onOpenChange={setViewBatchDialogOpen}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="bg-popover text-popover-foreground max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Batch Details</DialogTitle>
             <DialogDescription>

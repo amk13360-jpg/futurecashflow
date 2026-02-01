@@ -6,7 +6,8 @@ import { use } from "react"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { FileText, DollarSign, User, Clock, CheckCircle2, AlertTriangle } from "lucide-react"
+import { FileText, User, Clock, CheckCircle2, AlertTriangle } from "lucide-react"
+import { RandIcon } from "@/components/ui/rand-icon"
 import { EmptyState } from "@/components/ui/empty-state"
 import { MetricCard } from "@/components/admin/metric-card"
 
@@ -79,7 +80,7 @@ export default function SupplierDashboardPage() {
           <MetricCard
             title="Total Offered"
             value={`R ${totalAcceptedValue.toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-            icon={DollarSign}
+              icon={RandIcon}
             variant="primary"
           />
           <MetricCard
@@ -230,7 +231,7 @@ export default function SupplierDashboardPage() {
               <CardContent>
                 {payments.length === 0 ? (
                   <EmptyState
-                    icon={DollarSign}
+                      icon={RandIcon}
                     title="No payments yet"
                     description="Payment history will appear here after you accept offers"
                   />
