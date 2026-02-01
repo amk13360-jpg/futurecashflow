@@ -84,7 +84,7 @@ export default function ChangePasswordPage() {
  <div className="relative flex justify-center items-center bg-background px-4 min-h-screen text-foreground">
  {/* Theme toggle top-right */}
  <div className="top-4 right-4 z-10 absolute">
- <div className="rounded-full border bg-muted/40 px-2 py-1 shadow-sm">
+ <div className="rounded-full border bg-muted px-2 py-1 shadow-sm">
  <ThemeToggle className="h-9 rounded-full px-3 text-xs" />
  </div>
  </div>
@@ -170,7 +170,7 @@ export default function ChangePasswordPage() {
  </div>
 
  {/* Password requirements */}
- <div className="space-y-2 bg-muted/50 p-4 rounded-lg">
+ <div className="space-y-2 bg-muted p-4 rounded-lg">
  <div className="flex items-center gap-2 mb-2 font-medium text-sm">
  <Shield className="w-4 h-4" />
  Password Requirements

@@ -48,7 +48,7 @@ export default function SupplierCessionAgreementUploadPage() {
  }
 
  return (
- <div className="flex flex-col justify-center items-center bg-muted/30 min-h-screen">
+ <div className="flex flex-col justify-center items-center bg-muted min-h-screen">
  <div className="bg-background shadow p-8 border rounded-lg w-full max-w-lg text-foreground">
  <h1 className="mb-4 font-bold text-2xl">Upload Signed Cession Agreement</h1>
  <p className="mb-6 text-muted-foreground">

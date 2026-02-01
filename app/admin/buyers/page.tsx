@@ -577,7 +577,7 @@ export default function BuyersPage() {
  <Dialog open={showCreateDialog} onOpenChange={(open) => { setShowCreateDialog(open); if (!open) resetForm(); }}>
  <DialogContent className="flex flex-col gap-0 bg-popover shadow-2xl p-0 border border-border w-full max-w-[95vw] sm:max-w-[95vw] xl:max-w-[1440px] h-auto max-h-[95vh] overflow-hidden text-popover-foreground">
  {/* Header with Progress */}
- <div className="bg-muted/30 px-8 py-8 border-border/60 border-b">
+ <div className="bg-muted px-8 py-8 border-border/60 border-b">
  <DialogHeader className="gap-1 text-left">
  <DialogTitle className="font-semibold text-foreground text-2xl">Add New Buyer</DialogTitle>
  <DialogDescription className="mt-1 text-muted-foreground text-base">
@@ -585,7 +585,7 @@ export default function BuyersPage() {
  </DialogDescription>
  </DialogHeader>
 
- <div className="bg-muted/40 mt-6 p-4 border border-border/60 rounded-xl">
+ <div className="bg-muted mt-6 p-4 border border-border/60 rounded-xl">
  <ol className="gap-4 grid sm:grid-cols-3 lg:grid-cols-5">
  {createSteps.map((item) => {
  const Icon = item.icon;
@@ -920,7 +920,7 @@ export default function BuyersPage() {
  </CardContent>
  </Card>
 
- <div className="flex items-start gap-3 bg-card/60 p-4 border border-border/60 rounded-lg">
+ <div className="flex items-start gap-3 bg-card p-4 border border-border/60 rounded-lg">
  <AlertCircle className="mt-0.5 w-5 h-5 text-primary" />
  <div>
  <p className="font-medium text-primary text-sm">Address is optional</p>
@@ -1170,7 +1170,7 @@ export default function BuyersPage() {
  </div>
 
  {/* Footer with Navigation */}
- <div className="flex justify-between items-center bg-muted/30 px-6 py-6 border-border/60 border-t">
+ <div className="flex justify-between items-center bg-muted px-6 py-6 border-border/60 border-t">
  <div>
  {createStep > 1 && (
  <Button variant="ghost" onClick={prevStep} className="gap-2">

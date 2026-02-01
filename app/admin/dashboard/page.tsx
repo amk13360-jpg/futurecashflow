@@ -24,7 +24,7 @@ export default async function AdminDashboardPage() {
  const bankChangeRequests = await getBankChangeRequests()
 
  return (
- <div className="bg-muted/30 min-h-screen">
+ <div className="bg-muted min-h-screen">
  <DashboardHeader userName={session?.fullName || session?.username} />
 
  <main className="mx-auto px-4 py-8 container">
@@ -159,7 +159,7 @@ export default async function AdminDashboardPage() {
  <section aria-labelledby="tabs-heading">
  <h2 id="tabs-heading" className="sr-only">Content Sections</h2>
  <Tabs defaultValue="documents" className="space-y-6">
- <TabsList className="bg-muted/50 border">
+ <TabsList className="bg-muted border">
  <TabsTrigger value="documents">Document Review ({pendingCessions.length})</TabsTrigger>
  <TabsTrigger value="applications">Applications ({pendingApplications.length})</TabsTrigger>
  <TabsTrigger value="bank-changes">Bank Changes ({bankChangeRequests.length})</TabsTrigger>
@@ -185,7 +185,7 @@ export default async function AdminDashboardPage() {
  ) : (
  <div className="space-y-3">
  {pendingCessions.map((cession: any) => (
- <div key={cession.cession_id} className="flex justify-between items-center hover:bg-muted/30 p-4 border rounded-lg transition-colors duration-200">
+ <div key={cession.cession_id} className="flex justify-between items-center hover:bg-muted p-4 border rounded-lg transition-colors duration-200">
  <div className="flex-1">
  <h4 className="font-semibold text-sm">{cession.supplier_name}</h4>
  <p className="mt-1 text-muted-foreground text-xs">{cession.contact_email}</p>

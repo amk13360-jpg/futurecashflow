@@ -142,7 +142,7 @@ export default function RootLayout({
           </a>
           <div id="main-content" className="relative">
             <div className="top-3 right-3 z-50 fixed">
-              <div className="rounded-full border bg-muted/40 px-2 py-1 shadow-sm">
+              <div className="rounded-full border bg-muted px-2 py-1 shadow-sm">
                 <ThemeToggle className="h-9 rounded-full px-3 text-xs" />
               </div>
             </div>

@@ -61,7 +61,7 @@ export function LoadingOverlay({
     <div className="relative">
       {children}
       {isLoading && (
-        <div className="z-50 absolute inset-0 flex flex-col justify-center items-center gap-3 bg-background/80 dark:bg-background/70 backdrop-blur-sm rounded-lg">
+        <div className="z-50 absolute inset-0 flex flex-col justify-center items-center gap-3 bg-background dark:bg-background/70 backdrop-blur-sm rounded-lg">
           <LoadingSpinner size="md" className="text-primary" />
           {message && (
             <p className="font-medium text-muted-foreground text-sm">{message}</p>

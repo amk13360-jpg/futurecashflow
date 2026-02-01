@@ -105,7 +105,7 @@ export default function ReportsPage() {
  }
 
  return (
- <div className="min-h-screen bg-muted/30">
+ <div className="min-h-screen bg-muted">
  <DashboardHeader />
 
  <main className="container mx-auto px-4 py-8">
@@ -287,7 +287,7 @@ export default function ReportsPage() {
  </thead>
  <tbody>
  {offerSummary.map((row: any, idx: number) => (
- <tr key={idx} className="border-b hover:bg-muted/50">
+ <tr key={idx} className="border-b hover:bg-muted">
  <td className="p-2">{new Date(row.date).toLocaleDateString()}</td>
  <td className="p-2">{row.buyer_name}</td>
  <td className="p-2">{row.supplier_name}</td>
@@ -354,7 +354,7 @@ export default function ReportsPage() {
  </thead>
  <tbody>
  {disbursements.map((payment: any) => (
- <tr key={payment.payment_id} className="border-b hover:bg-muted/50">
+ <tr key={payment.payment_id} className="border-b hover:bg-muted">
  <td className="p-2 font-mono text-xs">{payment.payment_reference}</td>
  <td className="p-2 text-xs">{payment.batch_id || "-"}</td>
  <td className="p-2">{payment.supplier_name}</td>
@@ -437,7 +437,7 @@ export default function ReportsPage() {
  </thead>
  <tbody>
  {suppliers.map((supplier: any) => (
- <tr key={supplier.supplier_id} className="border-b hover:bg-muted/50">
+ <tr key={supplier.supplier_id} className="border-b hover:bg-muted">
  <td className="p-2 font-mono text-xs">{supplier.vendor_number || "-"}</td>
  <td className="p-2">{supplier.name}</td>
  <td className="p-2">

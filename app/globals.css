@@ -90,6 +90,12 @@
   --error-border: #fecaca;
 
   --accent-green: var(--accent-green-token);
+
+  /* Nav logo colors (adaptive) */
+  --logo-nav-icon: #2563eb;
+  --logo-nav-divider: #2563eb;
+  --logo-nav-future: #000000;
+  --logo-nav-cashflow: #000000;
 }
 
 .dark {
@@ -152,6 +158,12 @@
   --error-border: rgba(239, 68, 68, 0.3);
 
   --accent-green: #34d399;
+
+  /* Nav logo colors (adaptive) */
+  --logo-nav-icon: #2563eb;
+  --logo-nav-divider: #2563eb;
+  --logo-nav-future: #ffffff;
+  --logo-nav-cashflow: #ffffff;
 }
 
 

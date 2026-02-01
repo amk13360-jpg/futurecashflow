@@ -131,7 +131,7 @@ export default function SupplierOffersPage() {
 
  if (loading) {
  return (
- <div className="bg-muted/30 min-h-screen">
+ <div className="bg-muted min-h-screen">
  <SupplierHeader />
  <main className="mx-auto px-4 py-8 container">
  <div className="flex justify-center items-center min-h-[400px]">
@@ -143,7 +143,7 @@ export default function SupplierOffersPage() {
  }
 
  return (
- <div className="bg-muted/30 min-h-screen">
+ <div className="bg-muted min-h-screen">
  <SupplierHeader />
 
  <main className="mx-auto px-4 py-8 container">

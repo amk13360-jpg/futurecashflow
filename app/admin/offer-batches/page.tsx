@@ -209,7 +209,7 @@ export default function OfferBatchesPage() {
  )
 
  return (
- <div className="bg-muted/30 min-h-screen">
+ <div className="bg-muted min-h-screen">
  <DashboardHeader />
 
  <main className="mx-auto px-4 py-8 container">
@@ -332,7 +332,7 @@ export default function OfferBatchesPage() {
  {eligibleGroups.map((group) => (
  <div
  key={group.supplier_id}
- className="flex justify-between items-center hover:bg-muted/50 p-4 border rounded-lg transition-colors"
+ className="flex justify-between items-center hover:bg-muted p-4 border rounded-lg transition-colors"
  >
  <div className="flex-1">
  <div className="flex items-center gap-2 mb-1">
@@ -594,7 +594,7 @@ export default function OfferBatchesPage() {
  {selectedSupplier.invoices.map((invoice) => (
  <div
  key={invoice.invoice_id}
- className="flex items-center gap-3 hover:bg-muted/50 p-3 border-b last:border-b-0"
+ className="flex items-center gap-3 hover:bg-muted p-3 border-b last:border-b-0"
  >
  <Checkbox
  checked={selectedInvoices.includes(invoice.invoice_id)}

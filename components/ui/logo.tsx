@@ -87,7 +87,13 @@ export function LogoIcon({
  <svg 
  aria-hidden="true" 
  className={cn("shrink-0", colorClass, className)} 
- style={variant === "blue" ? { color: "var(--brand-blue)" } : undefined}
+ style={
+   variant === "blue"
+     ? { color: "var(--brand-blue)" }
+     : variant === "adaptive"
+       ? { color: "var(--logo-nav-icon)" }
+       : undefined
+ }
  fill="currentColor" 
  viewBox="0 0 80 80"
  role="img"
@@ -196,15 +202,38 @@ export function Logo({
  {showText && (
  <>
  <span className={cn(sizes.text, "font-bold", textColorClass)}>
- <span style={variant === "blue" ? { color: "var(--brand-blue)" } : undefined}>
+ <span
+ style={
+   variant === "blue"
+     ? { color: "var(--brand-blue)" }
+     : variant === "adaptive"
+       ? { color: "var(--logo-nav-future)" }
+       : undefined
+ }
+ >
  Future
  </span>
  </span>
  <div
  className={cn("w-px", sizes.divider, dividerColorClass)}
- style={variant === "blue" ? { backgroundColor: "var(--brand-blue)" } : undefined}
+ style={
+   variant === "blue"
+     ? { backgroundColor: "var(--brand-blue)" }
+     : variant === "adaptive"
+       ? { backgroundColor: "var(--logo-nav-divider)" }
+       : undefined
+ }
  />
- <span className={cn(sizes.text, "font-normal", secondaryTextColorClass)} style={variant === "blue" ? { color: "var(--brand-blue)" } : undefined}>
+ <span
+ className={cn(sizes.text, "font-normal", secondaryTextColorClass)}
+ style={
+   variant === "blue"
+     ? { color: "var(--brand-blue)" }
+     : variant === "adaptive"
+       ? { color: "var(--logo-nav-cashflow)" }
+       : undefined
+ }
+ >
  Cashflow
  </span>
  </>

@@ -105,7 +105,7 @@ export default function BankChangesPage() {
 
  if (loading) {
  return (
- <div className="bg-muted/30 min-h-screen">
+ <div className="bg-muted min-h-screen">
  <DashboardHeader />
  <main className="mx-auto px-4 py-8 container">
  <div className="py-12 text-muted-foreground text-center">Loading...</div>
@@ -115,7 +115,7 @@ export default function BankChangesPage() {
  }
 
  return (
- <div className="bg-muted/30 min-h-screen">
+ <div className="bg-muted min-h-screen">
  <DashboardHeader />
 
  <main className="mx-auto px-4 py-8 container">
@@ -180,7 +180,7 @@ export default function BankChangesPage() {
  <CardContent className="space-y-4">
  {/* Bank Details Comparison */}
  <div className="gap-4 grid md:grid-cols-2">
- <div className="bg-muted/50 p-4 rounded-lg">
+ <div className="bg-muted p-4 rounded-lg">
  <div className="flex items-center gap-2 mb-3">
  <Building2 className="w-4 h-4 text-muted-foreground" />
  <span className="font-medium text-sm">Current Bank Details</span>
@@ -225,7 +225,7 @@ export default function BankChangesPage() {
 
  {/* Reason */}
  {request.reason && (
- <div className="bg-muted/50 p-3 rounded-lg">
+ <div className="bg-muted p-3 rounded-lg">
  <span className="text-muted-foreground text-sm">Reason for change: </span>
  <span className="text-sm">{request.reason}</span>
  </div>

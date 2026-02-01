@@ -83,7 +83,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
     <header
       className="
         sticky top-0 z-50 h-16 border-b border-border
-        bg-card/80 backdrop-blur-xl supports-[not_(backdrop-filter)]:bg-card
+        bg-card backdrop-blur-xl supports-[not_(backdrop-filter)]:bg-card
         transition-colors duration-300
       "
     >

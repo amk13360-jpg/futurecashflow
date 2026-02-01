@@ -66,7 +66,7 @@ export default function InvoiceUploadPage() {
   }
 
   return (
-    <div className="bg-muted/30 min-h-screen">
+    <div className="bg-muted min-h-screen">
       <DashboardHeader />
 
       <main className="mx-auto px-4 py-8 container">

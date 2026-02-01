@@ -179,7 +179,7 @@ export default function SettingsPage() {
 
  if (loading) {
  return (
- <div className="bg-muted/30 min-h-screen">
+ <div className="bg-muted min-h-screen">
  <DashboardHeader />
  <main className="mx-auto px-4 py-8 container">
  <div className="py-12 text-muted-foreground text-center">Loading settings...</div>
@@ -189,7 +189,7 @@ export default function SettingsPage() {
  }
 
  return (
- <div className="bg-muted/30 min-h-screen">
+ <div className="bg-muted min-h-screen">
  <DashboardHeader />
 
  <main className="mx-auto px-4 py-8 container">
@@ -636,7 +636,7 @@ export default function SettingsPage() {
  ) : (
  <div className="border rounded-lg overflow-hidden">
  <table className="w-full">
- <thead className="bg-muted/50">
+ <thead className="bg-muted">
  <tr>
  <th className="p-3 font-medium text-left">User</th>
  <th className="p-3 font-medium text-left">Role</th>
@@ -767,7 +767,7 @@ export default function SettingsPage() {
  <CardDescription>Database initialization and maintenance</CardDescription>
  </CardHeader>
  <CardContent className="space-y-6">
- <div className="bg-muted/50 p-4 border rounded-lg">
+ <div className="bg-muted p-4 border rounded-lg">
  <h4 className="mb-2 font-medium">Database Status</h4>
  <p className="mb-4 text-muted-foreground text-sm">
  The database schema must be initialized before using the platform. Run the SQL scripts in the

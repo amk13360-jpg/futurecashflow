@@ -58,7 +58,7 @@ export default function InvoicesPage() {
  const totalAmount = invoices.reduce((sum: number, inv: any) => sum + Number(inv.amount || 0), 0)
 
  return (
- <div className="bg-muted/30 min-h-screen text-foreground">
+ <div className="bg-muted min-h-screen text-foreground">
  <DashboardHeader />
 
  <main className="mx-auto px-4 py-8 max-w-7xl container">
@@ -155,7 +155,7 @@ export default function InvoicesPage() {
  </thead>
  <tbody>
  {invoices.map((invoice: any) => (
- <tr key={invoice.invoice_id} className="hover:bg-muted/50 border-b transition-colors">
+ <tr key={invoice.invoice_id} className="hover:bg-muted border-b transition-colors">
  <td className="px-4 py-4">
  <div className="font-semibold">{invoice.reference_invoice || invoice.document_number}</div>
  <div className="text-muted-foreground text-xs">Doc: {invoice.document_number}</div>
