@@ -74,7 +74,7 @@ export default function APDashboardPage() {
 
         {/* Action Cards */}
         <div className="gap-6 grid md:grid-cols-2 lg:grid-cols-3 mb-8">
-          <Card className="bg-card/50 hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
+          <Card className="bg-card hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
             <CardHeader>
               <div className="flex justify-center items-center bg-primary/10 mb-4 rounded-xl w-14 h-14">
                 <Users className="w-7 h-7 text-primary" />
@@ -90,7 +90,7 @@ export default function APDashboardPage() {
               </Link>
             </CardContent>
           </Card>
-          <Card className="bg-card/50 hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
+          <Card className="bg-card hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
             <CardHeader>
               <div className="flex justify-center items-center bg-primary/10 mb-4 rounded-xl w-14 h-14">
                 <Upload className="w-7 h-7 text-primary" />
@@ -108,7 +108,7 @@ export default function APDashboardPage() {
               </Link>
             </CardContent>
           </Card>
-          <Card className="bg-card/50 hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
+          <Card className="bg-card hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
             <CardHeader>
               <div className="flex justify-center items-center bg-accent-green/10 mb-4 rounded-xl w-14 h-14">
                 <FileText className="w-7 h-7 text-accent-green" />
@@ -124,7 +124,7 @@ export default function APDashboardPage() {
               </Link>
             </CardContent>
           </Card>
-          <Card className="bg-card/50 hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
+          <Card className="bg-card hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
             <CardHeader>
               <div className="flex justify-center items-center bg-muted mb-4 rounded-xl w-14 h-14">
                 <BarChart3 className="w-7 h-7 text-muted-foreground" />
@@ -143,7 +143,7 @@ export default function APDashboardPage() {
         </div>
 
         {/* Recent Activity */}
-        <Card className="bg-card/50 shadow-xl backdrop-blur border">
+        <Card className="bg-card shadow-xl backdrop-blur border">
           <CardHeader className="border-b">
             <CardTitle className="text-foreground text-2xl">Recent Activity</CardTitle>
             <CardDescription className="text-muted-foreground">Your latest invoice uploads and offer updates</CardDescription>

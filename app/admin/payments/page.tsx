@@ -15,7 +15,8 @@ import {
   markPaymentsCompleted,
   getRepayments,
 } from "@/lib/actions/payments"
-import { DollarSign, Download, CheckCircle, ArrowLeft, Clock, FileSpreadsheet } from "lucide-react"
+import { Download, CheckCircle, ArrowLeft, Clock, FileSpreadsheet } from "lucide-react"
+import { RandIcon } from "@/components/ui/rand-icon"
 import Link from "next/link"
 import { toast } from "sonner"
 import * as XLSX from "xlsx"
@@ -219,7 +220,7 @@ export default function PaymentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="min-h-screen bg-muted">
       <DashboardHeader />
 
       <main className="container mx-auto px-4 py-8">
@@ -273,7 +274,7 @@ export default function PaymentsPage() {
                   <div className="text-center py-12 text-muted-foreground">Loading...</div>
                 ) : queue.length === 0 ? (
                   <div className="text-center py-12 text-muted-foreground">
-                    <DollarSign className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                    <RandIcon className="h-12 w-12 mx-auto mb-3 opacity-50" />
                     <p>No offers in payment queue</p>
                   </div>
                 ) : (

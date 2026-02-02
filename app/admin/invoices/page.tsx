@@ -68,7 +68,7 @@ export default function AdminInvoicesPage() {
   const eligibleInvoices = invoices.filter((inv) => inv.status === "matched")
 
   return (
-    <div className="bg-muted/30 min-h-screen">
+    <div className="bg-muted min-h-screen">
       <DashboardHeader />
 
       <main className="mx-auto px-4 py-8 container">

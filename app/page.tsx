@@ -8,10 +8,12 @@ import { BRAND } from "@/lib/constants/brand"
 // Header
 const Header = () => {
   return (
-    <header className="top-0 right-0 left-0 z-50 fixed bg-background/80 backdrop-blur-sm border-b">
+    <header className="top-0 right-0 left-0 z-50 fixed bg-background backdrop-blur-sm border-b">
       <div className="mx-auto px-4 py-4 container">
         <div className="flex justify-end items-center">
-          <ThemeToggle />
+          <div className="rounded-full border bg-muted px-2 py-1 shadow-sm">
+            <ThemeToggle className="h-9 rounded-full px-3 text-xs" />
+          </div>
         </div>
       </div>
     </header>
@@ -26,7 +28,7 @@ export default function HomePage() {
         <main className="flex flex-col justify-center items-center mx-auto p-4 max-w-4xl text-center">
           {/* Hero Logo - Using standardized Logo component */}
           <div className="mb-6">
-            <Logo size="xl" className="scale-125" />
+            <Logo size="xl" variant="blue" className="scale-125" />
           </div>
 
           {/* Tagline */}
