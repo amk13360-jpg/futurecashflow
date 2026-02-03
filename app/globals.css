@@ -242,14 +242,14 @@ button, a, [role="button"] {
 /* Sonner toast colors (force solid backgrounds for all variants) */
 .toaster [data-sonner-toast],
 .toaster [data-toast] {
-  background-color: var(--popover);
-  color: var(--popover-foreground);
-  border-color: var(--border);
+  background-color: #22c55e !important;
+  color: #ffffff !important;
+  border-color: #22c55e !important;
 }
 .toaster [data-type="success"] {
-  background-color: var(--success);
-  color: #ffffff;
-  border-color: var(--success);
+  background-color: #22c55e !important;
+  color: #ffffff !important;
+  border-color: #22c55e !important;
 }
 .toaster [data-type="warning"] {
   background-color: var(--warning);
