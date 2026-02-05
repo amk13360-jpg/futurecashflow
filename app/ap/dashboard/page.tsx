@@ -3,19 +3,29 @@ import { useEffect, useState } from "react"
 import { DashboardHeader } from "@/components/admin/dashboard-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Upload, FileText, BarChart3, Users, TrendingUp, Clock, CheckCircle2 } from "lucide-react"
+import { Upload, FileText, BarChart3, Users, TrendingUp, Clock, CheckCircle2, AlertCircle, Lock } from "lucide-react"
 import Link from "next/link"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
 export default function APDashboardPage() {
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
   const [session, setSession] = useState<any>(null)
+  const [supplierStatus, setSupplierStatus] = useState<{ hasApproved: boolean; approvedCount: number; totalCount: number }>({ hasApproved: false, approvedCount: 0, totalCount: 0 })
+
   useEffect(() => {
     fetch("/api/session")
       .then(res => res.json())
       .then(data => setSession(data))
       .catch(() => setSession({ username: "User" }))
+
+    // Check if buyer has approved suppliers
+    fetch("/api/suppliers/approved-status")
+      .then(res => res.json())
+      .then(data => setSupplierStatus(data))
+      .catch(() => setSupplierStatus({ hasApproved: false, approvedCount: 0, totalCount: 0 }))
+
     let mounted = true
     const fetchStats = async () => {
       setLoading(true)
@@ -70,6 +80,29 @@ export default function APDashboardPage() {
           </div>
         )}
 
+        {/* Alert when no approved suppliers */}
+        {!supplierStatus.hasApproved && supplierStatus.totalCount > 0 && (
+          <Alert className="mb-6 border-warning bg-warning/10">
+            <AlertCircle className="w-4 h-4 text-warning" />
+            <AlertTitle className="text-warning">Suppliers Pending Approval</AlertTitle>
+            <AlertDescription className="text-warning/80">
+              You have {supplierStatus.totalCount} supplier(s) uploaded, but none have been approved yet. 
+              Invoice upload and viewing will be available once at least one supplier is approved by the administrator.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {!supplierStatus.hasApproved && supplierStatus.totalCount === 0 && (
+          <Alert className="mb-6 border-info bg-info/10">
+            <AlertCircle className="w-4 h-4 text-info" />
+            <AlertTitle className="text-info">Upload Vendors First</AlertTitle>
+            <AlertDescription className="text-info/80">
+              Please upload your vendor data first. Once vendors are approved by the administrator, 
+              you will be able to upload and view invoices.
+            </AlertDescription>
+          </Alert>
+        )}
+
         
 
         {/* Action Cards */}
@@ -90,38 +123,66 @@ export default function APDashboardPage() {
               </Link>
             </CardContent>
           </Card>
-          <Card className="bg-card hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
+          <Card className={`bg-card backdrop-blur border transition-all ${supplierStatus.hasApproved ? 'hover:shadow-xl hover:border-primary/50' : 'opacity-60 cursor-not-allowed'}`}>
             <CardHeader>
-              <div className="flex justify-center items-center bg-primary/10 mb-4 rounded-xl w-14 h-14">
-                <Upload className="w-7 h-7 text-primary" />
+              <div className={`flex justify-center items-center mb-4 rounded-xl w-14 h-14 ${supplierStatus.hasApproved ? 'bg-primary/10' : 'bg-muted'}`}>
+                {supplierStatus.hasApproved ? (
+                  <Upload className="w-7 h-7 text-primary" />
+                ) : (
+                  <Lock className="w-7 h-7 text-muted-foreground" />
+                )}
               </div>
-              <CardTitle className="text-foreground text-xl">Upload Invoices</CardTitle>
+              <CardTitle className={`text-xl ${supplierStatus.hasApproved ? 'text-foreground' : 'text-muted-foreground'}`}>Upload Invoices</CardTitle>
               <CardDescription className="text-muted-foreground">
-                Upload approved invoices for processing
+                {supplierStatus.hasApproved 
+                  ? "Upload approved invoices for processing"
+                  : "Requires approved suppliers"}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Link href="/ap/invoices/upload">
-                <Button variant="outline" className="w-full font-semibold" size="lg">
-                  Upload AP Data
+              {supplierStatus.hasApproved ? (
+                <Link href="/ap/invoices/upload">
+                  <Button variant="outline" className="w-full font-semibold" size="lg">
+                    Upload AP Data
+                  </Button>
+                </Link>
+              ) : (
+                <Button variant="outline" className="w-full font-semibold" size="lg" disabled>
+                  <Lock className="mr-2 w-4 h-4" />
+                  Locked
                 </Button>
-              </Link>
+              )}
             </CardContent>
           </Card>
-          <Card className="bg-card hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
+          <Card className={`bg-card backdrop-blur border transition-all ${supplierStatus.hasApproved ? 'hover:shadow-xl hover:border-primary/50' : 'opacity-60 cursor-not-allowed'}`}>
             <CardHeader>
-              <div className="flex justify-center items-center bg-accent-green/10 mb-4 rounded-xl w-14 h-14">
-                <FileText className="w-7 h-7 text-accent-green" />
+              <div className={`flex justify-center items-center mb-4 rounded-xl w-14 h-14 ${supplierStatus.hasApproved ? 'bg-accent-green/10' : 'bg-muted'}`}>
+                {supplierStatus.hasApproved ? (
+                  <FileText className="w-7 h-7 text-accent-green" />
+                ) : (
+                  <Lock className="w-7 h-7 text-muted-foreground" />
+                )}
               </div>
-              <CardTitle className="text-foreground text-xl">View Invoices</CardTitle>
-              <CardDescription className="text-muted-foreground">Track uploaded invoices and offer status</CardDescription>
+              <CardTitle className={`text-xl ${supplierStatus.hasApproved ? 'text-foreground' : 'text-muted-foreground'}`}>View Invoices</CardTitle>
+              <CardDescription className="text-muted-foreground">
+                {supplierStatus.hasApproved 
+                  ? "Track uploaded invoices and offer status"
+                  : "Requires approved suppliers"}
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <Link href="/ap/invoices">
-                <Button variant="outline" className="w-full font-semibold" size="lg">
-                  View All
+              {supplierStatus.hasApproved ? (
+                <Link href="/ap/invoices">
+                  <Button variant="outline" className="w-full font-semibold" size="lg">
+                    View All
+                  </Button>
+                </Link>
+              ) : (
+                <Button variant="outline" className="w-full font-semibold" size="lg" disabled>
+                  <Lock className="mr-2 w-4 h-4" />
+                  Locked
                 </Button>
-              </Link>
+              )}
             </CardContent>
           </Card>
           <Card className="bg-card hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">

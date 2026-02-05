@@ -55,13 +55,13 @@ export function SupplierHeader({ supplierName }: SupplierHeaderProps) {
         <div className="flex items-center gap-2">
           <ThemeToggle />
           <div className="mx-1 h-6 w-px bg-border" />
-          <div ref={profileRef} className="relative">
+          <div ref={profileRef} className="relative flex items-center">
             <button
               type="button"
               onClick={() => setProfileOpen(!profileOpen)}
               aria-label="Profile menu"
               className={cn(
-                "flex items-center gap-2.5 rounded-lg border px-2 py-1",
+                "flex items-center gap-2.5 rounded-lg border px-2.5 py-1.5",
                 "bg-card text-foreground",
                 "transition-colors duration-200 cursor-pointer",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
@@ -86,11 +86,10 @@ export function SupplierHeader({ supplierName }: SupplierHeaderProps) {
             {profileOpen && (
               <div
                 className="
-                  absolute right-0 top-[calc(100%+8px)] z-50
+                  absolute right-0 top-full mt-2 z-50
                   w-56 rounded-xl border border-border bg-popover text-popover-foreground
                   shadow-xl animate-in fade-in-0 zoom-in-95
                 "
-                style={{ backgroundColor: "var(--popover)", opacity: 1 }}
               >
                 <div className="flex items-center gap-3 border-b border-border bg-primary/[0.04] px-4 py-3.5">
                   <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold shadow-sm">

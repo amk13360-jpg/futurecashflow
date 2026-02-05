@@ -787,3 +787,57 @@ export async function calculateEffectiveRate(
     return { success: false, message: 'Failed to calculate rate' };
   }
 }
+
+// ============================================================================
+// Check if buyer has approved suppliers (for AP dashboard)
+// ============================================================================
+
+export async function hasApprovedSuppliers(): Promise<{ hasApproved: boolean; approvedCount: number; totalCount: number }> {
+  try {
+    const session = await getSession();
+    if (!session) {
+      return { hasApproved: false, approvedCount: 0, totalCount: 0 };
+    }
+
+    let buyerId = session.buyerId;
+    
+    // If admin, check all suppliers
+    if (session.role === 'admin') {
+      const result = await query<any[]>(`
+        SELECT 
+          COUNT(*) as total,
+          SUM(CASE WHEN onboarding_status = 'approved' THEN 1 ELSE 0 END) as approved
+        FROM suppliers
+      `);
+      const data = result[0] || { total: 0, approved: 0 };
+      return { 
+        hasApproved: data.approved > 0, 
+        approvedCount: Number(data.approved) || 0, 
+        totalCount: Number(data.total) || 0 
+      };
+    }
+    
+    // For AP users, check their buyer's suppliers
+    if (!buyerId) {
+      return { hasApproved: false, approvedCount: 0, totalCount: 0 };
+    }
+
+    const result = await query<any[]>(`
+      SELECT 
+        COUNT(*) as total,
+        SUM(CASE WHEN onboarding_status = 'approved' THEN 1 ELSE 0 END) as approved
+      FROM suppliers
+      WHERE buyer_id = ?
+    `, [buyerId]);
+    
+    const data = result[0] || { total: 0, approved: 0 };
+    return { 
+      hasApproved: data.approved > 0, 
+      approvedCount: Number(data.approved) || 0, 
+      totalCount: Number(data.total) || 0 
+    };
+  } catch (error) {
+    console.error('Error checking approved suppliers:', error);
+    return { hasApproved: false, approvedCount: 0, totalCount: 0 };
+  }
+}

@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { DashboardHeader } from "@/components/admin/dashboard-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -10,8 +10,9 @@ import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { Progress } from "@/components/ui/progress"
 import { parseVendorDataCSV, uploadVendorData } from "@/lib/actions/invoices"
-import { FileText, CheckCircle, AlertCircle, ArrowLeft, Users } from "lucide-react"
+import { FileText, CheckCircle, AlertCircle, ArrowLeft, Users, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { toast } from "sonner"
 
@@ -19,8 +20,24 @@ export default function VendorUploadPage() {
  const router = useRouter()
  const [csvText, setCsvText] = useState("")
  const [loading, setLoading] = useState(false)
+ const [uploadProgress, setUploadProgress] = useState(0)
  const [preview, setPreview] = useState<any[]>([])
  const [results, setResults] = useState<{ uploaded: string[]; errors: string[] } | null>(null)
+
+ // Animate progress during upload
+ useEffect(() => {
+   let interval: NodeJS.Timeout
+   if (loading && uploadProgress < 90) {
+     interval = setInterval(() => {
+       setUploadProgress((prev) => {
+         // Slow down as we approach 90%
+         const increment = prev < 30 ? 8 : prev < 60 ? 5 : prev < 80 ? 2 : 1
+         return Math.min(prev + increment, 90)
+       })
+     }, 200)
+   }
+   return () => clearInterval(interval)
+ }, [loading, uploadProgress])
 
  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
  const file = e.target.files?.[0]
@@ -47,9 +64,11 @@ export default function VendorUploadPage() {
 
  const handleUpload = async () => {
  setLoading(true)
+ setUploadProgress(0)
  try {
  const rows = await parseVendorDataCSV(csvText)
  const result = await uploadVendorData(rows)
+ setUploadProgress(100)
  setResults(result)
  toast.success(`Uploaded ${result.uploaded.length} vendors`)
  } catch (error: any) {
@@ -132,9 +151,30 @@ export default function VendorUploadPage() {
  Preview
  </Button>
  <Button onClick={handleUpload} variant="outline" disabled={!csvText || loading} className="flex-1">
- {loading ? "Uploading..." : "Upload Vendor Data"}
+ {loading ? (
+   <>
+     <Loader2 className="mr-2 w-4 h-4 animate-spin" />
+     Uploading...
+   </>
+ ) : (
+   "Upload Vendor Data"
+ )}
  </Button>
  </div>
+
+ {/* Animated Progress Bar */}
+ {loading && (
+ <div className="space-y-2 mt-4">
+   <div className="flex justify-between text-sm">
+     <span className="text-muted-foreground">Uploading vendor data...</span>
+     <span className="font-medium">{uploadProgress}%</span>
+   </div>
+   <Progress value={uploadProgress} className="h-3 animate-pulse" />
+   <p className="text-muted-foreground text-xs text-center">
+     Please wait while we process your vendor data
+   </p>
+ </div>
+ )}
  </CardContent>
  </Card>
 

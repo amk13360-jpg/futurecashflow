@@ -125,16 +125,16 @@ export default function ApplicationReviewClient({ supplier }: ApplicationReviewC
             <CardDescription>Update application status</CardDescription>
           </CardHeader>
           <CardContent className="flex sm:flex-row flex-col gap-3">
-            <Button onClick={handleApprove} disabled={isPending} className="flex-1">
+            <Button onClick={handleApprove} disabled={isPending} className="flex-1 border border-primary">
               {isPending ? "Processing..." : "Approve"}
             </Button>
-            <Button onClick={handleRequestDocuments} variant="outline" disabled={isPending} className="flex-1">
+            <Button onClick={handleRequestDocuments} variant="outline" disabled={isPending} className="flex-1 border border-border">
               Request Documents
             </Button>
-            <Button onClick={handleReject} variant="destructive" disabled={isPending} className="flex-1">
+            <Button onClick={handleReject} variant="destructive" disabled={isPending} className="flex-1 border border-destructive">
               Reject
             </Button>
-            <Button onClick={handleResendEmail} variant="secondary" disabled={isPending} className="flex-1">
+            <Button onClick={handleResendEmail} variant="secondary" disabled={isPending} className="flex-1 border border-secondary-foreground/30">
               Resend Email
             </Button>
           </CardContent>
