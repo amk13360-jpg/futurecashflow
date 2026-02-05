@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
-import { verifySession, verifySupplierSession } from "./lib/auth/session"
+import { verifySession, verifySupplierSession, shouldRefreshSession, refreshSession } from "./lib/auth/session"
 
 export async function middleware(request: NextRequest) {
 	const { pathname } = request.nextUrl
@@ -49,6 +49,23 @@ export async function middleware(request: NextRequest) {
 			if (session.role !== "accounts_payable") {
 				// Do not redirect to admin. Redirect to home
 				return NextResponse.redirect(new URL("/", request.url))
+			}
+		}
+
+		// Sliding session: refresh token if it's close to expiring (within 1 hour)
+		const needsRefresh = await shouldRefreshSession(token)
+		if (needsRefresh) {
+			const newToken = await refreshSession(token)
+			if (newToken) {
+				const response = NextResponse.next()
+				response.cookies.set("session", newToken, {
+					httpOnly: true,
+					secure: process.env.NODE_ENV === "production",
+					sameSite: "lax",
+					maxAge: 60 * 60 * 4, // 4 hours
+					path: "/",
+				})
+				return response
 			}
 		}
 

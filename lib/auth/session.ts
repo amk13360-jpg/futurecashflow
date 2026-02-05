@@ -24,7 +24,7 @@ export async function createSession(data: SessionData): Promise<string> {
   const token = await new SignJWT({ ...data })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("30m") // 30 minutes
+    .setExpirationTime("4h") // 4 hours - extended for long operations like CSV uploads
     .sign(SECRET_KEY)
 
   return token
@@ -87,7 +87,7 @@ export async function setSessionCookie(token: string): Promise<void> {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    maxAge: 60 * 30, // 30 minutes
+    maxAge: 60 * 60 * 4, // 4 hours
     path: "/",
   })
 }
@@ -109,4 +109,26 @@ export async function clearSession(): Promise<void> {
   const cookieStore = await cookies()
   cookieStore.delete("session")
   cookieStore.delete("supplier_session")
+}
+
+// Check if session token is close to expiring (within 1 hour)
+export async function shouldRefreshSession(token: string): Promise<boolean> {
+  try {
+    const { payload } = await jwtVerify(token, SECRET_KEY)
+    const exp = payload.exp
+    if (!exp) return false
+    const now = Math.floor(Date.now() / 1000)
+    const timeRemaining = exp - now
+    // Refresh if less than 1 hour remaining
+    return timeRemaining < 60 * 60
+  } catch {
+    return false
+  }
+}
+
+// Refresh session - creates new token with same data but extended expiration
+export async function refreshSession(token: string): Promise<string | null> {
+  const session = await verifySession(token)
+  if (!session) return null
+  return createSession(session)
 }
