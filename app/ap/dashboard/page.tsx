@@ -82,7 +82,7 @@ export default function APDashboardPage() {
 
         {/* Alert when no approved suppliers */}
         {!supplierStatus.hasApproved && supplierStatus.totalCount > 0 && (
-          <Alert className="mb-6 border-warning bg-warning/10">
+          <Alert className="bg-warning/10 mb-6 border-warning">
             <AlertCircle className="w-4 h-4 text-warning" />
             <AlertTitle className="text-warning">Suppliers Pending Approval</AlertTitle>
             <AlertDescription className="text-warning/80">
@@ -93,7 +93,7 @@ export default function APDashboardPage() {
         )}
 
         {!supplierStatus.hasApproved && supplierStatus.totalCount === 0 && (
-          <Alert className="mb-6 border-info bg-info/10">
+          <Alert className="bg-info/10 mb-6 border-info">
             <AlertCircle className="w-4 h-4 text-info" />
             <AlertTitle className="text-info">Upload Vendors First</AlertTitle>
             <AlertDescription className="text-info/80">

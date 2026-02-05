@@ -41,27 +41,23 @@ export function SupplierHeader({ supplierName }: SupplierHeaderProps) {
 
   return (
     <header
-      className="
-        sticky top-0 z-50 h-16 border-b border-border
-        bg-card backdrop-blur-xl supports-[not_(backdrop-filter)]:bg-card
-        transition-colors duration-300
-      "
+      className="top-0 z-50 sticky bg-card supports-[not_(backdrop-filter)]:bg-card backdrop-blur-xl border-border border-b h-16 transition-colors duration-300"
     >
-      <div className="mx-auto flex h-full max-w-screen-xl items-center justify-between px-4 sm:px-6">
+      <div className="flex justify-between items-center mx-auto px-4 sm:px-6 max-w-screen-xl h-full">
         <div className="flex items-center gap-3">
           <Logo size="sm" variant="adaptive" />
           <span className="text-muted-foreground text-sm">Supplier Portal</span>
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <div className="mx-1 h-6 w-px bg-border" />
+          <div className="mx-1 bg-border w-px h-6" />
           <div ref={profileRef} className="relative flex items-center">
             <button
               type="button"
               onClick={() => setProfileOpen(!profileOpen)}
               aria-label="Profile menu"
               className={cn(
-                "flex items-center gap-2.5 rounded-lg border px-2.5 py-1.5",
+                "flex items-center gap-2.5 px-2.5 py-1.5 border rounded-lg",
                 "bg-card text-foreground",
                 "transition-colors duration-200 cursor-pointer",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
@@ -69,15 +65,15 @@ export function SupplierHeader({ supplierName }: SupplierHeaderProps) {
               )}
             >
               <div className="text-left">
-                <p className="text-sm font-semibold leading-tight text-foreground">{supplierName || "Supplier"}</p>
-                <p className="text-xs leading-tight text-muted-foreground">Supplier</p>
+                <p className="font-semibold text-foreground text-sm leading-tight">{supplierName || "Supplier"}</p>
+                <p className="text-muted-foreground text-xs leading-tight">Supplier</p>
               </div>
-              <div className="flex h-[34px] w-[34px] flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold shadow-sm ring-2 ring-card">
+              <div className="flex flex-shrink-0 justify-center items-center bg-primary/10 shadow-sm rounded-full ring-2 ring-card w-[34px] h-[34px] font-bold text-primary text-xs">
                 {initials}
               </div>
               <ChevronDown
                 className={cn(
-                  "h-3.5 w-3.5 flex-shrink-0 text-muted-foreground transition-transform duration-200",
+                  "flex-shrink-0 w-3.5 h-3.5 text-muted-foreground transition-transform duration-200",
                   profileOpen && "rotate-180"
                 )}
               />
@@ -85,38 +81,34 @@ export function SupplierHeader({ supplierName }: SupplierHeaderProps) {
 
             {profileOpen && (
               <div
-                className="
-                  absolute right-0 top-full mt-2 z-50
-                  w-56 rounded-xl border border-border bg-popover text-popover-foreground
-                  shadow-xl animate-in fade-in-0 zoom-in-95
-                "
+                className="top-full right-0 z-50 absolute bg-popover shadow-xl mt-2 border border-border rounded-xl w-56 text-popover-foreground animate-in fade-in-0 zoom-in-95"
               >
-                <div className="flex items-center gap-3 border-b border-border bg-primary/[0.04] px-4 py-3.5">
-                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold shadow-sm">
+                <div className="flex items-center gap-3 bg-primary/[0.04] px-4 py-3.5 border-border border-b">
+                  <div className="flex flex-shrink-0 justify-center items-center bg-primary/10 shadow-sm rounded-full w-9 h-9 font-bold text-primary text-xs">
                     {initials}
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-foreground">{supplierName || "Supplier"}</p>
-                    <p className="truncate text-xs text-muted-foreground">Supplier</p>
+                    <p className="font-semibold text-foreground text-sm truncate">{supplierName || "Supplier"}</p>
+                    <p className="text-muted-foreground text-xs truncate">Supplier</p>
                   </div>
                 </div>
                 <div className="py-1">
                   <button
                     type="button"
-                    className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-foreground hover:bg-accent transition-colors duration-100 cursor-pointer"
+                    className="flex items-center gap-2.5 hover:bg-accent px-4 py-2.5 w-full font-medium text-foreground text-sm transition-colors duration-100 cursor-pointer"
                   >
-                    <User className="h-4 w-4 text-muted-foreground" />
+                    <User className="w-4 h-4 text-muted-foreground" />
                     Profile
                   </button>
                 </div>
-                <div className="border-t border-border" />
+                <div className="border-border border-t" />
                 <div className="py-1">
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-error hover:bg-error/[0.08] transition-colors duration-100 cursor-pointer"
+                    className="flex items-center gap-2.5 hover:bg-error/[0.08] px-4 py-2.5 w-full font-medium text-error text-sm transition-colors duration-100 cursor-pointer"
                   >
-                    <LogOut className="h-4 w-4" />
+                    <LogOut className="w-4 h-4" />
                     Sign out
                   </button>
                 </div>

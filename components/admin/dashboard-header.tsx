@@ -81,13 +81,9 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
 
   return (
     <header
-      className="
-        sticky top-0 z-50 h-16 border-b border-border
-        bg-card backdrop-blur-xl supports-[not_(backdrop-filter)]:bg-card
-        transition-colors duration-300
-      "
+      className="top-0 z-50 sticky bg-card supports-[not_(backdrop-filter)]:bg-card backdrop-blur-xl border-border border-b h-16 transition-colors duration-300"
     >
-      <div className="mx-auto flex h-full max-w-screen-xl items-center justify-between px-4 sm:px-6">
+      <div className="flex justify-between items-center mx-auto px-4 sm:px-6 max-w-screen-xl h-full">
         <div className="flex items-center gap-3">
           <Logo size="sm" variant="adaptive" />
           <span className="text-muted-foreground text-sm">
@@ -109,32 +105,21 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
               type="button"
               onClick={() => { setBellOpen(!bellOpen); setProfileOpen(false) }}
               aria-label="Notifications"
-              className="
-                relative h-9 w-9 rounded-lg border border-border bg-card
-                text-muted-foreground
-                hover:border-primary hover:text-primary
-                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2
-                transition-colors duration-200 cursor-pointer
-                flex items-center justify-center
-              "
+              className="relative flex justify-center items-center bg-card border border-border hover:border-primary rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 w-9 h-9 text-muted-foreground hover:text-primary transition-colors duration-200 cursor-pointer"
             >
-              <Bell className="h-[18px] w-[18px]" />
+              <Bell className="w-[18px] h-[18px]" />
               {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-error border-2 border-card" />
+                <span className="top-1.5 right-1.5 absolute bg-error border-2 border-card rounded-full w-2 h-2" />
               )}
             </button>
 
             {bellOpen && (
               <div
-                className="
-                  absolute right-0 top-full mt-2 z-50
-                  w-80 rounded-xl border border-border bg-popover text-popover-foreground
-                  shadow-xl animate-in fade-in-0 zoom-in-95
-                "
+                className="top-full right-0 z-50 absolute bg-popover shadow-xl mt-2 border border-border rounded-xl w-80 text-popover-foreground animate-in fade-in-0 zoom-in-95"
               >
-                <div className="flex items-center justify-between border-b border-border px-4 pb-2.5 pt-3.5">
-                  <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Notifications</span>
-                  <button type="button" className="text-xs font-semibold text-primary hover:underline">
+                <div className="flex justify-between items-center px-4 pt-3.5 pb-2.5 border-border border-b">
+                  <span className="font-semibold text-muted-foreground text-xs uppercase tracking-wide">Notifications</span>
+                  <button type="button" className="font-semibold text-primary text-xs hover:underline">
                     Mark all read
                   </button>
                 </div>
@@ -142,7 +127,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                   <div
                     key={`${n.title}-${i}`}
                     className={cn(
-                      "flex cursor-pointer gap-3 px-4 py-3 transition-colors duration-100",
+                      "flex gap-3 px-4 py-3 transition-colors duration-100 cursor-pointer",
                       "hover:bg-accent",
                       i < notifications.length - 1 && "border-b border-border",
                       n.unread && "bg-primary/[0.04]"
@@ -150,24 +135,24 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                   >
                     <span
                       className={cn(
-                        "mt-1.5 h-2 w-2 flex-shrink-0 rounded-full",
+                        "flex-shrink-0 mt-1.5 rounded-full w-2 h-2",
                         n.unread ? "bg-primary" : "bg-border"
                       )}
                     />
-                    <div className="min-w-0 flex-1">
+                    <div className="flex-1 min-w-0">
                       <p className={cn(
-                        "truncate text-sm",
+                        "text-sm truncate",
                         n.unread ? "font-semibold text-foreground" : "font-medium text-foreground/70"
                       )}>
                         {n.title}
                       </p>
-                      <p className="truncate text-xs text-muted-foreground">{n.sub}</p>
+                      <p className="text-muted-foreground text-xs truncate">{n.sub}</p>
                     </div>
-                    <span className="flex-shrink-0 text-xs text-muted-foreground">{n.time}</span>
+                    <span className="flex-shrink-0 text-muted-foreground text-xs">{n.time}</span>
                   </div>
                 ))}
-                <div className="border-t border-border px-4 py-2.5 text-center">
-                  <button type="button" className="text-xs font-semibold text-primary hover:underline">
+                <div className="px-4 py-2.5 border-border border-t text-center">
+                  <button type="button" className="font-semibold text-primary text-xs hover:underline">
                     View all notifications
                   </button>
                 </div>
@@ -175,7 +160,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
             )}
           </div>
 
-          <div className="mx-1 h-6 w-px bg-border" />
+          <div className="mx-1 bg-border w-px h-6" />
 
           <div ref={profileRef} className="relative flex items-center">
             <button
@@ -183,7 +168,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
               onClick={() => { setProfileOpen(!profileOpen); setBellOpen(false) }}
               aria-label="Profile menu"
               className={cn(
-                "flex items-center gap-2.5 rounded-lg border px-2.5 py-1.5",
+                "flex items-center gap-2.5 px-2.5 py-1.5 border rounded-lg",
                 "bg-card text-foreground",
                 "transition-colors duration-200 cursor-pointer",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
@@ -191,15 +176,15 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
               )}
             >
               <div className="text-left">
-                <p className="text-sm font-semibold leading-tight text-foreground">{displayName}</p>
-                <p className="text-xs leading-tight text-muted-foreground">{roleLabel}</p>
+                <p className="font-semibold text-foreground text-sm leading-tight">{displayName}</p>
+                <p className="text-muted-foreground text-xs leading-tight">{roleLabel}</p>
               </div>
-              <div className="flex h-[34px] w-[34px] flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold shadow-sm ring-2 ring-card">
+              <div className="flex flex-shrink-0 justify-center items-center bg-primary/10 shadow-sm rounded-full ring-2 ring-card w-[34px] h-[34px] font-bold text-primary text-xs">
                 {initials}
               </div>
               <ChevronDown
                 className={cn(
-                  "h-3.5 w-3.5 flex-shrink-0 text-muted-foreground transition-transform duration-200",
+                  "flex-shrink-0 w-3.5 h-3.5 text-muted-foreground transition-transform duration-200",
                   profileOpen && "rotate-180"
                 )}
               />
@@ -207,45 +192,41 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
 
             {profileOpen && (
               <div
-                className="
-                  absolute right-0 top-full mt-2 z-50
-                  w-56 rounded-xl border border-border bg-popover text-popover-foreground
-                  shadow-xl animate-in fade-in-0 zoom-in-95
-                "
+                className="top-full right-0 z-50 absolute bg-popover shadow-xl mt-2 border border-border rounded-xl w-56 text-popover-foreground animate-in fade-in-0 zoom-in-95"
               >
-                <div className="flex items-center gap-3 border-b border-border bg-primary/[0.04] px-4 py-3.5">
-                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary text-xs font-bold shadow-sm">
+                <div className="flex items-center gap-3 bg-primary/[0.04] px-4 py-3.5 border-border border-b">
+                  <div className="flex flex-shrink-0 justify-center items-center bg-primary/10 shadow-sm rounded-full w-9 h-9 font-bold text-primary text-xs">
                     {initials}
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-semibold text-foreground">{displayName}</p>
-                    <p className="truncate text-xs text-muted-foreground">{roleLabel}</p>
+                    <p className="font-semibold text-foreground text-sm truncate">{displayName}</p>
+                    <p className="text-muted-foreground text-xs truncate">{roleLabel}</p>
                   </div>
                 </div>
                 <div className="py-1">
                   <button
                     type="button"
-                    className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-foreground hover:bg-accent transition-colors duration-100 cursor-pointer"
+                    className="flex items-center gap-2.5 hover:bg-accent px-4 py-2.5 w-full font-medium text-foreground text-sm transition-colors duration-100 cursor-pointer"
                   >
-                    <User className="h-4 w-4 text-muted-foreground" />
+                    <User className="w-4 h-4 text-muted-foreground" />
                     Profile
                   </button>
                   <button
                     type="button"
-                    className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-foreground hover:bg-accent transition-colors duration-100 cursor-pointer"
+                    className="flex items-center gap-2.5 hover:bg-accent px-4 py-2.5 w-full font-medium text-foreground text-sm transition-colors duration-100 cursor-pointer"
                   >
-                    <Settings className="h-4 w-4 text-muted-foreground" />
+                    <Settings className="w-4 h-4 text-muted-foreground" />
                     Settings
                   </button>
                 </div>
-                <div className="border-t border-border" />
+                <div className="border-border border-t" />
                 <div className="py-1">
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-error hover:bg-error/[0.08] transition-colors duration-100 cursor-pointer"
+                    className="flex items-center gap-2.5 hover:bg-error/[0.08] px-4 py-2.5 w-full font-medium text-error text-sm transition-colors duration-100 cursor-pointer"
                   >
-                    <LogOut className="h-4 w-4" />
+                    <LogOut className="w-4 h-4" />
                     Sign out
                   </button>
                 </div>
