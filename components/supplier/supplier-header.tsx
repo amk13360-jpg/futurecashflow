@@ -48,32 +48,32 @@ export function SupplierHeader({ supplierName }: SupplierHeaderProps) {
           <Logo size="sm" variant="adaptive" />
           <span className="text-muted-foreground text-sm">Supplier Portal</span>
         </div>
-        <div className="flex items-center gap-2 h-full">
+        <div className="flex items-center gap-3">
           <ThemeToggle />
-          <div className="self-center mx-1 bg-border w-px h-6" />
-          <div ref={profileRef} className="relative flex items-center h-full">
+          <div className="self-center bg-border w-px h-6" />
+          <div ref={profileRef} className="relative flex items-center">
             <button
               type="button"
               onClick={() => setProfileOpen(!profileOpen)}
               aria-label="Profile menu"
               className={cn(
-                "flex items-center gap-2.5 px-2.5 py-1.5 border rounded-lg",
+                "flex items-center gap-2.5 px-2 py-1.5 border rounded-lg h-10",
                 "bg-card text-foreground",
                 "transition-colors duration-200 cursor-pointer",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 profileOpen ? "border-primary ring-2 ring-primary/20" : "border-border hover:border-primary"
               )}
             >
-              <div className="text-left">
-                <p className="font-semibold text-foreground text-sm leading-tight">{supplierName || "Supplier"}</p>
-                <p className="text-muted-foreground text-xs leading-tight">Supplier</p>
-              </div>
-              <div className="flex flex-shrink-0 justify-center items-center bg-primary/10 shadow-sm rounded-full ring-2 ring-card w-[34px] h-[34px] font-bold text-primary text-xs">
+              <div className="flex shrink-0 justify-center items-center bg-primary/10 rounded-full w-7 h-7 font-bold text-primary text-xs">
                 {initials}
+              </div>
+              <div className="text-left hidden sm:block">
+                <p className="font-medium text-foreground text-sm leading-none">{supplierName || "Supplier"}</p>
+                <p className="text-muted-foreground text-[11px] leading-none mt-0.5">Supplier</p>
               </div>
               <ChevronDown
                 className={cn(
-                  "flex-shrink-0 w-3.5 h-3.5 text-muted-foreground transition-transform duration-200",
+                  "shrink-0 w-3.5 h-3.5 text-muted-foreground transition-transform duration-200",
                   profileOpen && "rotate-180"
                 )}
               />
@@ -81,14 +81,14 @@ export function SupplierHeader({ supplierName }: SupplierHeaderProps) {
 
             {profileOpen && (
               <div
-                className="top-full right-0 z-50 absolute bg-popover shadow-xl mt-2 border border-border rounded-xl w-56 text-popover-foreground animate-in fade-in-0 zoom-in-95"
+                className="absolute top-[calc(100%+4px)] right-0 z-[60] bg-popover shadow-xl border border-border rounded-xl w-56 text-popover-foreground animate-in fade-in-0 zoom-in-95 slide-in-from-top-1"
               >
-                <div className="flex items-center gap-3 bg-primary/[0.04] px-4 py-3.5 border-border border-b">
-                  <div className="flex flex-shrink-0 justify-center items-center bg-primary/10 shadow-sm rounded-full w-9 h-9 font-bold text-primary text-xs">
+                <div className="flex items-center gap-3 bg-primary/[0.04] px-4 py-3 border-border border-b rounded-t-xl">
+                  <div className="flex shrink-0 justify-center items-center bg-primary/10 rounded-full w-9 h-9 font-bold text-primary text-xs">
                     {initials}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-semibold text-foreground text-sm truncate">{supplierName || "Supplier"}</p>
+                    <p className="font-medium text-foreground text-sm truncate">{supplierName || "Supplier"}</p>
                     <p className="text-muted-foreground text-xs truncate">Supplier</p>
                   </div>
                 </div>
