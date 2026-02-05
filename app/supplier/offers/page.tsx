@@ -123,10 +123,12 @@ export default function SupplierOffersPage() {
  .reduce(
  (acc, offer) => ({
  invoiceAmount: acc.invoiceAmount + (parseFloat(String(offer.invoice_amount)) || 0),
+ earlyPaymentBase: acc.earlyPaymentBase + (parseFloat(String(offer.invoice_amount)) * 0.7 || 0),
  discountAmount: acc.discountAmount + (parseFloat(String(offer.discount_amount)) || 0),
  netPayment: acc.netPayment + (parseFloat(String(offer.net_payment_amount)) || 0),
+ retainedAmount: acc.retainedAmount + (parseFloat(String(offer.invoice_amount)) * 0.3 || 0),
  }),
- { invoiceAmount: 0, discountAmount: 0, netPayment: 0 }
+ { invoiceAmount: 0, earlyPaymentBase: 0, discountAmount: 0, netPayment: 0, retainedAmount: 0 }
  )
 
  if (loading) {
@@ -226,29 +228,38 @@ export default function SupplierOffersPage() {
  </Badge>
  </div>
  
- <div className="gap-4 grid grid-cols-2 md:grid-cols-4 text-sm">
- <div>
- <p className="text-muted-foreground">Invoice Amount</p>
- <p className="font-semibold">
- {offer.currency} {parseFloat(String(offer.invoice_amount)).toLocaleString()}
- </p>
- </div>
- <div>
- <p className="text-muted-foreground">Discount</p>
- <p className="font-medium text-error">
- -{offer.currency} {parseFloat(String(offer.discount_amount)).toLocaleString()}
- </p>
- </div>
- <div>
- <p className="text-muted-foreground">You Receive</p>
- <p className="font-semibold text-success">
- {offer.currency} {parseFloat(String(offer.net_payment_amount)).toLocaleString()}
- </p>
- </div>
- <div>
- <p className="text-muted-foreground">Tenor</p>
- <p className="font-medium">{offer.days_to_maturity} days</p>
- <p className="text-muted-foreground text-xs">Applied to 70% of invoice</p>
+<div className="gap-4 grid grid-cols-2 md:grid-cols-5 text-sm">
+                 <div>
+                 <p className="text-muted-foreground">Invoice Amount</p>
+                 <p className="font-semibold">
+                 {offer.currency} {parseFloat(String(offer.invoice_amount)).toLocaleString()}
+                 </p>
+                 </div>
+                 <div>
+                 <p className="text-muted-foreground">Early Payment (70%)</p>
+                 <p className="font-medium">
+                 {offer.currency} {(parseFloat(String(offer.invoice_amount)) * 0.7).toLocaleString()}
+                 </p>
+                 </div>
+                 <div>
+                 <p className="text-muted-foreground">Discount ({offer.annual_rate}% p.a.)</p>
+                 <p className="font-medium text-error">
+                 -{offer.currency} {parseFloat(String(offer.discount_amount)).toLocaleString()}
+                 </p>
+                 <p className="text-muted-foreground text-xs">{offer.days_to_maturity} days tenor</p>
+                 </div>
+                 <div>
+                 <p className="text-muted-foreground">Early Payment Now</p>
+                 <p className="font-semibold text-success">
+                 {offer.currency} {parseFloat(String(offer.net_payment_amount)).toLocaleString()}
+                 </p>
+                 </div>
+                 <div>
+                 <p className="text-muted-foreground">Retained (30%)</p>
+                 <p className="font-medium text-muted-foreground">
+                 {offer.currency} {(parseFloat(String(offer.invoice_amount)) * 0.3).toLocaleString()}
+                 </p>
+                 <p className="text-muted-foreground text-xs">Paid on due date</p>
  </div>
  </div>
 
@@ -282,58 +293,70 @@ export default function SupplierOffersPage() {
  </CardDescription>
  </CardHeader>
  <CardContent className="space-y-4">
- {selectedOffers.size === 0 ? (
- <div className="py-6 text-muted-foreground text-center">
- <Square className="opacity-50 mx-auto mb-2 w-12 h-12" />
- <p>Select offers to see summary</p>
- </div>
- ) : (
- <>
- <div className="space-y-3">
- <div className="flex justify-between">
- <span className="text-muted-foreground">Total Invoice Amount</span>
- <span className="font-medium">
- R {selectedTotals.invoiceAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
- </span>
- </div>
- <div className="flex justify-between">
- <span className="text-muted-foreground">Total Discount</span>
- <span className="font-medium text-error">
- -R {selectedTotals.discountAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
- </span>
- </div>
- <Separator />
- <div className="flex justify-between">
- <span className="font-semibold">You Will Receive</span>
- <span className="font-bold text-success text-xl">
- R {selectedTotals.netPayment.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
- </span>
- </div>
- </div>
+                 {selectedOffers.size === 0 ? (
+                   <div className="py-6 text-muted-foreground text-center">
+                     <Square className="opacity-50 mx-auto mb-2 w-12 h-12" />
+                     <p>Select offers to see summary</p>
+                   </div>
+                 ) : (
+                   <>
+                     <div className="space-y-3">
+                       <div className="flex justify-between">
+                         <span className="text-muted-foreground">Total Invoice Amount</span>
+                         <span className="font-medium">
+                           R {selectedTotals.invoiceAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
+                         </span>
+                       </div>
+                       <div className="flex justify-between">
+                         <span className="text-muted-foreground">Early Payment Base (70%)</span>
+                         <span className="font-medium">
+                           R {selectedTotals.earlyPaymentBase.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
+                         </span>
+                       </div>
+                       <div className="flex justify-between">
+                         <span className="text-muted-foreground">Total Discount</span>
+                         <span className="font-medium text-error">
+                           -R {selectedTotals.discountAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
+                         </span>
+                       </div>
+                       <Separator />
+                       <div className="flex justify-between">
+                         <span className="font-semibold">Early Payment Now</span>
+                         <span className="font-bold text-success text-xl">
+                           R {selectedTotals.netPayment.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
+                         </span>
+                       </div>
+                       <div className="flex justify-between pt-2 border-t border-dashed">
+                         <span className="text-muted-foreground text-sm">Retained (30%) - paid on due date</span>
+                         <span className="font-medium text-muted-foreground">
+                           R {selectedTotals.retainedAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
+                         </span>
+                       </div>
+                     </div>
 
- <Alert>
- <AlertTriangle className="w-4 h-4" />
- <AlertDescription className="text-xs">
- By accepting, you agree to receive early payment at the discounted amount. 
- You will need to sign a cession agreement.
- </AlertDescription>
- </Alert>
+                     <Alert>
+                       <AlertTriangle className="w-4 h-4" />
+                       <AlertDescription className="text-xs">
+                         By accepting, you agree to receive early payment at the discounted amount. 
+                         You will need to sign a cession agreement.
+                       </AlertDescription>
+                     </Alert>
 
- <Button 
- className="w-full" 
- size="lg"
- onClick={handleAcceptSelected}
- disabled={isPending || selectedOffers.size === 0}
- >
- <CheckCircle className="mr-2 w-4 h-4" />
- {isPending 
- ? "Processing..." 
- : `Accept ${selectedOffers.size} Offer${selectedOffers.size > 1 ? "s" : ""}`
- }
- </Button>
- </>
- )}
- </CardContent>
+                     <Button 
+                       className="w-full" 
+                       size="lg"
+                       onClick={handleAcceptSelected}
+                       disabled={isPending || selectedOffers.size === 0}
+                     >
+                       <CheckCircle className="mr-2 w-4 h-4" />
+                       {isPending 
+                         ? "Processing..." 
+                         : `Accept ${selectedOffers.size} Offer${selectedOffers.size > 1 ? "s" : ""}`
+                       }
+                     </Button>
+                   </>
+                 )}
+               </CardContent>
  </Card>
  </div>
  </div>

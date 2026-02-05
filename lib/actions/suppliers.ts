@@ -117,6 +117,34 @@ export async function getSupplierOffers() {
   }
 }
 
+// Get single supplier offer by ID
+export async function getSupplierOfferById(offerId: number) {
+  const session = await getSupplierSession()
+  if (!session) {
+    redirect("/supplier/access")
+  }
+
+  try {
+    const offers = await query(
+      `SELECT o.offer_id, o.annual_rate, o.days_to_maturity, o.discount_amount,
+              o.net_payment_amount, o.offer_expiry_date, o.status, o.sent_at,
+              i.invoice_number, i.invoice_date, i.due_date, i.amount as invoice_amount,
+              i.currency, i.description,
+              b.name as buyer_name, b.code as buyer_code
+       FROM offers o
+       JOIN invoices i ON o.invoice_id = i.invoice_id
+       JOIN buyers b ON o.buyer_id = b.buyer_id
+       WHERE o.supplier_id = ? AND o.offer_id = ?`,
+      [session.supplierId, offerId],
+    )
+
+    return offers[0] || null
+  } catch (error) {
+    console.error("[v0] Error fetching supplier offer:", error)
+    throw error
+  }
+}
+
 // Get supplier profile
 export async function getSupplierProfile() {
   const session = await getSupplierSession()

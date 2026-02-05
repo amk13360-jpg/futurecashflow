@@ -48,10 +48,10 @@ export function SupplierHeader({ supplierName }: SupplierHeaderProps) {
           <Logo size="sm" variant="adaptive" />
           <span className="text-muted-foreground text-sm">Supplier Portal</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 h-full">
           <ThemeToggle />
-          <div className="mx-1 bg-border w-px h-6" />
-          <div ref={profileRef} className="relative flex items-center">
+          <div className="self-center mx-1 bg-border w-px h-6" />
+          <div ref={profileRef} className="relative flex items-center h-full">
             <button
               type="button"
               onClick={() => setProfileOpen(!profileOpen)}

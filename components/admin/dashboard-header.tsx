@@ -80,9 +80,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
   const unreadCount = notifications.filter((n) => n.unread).length
 
   return (
-    <header
-      className="top-0 z-50 sticky bg-card supports-[not_(backdrop-filter)]:bg-card backdrop-blur-xl border-border border-b h-16 transition-colors duration-300"
-    >
+    <header className="top-0 z-50 sticky bg-card supports-[not_(backdrop-filter)]:bg-card backdrop-blur-xl border-border border-b h-16 transition-colors duration-300">
       <div className="flex justify-between items-center mx-auto px-4 sm:px-6 max-w-screen-xl h-full">
         <div className="flex items-center gap-3">
           <Logo size="sm" variant="adaptive" />
@@ -97,10 +95,10 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 h-full">
           <ThemeToggle />
 
-          <div ref={bellRef} className="relative">
+          <div ref={bellRef} className="relative flex items-center h-full">
             <button
               type="button"
               onClick={() => { setBellOpen(!bellOpen); setProfileOpen(false) }}
@@ -160,9 +158,9 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
             )}
           </div>
 
-          <div className="mx-1 bg-border w-px h-6" />
+          <div className="self-center mx-1 bg-border w-px h-6" />
 
-          <div ref={profileRef} className="relative flex items-center">
+          <div ref={profileRef} className="relative flex items-center h-full">
             <button
               type="button"
               onClick={() => { setProfileOpen(!profileOpen); setBellOpen(false) }}

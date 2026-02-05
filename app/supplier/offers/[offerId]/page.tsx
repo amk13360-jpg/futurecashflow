@@ -8,28 +8,62 @@ import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { acceptOffer, rejectOffer } from "@/lib/actions/suppliers"
-import { ArrowLeft, CheckCircle, XCircle, AlertTriangle } from "lucide-react"
+import { acceptOffer, rejectOffer, getSupplierOfferById } from "@/lib/actions/suppliers"
+import { ArrowLeft, CheckCircle, XCircle, AlertTriangle, Info } from "lucide-react"
 import Link from "next/link"
 import { toast } from "sonner"
+
+interface OfferData {
+  offer_id: number
+  invoice_number: string
+  buyer_name: string
+  buyer_code: string
+  invoice_amount: number
+  invoice_date: string
+  due_date: string
+  net_payment_amount: number
+  discount_amount: number
+  annual_rate: number
+  days_to_maturity: number
+  currency: string
+  offer_expiry_date: string
+  status: string
+}
 
 export default function OfferDetailPage({ params }: { params: Promise<{ offerId: string }> }) {
  const resolvedParams = use(params)
  const router = useRouter()
  const [loading, setLoading] = useState(false)
- const [offer, setOffer] = useState<any>(null)
+ const [pageLoading, setPageLoading] = useState(true)
+ const [offer, setOffer] = useState<OfferData | null>(null)
 
  useEffect(() => {
- // In a real app, fetch offer details here
- // For now, we'll handle this in the accept/reject actions
- }, [resolvedParams.offerId])
+   async function loadOffer() {
+     try {
+       const data = await getSupplierOfferById(Number.parseInt(resolvedParams.offerId))
+       if (data) {
+         setOffer(data)
+       } else {
+         toast.error("Offer not found")
+         router.push("/supplier/offers")
+       }
+     } catch (error) {
+       console.error("Failed to load offer:", error)
+       toast.error("Failed to load offer details")
+       router.push("/supplier/offers")
+     } finally {
+       setPageLoading(false)
+     }
+   }
+   loadOffer()
+ }, [resolvedParams.offerId, router])
 
  const handleAccept = async () => {
  setLoading(true)
  try {
  await acceptOffer(Number.parseInt(resolvedParams.offerId), [])
  toast.success("Offer accepted successfully!")
- router.push("/supplier/dashboard")
+ router.push("/supplier/cession-agreement")
  } catch (error: any) {
  toast.error(error.message || "Failed to accept offer")
  } finally {
@@ -42,12 +76,37 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
  try {
  await rejectOffer(Number.parseInt(resolvedParams.offerId))
  toast.success("Offer rejected")
- router.push("/supplier/dashboard")
+ router.push("/supplier/offers")
  } catch (error: any) {
  toast.error(error.message || "Failed to reject offer")
  } finally {
  setLoading(false)
  }
+ }
+
+ // Calculate derived values
+ const invoiceAmount = offer ? parseFloat(String(offer.invoice_amount)) : 0
+ const earlyPaymentBase = invoiceAmount * 0.7
+ const retainedAmount = invoiceAmount * 0.3
+ const discountAmount = offer ? parseFloat(String(offer.discount_amount)) : 0
+ const netPayment = offer ? parseFloat(String(offer.net_payment_amount)) : 0
+ const currency = offer?.currency || "ZAR"
+
+ if (pageLoading) {
+   return (
+     <div className="min-h-screen bg-muted">
+       <SupplierHeader />
+       <main className="container mx-auto px-4 py-8">
+         <div className="flex justify-center items-center min-h-[400px]">
+           <div className="text-muted-foreground">Loading offer details...</div>
+         </div>
+       </main>
+     </div>
+   )
+ }
+
+ if (!offer) {
+   return null
  }
 
  return (
@@ -56,11 +115,11 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
 
  <main className="container mx-auto px-4 py-8">
  <Link
- href="/supplier/dashboard"
+ href="/supplier/offers"
  className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6"
  >
  <ArrowLeft className="h-4 w-4 mr-2" />
- Back to dashboard
+ Back to offers
  </Link>
 
  <div className="max-w-3xl mx-auto space-y-6">
@@ -71,42 +130,45 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
  <CardTitle className="text-2xl">Early Payment Offer</CardTitle>
  <CardDescription>Review the offer details carefully before accepting</CardDescription>
  </div>
- <Badge>Pending</Badge>
+ <Badge variant={offer.status === "sent" ? "outline" : "secondary"}>
+   {offer.status === "sent" ? "Pending" : offer.status}
+ </Badge>
  </div>
  </CardHeader>
  <CardContent className="space-y-6">
  <Alert>
- <AlertTriangle className="h-4 w-4" />
+ <Info className="h-4 w-4" />
  <AlertDescription>
- By accepting this offer, you agree to receive early payment at a discounted amount. The buyer will
- repay the full invoice amount on the due date.
+ <strong>How it works:</strong> 70% of the invoice value is available for early payment (at a discount).
+ The remaining 30% will be paid to you on the invoice due date.
  </AlertDescription>
  </Alert>
 
  <div className="space-y-4">
  <div>
- <h3 className="font-semibold text-lg mb-3">Offer Summary</h3>
- <div className="grid gap-3">
+ <h3 className="font-semibold text-lg mb-3">Offer Breakdown</h3>
+ <div className="grid gap-3 bg-muted/50 rounded-lg p-4">
  <div className="flex justify-between py-2">
  <span className="text-muted-foreground">Invoice Amount</span>
- <span className="font-medium">R 50,000.00</span>
- </div>
- <div className="flex justify-between py-2">
- <span className="text-muted-foreground">Discount Rate</span>
- <span className="font-medium">12.5% per annum</span>
- </div>
- <div className="flex justify-between py-2">
- <span className="text-muted-foreground">Days to Maturity</span>
- <span className="font-medium">30 days</span>
- </div>
- <div className="flex justify-between py-2">
- <span className="text-muted-foreground">Discount Amount</span>
- <span className="font-medium text-error">- R 513.70</span>
+ <span className="font-medium">{currency} {invoiceAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
  </div>
  <Separator />
  <div className="flex justify-between py-2">
- <span className="font-semibold">You Will Receive</span>
- <span className="font-bold text-success text-xl">R 49,486.30</span>
+ <span className="text-muted-foreground">Early Payment Base (70%)</span>
+ <span className="font-medium">{currency} {earlyPaymentBase.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
+ </div>
+ <div className="flex justify-between py-2">
+ <span className="text-muted-foreground">Discount ({offer.annual_rate}% p.a. × {offer.days_to_maturity} days)</span>
+ <span className="font-medium text-error">- {currency} {discountAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
+ </div>
+ <Separator />
+ <div className="flex justify-between py-2 bg-success/10 rounded px-2 -mx-2">
+ <span className="font-semibold">Early Payment Now</span>
+ <span className="font-bold text-success text-xl">{currency} {netPayment.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
+ </div>
+ <div className="flex justify-between py-2 border-t border-dashed pt-3">
+ <span className="text-muted-foreground">Retained (30%) - paid on due date</span>
+ <span className="font-medium text-muted-foreground">{currency} {retainedAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
  </div>
  </div>
  </div>
@@ -116,19 +178,23 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
  <div className="grid gap-2 text-sm">
  <div className="flex justify-between">
  <span className="text-muted-foreground">Invoice Number</span>
- <span>INV-2025-001</span>
+ <span>{offer.invoice_number}</span>
  </div>
  <div className="flex justify-between">
  <span className="text-muted-foreground">Buyer</span>
- <span>Anglo American Platinum</span>
+ <span>{offer.buyer_name} ({offer.buyer_code})</span>
  </div>
  <div className="flex justify-between">
  <span className="text-muted-foreground">Invoice Date</span>
- <span>15 Jan 2025</span>
+ <span>{new Date(offer.invoice_date).toLocaleDateString("en-ZA")}</span>
  </div>
  <div className="flex justify-between">
  <span className="text-muted-foreground">Due Date</span>
- <span>15 Feb 2025</span>
+ <span>{new Date(offer.due_date).toLocaleDateString("en-ZA")}</span>
+ </div>
+ <div className="flex justify-between">
+ <span className="text-muted-foreground">Offer Expires</span>
+ <span>{new Date(offer.offer_expiry_date).toLocaleDateString("en-ZA")}</span>
  </div>
  </div>
  </div>
@@ -136,22 +202,24 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
  <Alert>
  <CheckCircle className="h-4 w-4 text-success" />
  <AlertDescription>
- <strong>Next Steps:</strong> After accepting, you will need to sign a cession agreement. Payment
+ <strong>Next Steps:</strong> After accepting, you will need to sign a cession agreement. Early payment
  will be processed within 2-3 business days.
  </AlertDescription>
  </Alert>
  </div>
 
- <div className="flex gap-3 pt-4">
- <Button onClick={handleAccept} disabled={loading} className="flex-1">
- <CheckCircle className="h-4 w-4 mr-2" />
- {loading ? "Processing..." : "Accept Offer"}
- </Button>
- <Button onClick={handleReject} disabled={loading} variant="outline" className="flex-1 bg-transparent">
- <XCircle className="h-4 w-4 mr-2" />
- Reject Offer
- </Button>
- </div>
+ {offer.status === "sent" && (
+   <div className="flex gap-3 pt-4">
+   <Button onClick={handleAccept} disabled={loading} className="flex-1">
+   <CheckCircle className="h-4 w-4 mr-2" />
+   {loading ? "Processing..." : "Accept Offer"}
+   </Button>
+   <Button onClick={handleReject} disabled={loading} variant="outline" className="flex-1 bg-transparent">
+   <XCircle className="h-4 w-4 mr-2" />
+   Reject Offer
+   </Button>
+   </div>
+ )}
  </CardContent>
  </Card>
  </div>

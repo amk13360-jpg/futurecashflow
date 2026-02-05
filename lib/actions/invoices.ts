@@ -901,6 +901,30 @@ export async function manualGenerateOffersForSupplier(supplierId: number, trigge
       })
     }
 
+    // Send email notification to supplier for each created offer
+    if (results.created.length > 0) {
+      // Get supplier details
+      const supplierRows = await query<RowDataPacket[]>(
+        `SELECT name, contact_email FROM suppliers WHERE supplier_id = ?`,
+        [supplierId]
+      )
+      
+      if (supplierRows.length > 0 && supplierRows[0].contact_email) {
+        const supplier = supplierRows[0]
+        // Use the first token created for this batch
+        const token = results.created[0].token
+        const baseUrl = process.env.NEXTAUTH_URL || "https://fm-asp-dev-san-hufee4h8hyawbhcx.southafricanorth-01.azurewebsites.net"
+        const accessLink = `${baseUrl}/supplier/access?token=${token}`
+        
+        try {
+          await sendSupplierWelcomeEmail(supplier.contact_email, supplier.name, accessLink)
+          console.log(`[v0] Offer access email sent to ${supplier.contact_email} for ${results.created.length} offers`)
+        } catch (emailError) {
+          console.error(`[v0] Failed to send offer access email to ${supplier.contact_email}:`, emailError)
+        }
+      }
+    }
+
     return results
   } catch (error) {
     console.error("[v0] Error manual-generating offers for supplier:", error)
