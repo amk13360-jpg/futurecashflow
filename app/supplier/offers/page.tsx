@@ -242,7 +242,7 @@ export default function SupplierOffersPage() {
                  </p>
                  </div>
                  <div>
-                 <p className="text-muted-foreground">Discount ({offer.annual_rate}% p.a.)</p>
+                 <p className="text-muted-foreground">Discount on Invoice</p>
                  <p className="font-medium text-error">
                  -{offer.currency} {parseFloat(String(offer.discount_amount)).toLocaleString()}
                  </p>
@@ -268,9 +268,9 @@ export default function SupplierOffersPage() {
  <Link 
  href={`/supplier/offers/${offer.offer_id}`}
  onClick={(e) => e.stopPropagation()}
- className="text-primary hover:underline"
+ className="inline-flex items-center px-3 py-1.5 bg-success hover:bg-success/90 text-success-foreground text-xs font-medium rounded-md transition-colors"
  >
- View Details →
+ Review Offer
  </Link>
  </div>
  </div>

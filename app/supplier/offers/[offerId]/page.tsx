@@ -158,7 +158,7 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
  <span className="font-medium">{currency} {earlyPaymentBase.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
  </div>
  <div className="flex justify-between py-2">
- <span className="text-muted-foreground">Discount ({offer.annual_rate}% p.a. × {offer.days_to_maturity} days)</span>
+ <span className="text-muted-foreground">Discount on Invoice ({offer.days_to_maturity} days)</span>
  <span className="font-medium text-error">- {currency} {discountAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
  </div>
  <Separator />
