@@ -711,8 +711,10 @@ async function createOffersForInvoices(invoiceIds: number[]): Promise<OfferGener
           continue
         }
 
-        // Offers apply to 70% of the invoice value only. Calculate absolute discount on that portion.
-        const baseAmount = Number(invoice.amount) * 0.7
+        // Offers apply to 80% of the invoice value (paid immediately). 
+        // The remaining 20% is paid on the invoice due date.
+        // Discount is calculated on the full invoice amount for the period.
+        const baseAmount = Number(invoice.amount)
         const discountAmount = (baseAmount * annualRate * daysToMaturity) / (365 * 100)
         const netPaymentAmount = baseAmount - discountAmount
 

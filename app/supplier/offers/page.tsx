@@ -123,10 +123,10 @@ export default function SupplierOffersPage() {
  .reduce(
  (acc, offer) => ({
  invoiceAmount: acc.invoiceAmount + (parseFloat(String(offer.invoice_amount)) || 0),
- earlyPaymentBase: acc.earlyPaymentBase + (parseFloat(String(offer.invoice_amount)) * 0.7 || 0),
+ earlyPaymentBase: acc.earlyPaymentBase + (parseFloat(String(offer.invoice_amount)) * 0.8 || 0),
  discountAmount: acc.discountAmount + (parseFloat(String(offer.discount_amount)) || 0),
  netPayment: acc.netPayment + (parseFloat(String(offer.net_payment_amount)) || 0),
- retainedAmount: acc.retainedAmount + (parseFloat(String(offer.invoice_amount)) * 0.3 || 0),
+ retainedAmount: acc.retainedAmount + (parseFloat(String(offer.invoice_amount)) * 0.2 || 0),
  }),
  { invoiceAmount: 0, earlyPaymentBase: 0, discountAmount: 0, netPayment: 0, retainedAmount: 0 }
  )
@@ -228,7 +228,7 @@ export default function SupplierOffersPage() {
  </Badge>
  </div>
  
-<div className="gap-4 grid grid-cols-2 md:grid-cols-5 text-sm">
+<div className="gap-4 grid grid-cols-2 md:grid-cols-4 text-sm">
                  <div>
                  <p className="text-muted-foreground">Invoice Amount</p>
                  <p className="font-semibold">
@@ -236,30 +236,24 @@ export default function SupplierOffersPage() {
                  </p>
                  </div>
                  <div>
-                 <p className="text-muted-foreground">Early Payment (70%)</p>
-                 <p className="font-medium">
-                 {offer.currency} {(parseFloat(String(offer.invoice_amount)) * 0.7).toLocaleString()}
-                 </p>
-                 </div>
-                 <div>
-                 <p className="text-muted-foreground">Discount on Invoice</p>
+                 <p className="text-muted-foreground">Your Fee</p>
                  <p className="font-medium text-error">
                  -{offer.currency} {parseFloat(String(offer.discount_amount)).toLocaleString()}
                  </p>
-                 <p className="text-muted-foreground text-xs">{offer.days_to_maturity} days tenor</p>
+                 <p className="text-muted-foreground text-xs">{offer.days_to_maturity} days</p>
                  </div>
                  <div>
-                 <p className="text-muted-foreground">Early Payment Now</p>
+                 <p className="text-muted-foreground">You Will Receive</p>
                  <p className="font-semibold text-success">
                  {offer.currency} {parseFloat(String(offer.net_payment_amount)).toLocaleString()}
                  </p>
                  </div>
                  <div>
-                 <p className="text-muted-foreground">Retained (30%)</p>
-                 <p className="font-medium text-muted-foreground">
-                 {offer.currency} {(parseFloat(String(offer.invoice_amount)) * 0.3).toLocaleString()}
+                 <p className="text-muted-foreground">Payment Split</p>
+                 <p className="font-medium text-success">
+                 {offer.currency} {(parseFloat(String(offer.invoice_amount)) * 0.8).toLocaleString()} now
                  </p>
-                 <p className="text-muted-foreground text-xs">Paid on due date</p>
+                 <p className="text-muted-foreground text-xs">{offer.currency} {(parseFloat(String(offer.invoice_amount)) * 0.2).toLocaleString()} in {offer.days_to_maturity} days</p>
  </div>
  </div>
 
@@ -308,26 +302,26 @@ export default function SupplierOffersPage() {
                          </span>
                        </div>
                        <div className="flex justify-between">
-                         <span className="text-muted-foreground">Early Payment Base (70%)</span>
-                         <span className="font-medium">
-                           R {selectedTotals.earlyPaymentBase.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
-                         </span>
-                       </div>
-                       <div className="flex justify-between">
-                         <span className="text-muted-foreground">Total Discount</span>
+                         <span className="text-muted-foreground">Total Fee</span>
                          <span className="font-medium text-error">
                            -R {selectedTotals.discountAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
                          </span>
                        </div>
                        <Separator />
                        <div className="flex justify-between">
-                         <span className="font-semibold">Early Payment Now</span>
+                         <span className="font-semibold">You Will Receive</span>
                          <span className="font-bold text-success text-xl">
                            R {selectedTotals.netPayment.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
                          </span>
                        </div>
                        <div className="flex justify-between pt-2 border-t border-dashed">
-                         <span className="text-muted-foreground text-sm">Retained (30%) - paid on due date</span>
+                         <span className="text-muted-foreground text-sm">Paid immediately (80%)</span>
+                         <span className="font-medium text-success">
+                           R {selectedTotals.earlyPaymentBase.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
+                         </span>
+                       </div>
+                       <div className="flex justify-between">
+                         <span className="text-muted-foreground text-sm">Paid on due date (20%)</span>
                          <span className="font-medium text-muted-foreground">
                            R {selectedTotals.retainedAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
                          </span>

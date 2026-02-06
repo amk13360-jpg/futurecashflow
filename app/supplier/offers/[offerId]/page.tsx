@@ -86,8 +86,8 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
 
  // Calculate derived values
  const invoiceAmount = offer ? parseFloat(String(offer.invoice_amount)) : 0
- const earlyPaymentBase = invoiceAmount * 0.7
- const retainedAmount = invoiceAmount * 0.3
+ const immediatePayment = invoiceAmount * 0.8
+ const deferredPayment = invoiceAmount * 0.2
  const discountAmount = offer ? parseFloat(String(offer.discount_amount)) : 0
  const netPayment = offer ? parseFloat(String(offer.net_payment_amount)) : 0
  const currency = offer?.currency || "ZAR"
@@ -139,8 +139,7 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
  <Alert>
  <Info className="h-4 w-4" />
  <AlertDescription>
- <strong>How it works:</strong> 70% of the invoice value is available for early payment (at a discount).
- The remaining 30% will be paid to you on the invoice due date.
+ <strong>How it works:</strong> You will receive 80% of the invoice value immediately and the remaining 20% on the invoice due date.
  </AlertDescription>
  </Alert>
 
@@ -152,23 +151,23 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
  <span className="text-muted-foreground">Invoice Amount</span>
  <span className="font-medium">{currency} {invoiceAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
  </div>
- <Separator />
  <div className="flex justify-between py-2">
- <span className="text-muted-foreground">Early Payment Base (70%)</span>
- <span className="font-medium">{currency} {earlyPaymentBase.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
- </div>
- <div className="flex justify-between py-2">
- <span className="text-muted-foreground">Discount on Invoice ({offer.days_to_maturity} days)</span>
+ <span className="text-muted-foreground">Your Fee ({offer.days_to_maturity} days)</span>
  <span className="font-medium text-error">- {currency} {discountAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
  </div>
  <Separator />
- <div className="flex justify-between py-2 bg-success/10 rounded px-2 -mx-2">
- <span className="font-semibold">Early Payment Now</span>
- <span className="font-bold text-success text-xl">{currency} {netPayment.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
+ <div className="flex justify-between py-2">
+ <span className="font-semibold">You Will Receive</span>
+ <span className="font-bold text-foreground text-xl">{currency} {netPayment.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
  </div>
- <div className="flex justify-between py-2 border-t border-dashed pt-3">
- <span className="text-muted-foreground">Retained (30%) - paid on due date</span>
- <span className="font-medium text-muted-foreground">{currency} {retainedAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
+ <Separator />
+ <div className="flex justify-between py-2 bg-success/10 rounded px-2 -mx-2">
+ <span className="font-semibold">Paid Immediately (80%)</span>
+ <span className="font-bold text-success text-xl">{currency} {immediatePayment.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
+ </div>
+ <div className="flex justify-between py-2">
+ <span className="text-muted-foreground">Paid in {offer.days_to_maturity} days (20%)</span>
+ <span className="font-medium text-muted-foreground">{currency} {deferredPayment.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
  </div>
  </div>
  </div>
