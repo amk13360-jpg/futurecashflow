@@ -269,9 +269,9 @@ export async function createOfferBatch(
             continue
           }
 
-          // Offer should apply to 70% of the invoice value only. Compute absolute discount on that portion.
+          // Calculate discount on full invoice amount (80% paid immediately, 20% paid on due date)
           const invoiceAmount = Number(invoice.amount)
-          const baseAmount = invoiceAmount * 0.7
+          const baseAmount = invoiceAmount
           const discountAmount = (baseAmount * annualRate * daysToMaturity) / (365 * 100)
           const netPaymentAmount = baseAmount - discountAmount
 
