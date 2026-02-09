@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { Breadcrumbs } from "@/components/ui/breadcrumbs"
 
 interface ApplicationReviewClientProps {
   supplier: any
@@ -72,6 +73,13 @@ export default function ApplicationReviewClient({ supplier }: ApplicationReviewC
   return (
     <div className="flex justify-center items-center bg-background py-8 min-h-screen">
       <div className="space-y-6 w-full max-w-3xl">
+        <Breadcrumbs
+          items={[
+            { label: "Dashboard", href: "/admin/dashboard" },
+            { label: "Applications", href: "/admin/applications" },
+            { label: supplier.name || "Application" },
+          ]}
+        />
         <div className="flex justify-between items-center">
           <div>
             <p className="text-muted-foreground text-sm">Application #{supplier.supplier_id}</p>

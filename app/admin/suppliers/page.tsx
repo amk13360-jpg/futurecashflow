@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Breadcrumbs } from "@/components/ui/breadcrumbs"
 import { Search, Filter, Download, Eye, Users } from "lucide-react"
 import { getSession } from "@/lib/auth/session"
 import { EmptyState } from "@/components/ui/empty-state"
@@ -44,6 +45,12 @@ export default async function SuppliersPage() {
       <main className="mx-auto px-4 py-8 container">
         {/* Page Header */}
         <div className="mb-8">
+          <Breadcrumbs
+            items={[
+              { label: "Dashboard", href: "/admin/dashboard" },
+              { label: "Suppliers" },
+            ]}
+          />
           <div className="flex justify-between items-center mb-4">
             <div>
               <h1 className="font-bold text-3xl tracking-tight">All Suppliers</h1>

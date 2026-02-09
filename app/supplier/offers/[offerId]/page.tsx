@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { Breadcrumbs } from "@/components/ui/breadcrumbs"
+import { Skeleton } from "@/components/ui/skeleton"
 import { acceptOffer, rejectOffer, getSupplierOfferById } from "@/lib/actions/suppliers"
 import { ArrowLeft, CheckCircle, XCircle, AlertTriangle, Info } from "lucide-react"
 import Link from "next/link"
@@ -97,8 +99,21 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
      <div className="min-h-screen bg-muted">
        <SupplierHeader />
        <main className="container mx-auto px-4 py-8">
-         <div className="flex justify-center items-center min-h-[400px]">
-           <div className="text-muted-foreground">Loading offer details...</div>
+         <div className="space-y-4 max-w-3xl mx-auto">
+           {Array.from({ length: 4 }).map((_, index) => (
+             <div key={`offer-detail-skeleton-${index}`} className="p-4 border rounded-lg bg-background space-y-3">
+               <div className="flex items-center justify-between">
+                 <Skeleton className="w-40 h-4" />
+                 <Skeleton className="w-20 h-5" />
+               </div>
+               <Skeleton className="w-56 h-3" />
+               <div className="flex items-center gap-4">
+                 <Skeleton className="w-24 h-3" />
+                 <Skeleton className="w-24 h-3" />
+                 <Skeleton className="w-20 h-3" />
+               </div>
+             </div>
+           ))}
          </div>
        </main>
      </div>
@@ -114,6 +129,13 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
  <SupplierHeader />
 
  <main className="container mx-auto px-4 py-8">
+ <Breadcrumbs
+ items={[
+ { label: "Dashboard", href: "/supplier/dashboard" },
+ { label: "Offers", href: "/supplier/offers" },
+ { label: "Offer Details" },
+ ]}
+ />
  <Link
  href="/supplier/offers"
  className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6"

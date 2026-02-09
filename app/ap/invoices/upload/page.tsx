@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
+import { FileUploadZone } from "@/components/ui/file-upload-zone"
+import { Breadcrumbs } from "@/components/ui/breadcrumbs"
 import { parseAPDataCSV, uploadAPData } from "@/lib/actions/invoices"
 import { Upload, FileText, CheckCircle, AlertCircle, ArrowLeft } from "lucide-react"
 import Link from "next/link"
@@ -21,17 +23,16 @@ export default function InvoiceUploadPage() {
   const [preview, setPreview] = useState<any[]>([])
   const [results, setResults] = useState<{ uploaded: string[]; errors: string[] } | null>(null)
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        const text = event.target?.result as string
-        setCsvText(text)
-        toast.success("File loaded successfully")
-      }
-      reader.readAsText(file)
+  const handleFileUpload = (files: File[]) => {
+    const file = files[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const text = event.target?.result as string
+      setCsvText(text)
+      toast.success("File loaded successfully")
     }
+    reader.readAsText(file)
   }
 
   const handlePreview = async () => {
@@ -71,6 +72,13 @@ export default function InvoiceUploadPage() {
 
       <main className="mx-auto px-4 py-8 container">
         <div className="mb-6">
+          <Breadcrumbs
+            items={[
+              { label: "Dashboard", href: "/ap/dashboard" },
+              { label: "Invoices", href: "/ap/invoices" },
+              { label: "Upload" },
+            ]}
+          />
           <Link
             href="/ap/dashboard"
             className="inline-flex items-center mb-4 text-muted-foreground hover:text-foreground text-sm"
@@ -111,14 +119,14 @@ export default function InvoiceUploadPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="file">Upload CSV File</Label>
-                  <input
+                  <FileUploadZone
                     id="file"
-                    type="file"
                     accept=".csv"
-                    onChange={handleFileUpload}
-                    placeholder="Select a CSV file to upload"
-                    title="Upload CSV File"
-                    className="block hover:file:bg-accent file:bg-transparent file:mr-4 file:px-4 file:py-2 file:border file:border-input file:rounded-md w-full file:font-medium text-foreground file:text-foreground text-sm file:text-sm file:cursor-pointer"
+                    maxFiles={1}
+                    maxSize={10 * 1024 * 1024}
+                    onFilesChange={handleFileUpload}
+                    onError={(message) => toast.error("✗ " + message)}
+                    description="Upload an AP CSV export (max 10MB)."
                   />
                 </div>
 

@@ -24,6 +24,9 @@ import {
 } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { Breadcrumbs } from "@/components/ui/breadcrumbs"
+import { Skeleton } from "@/components/ui/skeleton"
+import { EmptyState } from "@/components/ui/empty-state"
 import {
  getEligibleInvoicesForBatching,
  getOfferBatches,
@@ -214,6 +217,12 @@ export default function OfferBatchesPage() {
 
  <main className="mx-auto px-4 py-8 container">
  <div className="mb-6">
+ <Breadcrumbs
+ items={[
+ { label: "Dashboard", href: "/admin/dashboard" },
+ { label: "Offer Batches" },
+ ]}
+ />
  <Link
  href="/admin/dashboard"
  className="inline-flex items-center mb-4 text-muted-foreground hover:text-foreground text-sm"
@@ -322,7 +331,24 @@ export default function OfferBatchesPage() {
  </CardHeader>
  <CardContent>
  {loading ? (
- <div className="py-8 text-muted-foreground text-center">Loading...</div>
+ <div className="space-y-4">
+ {Array.from({ length: 4 }).map((_, index) => (
+ <div key={`eligible-skeleton-${index}`} className="flex justify-between items-center p-4 border rounded-lg">
+ <div className="flex-1 space-y-2">
+ <div className="flex items-center gap-2">
+ <Skeleton className="w-40 h-4" />
+ <Skeleton className="w-20 h-4" />
+ </div>
+ <Skeleton className="w-48 h-3" />
+ <div className="flex gap-4">
+ <Skeleton className="w-24 h-3" />
+ <Skeleton className="w-28 h-3" />
+ </div>
+ </div>
+ <Skeleton className="w-24 h-9" />
+ </div>
+ ))}
+ </div>
  ) : eligibleGroups.length === 0 ? (
  <div className="py-8 text-muted-foreground text-center">
  No eligible invoices for batching
@@ -375,9 +401,35 @@ export default function OfferBatchesPage() {
  </CardDescription>
  </CardHeader>
  <CardContent>
- {pendingBatches.length === 0 ? (
- <div className="py-8 text-muted-foreground text-center">
- No pending batches
+ {loading ? (
+ <div className="space-y-4">
+ {Array.from({ length: 3 }).map((_, index) => (
+ <div key={`pending-skeleton-${index}`} className="flex justify-between items-center p-4 border rounded-lg">
+ <div className="flex-1 space-y-2">
+ <div className="flex items-center gap-2">
+ <Skeleton className="w-40 h-4" />
+ <Skeleton className="w-16 h-4" />
+ </div>
+ <div className="flex gap-4">
+ <Skeleton className="w-20 h-3" />
+ <Skeleton className="w-28 h-3" />
+ <Skeleton className="w-24 h-3" />
+ </div>
+ </div>
+ <div className="flex gap-2">
+ <Skeleton className="w-20 h-8" />
+ <Skeleton className="w-20 h-8" />
+ </div>
+ </div>
+ ))}
+ </div>
+ ) : pendingBatches.length === 0 ? (
+ <div className="py-8">
+ <EmptyState
+ icon={Clock}
+ title="No pending batches"
+ description="Review batches will appear here once created"
+ />
  </div>
  ) : (
  <div className="space-y-4">
@@ -425,9 +477,33 @@ export default function OfferBatchesPage() {
  </CardDescription>
  </CardHeader>
  <CardContent>
- {sentBatches.length === 0 ? (
- <div className="py-8 text-muted-foreground text-center">
- No sent batches
+ {loading ? (
+ <div className="space-y-4">
+ {Array.from({ length: 3 }).map((_, index) => (
+ <div key={`sent-skeleton-${index}`} className="flex justify-between items-center p-4 border rounded-lg">
+ <div className="flex-1 space-y-2">
+ <div className="flex items-center gap-2">
+ <Skeleton className="w-40 h-4" />
+ <Skeleton className="w-16 h-4" />
+ </div>
+ <div className="flex gap-4">
+ <Skeleton className="w-20 h-3" />
+ <Skeleton className="w-28 h-3" />
+ <Skeleton className="w-24 h-3" />
+ <Skeleton className="w-24 h-3" />
+ </div>
+ </div>
+ <Skeleton className="w-20 h-8" />
+ </div>
+ ))}
+ </div>
+ ) : sentBatches.length === 0 ? (
+ <div className="py-8">
+ <EmptyState
+ icon={Send}
+ title="No sent batches"
+ description="Sent batches will appear here once dispatched"
+ />
  </div>
  ) : (
  <div className="space-y-4">
@@ -470,9 +546,31 @@ export default function OfferBatchesPage() {
  </CardDescription>
  </CardHeader>
  <CardContent>
- {completedBatches.length === 0 ? (
- <div className="py-8 text-muted-foreground text-center">
- No batch history
+ {loading ? (
+ <div className="space-y-4">
+ {Array.from({ length: 3 }).map((_, index) => (
+ <div key={`history-skeleton-${index}`} className="flex justify-between items-center p-4 border rounded-lg">
+ <div className="flex-1 space-y-2">
+ <div className="flex items-center gap-2">
+ <Skeleton className="w-40 h-4" />
+ <Skeleton className="w-16 h-4" />
+ </div>
+ <div className="flex gap-4">
+ <Skeleton className="w-20 h-3" />
+ <Skeleton className="w-28 h-3" />
+ </div>
+ </div>
+ <Skeleton className="w-20 h-8" />
+ </div>
+ ))}
+ </div>
+ ) : completedBatches.length === 0 ? (
+ <div className="py-8">
+ <EmptyState
+ icon={FileText}
+ title="No batch history"
+ description="Completed, expired, and cancelled batches will appear here"
+ />
  </div>
  ) : (
  <div className="space-y-4">

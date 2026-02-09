@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { FormErrorSummary } from "@/components/ui/form-summary"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Logo } from "@/components/ui/logo"
 import { KeyRound, Check, X, Eye, EyeOff, Shield } from "lucide-react"
@@ -20,6 +20,16 @@ export default function ChangePasswordPage() {
  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
  const [error, setError] = useState("")
  const [loading, setLoading] = useState(false)
+
+ const errorList = error ? [{ field: "newPassword", message: error }] : []
+
+ const handleFormErrorClick = (field: string) => {
+ const target = document.getElementById(field)
+ if (target) {
+ target.scrollIntoView({ behavior: "smooth", block: "center" })
+ ;(target as HTMLElement).focus?.()
+ }
+ }
 
  // Password validation rules
  const validations = {
@@ -113,10 +123,8 @@ export default function ChangePasswordPage() {
  </CardHeader>
  <CardContent>
  <form onSubmit={handleSubmit} className="space-y-6">
- {error && (
- <Alert variant="destructive" className="bg-error-bg/10 border-error-border">
- <AlertDescription>{error}</AlertDescription>
- </Alert>
+ {errorList.length > 0 && (
+ <FormErrorSummary errors={errorList} onFieldClick={handleFormErrorClick} />
  )}
 
  <div className="space-y-2">

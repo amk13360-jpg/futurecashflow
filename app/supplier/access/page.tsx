@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { FormErrorSummary } from "@/components/ui/form-summary"
 import { Users } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Logo } from "@/components/ui/logo"
@@ -18,6 +18,16 @@ export default function SupplierAccessPage() {
   const [token, setToken] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+
+  const errorList = error ? [{ field: "token", message: error }] : []
+
+  const handleFormErrorClick = (field: string) => {
+    const target = document.getElementById(field)
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "center" })
+      ;(target as HTMLElement).focus?.()
+    }
+  }
 
   useEffect(() => {
     const urlToken = searchParams.get("token")
@@ -84,10 +94,8 @@ export default function SupplierAccessPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {error && (
-                <Alert variant="destructive" className="bg-error/10 border-error">
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
+              {errorList.length > 0 && (
+                <FormErrorSummary errors={errorList} onFieldClick={handleFormErrorClick} />
               )}
               <div className="space-y-2">
                 <Label htmlFor="token" className="font-semibold text-sm">Access Token</Label>

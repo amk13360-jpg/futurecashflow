@@ -10,6 +10,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { EmptyState } from "@/components/ui/empty-state"
+import { Breadcrumbs } from "@/components/ui/breadcrumbs"
+import { Skeleton } from "@/components/ui/skeleton"
 import { getSupplierOffers, acceptMultipleOffers } from "@/lib/actions/suppliers"
 import { 
  CheckCircle, 
@@ -136,8 +138,21 @@ export default function SupplierOffersPage() {
  <div className="bg-muted min-h-screen">
  <SupplierHeader />
  <main className="mx-auto px-4 py-8 container">
- <div className="flex justify-center items-center min-h-[400px]">
- <div className="text-muted-foreground">Loading offers...</div>
+ <div className="space-y-4">
+   {Array.from({ length: 6 }).map((_, index) => (
+     <div key={`offer-skeleton-${index}`} className="p-4 border rounded-lg bg-background space-y-3">
+       <div className="flex items-center justify-between">
+         <Skeleton className="w-40 h-4" />
+         <Skeleton className="w-20 h-5" />
+       </div>
+       <Skeleton className="w-56 h-3" />
+       <div className="flex items-center gap-4">
+         <Skeleton className="w-20 h-3" />
+         <Skeleton className="w-24 h-3" />
+         <Skeleton className="w-16 h-3" />
+       </div>
+     </div>
+   ))}
  </div>
  </main>
  </div>
@@ -149,6 +164,12 @@ export default function SupplierOffersPage() {
  <SupplierHeader />
 
  <main className="mx-auto px-4 py-8 container">
+ <Breadcrumbs
+ items={[
+ { label: "Dashboard", href: "/supplier/dashboard" },
+ { label: "Offers" },
+ ]}
+ />
  <Link
  href="/supplier/dashboard"
  className="inline-flex items-center mb-6 text-muted-foreground hover:text-foreground text-sm"

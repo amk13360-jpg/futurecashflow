@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { EmptyState } from "@/components/ui/empty-state"
+import { Breadcrumbs } from "@/components/ui/breadcrumbs"
+import { Skeleton } from "@/components/ui/skeleton"
 import { 
  ArrowLeft, 
  CheckCircle, 
@@ -108,7 +110,21 @@ export default function BankChangesPage() {
  <div className="bg-muted min-h-screen">
  <DashboardHeader />
  <main className="mx-auto px-4 py-8 container">
- <div className="py-12 text-muted-foreground text-center">Loading...</div>
+ <div className="space-y-3">
+ {Array.from({ length: 4 }).map((_, index) => (
+ <div key={`bank-change-skeleton-${index}`} className="p-4 border rounded-lg space-y-2">
+ <div className="flex items-center justify-between">
+ <Skeleton className="w-40 h-4" />
+ <Skeleton className="w-20 h-4" />
+ </div>
+ <Skeleton className="w-56 h-3" />
+ <div className="flex gap-4">
+ <Skeleton className="w-24 h-3" />
+ <Skeleton className="w-24 h-3" />
+ </div>
+ </div>
+ ))}
+ </div>
  </main>
  </div>
  )
@@ -120,6 +136,12 @@ export default function BankChangesPage() {
 
  <main className="mx-auto px-4 py-8 container">
  <div className="mb-6">
+ <Breadcrumbs
+ items={[
+ { label: "Dashboard", href: "/admin/dashboard" },
+ { label: "Bank Changes" },
+ ]}
+ />
  <Link
  href="/admin/dashboard"
  className="inline-flex items-center mb-4 text-muted-foreground hover:text-foreground text-sm"

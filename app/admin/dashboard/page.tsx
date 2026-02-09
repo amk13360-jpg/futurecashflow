@@ -27,17 +27,17 @@ export default async function AdminDashboardPage() {
  <div className="bg-muted min-h-screen">
  <DashboardHeader userName={session?.fullName || session?.username} />
 
- <main className="mx-auto px-4 py-8 container">
- {/* Page Header */}
- <div className="mb-8">
- <h1 className="mb-2 font-bold text-3xl tracking-tight">Dashboard</h1>
- <p className="text-muted-foreground">Welcome back! Here's your platform overview.</p>
+ <main className="mx-auto px-4 py-8 max-w-7xl">
+ {/* Page Header - Enhanced Typography */}
+ <div className="mb-10">
+ <h1 className="mb-3 font-bold text-4xl tracking-tight">Dashboard</h1>
+ <p className="text-muted-foreground text-lg">Welcome back! Here's your platform overview.</p>
  </div>
 
  {/* Metrics Overview */}
- <section className="mb-8" aria-labelledby="metrics-heading">
- <h2 id="metrics-heading" className="mb-4 font-semibold text-foreground text-lg">Key Metrics</h2>
- <div className="gap-4 grid md:grid-cols-2 lg:grid-cols-4">
+ <section className="mb-10" aria-labelledby="metrics-heading">
+ <h2 id="metrics-heading" className="mb-6 font-semibold text-foreground text-2xl">Key Metrics</h2>
+ <div className="gap-6 grid md:grid-cols-2 lg:grid-cols-4">
  <MetricCard
  title="Pending Documents"
  value={metrics.pendingDocuments}
@@ -70,9 +70,9 @@ export default async function AdminDashboardPage() {
  </section>
 
  {/* Quick Actions */}
- <section className="mb-8" aria-labelledby="actions-heading">
- <h2 id="actions-heading" className="mb-4 font-semibold text-foreground text-lg">Quick Actions</h2>
- <div className="gap-4 grid md:grid-cols-2 lg:grid-cols-4">
+ <section className="mb-10" aria-labelledby="actions-heading">
+ <h2 id="actions-heading" className="mb-6 font-semibold text-foreground text-2xl">Quick Actions</h2>
+ <div className="gap-6 grid md:grid-cols-2 lg:grid-cols-4">
  <Card className="group hover:shadow-lg border-l-4 border-l-info hover:border-l-info transition-all hover:-translate-y-1 duration-300">
  <CardHeader className="pb-3">
  <div className="flex justify-between items-center">

@@ -6,7 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Breadcrumbs } from "@/components/ui/breadcrumbs"
+import { EmptyState } from "@/components/ui/empty-state"
 import {
   getPaymentQueue,
   getAllPayments,
@@ -16,7 +19,6 @@ import {
   getRepayments,
 } from "@/lib/actions/payments"
 import { Download, CheckCircle, ArrowLeft, Clock, FileSpreadsheet } from "lucide-react"
-import { RandIcon } from "@/components/ui/rand-icon"
 import Link from "next/link"
 import { toast } from "sonner"
 import * as XLSX from "xlsx"
@@ -225,6 +227,12 @@ export default function PaymentsPage() {
 
       <main className="container mx-auto px-4 py-8">
         <div className="mb-6">
+          <Breadcrumbs
+            items={[
+              { label: "Dashboard", href: "/admin/dashboard" },
+              { label: "Payments" },
+            ]}
+          />
           <Link
             href="/admin/dashboard"
             className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
@@ -271,11 +279,29 @@ export default function PaymentsPage() {
               </CardHeader>
               <CardContent>
                 {loading ? (
-                  <div className="text-center py-12 text-muted-foreground">Loading...</div>
+                  <div className="space-y-3">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <div key={`queue-skeleton-${index}`} className="flex items-center gap-4 p-4 border rounded-lg">
+                        <Skeleton className="w-4 h-4" />
+                        <div className="flex-1 space-y-2">
+                          <Skeleton className="w-32 h-4" />
+                          <Skeleton className="w-48 h-3" />
+                          <div className="flex items-center gap-4">
+                            <Skeleton className="w-24 h-3" />
+                            <Skeleton className="w-20 h-3" />
+                            <Skeleton className="w-24 h-3" />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 ) : queue.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <RandIcon className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                    <p>No offers in payment queue</p>
+                  <div className="py-12">
+                    <EmptyState
+                      icon={Clock}
+                      title="No offers in payment queue"
+                      description="Accepted offers ready for payment will appear here"
+                    />
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -351,10 +377,32 @@ export default function PaymentsPage() {
               </CardHeader>
               <CardContent>
                 {loading ? (
-                  <div className="text-center py-12 text-muted-foreground">Loading...</div>
+                  <div className="space-y-3">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <div key={`payment-skeleton-${index}`} className="flex items-center gap-4 p-4 border rounded-lg">
+                        <Skeleton className="w-4 h-4" />
+                        <div className="flex-1 space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Skeleton className="w-32 h-4" />
+                            <Skeleton className="w-16 h-5" />
+                          </div>
+                          <Skeleton className="w-40 h-3" />
+                          <div className="flex items-center gap-4">
+                            <Skeleton className="w-24 h-3" />
+                            <Skeleton className="w-28 h-3" />
+                            <Skeleton className="w-24 h-3" />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 ) : payments.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <p>No payments to display</p>
+                  <div className="py-12">
+                    <EmptyState
+                      icon={CheckCircle}
+                      title="No payments to display"
+                      description="Queued and processed payments will appear here"
+                    />
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -434,11 +482,32 @@ export default function PaymentsPage() {
               </CardHeader>
               <CardContent>
                 {loading ? (
-                  <div className="text-center py-12 text-muted-foreground">Loading...</div>
+                  <div className="space-y-3">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <div key={`repayment-skeleton-${index}`} className="p-4 border rounded-lg space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Skeleton className="w-28 h-4" />
+                            <Skeleton className="w-16 h-5" />
+                          </div>
+                          <Skeleton className="w-24 h-3" />
+                        </div>
+                        <Skeleton className="w-56 h-3" />
+                        <div className="flex items-center gap-4">
+                          <Skeleton className="w-24 h-3" />
+                          <Skeleton className="w-28 h-3" />
+                          <Skeleton className="w-20 h-3" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 ) : repayments.length === 0 ? (
-                  <div className="text-center py-12 text-muted-foreground">
-                    <Clock className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                    <p>No repayments to track</p>
+                  <div className="py-12">
+                    <EmptyState
+                      icon={Clock}
+                      title="No repayments to track"
+                      description="Repayment activity will appear here once available"
+                    />
                   </div>
                 ) : (
                   <div className="space-y-3">

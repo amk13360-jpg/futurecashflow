@@ -6,7 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Breadcrumbs } from "@/components/ui/breadcrumbs"
+import { Skeleton } from "@/components/ui/skeleton"
 import { FileText, AlertCircle } from "lucide-react"
+import Link from "next/link"
 
 export default function APReportsPage() {
   const [loading, setLoading] = useState(true)
@@ -64,6 +67,12 @@ export default function APReportsPage() {
 
       <main className="mx-auto px-4 py-8 container">
         <div className="mb-6">
+          <Breadcrumbs
+            items={[
+              { label: "Dashboard", href: "/ap/dashboard" },
+              { label: "Reports" },
+            ]}
+          />
           <h2 className="font-bold text-3xl">Uploaded Data</h2>
           <p className="text-muted-foreground">View your uploaded vendors and invoice data</p>
         </div>
@@ -81,7 +90,11 @@ export default function APReportsPage() {
               <CardTitle className="font-medium text-muted-foreground text-sm">Total Invoices</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="font-bold text-2xl">{loading ? "..." : stats?.totalInvoices || 0}</div>
+                {loading ? (
+                  <Skeleton className="w-24 h-7" />
+                ) : (
+                  <div className="font-bold text-2xl">{stats?.totalInvoices || 0}</div>
+                )}
               <p className="mt-1 text-muted-foreground text-xs">All uploaded invoices</p>
             </CardContent>
           </Card>
@@ -91,9 +104,13 @@ export default function APReportsPage() {
               <CardTitle className="font-medium text-muted-foreground text-sm">Total Amount</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="font-bold text-2xl">
-                {loading ? "..." : `R ${(stats?.totalAmount || 0).toLocaleString()}`}
-              </div>
+                {loading ? (
+                  <Skeleton className="w-32 h-7" />
+                ) : (
+                  <div className="font-bold text-2xl">
+                    {`R ${(stats?.totalAmount || 0).toLocaleString()}`}
+                  </div>
+                )}
               <p className="mt-1 text-muted-foreground text-xs">Total invoice value</p>
             </CardContent>
           </Card>
@@ -113,7 +130,22 @@ export default function APReportsPage() {
               </CardHeader>
               <CardContent>
                 {loading ? (
-                  <div className="py-8 text-muted-foreground text-center">Loading...</div>
+                  <div className="space-y-3">
+                    <div className="flex gap-4">
+                      <Skeleton className="w-24 h-4" />
+                      <Skeleton className="w-32 h-4" />
+                      <Skeleton className="w-28 h-4" />
+                    </div>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <div key={`ap-invoice-skeleton-${index}`} className="flex gap-4">
+                        <Skeleton className="w-24 h-4" />
+                        <Skeleton className="w-40 h-4" />
+                        <Skeleton className="w-24 h-4" />
+                        <Skeleton className="w-24 h-4" />
+                        <Skeleton className="w-20 h-4" />
+                      </div>
+                    ))}
+                  </div>
                 ) : stats && Array.isArray(stats.invoices) && stats.invoices.length > 0 ? (
                   <div className="overflow-x-auto">
                     <table className="w-full">
@@ -148,9 +180,9 @@ export default function APReportsPage() {
                     <FileText className="opacity-50 mx-auto mb-3 w-12 h-12" />
                     <p>No invoice data available</p>
                     <p className="mt-1 text-sm">Upload AP data to generate reports</p>
-                    <Button className="mt-4" onClick={() => (window.location.href = "/ap/invoices/upload")}> 
-                      Upload AP Data
-                    </Button>
+                    <Link href="/ap/invoices/upload">
+                      <Button className="mt-4">Upload AP Data</Button>
+                    </Link>
                   </div>
                 )}
               </CardContent>
@@ -165,7 +197,22 @@ export default function APReportsPage() {
               </CardHeader>
               <CardContent>
                 {loading ? (
-                  <div className="py-8 text-muted-foreground text-center">Loading...</div>
+                  <div className="space-y-3">
+                    <div className="flex gap-4">
+                      <Skeleton className="w-24 h-4" />
+                      <Skeleton className="w-32 h-4" />
+                      <Skeleton className="w-28 h-4" />
+                    </div>
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <div key={`ap-vendor-skeleton-${index}`} className="flex gap-4">
+                        <Skeleton className="w-40 h-4" />
+                        <Skeleton className="w-32 h-4" />
+                        <Skeleton className="w-32 h-4" />
+                        <Skeleton className="w-24 h-4" />
+                        <Skeleton className="w-24 h-4" />
+                      </div>
+                    ))}
+                  </div>
                 ) : stats && Array.isArray(stats.vendors) && stats.vendors.length > 0 ? (
                   <div className="overflow-x-auto">
                     <table className="w-full">
@@ -196,9 +243,9 @@ export default function APReportsPage() {
                     <FileText className="opacity-50 mx-auto mb-3 w-12 h-12" />
                     <p>No vendor data available</p>
                     <p className="mt-1 text-sm">Upload vendor data to generate reports</p>
-                    <Button className="mt-4" onClick={() => (window.location.href = "/ap/vendors/upload")}> 
-                      Upload Vendor Data
-                    </Button>
+                    <Link href="/ap/vendors/upload">
+                      <Button className="mt-4">Upload Vendor Data</Button>
+                    </Link>
                   </div>
                 )}
               </CardContent>

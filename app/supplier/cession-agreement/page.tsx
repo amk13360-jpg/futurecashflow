@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { SupplierHeader } from "@/components/supplier/supplier-header";
+import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import Link from "next/link";
 import { getSupplierProfile } from "@/lib/actions/suppliers";
 import { getSupplierCessionStatus, getCessionAddendums } from "@/lib/actions/standing-cession";
@@ -24,6 +25,12 @@ export default async function SupplierCessionAgreementPage() {
  <SupplierHeader supplierName={profile?.name} />
  
  <main className="mx-auto px-4 py-8 container">
+ <Breadcrumbs
+ items={[
+ { label: "Dashboard", href: "/supplier/dashboard" },
+ { label: "Cession Agreement" },
+ ]}
+ />
  <Link
  href="/supplier/dashboard"
  className="inline-flex items-center mb-6 text-muted-foreground hover:text-foreground text-sm"

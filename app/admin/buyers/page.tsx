@@ -55,6 +55,9 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
+import { FormErrorSummary } from '@/components/ui/form-summary';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Breadcrumbs } from '@/components/ui/breadcrumbs';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { 
@@ -83,6 +86,19 @@ export default function BuyersPage() {
  const [suspendReason, setSuspendReason] = useState('');
  const [createStep, setCreateStep] = useState(1);
  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+
+ const formErrorList = Object.entries(formErrors).map(([field, message]) => ({
+ field,
+ message,
+ }));
+
+ const handleFormErrorClick = (field: string) => {
+ const target = document.getElementById(field);
+ if (target) {
+ target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+ (target as HTMLElement).focus?.();
+ }
+ };
  
  // Form state
  const [formData, setFormData] = useState<Partial<CreateBuyerInput>>({
@@ -367,6 +383,12 @@ export default function BuyersPage() {
  )}
  </div>
  )}
+ <Breadcrumbs
+ items={[
+ { label: 'Dashboard', href: '/admin/dashboard' },
+ { label: 'Buyers' },
+ ]}
+ />
  <Link
  href="/admin/dashboard"
  className="inline-flex items-center text-muted-foreground hover:text-foreground text-sm transition-colors"
@@ -490,14 +512,40 @@ export default function BuyersPage() {
  </TableHeader>
  <TableBody>
  {loading ? (
- <TableRow>
- <TableCell colSpan={9} className="py-8 text-center">
- <div className="flex justify-center items-center gap-2">
- <div className="border-primary border-b-2 rounded-full w-4 h-4 animate-spin" />
- Loading...
+ Array.from({ length: 6 }).map((_, index) => (
+ <TableRow key={`buyer-skeleton-${index}`}>
+ <TableCell>
+ <div className="space-y-2">
+ <Skeleton className="w-40 h-4" />
+ <Skeleton className="w-28 h-3" />
  </div>
  </TableCell>
+ <TableCell>
+ <Skeleton className="w-16 h-4" />
+ </TableCell>
+ <TableCell>
+ <Skeleton className="w-20 h-6" />
+ </TableCell>
+ <TableCell>
+ <Skeleton className="w-16 h-6" />
+ </TableCell>
+ <TableCell>
+ <Skeleton className="w-20 h-4" />
+ </TableCell>
+ <TableCell className="text-center">
+ <Skeleton className="mx-auto w-10 h-4" />
+ </TableCell>
+ <TableCell className="text-center">
+ <Skeleton className="mx-auto w-8 h-4" />
+ </TableCell>
+ <TableCell className="text-right">
+ <Skeleton className="ml-auto w-24 h-4" />
+ </TableCell>
+ <TableCell className="text-center">
+ <Skeleton className="mx-auto w-8 h-8" />
+ </TableCell>
  </TableRow>
+ ))
  ) : buyers.length === 0 ? (
  <TableRow>
  <TableCell colSpan={9} className="py-8 text-muted-foreground text-center">
@@ -638,6 +686,9 @@ export default function BuyersPage() {
  {/* Form Content */}
  <div className="flex-1 bg-background px-8 py-8 overflow-y-auto text-foreground">
  <div className="space-y-8 mx-auto max-w-6xl">
+ {formErrorList.length > 0 && (
+ <FormErrorSummary errors={formErrorList} onFieldClick={handleFormErrorClick} />
+ )}
  {/* Step 1: Company Information */}
  {createStep === 1 && (
  <div className="slide-in-from-right-5 space-y-6 animate-in">

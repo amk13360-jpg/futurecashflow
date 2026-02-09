@@ -3,13 +3,12 @@
 import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { ArrowLeft, Eye, EyeOff } from "lucide-react"
+import { FormErrorSummary } from "@/components/ui/form-summary"
+import { Eye, EyeOff } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Logo } from "@/components/ui/logo"
 
@@ -20,6 +19,16 @@ export default function AdminLoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+
+  const errorList = error ? [{ field: "username", message: error }] : []
+
+  const handleFormErrorClick = (field: string) => {
+    const target = document.getElementById(field)
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "center" })
+      ;(target as HTMLElement).focus?.()
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -73,10 +82,8 @@ export default function AdminLoginPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {error && (
-                <Alert variant="destructive" className="bg-error/10 border-error">
-                  <AlertDescription>{error}</AlertDescription>
-                </Alert>
+              {errorList.length > 0 && (
+                <FormErrorSummary errors={errorList} onFieldClick={handleFormErrorClick} />
               )}
               <div className="space-y-2">
                 <Label htmlFor="username" className="font-semibold text-sm">Username</Label>

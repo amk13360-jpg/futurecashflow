@@ -6,9 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Breadcrumbs } from "@/components/ui/breadcrumbs"
 import { Switch } from "@/components/ui/switch"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { ArrowLeft, Settings, Mail, Shield, Database, Users, Plus, Edit, Trash2, Key, UserCog, Eye, EyeOff } from "lucide-react"
@@ -182,7 +184,24 @@ export default function SettingsPage() {
  <div className="bg-muted min-h-screen">
  <DashboardHeader />
  <main className="mx-auto px-4 py-8 container">
- <div className="py-12 text-muted-foreground text-center">Loading settings...</div>
+ <div className="space-y-4">
+ <div className="space-y-2">
+ <Skeleton className="w-48 h-6" />
+ <Skeleton className="w-64 h-4" />
+ </div>
+ <div className="gap-4 grid md:grid-cols-2">
+ <div className="space-y-3 p-4 border rounded-lg">
+ <Skeleton className="w-32 h-4" />
+ <Skeleton className="w-full h-10" />
+ <Skeleton className="w-24 h-4" />
+ </div>
+ <div className="space-y-3 p-4 border rounded-lg">
+ <Skeleton className="w-32 h-4" />
+ <Skeleton className="w-full h-10" />
+ <Skeleton className="w-24 h-4" />
+ </div>
+ </div>
+ </div>
  </main>
  </div>
  )
@@ -194,6 +213,12 @@ export default function SettingsPage() {
 
  <main className="mx-auto px-4 py-8 container">
  <div className="mb-6">
+ <Breadcrumbs
+ items={[
+ { label: "Dashboard", href: "/admin/dashboard" },
+ { label: "Settings" },
+ ]}
+ />
  <Link
  href="/admin/dashboard"
  className="inline-flex items-center mb-4 text-muted-foreground hover:text-foreground text-sm"

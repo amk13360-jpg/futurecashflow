@@ -38,6 +38,8 @@ import {
 } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { Breadcrumbs } from '@/components/ui/breadcrumbs';
+import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import { 
  getBuyerById, getBuyerUsers, getBuyerStats, 
@@ -279,8 +281,26 @@ export default function BuyerDetailsPage() {
  if (loading) {
  return (
  <div className="mx-auto p-6 container">
- <div className="flex justify-center items-center h-64">
- <div className="border-primary border-b-2 rounded-full w-8 h-8 animate-spin" />
+ <div className="space-y-4">
+ <Skeleton className="w-48 h-6" />
+ <div className="gap-4 grid grid-cols-1 md:grid-cols-3">
+ <div className="space-y-2 p-4 border rounded-lg">
+ <Skeleton className="w-28 h-4" />
+ <Skeleton className="w-20 h-6" />
+ </div>
+ <div className="space-y-2 p-4 border rounded-lg">
+ <Skeleton className="w-28 h-4" />
+ <Skeleton className="w-20 h-6" />
+ </div>
+ <div className="space-y-2 p-4 border rounded-lg">
+ <Skeleton className="w-28 h-4" />
+ <Skeleton className="w-20 h-6" />
+ </div>
+ </div>
+ <div className="space-y-3">
+ <Skeleton className="w-full h-10" />
+ <Skeleton className="w-full h-10" />
+ </div>
  </div>
  </div>
  );
@@ -294,6 +314,13 @@ export default function BuyerDetailsPage() {
 
  return (
  <div className="space-y-6 mx-auto p-6 container">
+ <Breadcrumbs
+ items={[
+ { label: 'Dashboard', href: '/admin/dashboard' },
+ { label: 'Buyers', href: '/admin/buyers' },
+ { label: buyer.name },
+ ]}
+ />
  {/* Header */}
  <div className="flex justify-between items-center">
  <div className="flex items-center gap-4">

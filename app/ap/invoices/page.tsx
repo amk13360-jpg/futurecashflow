@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { SkeletonTable } from "@/components/ui/skeleton"
 import { EmptyState } from "@/components/ui/empty-state"
 import { MetricCard } from "@/components/admin/metric-card"
+import { Breadcrumbs } from "@/components/ui/breadcrumbs"
 
 export const dynamic = "force-dynamic"
 
@@ -63,6 +64,12 @@ export default function InvoicesPage() {
 
  <main className="mx-auto px-4 py-8 max-w-7xl container">
  <div className="mb-8">
+ <Breadcrumbs
+ items={[
+ { label: "Dashboard", href: "/ap/dashboard" },
+ { label: "Invoices" },
+ ]}
+ />
  <Link
  href="/ap/dashboard"
  className="inline-flex items-center mb-4 text-muted-foreground hover:text-foreground text-sm transition-colors"

@@ -9,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Breadcrumbs } from "@/components/ui/breadcrumbs"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
  getOfferAcceptanceSummary,
  getDisbursementTracker,
@@ -110,6 +112,12 @@ export default function ReportsPage() {
 
  <main className="container mx-auto px-4 py-8">
  <div className="mb-6">
+ <Breadcrumbs
+ items={[
+ { label: "Dashboard", href: "/admin/dashboard" },
+ { label: "Reports" },
+ ]}
+ />
  <Link
  href="/admin/dashboard"
  className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
@@ -263,7 +271,22 @@ export default function ReportsPage() {
  </CardHeader>
  <CardContent>
  {loading ? (
- <div className="text-center py-12 text-muted-foreground">Loading...</div>
+ <div className="space-y-3">
+ <div className="flex gap-4">
+ <Skeleton className="w-24 h-4" />
+ <Skeleton className="w-32 h-4" />
+ <Skeleton className="w-28 h-4" />
+ </div>
+ {Array.from({ length: 5 }).map((_, index) => (
+ <div key={`offer-summary-skeleton-${index}`} className="flex gap-4">
+ <Skeleton className="w-24 h-4" />
+ <Skeleton className="w-40 h-4" />
+ <Skeleton className="w-40 h-4" />
+ <Skeleton className="w-16 h-4" />
+ <Skeleton className="w-16 h-4" />
+ </div>
+ ))}
+ </div>
  ) : offerSummary.length === 0 ? (
  <div className="text-center py-12 text-muted-foreground">
  <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
@@ -331,7 +354,22 @@ export default function ReportsPage() {
  </CardHeader>
  <CardContent>
  {loading ? (
- <div className="text-center py-12 text-muted-foreground">Loading...</div>
+ <div className="space-y-3">
+ <div className="flex gap-4">
+ <Skeleton className="w-24 h-4" />
+ <Skeleton className="w-32 h-4" />
+ <Skeleton className="w-28 h-4" />
+ </div>
+ {Array.from({ length: 5 }).map((_, index) => (
+ <div key={`disbursement-skeleton-${index}`} className="flex gap-4">
+ <Skeleton className="w-24 h-4" />
+ <Skeleton className="w-40 h-4" />
+ <Skeleton className="w-40 h-4" />
+ <Skeleton className="w-20 h-4" />
+ <Skeleton className="w-24 h-4" />
+ </div>
+ ))}
+ </div>
  ) : disbursements.length === 0 ? (
  <div className="text-center py-12 text-muted-foreground">
  <RandIcon className="h-12 w-12 mx-auto mb-3 opacity-50" />
@@ -413,7 +451,21 @@ export default function ReportsPage() {
  </CardHeader>
  <CardContent>
  {loading ? (
- <div className="text-center py-12 text-muted-foreground">Loading...</div>
+ <div className="space-y-3">
+ <div className="flex gap-4">
+ <Skeleton className="w-24 h-4" />
+ <Skeleton className="w-32 h-4" />
+ <Skeleton className="w-28 h-4" />
+ </div>
+ {Array.from({ length: 5 }).map((_, index) => (
+ <div key={`supplier-status-skeleton-${index}`} className="flex gap-4">
+ <Skeleton className="w-40 h-4" />
+ <Skeleton className="w-24 h-4" />
+ <Skeleton className="w-24 h-4" />
+ <Skeleton className="w-20 h-4" />
+ </div>
+ ))}
+ </div>
  ) : suppliers.length === 0 ? (
  <div className="text-center py-12 text-muted-foreground">
  <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
@@ -495,7 +547,21 @@ export default function ReportsPage() {
  </CardHeader>
  <CardContent>
  {loading ? (
- <div className="text-center py-12 text-muted-foreground">Loading...</div>
+ <div className="space-y-3">
+ <div className="flex gap-4">
+ <Skeleton className="w-24 h-4" />
+ <Skeleton className="w-32 h-4" />
+ <Skeleton className="w-28 h-4" />
+ </div>
+ {Array.from({ length: 6 }).map((_, index) => (
+ <div key={`audit-skeleton-${index}`} className="flex gap-4">
+ <Skeleton className="w-24 h-4" />
+ <Skeleton className="w-48 h-4" />
+ <Skeleton className="w-32 h-4" />
+ <Skeleton className="w-24 h-4" />
+ </div>
+ ))}
+ </div>
  ) : auditLogs.length === 0 ? (
  <div className="text-center py-12 text-muted-foreground">
  <Activity className="h-12 w-12 mx-auto mb-3 opacity-50" />

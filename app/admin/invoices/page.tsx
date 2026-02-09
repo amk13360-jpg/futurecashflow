@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { SkeletonTable } from "@/components/ui/skeleton"
 import { EmptyState } from "@/components/ui/empty-state"
+import { Breadcrumbs } from "@/components/ui/breadcrumbs"
 import { getAllInvoices, generateOffers } from "@/lib/actions/invoices"
 import { FileText, Send, ArrowLeft } from "lucide-react"
 import Link from "next/link"
@@ -73,6 +74,12 @@ export default function AdminInvoicesPage() {
 
       <main className="mx-auto px-4 py-8 container">
         <div className="mb-6">
+          <Breadcrumbs
+            items={[
+              { label: "Dashboard", href: "/admin/dashboard" },
+              { label: "Invoices" },
+            ]}
+          />
           <Link
             href="/admin/dashboard"
             className="inline-flex items-center mb-4 text-muted-foreground hover:text-foreground text-sm"
