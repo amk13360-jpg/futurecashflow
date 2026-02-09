@@ -113,7 +113,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
 
             {bellOpen && (
               <div
-                className="absolute top-[calc(100%+4px)] right-0 z-60 bg-popover shadow-xl border border-border rounded-xl w-80 text-popover-foreground animate-in fade-in-0 zoom-in-95 slide-in-from-top-1"
+                className="top-[calc(100%+4px)] right-0 z-60 absolute bg-popover slide-in-from-top-1 shadow-xl border border-border rounded-xl w-80 text-popover-foreground animate-in fade-in-0 zoom-in-95"
               >
                 <div className="flex justify-between items-center px-4 pt-3.5 pb-2.5 border-border border-b">
                   <span className="font-semibold text-muted-foreground text-xs uppercase tracking-wide">Notifications</span>
@@ -133,7 +133,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                   >
                     <span
                       className={cn(
-                        "shrink-0 mt-1.5 rounded-full w-2 h-2",
+                        "mt-1.5 rounded-full w-2 h-2 shrink-0",
                         n.unread ? "bg-primary" : "bg-border"
                       )}
                     />
@@ -146,7 +146,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                       </p>
                       <p className="text-muted-foreground text-xs truncate">{n.sub}</p>
                     </div>
-                    <span className="shrink-0 text-muted-foreground text-xs">{n.time}</span>
+                    <span className="text-muted-foreground text-xs shrink-0">{n.time}</span>
                   </div>
                 ))}
                 <div className="px-4 py-2.5 border-border border-t text-center">
@@ -173,16 +173,16 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                 profileOpen ? "border-primary ring-2 ring-primary/20" : "border-border hover:border-primary"
               )}
             >
-              <div className="flex shrink-0 justify-center items-center bg-primary/10 rounded-full w-7 h-7 font-bold text-primary text-xs">
+              <div className="flex justify-center items-center bg-primary/10 rounded-full w-7 h-7 font-bold text-primary text-xs shrink-0">
                 {initials}
               </div>
-              <div className="text-left hidden sm:block">
+              <div className="hidden sm:block text-left">
                 <p className="font-medium text-foreground text-sm leading-none">{displayName}</p>
-                <p className="text-muted-foreground text-[11px] leading-none mt-0.5">{roleLabel}</p>
+                <p className="mt-0.5 text-[11px] text-muted-foreground leading-none">{roleLabel}</p>
               </div>
               <ChevronDown
                 className={cn(
-                  "shrink-0 w-3.5 h-3.5 text-muted-foreground transition-transform duration-200",
+                  "w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 shrink-0",
                   profileOpen && "rotate-180"
                 )}
               />
@@ -190,10 +190,10 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
 
             {profileOpen && (
               <div
-                className="absolute top-[calc(100%+4px)] right-0 z-60 bg-popover shadow-xl border border-border rounded-xl w-56 text-popover-foreground animate-in fade-in-0 zoom-in-95 slide-in-from-top-1"
+                className="top-[calc(100%+4px)] right-0 z-60 absolute bg-popover slide-in-from-top-1 shadow-xl border border-border rounded-xl w-56 text-popover-foreground animate-in fade-in-0 zoom-in-95"
               >
                 <div className="flex items-center gap-3 bg-primary/[0.04] px-4 py-3 border-border border-b rounded-t-xl">
-                  <div className="flex shrink-0 justify-center items-center bg-primary/10 rounded-full w-9 h-9 font-bold text-primary text-xs">
+                  <div className="flex justify-center items-center bg-primary/10 rounded-full w-9 h-9 font-bold text-primary text-xs shrink-0">
                     {initials}
                   </div>
                   <div className="min-w-0">

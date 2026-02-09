@@ -64,16 +64,16 @@ export function SupplierHeader({ supplierName }: SupplierHeaderProps) {
                 profileOpen ? "border-primary ring-2 ring-primary/20" : "border-border hover:border-primary"
               )}
             >
-              <div className="flex shrink-0 justify-center items-center bg-primary/10 rounded-full w-7 h-7 font-bold text-primary text-xs">
+              <div className="flex justify-center items-center bg-primary/10 rounded-full w-7 h-7 font-bold text-primary text-xs shrink-0">
                 {initials}
               </div>
-              <div className="text-left hidden sm:block">
+              <div className="hidden sm:block text-left">
                 <p className="font-medium text-foreground text-sm leading-none">{supplierName || "Supplier"}</p>
-                <p className="text-muted-foreground text-[11px] leading-none mt-0.5">Supplier</p>
+                <p className="mt-0.5 text-[11px] text-muted-foreground leading-none">Supplier</p>
               </div>
               <ChevronDown
                 className={cn(
-                  "shrink-0 w-3.5 h-3.5 text-muted-foreground transition-transform duration-200",
+                  "w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 shrink-0",
                   profileOpen && "rotate-180"
                 )}
               />
@@ -81,10 +81,10 @@ export function SupplierHeader({ supplierName }: SupplierHeaderProps) {
 
             {profileOpen && (
               <div
-                className="absolute top-[calc(100%+4px)] right-0 z-60 bg-popover shadow-xl border border-border rounded-xl w-56 text-popover-foreground animate-in fade-in-0 zoom-in-95 slide-in-from-top-1"
+                className="top-[calc(100%+4px)] right-0 z-60 absolute bg-popover slide-in-from-top-1 shadow-xl border border-border rounded-xl w-56 text-popover-foreground animate-in fade-in-0 zoom-in-95"
               >
                 <div className="flex items-center gap-3 bg-primary/[0.04] px-4 py-3 border-border border-b rounded-t-xl">
-                  <div className="flex shrink-0 justify-center items-center bg-primary/10 rounded-full w-9 h-9 font-bold text-primary text-xs">
+                  <div className="flex justify-center items-center bg-primary/10 rounded-full w-9 h-9 font-bold text-primary text-xs shrink-0">
                     {initials}
                   </div>
                   <div className="min-w-0">
