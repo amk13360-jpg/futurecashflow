@@ -43,7 +43,7 @@ export function SupplierHeader({ supplierName }: SupplierHeaderProps) {
     <header
       className="top-0 z-50 sticky bg-card supports-[not_(backdrop-filter)]:bg-card backdrop-blur-xl border-border border-b h-16 transition-colors duration-300"
     >
-      <div className="flex justify-between items-center mx-auto px-4 sm:px-6 max-w-screen-xl h-full">
+      <div className="flex justify-between items-center mx-auto px-4 sm:px-6 max-w-7xl h-full">
         <div className="flex items-center gap-3">
           <Logo size="sm" variant="adaptive" />
           <span className="text-muted-foreground text-sm">Supplier Portal</span>
@@ -81,7 +81,7 @@ export function SupplierHeader({ supplierName }: SupplierHeaderProps) {
 
             {profileOpen && (
               <div
-                className="absolute top-[calc(100%+4px)] right-0 z-[60] bg-popover shadow-xl border border-border rounded-xl w-56 text-popover-foreground animate-in fade-in-0 zoom-in-95 slide-in-from-top-1"
+                className="absolute top-[calc(100%+4px)] right-0 z-60 bg-popover shadow-xl border border-border rounded-xl w-56 text-popover-foreground animate-in fade-in-0 zoom-in-95 slide-in-from-top-1"
               >
                 <div className="flex items-center gap-3 bg-primary/[0.04] px-4 py-3 border-border border-b rounded-t-xl">
                   <div className="flex shrink-0 justify-center items-center bg-primary/10 rounded-full w-9 h-9 font-bold text-primary text-xs">

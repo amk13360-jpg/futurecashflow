@@ -81,7 +81,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
 
   return (
     <header className="top-0 z-50 sticky bg-card supports-[not_(backdrop-filter)]:bg-card backdrop-blur-xl border-border border-b h-16 transition-colors duration-300">
-      <div className="flex justify-between items-center mx-auto px-4 sm:px-6 max-w-screen-xl h-full">
+      <div className="flex justify-between items-center mx-auto px-4 sm:px-6 max-w-7xl h-full">
         <div className="flex items-center gap-3">
           <Logo size="sm" variant="adaptive" />
           <span className="text-muted-foreground text-sm">
@@ -113,7 +113,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
 
             {bellOpen && (
               <div
-                className="absolute top-[calc(100%+4px)] right-0 z-[60] bg-popover shadow-xl border border-border rounded-xl w-80 text-popover-foreground animate-in fade-in-0 zoom-in-95 slide-in-from-top-1"
+                className="absolute top-[calc(100%+4px)] right-0 z-60 bg-popover shadow-xl border border-border rounded-xl w-80 text-popover-foreground animate-in fade-in-0 zoom-in-95 slide-in-from-top-1"
               >
                 <div className="flex justify-between items-center px-4 pt-3.5 pb-2.5 border-border border-b">
                   <span className="font-semibold text-muted-foreground text-xs uppercase tracking-wide">Notifications</span>
@@ -133,7 +133,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                   >
                     <span
                       className={cn(
-                        "flex-shrink-0 mt-1.5 rounded-full w-2 h-2",
+                        "shrink-0 mt-1.5 rounded-full w-2 h-2",
                         n.unread ? "bg-primary" : "bg-border"
                       )}
                     />
@@ -146,7 +146,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                       </p>
                       <p className="text-muted-foreground text-xs truncate">{n.sub}</p>
                     </div>
-                    <span className="flex-shrink-0 text-muted-foreground text-xs">{n.time}</span>
+                    <span className="shrink-0 text-muted-foreground text-xs">{n.time}</span>
                   </div>
                 ))}
                 <div className="px-4 py-2.5 border-border border-t text-center">
@@ -190,7 +190,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
 
             {profileOpen && (
               <div
-                className="absolute top-[calc(100%+4px)] right-0 z-[60] bg-popover shadow-xl border border-border rounded-xl w-56 text-popover-foreground animate-in fade-in-0 zoom-in-95 slide-in-from-top-1"
+                className="absolute top-[calc(100%+4px)] right-0 z-60 bg-popover shadow-xl border border-border rounded-xl w-56 text-popover-foreground animate-in fade-in-0 zoom-in-95 slide-in-from-top-1"
               >
                 <div className="flex items-center gap-3 bg-primary/[0.04] px-4 py-3 border-border border-b rounded-t-xl">
                   <div className="flex shrink-0 justify-center items-center bg-primary/10 rounded-full w-9 h-9 font-bold text-primary text-xs">
