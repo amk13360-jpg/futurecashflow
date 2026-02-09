@@ -159,7 +159,7 @@ export default function SupplierAccessPage() {
                   {/* Show helpful message if token expired */}
                   {isTokenExpired && (
                     <Alert className="bg-warning/10 border-warning">
-                      <Clock className="h-4 w-4 text-warning" />
+                      <Clock className="w-4 h-4 text-warning" />
                       <AlertDescription className="text-sm">
                         Your access link has expired or was already used. 
                         Request a new link below.
@@ -190,7 +190,7 @@ export default function SupplierAccessPage() {
                   </Button>
                 </form>
                 
-                <div className="mt-6 pt-6 border-t border-border">
+                <div className="mt-6 pt-6 border-border border-t">
                   <p className="mb-3 text-muted-foreground text-sm text-center">
                     Don't have a valid token or it expired?
                   </p>
@@ -202,7 +202,7 @@ export default function SupplierAccessPage() {
                       setError("")
                     }}
                   >
-                    <Mail className="mr-2 h-4 w-4" />
+                    <Mail className="mr-2 w-4 h-4" />
                     Request New Access Link
                   </Button>
                 </div>
@@ -237,7 +237,7 @@ export default function SupplierAccessPage() {
                       autoComplete="email"
                       className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-colors"
                     />
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-muted-foreground text-xs">
                       This should be the email address your buyer has registered for you.
                     </p>
                   </div>
@@ -246,7 +246,7 @@ export default function SupplierAccessPage() {
                   </Button>
                 </form>
                 
-                <div className="mt-6 pt-6 border-t border-border">
+                <div className="mt-6 pt-6 border-border border-t">
                   <Button 
                     variant="ghost" 
                     className="w-full text-muted-foreground"
@@ -255,7 +255,7 @@ export default function SupplierAccessPage() {
                       setError("")
                     }}
                   >
-                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    <ArrowLeft className="mr-2 w-4 h-4" />
                     Back to Token Entry
                   </Button>
                 </div>
@@ -264,20 +264,20 @@ export default function SupplierAccessPage() {
 
             {/* Request Sent Confirmation View */}
             {viewMode === "request-sent" && (
-              <div className="text-center space-y-4">
-                <div className="bg-success/10 border border-success/20 rounded-lg p-4">
-                  <p className="text-sm text-foreground">
+              <div className="space-y-4 text-center">
+                <div className="bg-success/10 p-4 border border-success/20 rounded-lg">
+                  <p className="text-foreground text-sm">
                     If an account exists with <strong>{email}</strong>, you will receive 
                     a new access link within a few minutes.
                   </p>
                 </div>
                 
-                <div className="text-sm text-muted-foreground space-y-2">
+                <div className="space-y-2 text-muted-foreground text-sm">
                   <p>Please check your inbox and spam folder.</p>
                   <p>The link will be valid for <strong>14 days</strong>.</p>
                 </div>
                 
-                <div className="pt-4 space-y-2">
+                <div className="space-y-2 pt-4">
                   <Button 
                     variant="outline" 
                     className="w-full"
@@ -287,7 +287,7 @@ export default function SupplierAccessPage() {
                       setEmail("")
                     }}
                   >
-                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    <ArrowLeft className="mr-2 w-4 h-4" />
                     Back to Token Entry
                   </Button>
                   
