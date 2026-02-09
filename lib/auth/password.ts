@@ -1,8 +1,9 @@
 import bcrypt from "bcryptjs"
+import { randomBytes, randomInt } from "crypto"
 
-// Hash password
+// Hash password with increased work factor for security
 export async function hashPassword(password: string): Promise<string> {
-  const salt = await bcrypt.genSalt(10)
+  const salt = await bcrypt.genSalt(12) // Increased from 10 to 12 rounds
   return bcrypt.hash(password, salt)
 }
 
@@ -11,17 +12,14 @@ export async function verifyPassword(password: string, hashedPassword: string): 
   return bcrypt.compare(password, hashedPassword)
 }
 
-// Generate OTP code (6 digits)
+// Generate cryptographically secure OTP code (6 digits)
 export function generateOTP(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString()
+  // Use crypto.randomInt for cryptographically secure random numbers
+  return randomInt(100000, 999999).toString()
 }
 
-// Generate secure token for supplier invites
+// Generate cryptographically secure token for supplier invites
 export function generateToken(): string {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-  let token = ""
-  for (let i = 0; i < 64; i++) {
-    token += chars.charAt(Math.floor(Math.random() * chars.length))
-  }
-  return token
+  // Use crypto.randomBytes for cryptographically secure random bytes
+  return randomBytes(32).toString("hex")
 }

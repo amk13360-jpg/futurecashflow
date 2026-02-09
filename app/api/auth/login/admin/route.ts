@@ -3,19 +3,60 @@ import { query } from "@/lib/db"
 import { verifyPassword } from "@/lib/auth/password"
 import { createSession, setSessionCookie } from "@/lib/auth/session"
 import { createAuditLog } from "@/lib/auth/audit"
+import { checkRateLimit, clearRateLimit, getClientIP, RATE_LIMITS } from "@/lib/auth/rate-limit"
+import { isValidUsername, sanitizeString } from "@/lib/utils/validation"
 import type { User } from "@/lib/types/database"
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting - prevent brute force attacks
+    const clientIP = getClientIP(request.headers)
+    const rateLimitKey = `admin-login:${clientIP}`
+    const rateLimit = checkRateLimit(rateLimitKey, RATE_LIMITS.AUTH)
+    
+    if (!rateLimit.allowed) {
+      await createAuditLog({
+        userType: "system",
+        action: "RATE_LIMITED",
+        details: `Admin login rate limit exceeded for IP: ${clientIP}`,
+        ipAddress: clientIP,
+        userAgent: request.headers.get("user-agent") || undefined,
+      })
+      
+      return NextResponse.json(
+        { error: "Too many login attempts. Please try again later." },
+        { 
+          status: 429,
+          headers: {
+            "Retry-After": String(rateLimit.retryAfter || 900),
+            "X-RateLimit-Remaining": "0",
+            "X-RateLimit-Reset": String(rateLimit.resetTime)
+          }
+        }
+      )
+    }
+
     const { username, password } = await request.json()
 
+    // Input validation
     if (!username || !password) {
       return NextResponse.json({ error: "Username and password are required" }, { status: 400 })
     }
 
+    // Sanitize and validate username
+    const sanitizedUsername = sanitizeString(username, 50)
+    if (!isValidUsername(sanitizedUsername)) {
+      return NextResponse.json({ error: "Invalid username format" }, { status: 400 })
+    }
+
+    // Validate password length (prevent DoS via extremely long passwords)
+    if (password.length > 128) {
+      return NextResponse.json({ error: "Invalid credentials" }, { status: 401 })
+    }
+
     // Get user from database
     const users = await query<User[]>("SELECT * FROM users WHERE username = ? AND role = ? AND active_status = ?", [
-      username,
+      sanitizedUsername,
       "admin",
       "active",
     ])
@@ -74,6 +115,9 @@ export async function POST(request: NextRequest) {
     })
 
     await setSessionCookie(token)
+
+    // Clear rate limit on successful login
+    clearRateLimit(rateLimitKey)
 
     await createAuditLog({
       userId: user.user_id,

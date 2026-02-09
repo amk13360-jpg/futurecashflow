@@ -10,8 +10,65 @@ variables:
   resourceGroupName: 'fm-rg-dev-san'
 
 stages:
+# =============================================================================
+# Security Scanning Stage - Run security checks before building
+# =============================================================================
+- stage: Security
+  displayName: 'Security Scanning'
+  jobs:
+  - job: SecurityScan
+    displayName: 'Security Analysis'
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '20.x'
+      displayName: 'Install Node.js'
+
+    - script: |
+        npm install --legacy-peer-deps
+      displayName: 'Install dependencies'
+
+    # NPM Audit - Check for known vulnerabilities in dependencies
+    - script: |
+        echo "Running npm audit..."
+        npm audit --audit-level=high --json > npm-audit-report.json || true
+        npm audit --audit-level=high || echo "##vso[task.logissue type=warning]npm audit found vulnerabilities"
+      displayName: 'NPM Security Audit'
+      continueOnError: true
+
+    # Publish audit report as artifact
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: 'npm-audit-report.json'
+        ArtifactName: 'security-reports'
+      displayName: 'Publish NPM Audit Report'
+      condition: always()
+
+    # Check for secrets in code (basic pattern matching)
+    - script: |
+        echo "Scanning for potential secrets..."
+        # Check for common secret patterns
+        if grep -rE "(password|secret|key|token)\s*[:=]\s*['\"][^'\"]{8,}['\"]" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.json" . 2>/dev/null | grep -v node_modules | grep -v ".next" | grep -v "*.example"; then
+          echo "##vso[task.logissue type=warning]Potential secrets found in code. Please review."
+        else
+          echo "No obvious secrets detected."
+        fi
+      displayName: 'Secret Detection Scan'
+      continueOnError: true
+
+    # License compliance check
+    - script: |
+        npx license-checker --production --summary || echo "License check completed"
+      displayName: 'License Compliance Check'
+      continueOnError: true
+
+# =============================================================================
+# Build Stage
+# =============================================================================
 - stage: Build
   displayName: 'Build Stage'
+  dependsOn: Security
+  condition: succeeded()
   jobs:
   - job: BuildJob
     displayName: 'Build Next.js App'

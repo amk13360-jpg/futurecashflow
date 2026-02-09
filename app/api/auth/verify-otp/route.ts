@@ -2,6 +2,8 @@ import { type NextRequest, NextResponse } from "next/server"
 import { query } from "@/lib/db"
 import { createSession, setSessionCookie } from "@/lib/auth/session"
 import { createAuditLog } from "@/lib/auth/audit"
+import { checkRateLimit, clearRateLimit, getClientIP, RATE_LIMITS } from "@/lib/auth/rate-limit"
+import { isValidOTP, isPositiveNumber } from "@/lib/utils/validation"
 import type { User, Buyer } from "@/lib/types/database"
 
 interface OTPCode {
@@ -18,21 +20,59 @@ interface UserWithPasswordFlag extends User {
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting - prevent OTP brute force attacks
+    const clientIP = getClientIP(request.headers)
+    const rateLimitKey = `otp-verify:${clientIP}`
+    const rateLimit = checkRateLimit(rateLimitKey, RATE_LIMITS.OTP)
+    
+    if (!rateLimit.allowed) {
+      await createAuditLog({
+        userType: "system",
+        action: "RATE_LIMITED",
+        details: `OTP verification rate limit exceeded for IP: ${clientIP}`,
+        ipAddress: clientIP,
+        userAgent: request.headers.get("user-agent") || undefined,
+      })
+      
+      return NextResponse.json(
+        { error: "Too many verification attempts. Please try again later." },
+        { 
+          status: 429,
+          headers: {
+            "Retry-After": String(rateLimit.retryAfter || 900),
+            "X-RateLimit-Remaining": "0",
+            "X-RateLimit-Reset": String(rateLimit.resetTime)
+          }
+        }
+      )
+    }
+
     const { userId, otp } = await request.json()
 
     if (!userId || !otp) {
       return NextResponse.json({ error: "User ID and OTP are required" }, { status: 400 })
     }
 
+    // Validate userId is a positive integer
+    const parsedUserId = parseInt(userId, 10)
+    if (!isPositiveNumber(parsedUserId)) {
+      return NextResponse.json({ error: "Invalid user ID" }, { status: 400 })
+    }
+
+    // Validate OTP format (exactly 6 digits)
+    if (!isValidOTP(otp)) {
+      return NextResponse.json({ error: "Invalid OTP format" }, { status: 400 })
+    }
+
     // Get OTP from database
     const otpCodes = await query<OTPCode[]>(
       "SELECT * FROM otp_codes WHERE user_id = ? AND code = ? AND used_at IS NULL ORDER BY created_at DESC LIMIT 1",
-      [userId, otp],
+      [parsedUserId, otp],
     )
 
     if (otpCodes.length === 0) {
       await createAuditLog({
-        userId,
+        userId: parsedUserId,
         userType: "accounts_payable",
         action: "OTP_VERIFICATION_FAILED",
         details: "Invalid OTP code",
@@ -54,7 +94,7 @@ export async function POST(request: NextRequest) {
     await query("UPDATE otp_codes SET used_at = NOW() WHERE otp_id = ?", [otpCode.otp_id])
 
     // Get user details
-    const users = await query<UserWithPasswordFlag[]>("SELECT * FROM users WHERE user_id = ?", [userId])
+    const users = await query<UserWithPasswordFlag[]>("SELECT * FROM users WHERE user_id = ?", [parsedUserId])
 
     if (users.length === 0) {
       return NextResponse.json({ error: "User not found" }, { status: 404 })
@@ -89,6 +129,9 @@ export async function POST(request: NextRequest) {
     })
 
     await setSessionCookie(token)
+
+    // Clear rate limit on successful verification
+    clearRateLimit(rateLimitKey)
 
     // Map role to valid audit userType
     const auditUserType = user.role === 'accounts_payable' ? 'accounts_payable' 

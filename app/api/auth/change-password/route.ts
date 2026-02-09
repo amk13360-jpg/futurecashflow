@@ -2,7 +2,8 @@ import { type NextRequest, NextResponse } from "next/server";
 import { query } from "@/lib/db";
 import { getSession } from "@/lib/auth/session";
 import { createAuditLog } from "@/lib/auth/audit";
-import bcrypt from "bcryptjs";
+import { hashPassword } from "@/lib/auth/password";
+import { validatePasswordStrength } from "@/lib/utils/validation";
 
 export async function POST(request: NextRequest) {
   try {
@@ -19,17 +20,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "New password is required" }, { status: 400 });
     }
 
-    // Validate password strength
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
-    if (!passwordRegex.test(newPassword)) {
+    // Validate password strength using centralized validation
+    const passwordValidation = validatePasswordStrength(newPassword);
+    if (!passwordValidation.isValid) {
       return NextResponse.json(
-        { error: "Password does not meet requirements" },
+        { error: "Password does not meet requirements", issues: passwordValidation.issues },
         { status: 400 }
       );
     }
 
-    // Hash the new password
-    const passwordHash = await bcrypt.hash(newPassword, 10);
+    // Hash the new password using secure hashing function
+    const passwordHash = await hashPassword(newPassword);
 
     // Update password and clear the must_change_password flag
     await query(

@@ -1,12 +1,13 @@
 "use server"
 
-import { query } from "@/lib/db"
+import { query, transaction } from "@/lib/db"
 import { getSession } from "@/lib/auth/session"
 import { redirect } from "next/navigation"
 import { manualGenerateOffersForSupplier } from "@/lib/actions/invoices"
 import { sendSupplierApprovalEmail } from "@/lib/services/email"
 import { createAuditLog } from "@/lib/auth/audit"
 import { randomBytes } from "crypto"
+import type { PoolConnection } from "mysql2/promise"
 
 // Generate a secure random token
 function generateToken(): string {
@@ -196,7 +197,7 @@ export async function approveBankChangeRequest(requestId: number): Promise<{ suc
   }
 
   try {
-    await transaction(async (connection) => {
+    await transaction(async (connection: PoolConnection) => {
       // Get the request details
       const [requests]: any = await connection.execute(
         `SELECT * FROM bank_change_requests WHERE request_id = ? AND status = 'pending'`,

@@ -2,11 +2,39 @@ import { type NextRequest, NextResponse } from "next/server"
 import { query } from "@/lib/db"
 import { verifyPassword, generateOTP } from "@/lib/auth/password"
 import { createAuditLog } from "@/lib/auth/audit"
+import { checkRateLimit, clearRateLimit, getClientIP, RATE_LIMITS } from "@/lib/auth/rate-limit"
 import { sendOTPEmail } from "@/lib/services/email"
 import type { User, Buyer } from "@/lib/types/database"
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting - prevent brute force attacks
+    const clientIP = getClientIP(request.headers)
+    const rateLimitKey = `ap-login:${clientIP}`
+    const rateLimit = checkRateLimit(rateLimitKey, RATE_LIMITS.AUTH)
+    
+    if (!rateLimit.allowed) {
+      await createAuditLog({
+        userType: "system",
+        action: "RATE_LIMITED",
+        details: `AP login rate limit exceeded for IP: ${clientIP}`,
+        ipAddress: clientIP,
+        userAgent: request.headers.get("user-agent") || undefined,
+      })
+      
+      return NextResponse.json(
+        { error: "Too many login attempts. Please try again later." },
+        { 
+          status: 429,
+          headers: {
+            "Retry-After": String(rateLimit.retryAfter || 900),
+            "X-RateLimit-Remaining": "0",
+            "X-RateLimit-Reset": String(rateLimit.resetTime)
+          }
+        }
+      )
+    }
+
     const { mineCode, password } = await request.json()
 
     if (!mineCode || !password) {

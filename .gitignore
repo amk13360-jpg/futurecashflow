@@ -6,6 +6,8 @@ build/
 .env
 .env.local
 .env.*.local
+.env.production
+.env.development
 .DS_Store
 .vscode/
 .idea/
@@ -16,4 +18,25 @@ build/
 out/
 .turbo/
 .pnpm-debug.log
-pnpm-lock.yaml
+
+# Security - Never commit these files
+appsettings.json
+*.pem
+*.key
+*.crt
+*.p12
+secrets/
+.secrets/
+credentials/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Uploaded files (may contain sensitive documents)
+public/uploads/
+uploads/

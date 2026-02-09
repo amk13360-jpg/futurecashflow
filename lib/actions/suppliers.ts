@@ -226,7 +226,7 @@ export async function acceptOffer(offerId: number, selectedInvoices: number[]) {
       return { success: true, offerId, alreadyAccepted: false, invoiceId: offer.invoice_id }
     })
 
-    if (!result.alreadyAccepted) {
+    if (!result.alreadyAccepted && result.invoiceId) {
       await createAuditLog({
         userType: "supplier",
         action: "OFFER_ACCEPTED",
