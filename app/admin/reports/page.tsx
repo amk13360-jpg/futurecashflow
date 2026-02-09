@@ -107,10 +107,10 @@ export default function ReportsPage() {
  }
 
  return (
- <div className="min-h-screen bg-muted">
+ <div className="bg-muted min-h-screen">
  <DashboardHeader />
 
- <main className="container mx-auto px-4 py-8">
+ <main className="mx-auto px-4 py-8 container">
  <div className="mb-6">
  <Breadcrumbs
  items={[
@@ -120,55 +120,55 @@ export default function ReportsPage() {
  />
  <Link
  href="/admin/dashboard"
- className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
+ className="inline-flex items-center mb-4 text-muted-foreground hover:text-foreground text-sm"
  >
- <ArrowLeft className="h-4 w-4 mr-2" />
+ <ArrowLeft className="mr-2 w-4 h-4" />
  Back to dashboard
  </Link>
- <h2 className="text-3xl font-bold">Reports & Analytics</h2>
+ <h2 className="font-bold text-3xl">Reports & Analytics</h2>
  <p className="text-muted-foreground">Comprehensive reporting and audit trails</p>
  </div>
 
  {/* System Statistics */}
  {stats && (
- <div className="grid md:grid-cols-4 gap-4 mb-6">
+ <div className="gap-4 grid md:grid-cols-4 mb-6">
  <Card>
  <CardHeader className="pb-3">
- <CardTitle className="text-sm font-medium text-muted-foreground">Active Suppliers</CardTitle>
+ <CardTitle className="font-medium text-muted-foreground text-sm">Active Suppliers</CardTitle>
  </CardHeader>
  <CardContent>
- <div className="text-2xl font-bold">{stats.active_suppliers}</div>
- <p className="text-xs text-muted-foreground">{stats.pending_suppliers} pending approval</p>
+ <div className="font-bold text-2xl">{stats.active_suppliers}</div>
+ <p className="text-muted-foreground text-xs">{stats.pending_suppliers} pending approval</p>
  </CardContent>
  </Card>
 
  <Card>
  <CardHeader className="pb-3">
- <CardTitle className="text-sm font-medium text-muted-foreground">Pending Offers</CardTitle>
+ <CardTitle className="font-medium text-muted-foreground text-sm">Pending Offers</CardTitle>
  </CardHeader>
  <CardContent>
- <div className="text-2xl font-bold">{stats.pending_offers}</div>
- <p className="text-xs text-muted-foreground">{stats.accepted_offers} accepted</p>
+ <div className="font-bold text-2xl">{stats.pending_offers}</div>
+ <p className="text-muted-foreground text-xs">{stats.accepted_offers} accepted</p>
  </CardContent>
  </Card>
 
  <Card>
  <CardHeader className="pb-3">
- <CardTitle className="text-sm font-medium text-muted-foreground">Total Disbursed</CardTitle>
+ <CardTitle className="font-medium text-muted-foreground text-sm">Total Disbursed</CardTitle>
  </CardHeader>
  <CardContent>
- <div className="text-2xl font-bold">R {(stats.total_disbursed || 0).toLocaleString()}</div>
- <p className="text-xs text-muted-foreground">{stats.completed_payments} payments</p>
+ <div className="font-bold text-2xl">R {(stats.total_disbursed || 0).toLocaleString()}</div>
+ <p className="text-muted-foreground text-xs">{stats.completed_payments} payments</p>
  </CardContent>
  </Card>
 
  <Card>
  <CardHeader className="pb-3">
- <CardTitle className="text-sm font-medium text-muted-foreground">Pending Items</CardTitle>
+ <CardTitle className="font-medium text-muted-foreground text-sm">Pending Items</CardTitle>
  </CardHeader>
  <CardContent>
- <div className="text-2xl font-bold">{stats.pending_bank_changes + stats.pending_cessions}</div>
- <p className="text-xs text-muted-foreground">
+ <div className="font-bold text-2xl">{stats.pending_bank_changes + stats.pending_cessions}</div>
+ <p className="text-muted-foreground text-xs">
  {stats.pending_bank_changes} bank changes, {stats.pending_cessions} cessions
  </p>
  </CardContent>
@@ -183,7 +183,7 @@ export default function ReportsPage() {
  <CardDescription>Filter reports by date range and status</CardDescription>
  </CardHeader>
  <CardContent>
- <div className="grid md:grid-cols-4 gap-4">
+ <div className="gap-4 grid md:grid-cols-4">
  <div className="space-y-2">
  <Label htmlFor="start-date">Start Date</Label>
  <Input
@@ -232,19 +232,19 @@ export default function ReportsPage() {
  <Tabs defaultValue="offers" className="space-y-4">
  <TabsList>
  <TabsTrigger value="offers">
- <TrendingUp className="h-4 w-4 mr-2" />
+ <TrendingUp className="mr-2 w-4 h-4" />
  Offer Acceptance
  </TabsTrigger>
  <TabsTrigger value="disbursements">
- <RandIcon className="h-4 w-4 mr-2" />
+ <RandIcon className="mr-2 w-4 h-4" />
  Disbursements
  </TabsTrigger>
  <TabsTrigger value="suppliers">
- <Users className="h-4 w-4 mr-2" />
+ <Users className="mr-2 w-4 h-4" />
  Supplier Status
  </TabsTrigger>
  <TabsTrigger value="audit">
- <Activity className="h-4 w-4 mr-2" />
+ <Activity className="mr-2 w-4 h-4" />
  Audit Logs
  </TabsTrigger>
  </TabsList>
@@ -253,7 +253,7 @@ export default function ReportsPage() {
  <TabsContent value="offers">
  <Card>
  <CardHeader>
- <div className="flex items-center justify-between">
+ <div className="flex justify-between items-center">
  <div>
  <CardTitle>Offer Acceptance Summary</CardTitle>
  <CardDescription>Track offer performance by buyer and supplier</CardDescription>
@@ -264,7 +264,7 @@ export default function ReportsPage() {
  size="sm"
  className="bg-transparent"
  >
- <Download className="h-4 w-4 mr-2" />
+ <Download className="mr-2 w-4 h-4" />
  Export CSV
  </Button>
  </div>
@@ -288,8 +288,8 @@ export default function ReportsPage() {
  ))}
  </div>
  ) : offerSummary.length === 0 ? (
- <div className="text-center py-12 text-muted-foreground">
- <FileText className="h-12 w-12 mx-auto mb-3 opacity-50" />
+ <div className="py-12 text-muted-foreground text-center">
+ <FileText className="opacity-50 mx-auto mb-3 w-12 h-12" />
  <p>No offer data available</p>
  </div>
  ) : (
@@ -297,31 +297,31 @@ export default function ReportsPage() {
  <table className="w-full text-sm">
  <thead>
  <tr className="border-b">
- <th className="text-left p-2">Date</th>
- <th className="text-left p-2">Buyer</th>
- <th className="text-left p-2">Supplier</th>
- <th className="text-right p-2">Total Offers</th>
- <th className="text-right p-2">Accepted</th>
- <th className="text-right p-2">Rejected</th>
- <th className="text-right p-2">Expired</th>
- <th className="text-right p-2">Acceptance Rate</th>
- <th className="text-right p-2">Total Value</th>
+ <th className="p-2 text-left">Date</th>
+ <th className="p-2 text-left">Buyer</th>
+ <th className="p-2 text-left">Supplier</th>
+ <th className="p-2 text-right">Total Offers</th>
+ <th className="p-2 text-right">Accepted</th>
+ <th className="p-2 text-right">Rejected</th>
+ <th className="p-2 text-right">Expired</th>
+ <th className="p-2 text-right">Acceptance Rate</th>
+ <th className="p-2 text-right">Total Value</th>
  </tr>
  </thead>
  <tbody>
  {offerSummary.map((row: any, idx: number) => (
- <tr key={idx} className="border-b hover:bg-muted">
+ <tr key={idx} className="hover:bg-muted border-b">
  <td className="p-2">{new Date(row.date).toLocaleDateString()}</td>
  <td className="p-2">{row.buyer_name}</td>
  <td className="p-2">{row.supplier_name}</td>
- <td className="text-right p-2">{row.total_offers}</td>
- <td className="text-right p-2 text-success">{row.accepted_offers}</td>
- <td className="text-right p-2 text-error">{row.rejected_offers}</td>
- <td className="text-right p-2 text-muted-foreground">{row.expired_offers}</td>
- <td className="text-right p-2">
+ <td className="p-2 text-right">{row.total_offers}</td>
+ <td className="p-2 text-success text-right">{row.accepted_offers}</td>
+ <td className="p-2 text-error text-right">{row.rejected_offers}</td>
+ <td className="p-2 text-muted-foreground text-right">{row.expired_offers}</td>
+ <td className="p-2 text-right">
  {((row.accepted_offers / row.total_offers) * 100).toFixed(1)}%
  </td>
- <td className="text-right p-2">R {row.accepted_value.toLocaleString()}</td>
+ <td className="p-2 text-right">R {row.accepted_value.toLocaleString()}</td>
  </tr>
  ))}
  </tbody>
@@ -336,7 +336,7 @@ export default function ReportsPage() {
  <TabsContent value="disbursements">
  <Card>
  <CardHeader>
- <div className="flex items-center justify-between">
+ <div className="flex justify-between items-center">
  <div>
  <CardTitle>Disbursement Tracker</CardTitle>
  <CardDescription>Monitor payment batches and disbursement status</CardDescription>
@@ -347,7 +347,7 @@ export default function ReportsPage() {
  size="sm"
  className="bg-transparent"
  >
- <Download className="h-4 w-4 mr-2" />
+ <Download className="mr-2 w-4 h-4" />
  Export CSV
  </Button>
  </div>
@@ -371,8 +371,8 @@ export default function ReportsPage() {
  ))}
  </div>
  ) : disbursements.length === 0 ? (
- <div className="text-center py-12 text-muted-foreground">
- <RandIcon className="h-12 w-12 mx-auto mb-3 opacity-50" />
+ <div className="py-12 text-muted-foreground text-center">
+ <RandIcon className="opacity-50 mx-auto mb-3 w-12 h-12" />
  <p>No disbursement data available</p>
  </div>
  ) : (
@@ -380,24 +380,24 @@ export default function ReportsPage() {
  <table className="w-full text-sm">
  <thead>
  <tr className="border-b">
- <th className="text-left p-2">Reference</th>
- <th className="text-left p-2">Batch ID</th>
- <th className="text-left p-2">Supplier</th>
- <th className="text-left p-2">Invoice</th>
- <th className="text-right p-2">Amount</th>
- <th className="text-left p-2">Status</th>
- <th className="text-left p-2">Scheduled</th>
- <th className="text-left p-2">Completed</th>
+ <th className="p-2 text-left">Reference</th>
+ <th className="p-2 text-left">Batch ID</th>
+ <th className="p-2 text-left">Supplier</th>
+ <th className="p-2 text-left">Invoice</th>
+ <th className="p-2 text-right">Amount</th>
+ <th className="p-2 text-left">Status</th>
+ <th className="p-2 text-left">Scheduled</th>
+ <th className="p-2 text-left">Completed</th>
  </tr>
  </thead>
  <tbody>
  {disbursements.map((payment: any) => (
- <tr key={payment.payment_id} className="border-b hover:bg-muted">
+ <tr key={payment.payment_id} className="hover:bg-muted border-b">
  <td className="p-2 font-mono text-xs">{payment.payment_reference}</td>
  <td className="p-2 text-xs">{payment.batch_id || "-"}</td>
  <td className="p-2">{payment.supplier_name}</td>
  <td className="p-2">{payment.invoice_number}</td>
- <td className="text-right p-2">
+ <td className="p-2 text-right">
  {payment.currency} {payment.amount.toLocaleString()}
  </td>
  <td className="p-2">
@@ -433,7 +433,7 @@ export default function ReportsPage() {
  <TabsContent value="suppliers">
  <Card>
  <CardHeader>
- <div className="flex items-center justify-between">
+ <div className="flex justify-between items-center">
  <div>
  <CardTitle>Supplier Status Report</CardTitle>
  <CardDescription>Complete supplier onboarding and activity overview</CardDescription>
@@ -444,7 +444,7 @@ export default function ReportsPage() {
  size="sm"
  className="bg-transparent"
  >
- <Download className="h-4 w-4 mr-2" />
+ <Download className="mr-2 w-4 h-4" />
  Export CSV
  </Button>
  </div>
@@ -467,8 +467,8 @@ export default function ReportsPage() {
  ))}
  </div>
  ) : suppliers.length === 0 ? (
- <div className="text-center py-12 text-muted-foreground">
- <Users className="h-12 w-12 mx-auto mb-3 opacity-50" />
+ <div className="py-12 text-muted-foreground text-center">
+ <Users className="opacity-50 mx-auto mb-3 w-12 h-12" />
  <p>No supplier data available</p>
  </div>
  ) : (
@@ -476,20 +476,20 @@ export default function ReportsPage() {
  <table className="w-full text-sm">
  <thead>
  <tr className="border-b">
- <th className="text-left p-2">Vendor #</th>
- <th className="text-left p-2">Name</th>
- <th className="text-left p-2">Status</th>
- <th className="text-left p-2">Cession</th>
- <th className="text-right p-2">Invoices</th>
- <th className="text-right p-2">Offers</th>
- <th className="text-right p-2">Accepted</th>
- <th className="text-right p-2">Disbursed</th>
- <th className="text-left p-2">Bank</th>
+ <th className="p-2 text-left">Vendor #</th>
+ <th className="p-2 text-left">Name</th>
+ <th className="p-2 text-left">Status</th>
+ <th className="p-2 text-left">Cession</th>
+ <th className="p-2 text-right">Invoices</th>
+ <th className="p-2 text-right">Offers</th>
+ <th className="p-2 text-right">Accepted</th>
+ <th className="p-2 text-right">Disbursed</th>
+ <th className="p-2 text-left">Bank</th>
  </tr>
  </thead>
  <tbody>
  {suppliers.map((supplier: any) => (
- <tr key={supplier.supplier_id} className="border-b hover:bg-muted">
+ <tr key={supplier.supplier_id} className="hover:bg-muted border-b">
  <td className="p-2 font-mono text-xs">{supplier.vendor_number || "-"}</td>
  <td className="p-2">{supplier.name}</td>
  <td className="p-2">
@@ -510,10 +510,10 @@ export default function ReportsPage() {
  {supplier.cession_status || "none"}
  </Badge>
  </td>
- <td className="text-right p-2">{supplier.invoice_count}</td>
- <td className="text-right p-2">{supplier.offer_count}</td>
- <td className="text-right p-2">{supplier.accepted_offers}</td>
- <td className="text-right p-2">R {(supplier.total_disbursed || 0).toLocaleString()}</td>
+ <td className="p-2 text-right">{supplier.invoice_count}</td>
+ <td className="p-2 text-right">{supplier.offer_count}</td>
+ <td className="p-2 text-right">{supplier.accepted_offers}</td>
+ <td className="p-2 text-right">R {(supplier.total_disbursed || 0).toLocaleString()}</td>
  <td className="p-2 text-xs">{supplier.bank_name || "-"}</td>
  </tr>
  ))}
@@ -529,7 +529,7 @@ export default function ReportsPage() {
  <TabsContent value="audit">
  <Card>
  <CardHeader>
- <div className="flex items-center justify-between">
+ <div className="flex justify-between items-center">
  <div>
  <CardTitle>Audit History</CardTitle>
  <CardDescription>Complete activity log for compliance and security</CardDescription>
@@ -540,7 +540,7 @@ export default function ReportsPage() {
  size="sm"
  className="bg-transparent"
  >
- <Download className="h-4 w-4 mr-2" />
+ <Download className="mr-2 w-4 h-4" />
  Export CSV
  </Button>
  </div>
@@ -563,20 +563,20 @@ export default function ReportsPage() {
  ))}
  </div>
  ) : auditLogs.length === 0 ? (
- <div className="text-center py-12 text-muted-foreground">
- <Activity className="h-12 w-12 mx-auto mb-3 opacity-50" />
+ <div className="py-12 text-muted-foreground text-center">
+ <Activity className="opacity-50 mx-auto mb-3 w-12 h-12" />
  <p>No audit logs available</p>
  </div>
  ) : (
  <div className="space-y-2 max-h-96 overflow-y-auto">
  {auditLogs.map((log: any) => (
  <div key={log.log_id} className="p-3 border rounded-lg text-sm">
- <div className="flex items-center justify-between mb-1">
+ <div className="flex justify-between items-center mb-1">
  <div className="flex items-center gap-2">
  <Badge variant="outline">{log.user_type}</Badge>
  <span className="font-medium">{log.action}</span>
  </div>
- <span className="text-xs text-muted-foreground">
+ <span className="text-muted-foreground text-xs">
  {new Date(log.created_at).toLocaleString()}
  </span>
  </div>
@@ -584,7 +584,7 @@ export default function ReportsPage() {
  {log.full_name || log.username || "System"} • {log.details}
  </div>
  {log.ip_address && (
- <div className="text-xs text-muted-foreground mt-1">IP: {log.ip_address}</div>
+ <div className="mt-1 text-muted-foreground text-xs">IP: {log.ip_address}</div>
  )}
  </div>
  ))}

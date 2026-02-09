@@ -96,13 +96,13 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
 
  if (pageLoading) {
    return (
-     <div className="min-h-screen bg-muted">
+     <div className="bg-muted min-h-screen">
        <SupplierHeader />
-       <main className="container mx-auto px-4 py-8">
-         <div className="space-y-4 max-w-3xl mx-auto">
+       <main className="mx-auto px-4 py-8 container">
+         <div className="space-y-4 mx-auto max-w-3xl">
            {Array.from({ length: 4 }).map((_, index) => (
-             <div key={`offer-detail-skeleton-${index}`} className="p-4 border rounded-lg bg-background space-y-3">
-               <div className="flex items-center justify-between">
+             <div key={`offer-detail-skeleton-${index}`} className="space-y-3 bg-background p-4 border rounded-lg">
+               <div className="flex justify-between items-center">
                  <Skeleton className="w-40 h-4" />
                  <Skeleton className="w-20 h-5" />
                </div>
@@ -125,10 +125,10 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
  }
 
  return (
- <div className="min-h-screen bg-muted">
+ <div className="bg-muted min-h-screen">
  <SupplierHeader />
 
- <main className="container mx-auto px-4 py-8">
+ <main className="mx-auto px-4 py-8 container">
  <Breadcrumbs
  items={[
  { label: "Dashboard", href: "/supplier/dashboard" },
@@ -138,16 +138,16 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
  />
  <Link
  href="/supplier/offers"
- className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6"
+ className="inline-flex items-center mb-6 text-muted-foreground hover:text-foreground text-sm"
  >
- <ArrowLeft className="h-4 w-4 mr-2" />
+ <ArrowLeft className="mr-2 w-4 h-4" />
  Back to offers
  </Link>
 
- <div className="max-w-3xl mx-auto space-y-6">
+ <div className="space-y-6 mx-auto max-w-3xl">
  <Card>
  <CardHeader>
- <div className="flex items-center justify-between">
+ <div className="flex justify-between items-center">
  <div>
  <CardTitle className="text-2xl">Early Payment Offer</CardTitle>
  <CardDescription>Review the offer details carefully before accepting</CardDescription>
@@ -159,7 +159,7 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
  </CardHeader>
  <CardContent className="space-y-6">
  <Alert>
- <Info className="h-4 w-4" />
+ <Info className="w-4 h-4" />
  <AlertDescription>
  <strong>How it works:</strong> You will receive 80% of the invoice value immediately and the remaining 20% on the invoice due date.
  </AlertDescription>
@@ -167,8 +167,8 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
 
  <div className="space-y-4">
  <div>
- <h3 className="font-semibold text-lg mb-3">Offer Breakdown</h3>
- <div className="grid gap-3 bg-muted/50 rounded-lg p-4">
+ <h3 className="mb-3 font-semibold text-lg">Offer Breakdown</h3>
+ <div className="gap-3 grid bg-muted/50 p-4 rounded-lg">
  <div className="flex justify-between py-2">
  <span className="text-muted-foreground">Invoice Amount</span>
  <span className="font-medium">{currency} {invoiceAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
@@ -183,7 +183,7 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
  <span className="font-bold text-foreground text-xl">{currency} {netPayment.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
  </div>
  <Separator />
- <div className="flex justify-between py-2 bg-success/10 rounded px-2 -mx-2">
+ <div className="flex justify-between bg-success/10 -mx-2 px-2 py-2 rounded">
  <span className="font-semibold">Paid Immediately (80%)</span>
  <span className="font-bold text-success text-xl">{currency} {immediatePayment.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}</span>
  </div>
@@ -195,8 +195,8 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
  </div>
 
  <div>
- <h3 className="font-semibold text-lg mb-3">Invoice Details</h3>
- <div className="grid gap-2 text-sm">
+ <h3 className="mb-3 font-semibold text-lg">Invoice Details</h3>
+ <div className="gap-2 grid text-sm">
  <div className="flex justify-between">
  <span className="text-muted-foreground">Invoice Number</span>
  <span>{offer.invoice_number}</span>
@@ -221,7 +221,7 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
  </div>
 
  <Alert>
- <CheckCircle className="h-4 w-4 text-success" />
+ <CheckCircle className="w-4 h-4 text-success" />
  <AlertDescription>
  <strong>Next Steps:</strong> After accepting, you will need to sign a cession agreement. Early payment
  will be processed within 2-3 business days.
@@ -232,11 +232,11 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
  {offer.status === "sent" && (
    <div className="flex gap-3 pt-4">
    <Button onClick={handleAccept} disabled={loading} className="flex-1">
-   <CheckCircle className="h-4 w-4 mr-2" />
+   <CheckCircle className="mr-2 w-4 h-4" />
    {loading ? "Processing..." : "Accept Offer"}
    </Button>
    <Button onClick={handleReject} disabled={loading} variant="outline" className="flex-1 bg-transparent">
-   <XCircle className="h-4 w-4 mr-2" />
+   <XCircle className="mr-2 w-4 h-4" />
    Reject Offer
    </Button>
    </div>

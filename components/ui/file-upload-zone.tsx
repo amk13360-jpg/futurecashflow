@@ -148,7 +148,7 @@ export function FileUploadZone({
   }
 
   return (
-    <div className={cn("w-full space-y-4", className)}>
+    <div className={cn("space-y-4 w-full", className)}>
       {/* Drop Zone */}
       <div
         onDragEnter={handleDrag}
@@ -156,7 +156,7 @@ export function FileUploadZone({
         onDragOver={handleDrag}
         onDrop={handleDrop}
         className={cn(
-          "relative border-2 border-dashed rounded-lg p-8 transition-colors",
+          "relative p-8 border-2 border-dashed rounded-lg transition-colors",
           "flex flex-col items-center justify-center text-center",
           "hover:border-primary/50 hover:bg-accent/50",
           dragActive && "border-primary bg-accent",
@@ -178,18 +178,18 @@ export function FileUploadZone({
         />
 
         <Upload className={cn(
-          "h-10 w-10 mb-4",
+          "mb-4 w-10 h-10",
           dragActive ? "text-primary" : "text-muted-foreground"
         )} />
 
-        <p className="text-sm font-medium mb-1">
+        <p className="mb-1 font-medium text-sm">
           {dragActive ? "Drop files here" : "Drag & drop files here"}
         </p>
-        <p className="text-xs text-muted-foreground mb-4">
+        <p className="mb-4 text-muted-foreground text-xs">
           or click to browse
         </p>
 
-        <div className="text-xs text-muted-foreground space-y-1">
+        <div className="space-y-1 text-muted-foreground text-xs">
           {description && (
             <p id={descriptionId}>
               {description}
@@ -212,22 +212,22 @@ export function FileUploadZone({
             return (
               <div
                 key={index}
-                className="flex items-center gap-3 p-3 border rounded-lg bg-card"
+                className="flex items-center gap-3 bg-card p-3 border rounded-lg"
               >
                 <div className={cn(
                   "p-2 rounded-lg shrink-0",
                   isComplete ? "bg-success-bg" : "bg-muted"
                 )}>
                   {isComplete ? (
-                    <CheckCircle2 className="h-4 w-4 text-success" />
+                    <CheckCircle2 className="w-4 h-4 text-success" />
                   ) : (
-                    <FileText className="h-4 w-4 text-muted-foreground" />
+                    <FileText className="w-4 h-4 text-muted-foreground" />
                   )}
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{file.name}</p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="font-medium text-sm truncate">{file.name}</p>
+                  <p className="text-muted-foreground text-xs">
                     {formatFileSize(file.size)}
                   </p>
                   
@@ -244,7 +244,7 @@ export function FileUploadZone({
                   className="shrink-0"
                   disabled={isUploading}
                 >
-                  <X className="h-4 w-4" />
+                  <X className="w-4 h-4" />
                 </Button>
               </div>
             )

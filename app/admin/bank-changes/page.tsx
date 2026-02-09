@@ -112,8 +112,8 @@ export default function BankChangesPage() {
  <main className="mx-auto px-4 py-8 container">
  <div className="space-y-3">
  {Array.from({ length: 4 }).map((_, index) => (
- <div key={`bank-change-skeleton-${index}`} className="p-4 border rounded-lg space-y-2">
- <div className="flex items-center justify-between">
+ <div key={`bank-change-skeleton-${index}`} className="space-y-2 p-4 border rounded-lg">
+ <div className="flex justify-between items-center">
  <Skeleton className="w-40 h-4" />
  <Skeleton className="w-20 h-4" />
  </div>

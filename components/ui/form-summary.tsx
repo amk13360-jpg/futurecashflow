@@ -21,17 +21,17 @@ export function FormErrorSummary({
 
   return (
     <Alert variant="destructive" className={cn("mb-6", className)}>
-      <XCircle className="h-4 w-4" />
+      <XCircle className="w-4 h-4" />
       <AlertTitle className="font-semibold">{title}</AlertTitle>
       <AlertDescription>
-        <ul className="mt-3 space-y-2 list-disc list-inside">
+        <ul className="space-y-2 mt-3 list-disc list-inside">
           {errors.map((error, index) => (
             <li key={index} className="text-sm">
               {onFieldClick ? (
                 <button
                   type="button"
                   onClick={() => onFieldClick(error.field)}
-                  className="hover:underline text-left focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-destructive rounded px-1"
+                  className="px-1 rounded focus:outline-none focus:ring-2 focus:ring-destructive focus:ring-offset-1 text-left hover:underline"
                 >
                   <span className="font-medium">{error.field}:</span> {error.message}
                 </button>
@@ -62,9 +62,9 @@ export function FormSuccessSummary({
   onDismiss
 }: FormSuccessSummaryProps) {
   return (
-    <Alert variant="default" className={cn("mb-6 border-success bg-success-bg", className)}>
-      <CheckCircle2 className="h-4 w-4 text-success" />
-      <AlertTitle className="text-success font-semibold">{message}</AlertTitle>
+    <Alert variant="default" className={cn("bg-success-bg mb-6 border-success", className)}>
+      <CheckCircle2 className="w-4 h-4 text-success" />
+      <AlertTitle className="font-semibold text-success">{message}</AlertTitle>
       {description && (
         <AlertDescription className="text-success-foreground/80">
           {description}
@@ -75,9 +75,9 @@ export function FormSuccessSummary({
           variant="ghost"
           size="sm"
           onClick={onDismiss}
-          className="absolute top-2 right-2 h-8 w-8 p-0 hover:bg-success/10"
+          className="top-2 right-2 absolute hover:bg-success/10 p-0 w-8 h-8"
         >
-          <XCircle className="h-4 w-4" />
+          <XCircle className="w-4 h-4" />
         </Button>
       )}
     </Alert>
@@ -96,9 +96,9 @@ export function FormInfoSummary({
   className
 }: FormInfoSummaryProps) {
   return (
-    <Alert variant="default" className={cn("mb-6 border-info bg-info-bg", className)}>
-      <Info className="h-4 w-4 text-info" />
-      <AlertTitle className="text-info font-semibold">{message}</AlertTitle>
+    <Alert variant="default" className={cn("bg-info-bg mb-6 border-info", className)}>
+      <Info className="w-4 h-4 text-info" />
+      <AlertTitle className="font-semibold text-info">{message}</AlertTitle>
       {description && (
         <AlertDescription className="text-info-foreground/80">
           {description}

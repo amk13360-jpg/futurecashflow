@@ -340,11 +340,11 @@ export default function BuyersPage() {
  case 'active':
  return <Badge className="bg-success-bg text-success-foreground"><CheckCircle2 className="mr-1 w-3 h-3" />Active</Badge>;
  case 'draft':
- return <Badge className="bg-info-bg text-info-foreground border border-info-border"><Clock className="mr-1 w-3 h-3" />Draft</Badge>;
+ return <Badge className="bg-info-bg border border-info-border text-info-foreground"><Clock className="mr-1 w-3 h-3" />Draft</Badge>;
  case 'suspended':
  return <Badge className="bg-error-bg text-error-foreground"><Pause className="mr-1 w-3 h-3" />Suspended</Badge>;
  case 'inactive':
- return <Badge className="bg-warning-bg text-warning-foreground border border-warning-border"><XCircle className="mr-1 w-3 h-3" />Inactive</Badge>;
+ return <Badge className="bg-warning-bg border border-warning-border text-warning-foreground"><XCircle className="mr-1 w-3 h-3" />Inactive</Badge>;
  default:
  return <Badge variant="outline">{status}</Badge>;
  }
@@ -354,11 +354,11 @@ export default function BuyersPage() {
  function getRiskBadge(tier: string) {
  switch (tier) {
  case 'A':
- return <Badge className="bg-success-bg text-success-foreground border border-success-border">Tier A</Badge>;
+ return <Badge className="bg-success-bg border border-success-border text-success-foreground">Tier A</Badge>;
  case 'B':
- return <Badge className="bg-warning-bg text-warning-foreground border border-warning-border">Tier B</Badge>;
+ return <Badge className="bg-warning-bg border border-warning-border text-warning-foreground">Tier B</Badge>;
  case 'C':
- return <Badge className="bg-error-bg text-error-foreground border border-error-border">Tier C</Badge>;
+ return <Badge className="bg-error-bg border border-error-border text-error-foreground">Tier C</Badge>;
  default:
  return <Badge variant="outline">{tier}</Badge>;
  }
@@ -584,7 +584,7 @@ export default function BuyersPage() {
  </DropdownMenuTrigger>
  <DropdownMenuContent
  align="end"
- className="bg-popover text-popover-foreground border border-border shadow-lg"
+ className="bg-popover shadow-lg border border-border text-popover-foreground"
  >
  <DropdownMenuItem onClick={() => router.push(`/admin/buyers/${buyer.buyer_id}`)}>
  <Eye className="mr-2 w-4 h-4" />
@@ -1265,7 +1265,7 @@ export default function BuyersPage() {
 
  {/* Edit Buyer Dialog */}
  <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
- <DialogContent className="bg-popover text-popover-foreground max-w-3xl max-h-[90vh] overflow-y-auto">
+ <DialogContent className="bg-popover max-w-3xl max-h-[90vh] overflow-y-auto text-popover-foreground">
  <DialogHeader>
  <DialogTitle>Edit Buyer: {selectedBuyer?.name}</DialogTitle>
  <DialogDescription>

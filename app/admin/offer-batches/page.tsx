@@ -605,7 +605,7 @@ export default function OfferBatchesPage() {
 
  {/* Create Batch Dialog */}
  <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
- <DialogContent className="bg-popover text-popover-foreground max-w-2xl max-h-[80vh] overflow-y-auto">
+ <DialogContent className="bg-popover max-w-2xl max-h-[80vh] overflow-y-auto text-popover-foreground">
  <DialogHeader>
  <DialogTitle>Create Offer Batch</DialogTitle>
  <DialogDescription>
@@ -746,7 +746,7 @@ export default function OfferBatchesPage() {
 
  {/* View Batch Dialog */}
  <Dialog open={viewBatchDialogOpen} onOpenChange={setViewBatchDialogOpen}>
- <DialogContent className="bg-popover text-popover-foreground max-w-2xl max-h-[80vh] overflow-y-auto">
+ <DialogContent className="bg-popover max-w-2xl max-h-[80vh] overflow-y-auto text-popover-foreground">
  <DialogHeader>
  <DialogTitle>Batch Details</DialogTitle>
  <DialogDescription>

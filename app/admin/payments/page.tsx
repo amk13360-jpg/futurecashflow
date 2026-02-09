@@ -222,10 +222,10 @@ export default function PaymentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-muted">
+    <div className="bg-muted min-h-screen">
       <DashboardHeader />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="mx-auto px-4 py-8 container">
         <div className="mb-6">
           <Breadcrumbs
             items={[
@@ -235,12 +235,12 @@ export default function PaymentsPage() {
           />
           <Link
             href="/admin/dashboard"
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4"
+            className="inline-flex items-center mb-4 text-muted-foreground hover:text-foreground text-sm"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="mr-2 w-4 h-4" />
             Back to dashboard
           </Link>
-          <h2 className="text-3xl font-bold">Payment Processing</h2>
+          <h2 className="font-bold text-3xl">Payment Processing</h2>
           <p className="text-muted-foreground">Manage disbursements and track repayments</p>
         </div>
 
@@ -255,7 +255,7 @@ export default function PaymentsPage() {
           <TabsContent value="queue">
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                   <div>
                     <CardTitle>Payment Queue</CardTitle>
                     <CardDescription>Accepted offers ready for payment processing</CardDescription>
@@ -267,11 +267,11 @@ export default function PaymentsPage() {
                       disabled={queue.length === 0}
                       className="bg-transparent"
                     >
-                      <FileSpreadsheet className="h-4 w-4 mr-2" />
+                      <FileSpreadsheet className="mr-2 w-4 h-4" />
                       Export Excel
                     </Button>
                     <Button onClick={handleQueuePayments} disabled={selectedOffers.length === 0 || processing}>
-                      <CheckCircle className="h-4 w-4 mr-2" />
+                      <CheckCircle className="mr-2 w-4 h-4" />
                       {processing ? "Processing..." : `Queue Payments (${selectedOffers.length})`}
                     </Button>
                   </div>
@@ -319,7 +319,7 @@ export default function PaymentsPage() {
                         />
                         <div className="flex-1">
                           <h4 className="font-medium">{item.invoice_number}</h4>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-muted-foreground text-sm">
                             {item.supplier_name} • {item.buyer_name}
                           </p>
                           <div className="flex items-center gap-4 mt-2 text-sm">
@@ -342,7 +342,7 @@ export default function PaymentsPage() {
           <TabsContent value="payments">
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                   <div>
                     <CardTitle>All Payments</CardTitle>
                     <CardDescription>
@@ -356,7 +356,7 @@ export default function PaymentsPage() {
                       disabled={payments.length === 0}
                       className="bg-transparent"
                     >
-                      <FileSpreadsheet className="h-4 w-4 mr-2" />
+                      <FileSpreadsheet className="mr-2 w-4 h-4" />
                       Export Excel
                     </Button>
                     <Button
@@ -365,11 +365,11 @@ export default function PaymentsPage() {
                       variant="outline"
                       className="bg-transparent"
                     >
-                      <Download className="h-4 w-4 mr-2" />
+                      <Download className="mr-2 w-4 h-4" />
                       Generate Batch
                     </Button>
                     <Button onClick={handleMarkCompleted} disabled={selectedPayments.length === 0 || processing}>
-                      <CheckCircle className="h-4 w-4 mr-2" />
+                      <CheckCircle className="mr-2 w-4 h-4" />
                       Mark Completed
                     </Button>
                   </div>
@@ -435,7 +435,7 @@ export default function PaymentsPage() {
                               {payment.status}
                             </Badge>
                           </div>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-muted-foreground text-sm">
                             {payment.supplier_name} • {payment.invoice_number}
                           </p>
                           <div className="flex items-center gap-4 mt-2 text-sm">
@@ -464,7 +464,7 @@ export default function PaymentsPage() {
           <TabsContent value="repayments">
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex justify-between items-center">
                   <div>
                     <CardTitle>Repayment Tracking</CardTitle>
                     <CardDescription>Track buyer repayments on invoice due dates</CardDescription>
@@ -475,7 +475,7 @@ export default function PaymentsPage() {
                     disabled={repayments.length === 0}
                     className="bg-transparent"
                   >
-                    <FileSpreadsheet className="h-4 w-4 mr-2" />
+                    <FileSpreadsheet className="mr-2 w-4 h-4" />
                     Export Excel
                   </Button>
                 </div>
@@ -484,8 +484,8 @@ export default function PaymentsPage() {
                 {loading ? (
                   <div className="space-y-3">
                     {Array.from({ length: 5 }).map((_, index) => (
-                      <div key={`repayment-skeleton-${index}`} className="p-4 border rounded-lg space-y-3">
-                        <div className="flex items-center justify-between">
+                      <div key={`repayment-skeleton-${index}`} className="space-y-3 p-4 border rounded-lg">
+                        <div className="flex justify-between items-center">
                           <div className="flex items-center gap-2">
                             <Skeleton className="w-28 h-4" />
                             <Skeleton className="w-16 h-5" />
@@ -513,7 +513,7 @@ export default function PaymentsPage() {
                   <div className="space-y-3">
                     {repayments.map((repayment: any) => (
                       <div key={repayment.repayment_id} className="p-4 border rounded-lg">
-                        <div className="flex items-center justify-between mb-2">
+                        <div className="flex justify-between items-center mb-2">
                           <div className="flex items-center gap-2">
                             <h4 className="font-medium">{repayment.invoice_number}</h4>
                             <Badge
@@ -528,11 +528,11 @@ export default function PaymentsPage() {
                               {repayment.status}
                             </Badge>
                           </div>
-                          <span className="text-sm text-muted-foreground">
+                          <span className="text-muted-foreground text-sm">
                             Due: {new Date(repayment.due_date).toLocaleDateString()}
                           </span>
                         </div>
-                        <p className="text-sm text-muted-foreground mb-2">
+                        <p className="mb-2 text-muted-foreground text-sm">
                           {repayment.buyer_name} ({repayment.buyer_code}) • {repayment.supplier_name}
                         </p>
                         <div className="flex items-center gap-4 text-sm">

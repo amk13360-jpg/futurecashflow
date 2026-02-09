@@ -221,7 +221,7 @@ export default function InvoicesPage() {
  )}
  </main>
  <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
- <DialogContent className="bg-popover text-popover-foreground max-w-lg">
+ <DialogContent className="bg-popover max-w-lg text-popover-foreground">
  <DialogHeader>
  <DialogTitle>Invoice Details</DialogTitle>
  <DialogDescription asChild>

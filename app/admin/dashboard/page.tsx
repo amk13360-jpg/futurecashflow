@@ -117,7 +117,7 @@ export default async function AdminDashboardPage() {
  <CardHeader className="pb-3">
  <div className="flex justify-between items-center">
  <div className="bg-success-bg p-2.5 rounded-lg group-hover:scale-110 transition-transform duration-300">
- <FileText className="w-5 h-5 text-success " />
+ <FileText className="w-5 h-5 text-success" />
  </div>
  </div>
  <CardTitle className="mt-3 font-semibold text-base">Invoices</CardTitle>
@@ -137,7 +137,7 @@ export default async function AdminDashboardPage() {
  <CardHeader className="pb-3">
  <div className="flex justify-between items-center">
  <div className="bg-warning-bg p-2.5 rounded-lg group-hover:scale-110 transition-transform duration-300">
- <RandIcon className="w-5 h-5 text-warning " />
+ <RandIcon className="w-5 h-5 text-warning" />
  </div>
  </div>
  <CardTitle className="mt-3 font-semibold text-base">Payments</CardTitle>

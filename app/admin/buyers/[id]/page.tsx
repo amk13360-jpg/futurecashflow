@@ -255,7 +255,7 @@ export default function BuyerDetailsPage() {
  case 'active':
  return <Badge className="bg-success-bg text-success-foreground"><CheckCircle2 className="mr-1 w-3 h-3" />Active</Badge>;
  case 'draft':
- return <Badge className="bg-info-bg text-info-foreground border border-info-border"><Clock className="mr-1 w-3 h-3" />Draft</Badge>;
+ return <Badge className="bg-info-bg border border-info-border text-info-foreground"><Clock className="mr-1 w-3 h-3" />Draft</Badge>;
  case 'suspended':
  return <Badge className="bg-error-bg text-error-foreground"><AlertCircle className="mr-1 w-3 h-3" />Suspended</Badge>;
  default:
@@ -622,19 +622,19 @@ export default function BuyerDetailsPage() {
  </TableCell>
  <TableCell>
  {user.active_status === 'active' ? (
- <Badge className="bg-success-bg text-success-foreground border border-success-border">Active</Badge>
+ <Badge className="bg-success-bg border border-success-border text-success-foreground">Active</Badge>
  ) : (
- <Badge className="bg-warning-bg text-warning-foreground border border-warning-border">{user.active_status}</Badge>
+ <Badge className="bg-warning-bg border border-warning-border text-warning-foreground">{user.active_status}</Badge>
  )}
  </TableCell>
  <TableCell>
  {user.must_change_password ? (
- <Badge className="bg-warning-bg text-warning-foreground border border-warning-border">
+ <Badge className="bg-warning-bg border border-warning-border text-warning-foreground">
  <Key className="mr-1 w-3 h-3" />
  Must Change
  </Badge>
  ) : (
- <Badge className="bg-success-bg text-success-foreground border border-success-border">Set</Badge>
+ <Badge className="bg-success-bg border border-success-border text-success-foreground">Set</Badge>
  )}
  </TableCell>
  <TableCell>
@@ -717,7 +717,7 @@ export default function BuyerDetailsPage() {
  ) : doc.verification_status === 'rejected' ? (
  <Badge className="bg-error-bg text-error-foreground">Rejected</Badge>
  ) : (
- <Badge className="bg-warning-bg text-warning-foreground border border-warning-border">Pending</Badge>
+ <Badge className="bg-warning-bg border border-warning-border text-warning-foreground">Pending</Badge>
  )}
  </TableCell>
  <TableCell>

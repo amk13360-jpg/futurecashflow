@@ -109,8 +109,8 @@ export default function APLoginPage() {
     <div className="relative flex justify-center items-center bg-background px-4 min-h-screen text-foreground">
       {/* Theme toggle top-right */}
       <div className="top-4 right-4 z-10 absolute">
-        <div className="rounded-full border bg-muted px-2 py-1 shadow-sm">
-          <ThemeToggle className="h-9 rounded-full px-3 text-xs" />
+        <div className="bg-muted shadow-sm px-2 py-1 border rounded-full">
+          <ThemeToggle className="px-3 rounded-full h-9 text-xs" />
         </div>
       </div>
       {/* Modern background gradient and blur effects */}
@@ -168,7 +168,7 @@ export default function APLoginPage() {
                     <button
                       type="button"
                       onClick={() => setShowPassword((prev) => !prev)}
-                      className="top-1/2 right-3 absolute -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      className="top-1/2 right-3 absolute text-muted-foreground hover:text-foreground -translate-y-1/2"
                       aria-label={showPassword ? "Hide password" : "Show password"}
                       disabled={loading}
                     >

@@ -544,7 +544,7 @@ export default function SettingsPage() {
  Add User
  </Button>
  </DialogTrigger>
- <DialogContent className="bg-popover text-popover-foreground sm:max-w-[425px]">
+ <DialogContent className="bg-popover sm:max-w-[425px] text-popover-foreground">
  <DialogHeader>
  <DialogTitle>{editingUser ? "Edit User" : "Create New User"}</DialogTitle>
  <DialogDescription>
@@ -597,7 +597,7 @@ export default function SettingsPage() {
  <button
  type="button"
  onClick={() => setShowUserPassword((prev) => !prev)}
- className="top-1/2 right-3 absolute -translate-y-1/2 text-muted-foreground hover:text-foreground"
+ className="top-1/2 right-3 absolute text-muted-foreground hover:text-foreground -translate-y-1/2"
  aria-label={showUserPassword ? "Hide password" : "Show password"}
  >
  {showUserPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -746,7 +746,7 @@ export default function SettingsPage() {
  </CardContent>
  </Card>
  <Dialog open={showPasswordDialog} onOpenChange={setShowPasswordDialog}>
- <DialogContent className="bg-popover text-popover-foreground sm:max-w-[425px]">
+ <DialogContent className="bg-popover sm:max-w-[425px] text-popover-foreground">
  <DialogHeader>
  <DialogTitle>Reset Password</DialogTitle>
  <DialogDescription>
@@ -768,7 +768,7 @@ export default function SettingsPage() {
  <button
  type="button"
  onClick={() => setShowResetPassword((prev) => !prev)}
- className="top-1/2 right-3 absolute -translate-y-1/2 text-muted-foreground hover:text-foreground"
+ className="top-1/2 right-3 absolute text-muted-foreground hover:text-foreground -translate-y-1/2"
  aria-label={showResetPassword ? "Hide password" : "Show password"}
  >
  {showResetPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}

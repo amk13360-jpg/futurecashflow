@@ -140,8 +140,8 @@ export default function SupplierOffersPage() {
  <main className="mx-auto px-4 py-8 container">
  <div className="space-y-4">
    {Array.from({ length: 6 }).map((_, index) => (
-     <div key={`offer-skeleton-${index}`} className="p-4 border rounded-lg bg-background space-y-3">
-       <div className="flex items-center justify-between">
+     <div key={`offer-skeleton-${index}`} className="space-y-3 bg-background p-4 border rounded-lg">
+       <div className="flex justify-between items-center">
          <Skeleton className="w-40 h-4" />
          <Skeleton className="w-20 h-5" />
        </div>
@@ -283,7 +283,7 @@ export default function SupplierOffersPage() {
  <Link 
  href={`/supplier/offers/${offer.offer_id}`}
  onClick={(e) => e.stopPropagation()}
- className="inline-flex items-center px-3 py-1.5 bg-success hover:bg-success/90 text-success-foreground text-xs font-medium rounded-md transition-colors"
+ className="inline-flex items-center bg-success hover:bg-success/90 px-3 py-1.5 rounded-md font-medium text-success-foreground text-xs transition-colors"
  >
  Review Offer
  </Link>
