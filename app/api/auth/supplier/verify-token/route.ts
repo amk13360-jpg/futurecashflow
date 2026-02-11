@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { query } from "@/lib/db"
-import { createSupplierSession, setSupplierSessionCookie } from "@/lib/auth/session"
+import { createSupplierSession } from "@/lib/auth/session"
 import { createAuditLog } from "@/lib/auth/audit"
 import type { Supplier } from "@/lib/types/database"
 
@@ -58,8 +58,6 @@ export async function POST(request: NextRequest) {
       name: supplier.name,
     })
 
-    await setSupplierSessionCookie(sessionToken)
-
     await createAuditLog({
       userType: "supplier",
       action: "SUPPLIER_LOGIN_SUCCESS",
@@ -70,7 +68,9 @@ export async function POST(request: NextRequest) {
       userAgent: request.headers.get("user-agent") || undefined,
     })
 
-    return NextResponse.json({
+    // Set cookie on the response object (cookies() from next/headers
+    // cannot reliably set cookies in Route Handlers in Next.js 16)
+    const response = NextResponse.json({
       success: true,
       supplier: {
         supplierId: supplier.supplier_id,
@@ -79,6 +79,16 @@ export async function POST(request: NextRequest) {
         onboardingStatus: supplier.onboarding_status,
       },
     })
+
+    response.cookies.set("supplier_session", sessionToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 120, // 2 hours
+      path: "/",
+    })
+
+    return response
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error"
     console.error("[v0] Supplier token verification error:", errorMessage, error)
