@@ -131,7 +131,8 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error("[v0] Request access error:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    const errorMessage = error instanceof Error ? error.message : "Unknown error"
+    console.error("[v0] Request access error:", errorMessage, error)
+    return NextResponse.json({ error: `Request failed: ${errorMessage}` }, { status: 500 })
   }
 }

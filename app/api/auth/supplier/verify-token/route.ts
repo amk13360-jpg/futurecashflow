@@ -80,7 +80,8 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error("[v0] Supplier token verification error:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    const errorMessage = error instanceof Error ? error.message : "Unknown error"
+    console.error("[v0] Supplier token verification error:", errorMessage, error)
+    return NextResponse.json({ error: `Verification failed: ${errorMessage}` }, { status: 500 })
   }
 }
