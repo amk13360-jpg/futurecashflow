@@ -2,18 +2,27 @@ import { cookies } from "next/headers"
 import { SignJWT, jwtVerify } from "jose"
 import { createHash } from "crypto"
 
-// SECURITY: Fail fast if JWT_SECRET is not configured - never use fallback in production
-const jwtSecret = process.env.JWT_SECRET
-if (!jwtSecret || jwtSecret.length < 32) {
-  if (process.env.NODE_ENV === "production") {
-    throw new Error("CRITICAL: JWT_SECRET environment variable must be set with at least 32 characters in production")
-  }
-  console.warn("WARNING: JWT_SECRET not properly configured. Using insecure default for development only.")
-}
+// SECURITY: Lazily resolve JWT_SECRET so the module can be imported at build time
+// (during `next build`, env vars like JWT_SECRET are not available).
+// The actual validation happens on first use at runtime.
+let _secretKey: Uint8Array | null = null
 
-const SECRET_KEY = new TextEncoder().encode(
-  jwtSecret || (process.env.NODE_ENV !== "production" ? "dev-only-insecure-secret-do-not-use-in-prod" : "")
-)
+function getSecretKey(): Uint8Array {
+  if (_secretKey) return _secretKey
+
+  const jwtSecret = process.env.JWT_SECRET
+  if (!jwtSecret || jwtSecret.length < 32) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error("CRITICAL: JWT_SECRET environment variable must be set with at least 32 characters in production")
+    }
+    console.warn("WARNING: JWT_SECRET not properly configured. Using insecure default for development only.")
+  }
+
+  _secretKey = new TextEncoder().encode(
+    jwtSecret || (process.env.NODE_ENV !== "production" ? "dev-only-insecure-secret-do-not-use-in-prod" : "")
+  )
+  return _secretKey
+}
 
 // Session binding configuration
 const ENABLE_SESSION_BINDING = process.env.ENABLE_SESSION_BINDING !== "false"
@@ -112,7 +121,7 @@ export async function createSession(data: SessionData, headers?: Headers): Promi
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("4h") // 4 hours - extended for long operations like CSV uploads
-    .sign(SECRET_KEY)
+    .sign(getSecretKey())
 
   return token
 }
@@ -132,7 +141,7 @@ export async function createSupplierSession(data: SupplierSessionData, headers?:
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("2h") // 2 hours for suppliers
-    .sign(SECRET_KEY)
+    .sign(getSecretKey())
 
   return token
 }
@@ -140,7 +149,7 @@ export async function createSupplierSession(data: SupplierSessionData, headers?:
 // Verify and decode session token
 export async function verifySession(token: string): Promise<SessionData | null> {
   try {
-    const { payload } = await jwtVerify(token, SECRET_KEY)
+    const { payload } = await jwtVerify(token, getSecretKey())
     // Validate required fields exist before casting
     if (
       typeof payload.userId === "number" &&
@@ -159,7 +168,7 @@ export async function verifySession(token: string): Promise<SessionData | null> 
 // Verify supplier session token
 export async function verifySupplierSession(token: string): Promise<SupplierSessionData | null> {
   try {
-    const { payload } = await jwtVerify(token, SECRET_KEY)
+    const { payload } = await jwtVerify(token, getSecretKey())
     // Validate required fields exist before casting
     if (
       (payload as any).type === "supplier" &&
@@ -225,7 +234,7 @@ export async function clearSession(): Promise<void> {
 // Check if session token is close to expiring (within 1 hour)
 export async function shouldRefreshSession(token: string): Promise<boolean> {
   try {
-    const { payload } = await jwtVerify(token, SECRET_KEY)
+    const { payload } = await jwtVerify(token, getSecretKey())
     const exp = payload.exp
     if (!exp) return false
     const now = Math.floor(Date.now() / 1000)
