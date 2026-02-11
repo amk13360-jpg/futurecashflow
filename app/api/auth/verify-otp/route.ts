@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { query } from "@/lib/db"
-import { createSession, setSessionCookie } from "@/lib/auth/session"
+import { createSession } from "@/lib/auth/session"
 import { createAuditLog } from "@/lib/auth/audit"
 import { checkRateLimit, clearRateLimit, getClientIP, RATE_LIMITS } from "@/lib/auth/rate-limit"
 import { isValidOTP, isPositiveNumber } from "@/lib/utils/validation"
@@ -128,8 +128,6 @@ export async function POST(request: NextRequest) {
       buyerName: buyerName,
     })
 
-    await setSessionCookie(token)
-
     // Clear rate limit on successful verification
     clearRateLimit(rateLimitKey)
 
@@ -148,9 +146,11 @@ export async function POST(request: NextRequest) {
       userAgent: request.headers.get("user-agent") || undefined,
     })
 
-    return NextResponse.json({
+    // Set cookie on the response object (cookies() from next/headers
+    // cannot reliably set cookies in Route Handlers in Next.js 16)
+    const response = NextResponse.json({
       success: true,
-      mustChangePassword, // Tell client to redirect to password change
+      mustChangePassword,
       user: {
         userId: user.user_id,
         username: user.username,
@@ -160,6 +160,16 @@ export async function POST(request: NextRequest) {
         buyerId: user.buyer_id,
       },
     })
+
+    response.cookies.set("session", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 4, // 4 hours
+      path: "/",
+    })
+
+    return response
   } catch (error) {
     console.error("[v0] OTP verification error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
