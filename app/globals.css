@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+/* Exclude .md files from Tailwind v4 auto-detection to prevent
+   class-name examples like h-[var(--*)] from generating invalid CSS */
+@source not "../**/*.md";
+@source not "../docs/**";
+@source not "../logs/**";
+@source not "../scripts/**";
+@source not "../public/**";
+
 /* ========================================================================
    DESIGN SYSTEM FOUNDATION
    8px Grid System | WCAG 2.2 AA+ Compliant | Enterprise-Grade

@@ -1,6 +1,5 @@
 import { cookies } from "next/headers"
 import { SignJWT, jwtVerify } from "jose"
-import { createHash } from "crypto"
 
 // SECURITY: Lazily resolve JWT_SECRET so the module can be imported at build time
 // (during `next build`, env vars like JWT_SECRET are not available).
@@ -54,6 +53,9 @@ export interface SupplierSessionData {
  * Uses SHA-256 to create a fingerprint without storing raw data
  */
 export function generateBindingHash(value: string): string {
+  // Dynamic require to avoid breaking Edge Runtime (middleware)
+  // This function is only called from server routes, never from middleware
+  const { createHash } = require("crypto")
   return createHash("sha256").update(value).digest("hex").substring(0, 16)
 }
 

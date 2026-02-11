@@ -1,0 +1,2 @@
+Company Code,Vendor Number,Vendor Name,Document Number,Document Type,Document Date,Posting Date,Baseline Date,Net Due Date,Days Overdue,Amount (Doc Curr),Currency,Amount (Local Curr),Payment Terms,Payment Method,Assignment (PO #),Reference (Invoice #),Open Item,Text
+IZI001,200032,Mpilo Engineering,33007891,KR,2026-02-05,2026-02-05,2026-02-05,2026-04-06,-55,512000,ZAR,50000,0003 (60 days),T (EFT),PO-6700,INV-MP-204,Yes,Conveyor maintenance and overhaul
