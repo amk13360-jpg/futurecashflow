@@ -25,7 +25,7 @@ function buildCSPHeader(nonce: string, isDev: boolean): string {
 
 	return [
 		"default-src 'self'",
-		`script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
+		"script-src 'self' 'unsafe-eval' 'unsafe-inline'",
 		"style-src 'self' 'unsafe-inline'",
 		"img-src 'self' data: blob: https:",
 		"font-src 'self' data:",
