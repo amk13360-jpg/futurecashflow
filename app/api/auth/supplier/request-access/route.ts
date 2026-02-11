@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import { query } from "@/lib/db"
 import { randomUUID } from "crypto"
 import { createAuditLog } from "@/lib/auth/audit"
+import { sendEmail } from "@/lib/services/email"
 
 interface Supplier {
   supplier_id: number
@@ -77,13 +78,10 @@ export async function POST(request: NextRequest) {
 
     // Send email with new access link
     try {
-      const emailResponse = await fetch(`${baseUrl}/api/test-email`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          to: supplier.contact_email,
-          subject: "Your New SCF Platform Access Link",
-          html: `
+      const emailSent = await sendEmail({
+        to: supplier.contact_email,
+        subject: "Your New SCF Platform Access Link",
+        html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <h2 style="color: #0066cc;">SCF Platform Access</h2>
               <p>Hi ${supplier.name},</p>
@@ -106,11 +104,10 @@ export async function POST(request: NextRequest) {
               </p>
             </div>
           `,
-        }),
       })
 
-      if (!emailResponse.ok) {
-        console.error("[v0] Failed to send access email")
+      if (!emailSent) {
+        console.error("[v0] Failed to send access email to", supplier.contact_email)
       }
     } catch (emailError) {
       console.error("[v0] Email send error:", emailError)
