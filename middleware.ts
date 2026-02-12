@@ -51,7 +51,6 @@ const publicApiRoutes = [
 
 // API routes that require admin authentication
 const adminApiRoutes = [
-	"/api/invoices",
 	"/api/payments",
 	"/api/suppliers/approved-status",
 ]
@@ -60,6 +59,7 @@ const adminApiRoutes = [
 const protectedApiRoutes = [
 	"/api/session",
 	"/api/suppliers",
+	"/api/invoices",
 ]
 
 export async function middleware(request: NextRequest) {
