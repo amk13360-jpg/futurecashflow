@@ -159,12 +159,45 @@ export default async function AdminDashboardPage() {
  <section aria-labelledby="tabs-heading">
  <h2 id="tabs-heading" className="sr-only">Content Sections</h2>
  <Tabs defaultValue="documents" className="space-y-6">
- <TabsList className="bg-muted border">
- <TabsTrigger value="documents">Document Review ({pendingCessions.length})</TabsTrigger>
- <TabsTrigger value="applications">Applications ({pendingApplications.length})</TabsTrigger>
- <TabsTrigger value="bank-changes">Bank Changes ({bankChangeRequests.length})</TabsTrigger>
- <TabsTrigger value="suppliers">All Suppliers</TabsTrigger>
- <TabsTrigger value="payments">Payments</TabsTrigger>
+ <TabsList className="flex flex-wrap gap-2 bg-muted/50 p-1.5 border rounded-xl w-full h-auto">
+ <TabsTrigger value="documents" className="px-4 py-2.5 rounded-lg text-sm">
+ <FileText className="mr-2 w-4 h-4" />
+ Document Review
+ {pendingCessions.length > 0 && (
+ <Badge variant="secondary" className="bg-warning/15 ml-2 text-warning">{pendingCessions.length}</Badge>
+ )}
+ {pendingCessions.length === 0 && (
+ <span className="ml-1.5 text-muted-foreground">(0)</span>
+ )}
+ </TabsTrigger>
+ <TabsTrigger value="applications" className="px-4 py-2.5 rounded-lg text-sm">
+ <Clock className="mr-2 w-4 h-4" />
+ Applications
+ {pendingApplications.length > 0 && (
+ <Badge variant="secondary" className="bg-info/15 ml-2 text-info">{pendingApplications.length}</Badge>
+ )}
+ {pendingApplications.length === 0 && (
+ <span className="ml-1.5 text-muted-foreground">(0)</span>
+ )}
+ </TabsTrigger>
+ <TabsTrigger value="bank-changes" className="px-4 py-2.5 rounded-lg text-sm">
+ <Building2 className="mr-2 w-4 h-4" />
+ Bank Changes
+ {bankChangeRequests.length > 0 && (
+ <Badge variant="secondary" className="bg-destructive/15 ml-2 text-destructive">{bankChangeRequests.length}</Badge>
+ )}
+ {bankChangeRequests.length === 0 && (
+ <span className="ml-1.5 text-muted-foreground">(0)</span>
+ )}
+ </TabsTrigger>
+ <TabsTrigger value="suppliers" className="px-4 py-2.5 rounded-lg text-sm">
+ <Users className="mr-2 w-4 h-4" />
+ All Suppliers
+ </TabsTrigger>
+ <TabsTrigger value="payments" className="px-4 py-2.5 rounded-lg text-sm">
+ <RandIcon className="mr-2 w-4 h-4" />
+ Payments
+ </TabsTrigger>
  </TabsList>
 
  {/* Document Review Tab */}
