@@ -104,7 +104,7 @@ export default function APDashboardPage() {
           </Card>
           <Card className="bg-card hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
             <CardHeader>
-              <div className="flex justify-center items-center bg-accent-green/10 mb-4 rounded-xl w-14 h-14">
+              <div className="flex justify-center items-center mb-4 rounded-xl w-14 h-14 bg-accent-green/10">
                 <FileText className="w-7 h-7 text-accent-green" />
               </div>
               <CardTitle className="text-foreground text-xl">View Invoices</CardTitle>

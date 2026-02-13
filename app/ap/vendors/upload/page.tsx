@@ -240,7 +240,7 @@ export default function VendorUploadPage() {
  </CardHeader>
  <CardContent className="space-y-6">
  {results.uploaded.length > 0 && results.newSuppliers && results.newSuppliers.length > 0 && (
- <p className="text-sm text-muted-foreground">
+ <p className="text-muted-foreground text-sm">
  <strong>{results.newSuppliers.length} new suppliers</strong> received invitation emails.
  </p>
  )}
