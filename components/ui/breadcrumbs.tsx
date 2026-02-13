@@ -17,11 +17,11 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
   return (
     <nav
       aria-label="Breadcrumb"
-      className={cn("flex items-center space-x-1 text-muted-foreground text-sm", className)}
+      className={cn("mb-3 flex items-center gap-1.5 text-muted-foreground text-sm", className)}
     >
       <Link
         href="/"
-        className="flex items-center hover:text-foreground transition-colors"
+        className="flex items-center hover:text-foreground transition-colors shrink-0"
         aria-label="Home"
       >
         <Home className="w-4 h-4" />
@@ -32,20 +32,20 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
 
         return (
           <React.Fragment key={index}>
-            <ChevronRight className="w-4 h-4 shrink-0" />
+            <ChevronRight className="w-3.5 h-3.5 shrink-0 text-muted-foreground/60" />
             
             {item.href && !isLast ? (
               <Link
                 href={item.href}
-                className="max-w-[200px] hover:text-foreground truncate transition-colors"
+                className="hover:text-foreground truncate transition-colors"
               >
                 {item.label}
               </Link>
             ) : (
               <span
                 className={cn(
-                  "max-w-[200px] font-medium truncate",
-                  isLast && "text-foreground"
+                  "truncate",
+                  isLast && "font-medium text-foreground"
                 )}
                 aria-current={isLast ? "page" : undefined}
               >
