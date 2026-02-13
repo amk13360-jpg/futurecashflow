@@ -96,6 +96,8 @@ export async function getSupplierOffers() {
   }
 
   try {
+    // Only show offers that have actually been sent (sent_at IS NOT NULL)
+    // Offers in pending_review batches have sent_at = NULL and should not be visible to suppliers
     const offers = await query(
       `SELECT o.offer_id, o.annual_rate, o.days_to_maturity, o.discount_amount,
               o.net_payment_amount, o.offer_expiry_date, o.status, o.sent_at,
@@ -105,7 +107,7 @@ export async function getSupplierOffers() {
        FROM offers o
        JOIN invoices i ON o.invoice_id = i.invoice_id
        JOIN buyers b ON o.buyer_id = b.buyer_id
-       WHERE o.supplier_id = ?
+       WHERE o.supplier_id = ? AND o.sent_at IS NOT NULL
        ORDER BY o.sent_at DESC`,
       [session.supplierId],
     )
@@ -134,7 +136,7 @@ export async function getSupplierOfferById(offerId: number) {
        FROM offers o
        JOIN invoices i ON o.invoice_id = i.invoice_id
        JOIN buyers b ON o.buyer_id = b.buyer_id
-       WHERE o.supplier_id = ? AND o.offer_id = ?`,
+       WHERE o.supplier_id = ? AND o.offer_id = ? AND o.sent_at IS NOT NULL`,
       [session.supplierId, offerId],
     )
 

@@ -276,11 +276,14 @@ export async function createOfferBatch(
           const netPaymentAmount = baseAmount - discountAmount
 
           // Create offer with batch_id
+          // NOTE: The offers table enum only allows: 'sent','opened','accepted','rejected','expired'
+          // For review mode, we use status='sent' but with sent_at=NULL to indicate "not yet sent to supplier"
+          // The supplier portal filters by sent_at IS NOT NULL, so these won't be visible until the batch is actually sent
           await connection.execute(
             `INSERT INTO offers 
              (invoice_id, supplier_id, buyer_id, batch_id, annual_rate, days_to_maturity, 
               discount_amount, net_payment_amount, offer_expiry_date, status, sent_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'sent', ?)`,
             [
               invoiceId,
               supplierId,
@@ -291,7 +294,6 @@ export async function createOfferBatch(
               discountAmount,
               netPaymentAmount,
               offerExpiryDate,
-              sendMode === "auto" ? "sent" : "draft",
               sendMode === "auto" ? new Date() : null,
             ]
           )
