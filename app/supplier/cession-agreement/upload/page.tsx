@@ -9,16 +9,14 @@ import { toast } from "sonner";
 
 export default function SupplierCessionAgreementUploadPage() {
  const [uploading, setUploading] = React.useState(false);
- const [error, setError] = React.useState<string | null>(null);
  const [selectedFiles, setSelectedFiles] = React.useState<File[]>([]);
  const router = useRouter();
 
  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
  e.preventDefault();
- setError(null);
  setUploading(true);
  if (selectedFiles.length === 0) {
- setError("Please select a PDF file to upload.");
+ toast.error("Please select a PDF file to upload.");
  setUploading(false);
  return;
  }
@@ -32,18 +30,16 @@ export default function SupplierCessionAgreementUploadPage() {
  });
  const data = await res.json();
  if (data.success) {
- toast.success("✓ Cession agreement uploaded successfully. Dashboard updated.")
+ toast.success("Cession agreement uploaded successfully. Dashboard updated.")
  // Navigate to dashboard which will fetch fresh server state
  router.push("/supplier/dashboard")
  } else {
  const msg = data.error || data.details || "Upload failed"
- toast.error("✗ " + msg)
- setError(msg);
+ toast.error(msg)
  }
  } catch (err: any) {
  const msg = err?.message || "Upload failed"
- toast.error("✗ " + msg)
- setError(msg);
+ toast.error(msg)
  }
  setUploading(false);
  }
@@ -73,19 +69,14 @@ export default function SupplierCessionAgreementUploadPage() {
  maxSize={10 * 1024 * 1024}
  onFilesChange={(files) => {
 	 setSelectedFiles(files);
-	 if (files.length > 0) {
-		 setError(null);
-	 }
  }}
  onError={(message) => {
-	 setError(message);
-	 toast.error("✗ " + message);
+	 toast.error(message);
  }}
  description="Upload a signed PDF (max 10MB)."
  />
  <Button type="submit" disabled={uploading}>{uploading ? "Uploading..." : "Submit Document"}</Button>
  </form>
- {error && <div className="mt-2 text-error text-center">{error}</div>}
  <div className="mt-6 text-center">
  <Link href="/supplier/dashboard" className="text-primary hover:underline">Back to Dashboard</Link>
  </div>

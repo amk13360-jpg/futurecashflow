@@ -5,12 +5,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Upload, FileText, BarChart3, Users, TrendingUp, Clock, CheckCircle2, AlertCircle } from "lucide-react"
 import Link from "next/link"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { toast } from "sonner"
 
 export default function APDashboardPage() {
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState<any>(null)
-  const [error, setError] = useState<string | null>(null)
   const [session, setSession] = useState<any>(null)
 
   useEffect(() => {
@@ -37,7 +36,7 @@ export default function APDashboardPage() {
         }
       } catch (err: any) {
         if (mounted) {
-          setError(err.message || "Failed to load dashboard stats")
+          toast.error(err.message || "Failed to load dashboard stats")
           setLoading(false)
         }
       }
@@ -66,12 +65,6 @@ export default function APDashboardPage() {
             </p>
           </div>
         </div>
-
-        {error && (
-          <div className="bg-destructive/10 mb-6 p-4 border border-destructive/20 rounded-lg text-destructive">
-            {error}
-          </div>
-        )}
 
         {/* Action Cards */}
         <div className="gap-6 grid md:grid-cols-2 lg:grid-cols-3 mb-8">

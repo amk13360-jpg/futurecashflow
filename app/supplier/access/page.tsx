@@ -7,9 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { FormErrorSummary } from "@/components/ui/form-summary"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Users, Mail, ArrowLeft, CheckCircle, Clock } from "lucide-react"
+import { toast } from "sonner"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Logo } from "@/components/ui/logo"
 
@@ -20,20 +20,9 @@ export default function SupplierAccessPage() {
   const searchParams = useSearchParams()
   const [token, setToken] = useState("")
   const [email, setEmail] = useState("")
-  const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const [viewMode, setViewMode] = useState<ViewMode>("token")
   const [isTokenExpired, setIsTokenExpired] = useState(false)
-
-  const errorList = error ? [{ field: viewMode === "token" ? "token" : "email", message: error }] : []
-
-  const handleFormErrorClick = (field: string) => {
-    const target = document.getElementById(field)
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "center" })
-      ;(target as HTMLElement).focus?.()
-    }
-  }
 
   useEffect(() => {
     const urlToken = searchParams.get("token")
@@ -44,7 +33,6 @@ export default function SupplierAccessPage() {
   }, [searchParams])
 
   const verifyToken = async (tokenToVerify: string) => {
-    setError("")
     setLoading(true)
     setIsTokenExpired(false)
     try {
@@ -59,13 +47,13 @@ export default function SupplierAccessPage() {
         if (data.error?.includes("expired") || data.error?.includes("Invalid")) {
           setIsTokenExpired(true)
         }
-        setError(data.error || "Token verification failed")
+        toast.error(data.error || "Token verification failed")
         setLoading(false)
         return
       }
       router.push("/supplier/dashboard")
     } catch (err) {
-      setError("An error occurred. Please try again.")
+      toast.error("An error occurred. Please try again.")
       setLoading(false)
     }
   }
@@ -77,7 +65,6 @@ export default function SupplierAccessPage() {
 
   const handleRequestAccess = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError("")
     setLoading(true)
     
     try {
@@ -89,7 +76,7 @@ export default function SupplierAccessPage() {
       const data = await response.json()
       
       if (!response.ok) {
-        setError(data.error || "Failed to request access")
+        toast.error(data.error || "Failed to request access")
         setLoading(false)
         return
       }
@@ -97,7 +84,7 @@ export default function SupplierAccessPage() {
       setViewMode("request-sent")
       setLoading(false)
     } catch (err) {
-      setError("An error occurred. Please try again.")
+      toast.error("An error occurred. Please try again.")
       setLoading(false)
     }
   }
@@ -152,9 +139,6 @@ export default function SupplierAccessPage() {
             {viewMode === "token" && (
               <>
                 <form onSubmit={handleTokenSubmit} className="space-y-4">
-                  {errorList.length > 0 && (
-                    <FormErrorSummary errors={errorList} onFieldClick={handleFormErrorClick} />
-                  )}
                   
                   {/* Show helpful message if token expired */}
                   {isTokenExpired && (
@@ -175,7 +159,6 @@ export default function SupplierAccessPage() {
                       value={token}
                       onChange={(e) => {
                         setToken(e.target.value)
-                        setError("")
                         setIsTokenExpired(false)
                       }}
                       placeholder="Paste your supplier access token"
@@ -199,7 +182,6 @@ export default function SupplierAccessPage() {
                     className="w-full"
                     onClick={() => {
                       setViewMode("request-access")
-                      setError("")
                     }}
                   >
                     <Mail className="mr-2 w-4 h-4" />
@@ -218,9 +200,6 @@ export default function SupplierAccessPage() {
             {viewMode === "request-access" && (
               <>
                 <form onSubmit={handleRequestAccess} className="space-y-4">
-                  {errorList.length > 0 && (
-                    <FormErrorSummary errors={errorList} onFieldClick={handleFormErrorClick} />
-                  )}
                   <div className="space-y-2">
                     <Label htmlFor="email" className="font-semibold text-sm">Registered Email</Label>
                     <Input
@@ -229,7 +208,6 @@ export default function SupplierAccessPage() {
                       value={email}
                       onChange={(e) => {
                         setEmail(e.target.value)
-                        setError("")
                       }}
                       placeholder="Enter your registered email address"
                       required
@@ -252,7 +230,6 @@ export default function SupplierAccessPage() {
                     className="w-full text-muted-foreground"
                     onClick={() => {
                       setViewMode("token")
-                      setError("")
                     }}
                   >
                     <ArrowLeft className="mr-2 w-4 h-4" />
@@ -283,7 +260,6 @@ export default function SupplierAccessPage() {
                     className="w-full"
                     onClick={() => {
                       setViewMode("token")
-                      setError("")
                       setEmail("")
                     }}
                   >
@@ -296,7 +272,6 @@ export default function SupplierAccessPage() {
                     className="w-full text-muted-foreground text-sm"
                     onClick={() => {
                       setViewMode("request-access")
-                      setError("")
                     }}
                   >
                     Didn't receive it? Try again

@@ -55,7 +55,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { FormErrorSummary } from '@/components/ui/form-summary';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Breadcrumbs } from '@/components/ui/breadcrumbs';
 import Link from 'next/link';
@@ -76,7 +75,6 @@ export default function BuyersPage() {
  const [searchTerm, setSearchTerm] = useState('');
  const [statusFilter, setStatusFilter] = useState<string>('all');
  const [riskFilter, setRiskFilter] = useState<string>('all');
- const [errorMsg, setErrorMsg] = useState<string | null>(null);
  
  // Dialog state
  const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -87,19 +85,6 @@ export default function BuyersPage() {
  const [createStep, setCreateStep] = useState(1);
  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
- const formErrorList = Object.entries(formErrors).map(([field, message]) => ({
- field,
- message,
- }));
-
- const handleFormErrorClick = (field: string) => {
- const target = document.getElementById(field);
- if (target) {
- target.scrollIntoView({ behavior: 'smooth', block: 'center' });
- (target as HTMLElement).focus?.();
- }
- };
- 
  // Form state
  const [formData, setFormData] = useState<Partial<CreateBuyerInput>>({
  industry_sector: 'mining',
@@ -143,10 +128,8 @@ export default function BuyersPage() {
 
  if (buyersResult.success && buyersResult.data) {
  setBuyers(buyersResult.data);
- setErrorMsg(null);
  } else {
  setBuyers([]);
- setErrorMsg(buyersResult.message || 'Failed to load buyers');
  console.error('Failed to load buyers:', buyersResult.message);
  toast.error(buyersResult.message || 'Failed to load buyers');
  }
@@ -154,7 +137,6 @@ export default function BuyersPage() {
  setRateCards(rateCardsResult.data);
  }
  } catch (error) {
- setErrorMsg('Failed to load data');
  console.error('Load data error:', error);
  toast.error('Failed to load data');
  } finally {
@@ -292,6 +274,9 @@ export default function BuyersPage() {
  }
  
  setFormErrors(errors);
+ if (Object.keys(errors).length > 0) {
+ toast.error(`Please fix ${Object.keys(errors).length} validation error(s)`);
+ }
  return Object.keys(errors).length === 0;
  }
 
@@ -375,14 +360,6 @@ export default function BuyersPage() {
 
  return (
  <div className="space-y-6 mx-auto p-6 container">
- {errorMsg && (
- <div className="bg-error-bg mb-4 p-4 border border-error-border rounded-lg text-error-foreground">
- <strong>Error:</strong> {errorMsg}
- {errorMsg === 'Unauthorized' && (
- <div className="mt-2 text-sm">You are not authorized to view buyers. Please log in as an admin user.</div>
- )}
- </div>
- )}
  <Breadcrumbs
  items={[
  { label: 'Dashboard', href: '/admin/dashboard' },
@@ -686,9 +663,6 @@ export default function BuyersPage() {
  {/* Form Content */}
  <div className="flex-1 bg-background px-8 py-8 overflow-y-auto text-foreground">
  <div className="space-y-8 mx-auto max-w-6xl">
- {formErrorList.length > 0 && (
- <FormErrorSummary errors={formErrorList} onFieldClick={handleFormErrorClick} />
- )}
  {/* Step 1: Company Information */}
  {createStep === 1 && (
  <div className="slide-in-from-right-5 space-y-6 animate-in">

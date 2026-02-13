@@ -69,12 +69,17 @@ export default function VendorUploadPage() {
  const result = await uploadVendorData(rows)
  setUploadProgress(100)
  setResults(result)
+ if (result.uploaded.length > 0) {
  if (result.newSuppliers && result.newSuppliers.length > 0) {
  toast.success(
  `Uploaded ${result.uploaded.length} vendors. ${result.newSuppliers.length} invitation emails sent.`,
  )
  } else {
- toast.success(`Uploaded ${result.uploaded.length} vendors`)
+ toast.success(`Uploaded ${result.uploaded.length} vendors successfully`)
+ }
+ }
+ if (result.errors.length > 0) {
+ toast.error(`${result.errors.length} errors occurred during upload`)
  }
  } catch (error: any) {
  toast.error(error.message || "Failed to upload vendors")
@@ -234,39 +239,10 @@ export default function VendorUploadPage() {
  <CardDescription>Summary of vendor data upload</CardDescription>
  </CardHeader>
  <CardContent className="space-y-6">
- {results.uploaded.length > 0 && (
- <Alert>
- <CheckCircle className="w-4 h-4 text-success" />
- <AlertDescription>
- <strong>Successfully uploaded {results.uploaded.length} vendors</strong>
- {results.newSuppliers && results.newSuppliers.length > 0 && (
- <div className="mt-2 text-sm">
- <strong>{results.newSuppliers.length} new suppliers</strong> received invitation emails
- </div>
- )}
- <div className="mt-2 text-sm">
- {results.uploaded.slice(0, 5).map((vendor) => (
- <div key={vendor}>• Vendor {vendor}</div>
- ))}
- {results.uploaded.length > 5 && <div>... and {results.uploaded.length - 5} more</div>}
- </div>
- </AlertDescription>
- </Alert>
- )}
-
- {results.errors.length > 0 && (
- <Alert variant="destructive">
- <AlertCircle className="w-4 h-4" />
- <AlertDescription>
- <strong>{results.errors.length} errors occurred</strong>
- <div className="mt-2 text-sm">
- {results.errors.slice(0, 5).map((err, idx) => (
- <div key={idx}>• {err}</div>
- ))}
- {results.errors.length > 5 && <div>... and {results.errors.length - 5} more</div>}
- </div>
- </AlertDescription>
- </Alert>
+ {results.uploaded.length > 0 && results.newSuppliers && results.newSuppliers.length > 0 && (
+ <p className="text-sm text-muted-foreground">
+ <strong>{results.newSuppliers.length} new suppliers</strong> received invitation emails.
+ </p>
  )}
 
  <div className="flex gap-2">

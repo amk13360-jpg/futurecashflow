@@ -14,6 +14,7 @@ import { SkeletonTable } from "@/components/ui/skeleton"
 import { EmptyState } from "@/components/ui/empty-state"
 import { MetricCard } from "@/components/admin/metric-card"
 import { Breadcrumbs } from "@/components/ui/breadcrumbs"
+import { toast } from "sonner"
 
 export const dynamic = "force-dynamic"
 
@@ -26,7 +27,6 @@ async function fetchInvoices() {
 export default function InvoicesPage() {
  const [invoices, setInvoices] = useState<any[]>([])
  const [loading, setLoading] = useState(true)
- const [error, setError] = useState<string | null>(null)
  const [selectedInvoice, setSelectedInvoice] = useState<any | null>(null)
  const [dialogOpen, setDialogOpen] = useState(false)
 
@@ -43,7 +43,7 @@ export default function InvoicesPage() {
  })
  .catch(() => {
  if (mounted) {
- setError("Failed to load invoices")
+ toast.error("Failed to load invoices")
  setLoading(false)
  }
  })

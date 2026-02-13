@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { FormErrorSummary } from "@/components/ui/form-summary"
 import { Eye, EyeOff } from "lucide-react"
+import { toast } from "sonner"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Logo } from "@/components/ui/logo"
 
@@ -17,22 +17,10 @@ export default function AdminLoginPage() {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-
-  const errorList = error ? [{ field: "username", message: error }] : []
-
-  const handleFormErrorClick = (field: string) => {
-    const target = document.getElementById(field)
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "center" })
-      ;(target as HTMLElement).focus?.()
-    }
-  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError("")
     setLoading(true)
 
     try {
@@ -45,14 +33,14 @@ export default function AdminLoginPage() {
       const data = await response.json()
 
       if (!response.ok) {
-        setError(data.error || "Login failed")
+        toast.error(data.error || "Login failed")
         setLoading(false)
         return
       }
 
       router.push("/admin/dashboard")
     } catch (err) {
-      setError("An error occurred. Please try again.")
+      toast.error("An error occurred. Please try again.")
       setLoading(false)
     }
   }
@@ -82,9 +70,6 @@ export default function AdminLoginPage() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
-              {errorList.length > 0 && (
-                <FormErrorSummary errors={errorList} onFieldClick={handleFormErrorClick} />
-              )}
               <div className="space-y-2">
                 <Label htmlFor="username" className="font-semibold text-sm">Username</Label>
                 <Input

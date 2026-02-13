@@ -51,7 +51,12 @@ export default function InvoiceUploadPage() {
       const rows = await parseAPDataCSV(csvText)
       const result = await uploadAPData(rows)
       setResults(result)
-      toast.success(`Uploaded ${result.uploaded.length} invoices`)
+      if (result.uploaded.length > 0) {
+        toast.success(`Uploaded ${result.uploaded.length} invoices successfully`)
+      }
+      if (result.errors.length > 0) {
+        toast.error(`${result.errors.length} errors occurred during upload`)
+      }
 
       if (result.uploaded.length > 0) {
         router.refresh() // Force refresh the router cache
@@ -200,36 +205,6 @@ export default function InvoiceUploadPage() {
               <CardDescription>Summary of AP data upload</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              {results.uploaded.length > 0 && (
-                <Alert>
-                  <CheckCircle className="w-4 h-4" />
-                  <AlertDescription>
-                    <strong>Successfully uploaded {results.uploaded.length} invoices</strong>
-                    <div className="mt-2 text-sm">
-                      {results.uploaded.slice(0, 5).map((inv: string) => (
-                        <div key={inv}>• {inv}</div>
-                      ))}
-                      {results.uploaded.length > 5 && <div>... and {results.uploaded.length - 5} more</div>}
-                    </div>
-                  </AlertDescription>
-                </Alert>
-              )}
-
-              {results.errors.length > 0 && (
-                <Alert variant="destructive">
-                  <AlertCircle className="w-4 h-4" />
-                  <AlertDescription>
-                    <strong>{results.errors.length} errors occurred</strong>
-                    <div className="mt-2 text-sm">
-                      {results.errors.slice(0, 5).map((err: string, idx: number) => (
-                        <div key={idx}>• {err}</div>
-                      ))}
-                      {results.errors.length > 5 && <div>... and {results.errors.length - 5} more</div>}
-                    </div>
-                  </AlertDescription>
-                </Alert>
-              )}
-
               <div className="flex gap-2">
                 <Button onClick={() => router.push("/ap/invoices")} className="flex-1">
                   View Invoices

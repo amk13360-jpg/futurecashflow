@@ -5,16 +5,15 @@ import { DashboardHeader } from "@/components/admin/dashboard-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
-import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Breadcrumbs } from "@/components/ui/breadcrumbs"
 import { Skeleton } from "@/components/ui/skeleton"
-import { FileText, AlertCircle } from "lucide-react"
+import { FileText } from "lucide-react"
 import Link from "next/link"
+import { toast } from "sonner"
 
 export default function APReportsPage() {
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState<any>(null)
-  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     let mounted = true
@@ -48,7 +47,7 @@ export default function APReportsPage() {
         }
       } catch (err: any) {
         if (mounted) {
-          setError(err.message || "Failed to load reports stats")
+          toast.error(err.message || "Failed to load reports stats")
           setLoading(false)
         }
       }
@@ -76,13 +75,6 @@ export default function APReportsPage() {
           <h2 className="font-bold text-3xl">Uploaded Data</h2>
           <p className="text-muted-foreground">View your uploaded vendors and invoice data</p>
         </div>
-
-        {error && (
-          <Alert variant="destructive" className="mb-6">
-            <AlertCircle className="w-4 h-4" />
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        )}
 
         <div className="gap-4 grid md:grid-cols-2 mb-6">
           <Card>

@@ -10,8 +10,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { FormErrorSummary } from "@/components/ui/form-summary"
 import { ArrowLeft, Eye, EyeOff } from "lucide-react"
+import { toast } from "sonner"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Logo } from "@/components/ui/logo"
 
@@ -24,23 +24,10 @@ export default function APLoginPage() {
   const [otp, setOtp] = useState("")
   const [userId, setUserId] = useState<number | null>(null)
   const [email, setEmail] = useState("")
-  const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
-
-  const errorField = step === "otp" ? "otp" : "mineCode"
-  const errorList = error ? [{ field: errorField, message: error }] : []
-
-  const handleFormErrorClick = (field: string) => {
-    const target = document.getElementById(field)
-    if (target) {
-      target.scrollIntoView({ behavior: "smooth", block: "center" })
-      ;(target as HTMLElement).focus?.()
-    }
-  }
 
   const handleCredentialsSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError("")
     setLoading(true)
 
     try {
@@ -53,7 +40,7 @@ export default function APLoginPage() {
       const data = await response.json()
 
       if (!response.ok) {
-        setError(data.error || "Login failed")
+        toast.error(data.error || "Login failed")
         setLoading(false)
         return
       }
@@ -65,17 +52,16 @@ export default function APLoginPage() {
 
       // Show OTP in development
       if (data.otp) {
-        alert(`Development Mode - Your OTP is: ${data.otp}`)
+        toast.info(`Development Mode - Your OTP is: ${data.otp}`)
       }
     } catch (err) {
-      setError("An error occurred. Please try again.")
+      toast.error("An error occurred. Please try again.")
       setLoading(false)
     }
   }
 
   const handleOtpSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError("")
     setLoading(true)
 
     try {
@@ -88,7 +74,7 @@ export default function APLoginPage() {
       const data = await response.json()
 
       if (!response.ok) {
-        setError(data.error || "OTP verification failed")
+        toast.error(data.error || "OTP verification failed")
         setLoading(false)
         return
       }
@@ -100,7 +86,7 @@ export default function APLoginPage() {
         router.push("/ap/dashboard")
       }
     } catch (err) {
-      setError("An error occurred. Please try again.")
+      toast.error("An error occurred. Please try again.")
       setLoading(false)
     }
   }
@@ -136,9 +122,6 @@ export default function APLoginPage() {
           <CardContent>
             {step === "credentials" ? (
               <form onSubmit={handleCredentialsSubmit} className="space-y-4">
-                {errorList.length > 0 && (
-                  <FormErrorSummary errors={errorList} onFieldClick={handleFormErrorClick} />
-                )}
                 <div className="space-y-2">
                   <Label htmlFor="mineCode" className="font-semibold text-sm">Mine Code</Label>
                   <Input
@@ -183,9 +166,6 @@ export default function APLoginPage() {
               </form>
             ) : (
               <form onSubmit={handleOtpSubmit} className="space-y-4">
-                {errorList.length > 0 && (
-                  <FormErrorSummary errors={errorList} onFieldClick={handleFormErrorClick} />
-                )}
                 <Alert>
                   <AlertDescription>A 6-digit code has been sent to {email}</AlertDescription>
                 </Alert>

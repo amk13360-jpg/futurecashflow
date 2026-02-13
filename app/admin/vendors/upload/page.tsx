@@ -71,7 +71,12 @@ export default function VendorUploadPage() {
  const result = await uploadVendorData(rows)
  setUploadProgress(100)
  setResults(result)
- toast.success(`Uploaded ${result.uploaded.length} vendors`)
+ if (result.uploaded.length > 0) {
+ toast.success(`Uploaded ${result.uploaded.length} vendors successfully`)
+ }
+ if (result.errors.length > 0) {
+ toast.error(`${result.errors.length} errors occurred during upload`)
+ }
  } catch (error: any) {
  toast.error(error.message || "Failed to upload vendor data")
  } finally {
@@ -228,36 +233,6 @@ export default function VendorUploadPage() {
  <CardDescription>Summary of vendor data upload</CardDescription>
  </CardHeader>
  <CardContent className="space-y-6">
- {results.uploaded.length > 0 && (
- <Alert>
- <CheckCircle className="w-4 h-4 text-success" />
- <AlertDescription>
- <strong>Successfully uploaded {results.uploaded.length} vendors</strong>
- <div className="mt-2 text-sm">
- {results.uploaded.slice(0, 5).map((vendor) => (
- <div key={vendor}>• {vendor}</div>
- ))}
- {results.uploaded.length > 5 && <div>... and {results.uploaded.length - 5} more</div>}
- </div>
- </AlertDescription>
- </Alert>
- )}
-
- {results.errors.length > 0 && (
- <Alert variant="destructive">
- <AlertCircle className="w-4 h-4" />
- <AlertDescription>
- <strong>{results.errors.length} errors occurred</strong>
- <div className="mt-2 text-sm">
- {results.errors.slice(0, 5).map((err, idx) => (
- <div key={idx}>• {err}</div>
- ))}
- {results.errors.length > 5 && <div>... and {results.errors.length - 5} more</div>}
- </div>
- </AlertDescription>
- </Alert>
- )}
-
  <div className="flex gap-2">
  <Button onClick={() => router.push("/admin/dashboard")} className="flex-1">
  Back to Dashboard

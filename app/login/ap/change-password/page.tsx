@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { FormErrorSummary } from "@/components/ui/form-summary"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Logo } from "@/components/ui/logo"
 import { KeyRound, Check, X, Eye, EyeOff, Shield } from "lucide-react"
+import { toast } from "sonner"
 
 export default function ChangePasswordPage() {
  const router = useRouter()
@@ -18,18 +18,7 @@ export default function ChangePasswordPage() {
  const [confirmPassword, setConfirmPassword] = useState("")
  const [showPassword, setShowPassword] = useState(false)
  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
- const [error, setError] = useState("")
  const [loading, setLoading] = useState(false)
-
- const errorList = error ? [{ field: "newPassword", message: error }] : []
-
- const handleFormErrorClick = (field: string) => {
- const target = document.getElementById(field)
- if (target) {
- target.scrollIntoView({ behavior: "smooth", block: "center" })
- ;(target as HTMLElement).focus?.()
- }
- }
 
  // Password validation rules
  const validations = {
@@ -45,10 +34,9 @@ export default function ChangePasswordPage() {
 
  const handleSubmit = async (e: React.FormEvent) => {
  e.preventDefault()
- setError("")
 
  if (!allValid) {
- setError("Please ensure all password requirements are met")
+ toast.error("Please ensure all password requirements are met")
  return
  }
 
@@ -64,15 +52,16 @@ export default function ChangePasswordPage() {
  const data = await response.json()
 
  if (!response.ok) {
- setError(data.error || "Failed to change password")
+ toast.error(data.error || "Failed to change password")
  setLoading(false)
  return
  }
 
+ toast.success("Password changed successfully")
  // Redirect to dashboard
  router.push("/ap/dashboard")
  } catch (err) {
- setError("An error occurred. Please try again.")
+ toast.error("An error occurred. Please try again.")
  setLoading(false)
  }
  }
@@ -123,9 +112,6 @@ export default function ChangePasswordPage() {
  </CardHeader>
  <CardContent>
  <form onSubmit={handleSubmit} className="space-y-6">
- {errorList.length > 0 && (
- <FormErrorSummary errors={errorList} onFieldClick={handleFormErrorClick} />
- )}
 
  <div className="space-y-2">
  <Label htmlFor="newPassword" className="font-semibold text-sm">
