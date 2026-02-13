@@ -5,7 +5,7 @@ import { getSession } from "@/lib/auth/session"
 import { createAuditLog } from "@/lib/auth/audit"
 import type { RowDataPacket } from "mysql2"
 import { generateToken } from "@/lib/utils"
-import { sendSupplierWelcomeEmail } from "@/lib/services/email"
+import { sendOfferNotificationEmail } from "@/lib/services/email"
 
 // Types
 export interface OfferBatch {
@@ -352,14 +352,14 @@ export async function createOfferBatch(
           [batchId]
         )
 
-        // Send email notification
+        // Send offer notification email
         const baseUrl = process.env.NEXTAUTH_URL || "https://fm-asp-dev-san-hufee4h8hyawbhcx.southafricanorth-01.azurewebsites.net"
         const accessLink = `${baseUrl}/supplier/access?token=${token}`
 
         try {
-          await sendSupplierWelcomeEmail(supplier.contact_email, supplier.name, accessLink)
+          await sendOfferNotificationEmail(supplier.contact_email, supplier.name, accessLink, offersCreated, totalNetPayment)
         } catch (emailError) {
-          console.error("[OfferBatches] Failed to send email:", emailError)
+          console.error("[OfferBatches] Failed to send offer email:", emailError)
         }
       }
 
@@ -481,14 +481,20 @@ export async function sendOfferBatch(batchId: number): Promise<{ success: boolea
         [batch.supplier_id, token, tokenExpiry, shortCode]
       )
 
-      // Send email
+      // Send offer notification email
       const baseUrl = process.env.NEXTAUTH_URL || "https://fm-asp-dev-san-hufee4h8hyawbhcx.southafricanorth-01.azurewebsites.net"
       const accessLink = `${baseUrl}/supplier/access?token=${token}`
 
       try {
-        await sendSupplierWelcomeEmail(batch.contact_email, batch.supplier_name, accessLink)
+        await sendOfferNotificationEmail(
+          batch.contact_email,
+          batch.supplier_name,
+          accessLink,
+          batch.invoice_count,
+          Number(batch.total_net_payment || 0)
+        )
       } catch (emailError) {
-        console.error("[OfferBatches] Failed to send email:", emailError)
+        console.error("[OfferBatches] Failed to send offer email:", emailError)
       }
 
       // Audit log

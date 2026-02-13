@@ -4,7 +4,7 @@
 import { query, transaction } from "@/lib/db"
 import { getSession } from "@/lib/auth/session"
 import { createAuditLog } from "@/lib/auth/audit"
-import { sendSupplierWelcomeEmail } from "@/lib/services/email"
+import { sendSupplierWelcomeEmail, sendOfferNotificationEmail } from "@/lib/services/email"
 import type { RowDataPacket, OkPacket } from "mysql2"
 import { generateToken } from "@/lib/utils"
 import type { APDataRow, VendorDataRow } from "@/lib/types/database"
@@ -919,10 +919,10 @@ export async function manualGenerateOffersForSupplier(supplierId: number, trigge
         const accessLink = `${baseUrl}/supplier/access?token=${token}`
         
         try {
-          await sendSupplierWelcomeEmail(supplier.contact_email, supplier.name, accessLink)
-          console.log(`[v0] Offer access email sent to ${supplier.contact_email} for ${results.created.length} offers`)
+          await sendOfferNotificationEmail(supplier.contact_email, supplier.name, accessLink, results.created.length, 0)
+          console.log(`[v0] Offer notification email sent to ${supplier.contact_email} for ${results.created.length} offers`)
         } catch (emailError) {
-          console.error(`[v0] Failed to send offer access email to ${supplier.contact_email}:`, emailError)
+          console.error(`[v0] Failed to send offer notification email to ${supplier.contact_email}:`, emailError)
         }
       }
     }

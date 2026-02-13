@@ -608,3 +608,182 @@ Future Cashflow Team
     return false
   }
 }
+
+/**
+ * Send offer notification email to supplier - notifies them of new early payment offers
+ */
+export async function sendOfferNotificationEmail(
+  recipientEmail: string,
+  supplierName: string,
+  accessLink: string,
+  offerCount: number,
+  totalAmount: number,
+): Promise<boolean> {
+  try {
+    const formattedAmount = `R ${totalAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+
+    const emailMessage = {
+      senderAddress,
+      content: {
+        subject: `💰 You Have ${offerCount} New Early Payment Offer${offerCount > 1 ? "s" : ""} - Future Cashflow`,
+        plainText: `
+Hello ${supplierName},
+
+Great news! You have ${offerCount} new early payment offer${offerCount > 1 ? "s" : ""} available on the Future Cashflow platform.
+
+Total offer value: ${formattedAmount}
+
+Click the link below to review and accept your offers:
+
+${accessLink}
+
+This link will expire in 14 days.
+
+Best regards,
+Future Cashflow Team
+        `.trim(),
+        html: `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .header {
+      background: linear-gradient(135deg, #0066cc, #004999);
+      color: white;
+      padding: 30px;
+      border-radius: 12px 12px 0 0;
+      text-align: center;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .content {
+      background: #ffffff;
+      padding: 30px;
+      border: 1px solid #e0e0e0;
+      border-top: none;
+    }
+    .offer-summary {
+      background: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+    }
+    .offer-count {
+      font-size: 36px;
+      font-weight: bold;
+      color: #0066cc;
+    }
+    .offer-amount {
+      font-size: 20px;
+      font-weight: bold;
+      color: #16a34a;
+      margin-top: 8px;
+    }
+    .button {
+      display: inline-block;
+      background-color: #0066cc;
+      color: white !important;
+      padding: 14px 32px;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 16px;
+      margin: 20px 0;
+    }
+    .footer {
+      background: #f8f9fa;
+      padding: 20px;
+      border-radius: 0 0 12px 12px;
+      text-align: center;
+      font-size: 12px;
+      color: #666;
+      border: 1px solid #e0e0e0;
+      border-top: none;
+    }
+    .expiry {
+      background: #fef3c7;
+      border: 1px solid #fbbf24;
+      border-radius: 6px;
+      padding: 10px;
+      margin: 15px 0;
+      font-size: 14px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>💰 New Early Payment Offers</h1>
+    <p style="margin: 8px 0 0; opacity: 0.9;">Accelerate your cash flow today</p>
+  </div>
+  <div class="content">
+    <p>Hello <strong>${supplierName}</strong>,</p>
+    <p>You have new early payment offers waiting for your review on the Future Cashflow platform.</p>
+
+    <div class="offer-summary">
+      <div class="offer-count">${offerCount}</div>
+      <div>Early Payment Offer${offerCount > 1 ? "s" : ""} Available</div>
+      <div class="offer-amount">${formattedAmount}</div>
+      <div style="font-size: 13px; color: #666; margin-top: 4px;">Total offer value</div>
+    </div>
+
+    <div style="text-align: center;">
+      <a href="${accessLink}" class="button">Review Your Offers</a>
+    </div>
+
+    <div class="expiry">
+      ⏱️ <strong>This link will expire in 14 days.</strong> Review your offers before they expire.
+    </div>
+
+    <p style="font-size: 14px; color: #666;">
+      Accept the offers you'd like to receive early payment on. The discounted amount will be paid directly to your bank account.
+    </p>
+
+    <p>Best regards,<br><strong>Future Cashflow Team</strong></p>
+  </div>
+  <div class="footer">
+    <p>This is an automated message, please do not reply to this email.</p>
+    <p>&copy; 2025 Future Cashflow. All rights reserved.</p>
+  </div>
+</body>
+</html>
+        `.trim(),
+      },
+      recipients: {
+        to: [
+          {
+            address: recipientEmail,
+            displayName: supplierName,
+          },
+        ],
+      },
+    }
+
+    const client = getEmailClient()
+    const poller = await client.beginSend(emailMessage)
+    const result = await poller.pollUntilDone()
+
+    if (result.status === KnownEmailSendStatus.Succeeded) {
+      console.log(`[Email Service] Offer notification email sent successfully to ${recipientEmail}`)
+      return true
+    } else {
+      console.error(`[Email Service] Failed to send offer notification email. Status: ${result.status}`)
+      return false
+    }
+  } catch (error) {
+    console.error("[Email Service] Error sending offer notification email:", error)
+    return false
+  }
+}
