@@ -109,11 +109,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
       ]
     }
     if (sessionRole === 'accounts_payable') {
-      return [
-        { href: '/ap/dashboard', label: 'Dashboard' },
-        { href: '/ap/invoices', label: 'Invoices' },
-        { href: '/ap/vendors', label: 'Vendors' },
-      ]
+      return []
     }
     // Default: admin
     return [
@@ -137,14 +133,16 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
             <Logo size="md" variant="adaptive" showText={true} />
           </a>
 
-          <div className="hidden sm:flex flex-col gap-0.5">
-            <span className="text-muted-foreground text-xs leading-[1.25]">{pageContextSection}</span>
-            <span className="font-medium text-foreground text-sm leading-[1.25]">{pageTitle}</span>
-          </div>
+          {sessionRole !== 'accounts_payable' && (
+            <div className="hidden sm:flex flex-col gap-0.5">
+              <span className="text-muted-foreground text-xs leading-[1.25]">{pageContextSection}</span>
+              <span className="font-medium text-foreground text-sm leading-[1.25]">{pageTitle}</span>
+            </div>
+          )}
         </div>
 
         {/* Center: optional breadcrumb for larger screens (screen-reader includes product for full path) */}
-        <div className="hidden md:flex items-center gap-6">
+        {sessionRole !== 'accounts_payable' && <div className="hidden md:flex items-center gap-6">
           <nav aria-label="Primary navigation" className="hidden lg:flex items-center gap-4">
             {navLinks.map((link) => {
               const active = pathname?.startsWith(link.href)
@@ -170,7 +168,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
               <li className="inline-flex items-center font-medium text-foreground leading-none">{pageTitle}</li>
             </ol>
           </nav>
-        </div>
+        </div>}
 
         {/* Right: Icon group + profile dropdown */}
         <div className="flex items-center gap-3">

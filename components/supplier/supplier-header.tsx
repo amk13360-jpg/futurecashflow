@@ -17,7 +17,6 @@ export function SupplierHeader({ supplierName: supplierNameProp }: SupplierHeade
   const [sessionName, setSessionName] = useState<string | null>(null)
   const profileRef = useRef<HTMLDivElement>(null)
 
-  // Self-fetch session name when no prop is supplied (e.g. when rendered from layout)
   useEffect(() => {
     if (!supplierNameProp) {
       fetch("/api/session")
@@ -37,7 +36,7 @@ export function SupplierHeader({ supplierName: supplierNameProp }: SupplierHeade
   const initials = useMemo(() => {
     const source = (supplierName || "Supplier").trim()
     const parts = source.split(/\s+/).filter(Boolean)
-    if (parts.length === 0) return "S"
+    if (parts.length === 0) return "SU"
     if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
   }, [supplierName])
@@ -53,75 +52,115 @@ export function SupplierHeader({ supplierName: supplierNameProp }: SupplierHeade
   }, [])
 
   return (
-    <header
-      className="top-0 z-50 sticky bg-card supports-[not_(backdrop-filter)]:bg-card backdrop-blur-xl border-border border-b h-16 transition-colors duration-300"
-    >
-      <div className="flex justify-between items-center mx-auto px-4 sm:px-6 max-w-7xl h-full">
-        <div className="flex items-center gap-3">
-          <Logo size="sm" variant="adaptive" />
-          <span className="text-muted-foreground text-sm">Supplier Portal</span>
+    <header className="top-0 z-50 sticky bg-card/95 backdrop-blur-sm border-border border-b h-16">
+      {/* Single-row, full-height flex container — nothing grows vertically */}
+      <div className="flex items-center justify-between h-full mx-auto px-4 sm:px-6 max-w-7xl">
+
+        {/* ── LEFT: Logo icon + brand name + portal badge ── */}
+        <div className="flex items-center gap-3 min-w-0">
+          {/* Logo icon only (no built-in text — we render text ourselves for full control) */}
+          <Logo size="sm" variant="adaptive" showText={false} />
+
+          {/* Vertical divider */}
+          <div className="w-px h-5 bg-border shrink-0" />
+
+          {/* Brand name + portal sub-label stacked, tightly */}
+          <div className="flex flex-col justify-center gap-0 leading-none">
+            <span className="font-semibold text-foreground text-[13px] leading-[1.2] tracking-tight">
+              Future Cashflow
+            </span>
+            <span className="text-muted-foreground text-[11px] leading-[1.3] tracking-wide uppercase">
+              Supplier Portal
+            </span>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
+
+        {/* ── RIGHT: Theme toggle + avatar dropdown ── */}
+        <div className="flex items-center gap-2 shrink-0">
+
+          {/* Theme toggle — same height context as the pill */}
           <ThemeToggle />
-          <div className="self-center bg-border w-px h-6" />
-          <div ref={profileRef} className="relative flex items-center">
+
+          {/* Vertical divider */}
+          <div className="w-px h-5 bg-border shrink-0" />
+
+          {/* Avatar + name + role pill button */}
+          <div ref={profileRef} className="relative">
             <button
               type="button"
               onClick={() => setProfileOpen(!profileOpen)}
               aria-label="Profile menu"
+              aria-expanded={profileOpen}
+              aria-haspopup="true"
               className={cn(
-                "flex items-center gap-2.5 px-2 py-1.5 border rounded-lg h-10",
-                "bg-card text-foreground",
-                "transition-colors duration-200 cursor-pointer",
+                // Base: horizontal flex, fixed height, pill border
+                "flex items-center gap-2 h-9 pl-1.5 pr-2.5 rounded-full border transition-colors duration-150 cursor-pointer",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                profileOpen ? "border-primary ring-2 ring-primary/20" : "border-border hover:border-primary"
+                profileOpen
+                  ? "bg-accent border-primary ring-2 ring-primary/15"
+                  : "bg-card border-border hover:border-primary hover:bg-accent/50"
               )}
             >
-              <div className="flex justify-center items-center bg-primary/10 rounded-full w-7 h-7 font-bold text-primary text-xs shrink-0">
+              {/* Avatar circle */}
+              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-[11px] shrink-0 select-none">
                 {initials}
               </div>
-              <div className="hidden sm:block text-left">
-                <p className="font-medium text-foreground text-sm leading-none">{supplierName || "Supplier"}</p>
-                <p className="mt-0.5 text-[11px] text-muted-foreground leading-none">Supplier</p>
+
+              {/* Name + role — hidden on xs */}
+              <div className="hidden sm:flex flex-col items-start justify-center gap-0 leading-none">
+                <span className="text-[12px] font-semibold text-foreground leading-[1.2] whitespace-nowrap">
+                  {supplierName || "Supplier"}
+                </span>
+                <span className="text-[10px] text-muted-foreground leading-[1.3] whitespace-nowrap">
+                  Supplier
+                </span>
               </div>
+
+              {/* Chevron */}
               <ChevronDown
                 className={cn(
-                  "w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 shrink-0",
+                  "w-3 h-3 text-muted-foreground transition-transform duration-200 shrink-0",
                   profileOpen && "rotate-180"
                 )}
               />
             </button>
 
+            {/* Dropdown menu */}
             {profileOpen && (
-              <div
-                className="top-[calc(100%+4px)] right-0 z-60 absolute bg-popover slide-in-from-top-1 shadow-xl border border-border rounded-xl w-56 text-popover-foreground animate-in fade-in-0 zoom-in-95"
-              >
-                <div className="flex items-center gap-3 bg-primary/[0.04] px-4 py-3 border-border border-b rounded-t-xl">
-                  <div className="flex justify-center items-center bg-primary/10 rounded-full w-9 h-9 font-bold text-primary text-xs shrink-0">
+              <div className="absolute right-0 top-[calc(100%+6px)] z-50 w-52 rounded-xl border border-border bg-popover shadow-lg animate-in fade-in-0 zoom-in-95 slide-in-from-top-1">
+                {/* User identity header */}
+                <div className="flex items-center gap-3 px-4 py-3 bg-primary/[0.04] border-b border-border rounded-t-xl">
+                  <div className="flex items-center justify-center w-9 h-9 rounded-full bg-primary/10 text-primary font-bold text-xs shrink-0">
                     {initials}
                   </div>
                   <div className="min-w-0">
-                    <p className="font-medium text-foreground text-sm truncate">{supplierName || "Supplier"}</p>
-                    <p className="text-muted-foreground text-xs truncate">Supplier</p>
+                    <p className="text-sm font-semibold text-foreground truncate leading-none">
+                      {supplierName || "Supplier"}
+                    </p>
+                    <p className="mt-0.5 text-xs text-muted-foreground leading-none">Supplier</p>
                   </div>
                 </div>
+
+                {/* Menu items */}
                 <div className="py-1">
                   <button
                     type="button"
-                    className="flex items-center gap-2.5 hover:bg-accent px-4 py-2.5 w-full font-medium text-foreground text-sm transition-colors duration-100 cursor-pointer"
+                    className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm font-medium text-foreground hover:bg-accent transition-colors duration-100"
                   >
-                    <User className="w-4 h-4 text-muted-foreground" />
+                    <User className="w-4 h-4 text-muted-foreground shrink-0" />
                     Profile
                   </button>
                 </div>
-                <div className="border-border border-t" />
+
+                <div className="border-t border-border" />
+
                 <div className="py-1">
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className="flex items-center gap-2.5 hover:bg-error/[0.08] px-4 py-2.5 w-full font-medium text-error text-sm transition-colors duration-100 cursor-pointer"
+                    className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm font-medium text-destructive hover:bg-destructive/[0.08] transition-colors duration-100"
                   >
-                    <LogOut className="w-4 h-4" />
+                    <LogOut className="w-4 h-4 shrink-0" />
                     Sign out
                   </button>
                 </div>
