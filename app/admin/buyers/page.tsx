@@ -124,9 +124,6 @@ export default function BuyersPage() {
  getRateCards()
  ]);
 
- console.log('Buyers result:', buyersResult);
- console.log('Rate cards result:', rateCardsResult);
-
  if (buyersResult.success && buyersResult.data) {
  setBuyers(buyersResult.data);
  } else {

@@ -77,16 +77,6 @@ export async function createUserForBuyer(input: CreateUserForBuyerInput): Promis
 
     const buyer = buyers[0];
 
-    // Check 4-user limit
-    const existingUsers = await query(
-      `SELECT COUNT(*) as count FROM users WHERE buyer_id = ? AND role = 'accounts_payable'`,
-      [input.buyer_id]
-    ) as any[];
-
-    if (existingUsers[0].count >= 4) {
-      return { success: false, message: 'Maximum 4 AP users per buyer allowed' };
-    }
-
     // Check for duplicate username
     const existingUsername = await query(
       'SELECT user_id FROM users WHERE username = ?',
@@ -213,7 +203,7 @@ async function sendWelcomeEmailInternal(
     ? `${process.env.NEXT_PUBLIC_APP_URL}/login/ap`
     : 'https://your-app-url.com/login/ap';
 
-  const subject = `Welcome to Future Cashflow - ${buyerName}`;
+  const subject = `Welcome to Future Mining Finance (Pty) Ltd - ${buyerName}`;
   
   const htmlContent = `
     <!DOCTYPE html>
@@ -236,7 +226,7 @@ async function sendWelcomeEmailInternal(
     <body>
       <div class="container">
         <div class="header">
-          <h1>Welcome to Future Cashflow</h1>
+          <h1>Welcome to Future Mining Finance (Pty) Ltd</h1>
         </div>
         <div class="content">
           <p>Dear ${fullName},</p>
@@ -272,11 +262,11 @@ async function sendWelcomeEmailInternal(
             <li>Start uploading invoices!</li>
           </ol>
           
-          <a href="${loginUrl}" class="button">Login to Future Cashflow</a>
+          <a href="${loginUrl}" class="button">Login to Future Mining Finance</a>
           
           <p>If you have any questions, please contact your administrator or our support team.</p>
           
-          <p>Best regards,<br>The Future Cashflow Team</p>
+          <p>Best regards,<br>Future Mining Finance (Pty) Ltd</p>
         </div>
         <div class="footer">
           <p>This is an automated message. Please do not reply directly to this email.</p>
@@ -288,7 +278,7 @@ async function sendWelcomeEmailInternal(
   `;
 
   const textContent = `
-Welcome to Future Cashflow
+Welcome to Future Mining Finance (Pty) Ltd
 
 Dear ${fullName},
 
@@ -311,7 +301,7 @@ To access the platform:
 If you have any questions, please contact your administrator.
 
 Best regards,
-The Future Cashflow Team
+Future Mining Finance (Pty) Ltd
   `;
 
   await sendEmail({

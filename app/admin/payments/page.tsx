@@ -58,6 +58,16 @@ export default function PaymentsPage() {
       return
     }
 
+    // Validate bank details for selected offers
+    const selectedItems = queue.filter((item: any) => selectedOffers.includes(item.offer_id))
+    const missingBank = selectedItems.filter((item: any) => !item.bank_account_no || !item.bank_name)
+    if (missingBank.length > 0) {
+      toast.error(
+        `${missingBank.length} selected offer(s) are missing bank details. Please resolve before queuing.`
+      )
+      return
+    }
+
     setProcessing(true)
     try {
       const result = await queuePayments(selectedOffers)
@@ -130,6 +140,12 @@ export default function PaymentsPage() {
     if (queue.length === 0) {
       toast.error("No data to export")
       return
+    }
+
+    // Warn if any records are missing critical bank details
+    const missingBank = queue.filter((item: any) => !item.bank_account_no || !item.bank_name)
+    if (missingBank.length > 0) {
+      toast.warning(`${missingBank.length} record(s) are missing bank details and may not be processable`)
     }
 
     const exportData = queue.map((item: any) => ({

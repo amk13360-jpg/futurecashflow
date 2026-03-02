@@ -132,13 +132,6 @@ export default function BuyerDetailsPage() {
  return;
  }
 
- // Check 4-user limit
- const apUsers = users.filter(u => u.role === 'accounts_payable');
- if (apUsers.length >= 4) {
- toast.error('Maximum 4 AP users per buyer allowed');
- return;
- }
-
  startTransition(async () => {
  const result = await createUserForBuyer({
  buyer_id: buyerId,
@@ -419,7 +412,7 @@ export default function BuyerDetailsPage() {
  <TabsList>
  <TabsTrigger value="overview">Overview</TabsTrigger>
  <TabsTrigger value="users">
- AP Users ({apUserCount}/4)
+ AP Users ({apUserCount})
  </TabsTrigger>
  <TabsTrigger value="documents">
  Documents ({documents.length})
@@ -585,12 +578,11 @@ export default function BuyerDetailsPage() {
  <div>
  <CardTitle>AP Users</CardTitle>
  <CardDescription>
- Accounts Payable users who can upload invoices for this buyer ({apUserCount}/4 max)
+ Accounts Payable users who can upload invoices for this buyer
  </CardDescription>
  </div>
  <Button 
  onClick={() => setShowAddUserDialog(true)}
- disabled={apUserCount >= 4}
  >
  <UserPlus className="mr-2 w-4 h-4" />
  Add AP User

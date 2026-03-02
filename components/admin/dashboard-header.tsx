@@ -167,7 +167,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                 <span className="text-muted-foreground">{pageContextSection}</span>
                 <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" aria-hidden />
               </li>
-              <li className="inline-flex items-center leading-none font-medium text-foreground">{pageTitle}</li>
+              <li className="inline-flex items-center font-medium text-foreground leading-none">{pageTitle}</li>
             </ol>
           </nav>
         </div>

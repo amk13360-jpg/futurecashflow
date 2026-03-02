@@ -38,9 +38,9 @@ export const BRAND = {
   
   // Email configuration
   email: {
-    team: "Future Cashflow Team",
-    support: "support@futurecashflow.co.za",
-    noreply: "noreply@futurecashflow.co.za",
+    team: "Future Mining Finance (Pty) Ltd",
+    support: "support@futureminingfinance.co.za",
+    noreply: "noreply@futureminingfinance.co.za",
   },
   
   // Brand colors (keep in sync with logo.tsx)

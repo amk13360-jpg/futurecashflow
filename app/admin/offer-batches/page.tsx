@@ -105,14 +105,6 @@ export default function OfferBatchesPage() {
  const scheduledAt: string | null = sendMode === "scheduled"
  ? (scheduledDate ? new Date(scheduledDate).toISOString() : null)
  : null
- // Log the payload before submit for verification
- const payload = {
- supplierId: selectedSupplier.supplier_id,
- invoiceIds: selectedInvoices,
- sendMode,
- scheduledSendAt: scheduledAt,
- }
- console.log("[OfferBatches UI] CreateBatch payload", JSON.stringify(payload))
  const result = await createOfferBatch(
  selectedSupplier.supplier_id,
  selectedInvoices,

@@ -190,11 +190,11 @@ export default function ApplicationReviewClient({ supplier }: ApplicationReviewC
             <div className="flex items-center gap-3">
               <p className="font-medium text-sm">Mine Approval Status:</p>
               {mineApproved ? (
-                <Badge className="bg-success-bg text-success-foreground border border-success-border">
+                <Badge className="bg-success-bg border border-success-border text-success-foreground">
                   <CheckCircle2 className="mr-1 w-3 h-3" />Approved
                 </Badge>
               ) : (
-                <Badge className="bg-warning-bg text-warning-foreground border border-warning-border">
+                <Badge className="bg-warning-bg border border-warning-border text-warning-foreground">
                   <Clock className="mr-1 w-3 h-3" />Pending
                 </Badge>
               )}
@@ -238,7 +238,7 @@ export default function ApplicationReviewClient({ supplier }: ApplicationReviewC
                 <Button
                   onClick={() => handleUpdateMineCession(true)}
                   disabled={isPending}
-                  className="flex-1 bg-success hover:bg-success/90 text-success-foreground border border-success-border"
+                  className="flex-1 bg-success hover:bg-success/90 border border-success-border text-success-foreground"
                 >
                   <CheckCircle2 className="mr-2 w-4 h-4" />
                   {isPending ? "Saving..." : "Mark Mine as Approved"}

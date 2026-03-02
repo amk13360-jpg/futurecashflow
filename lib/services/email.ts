@@ -82,24 +82,15 @@ export interface SendOTPEmailParams {
 export async function sendOTPEmail(params: SendOTPEmailParams): Promise<boolean> {
   const { recipientEmail, recipientName, otp, expiryMinutes = 10 } = params
 
-  // Detailed logging for debugging
-  console.log(`[Email Service - OTP] ========== SENDING OTP EMAIL ==========`)
-  console.log(`[Email Service - OTP] Recipient: ${recipientEmail}`)
-  console.log(`[Email Service - OTP] Recipient Name: ${recipientName}`)
-  console.log(`[Email Service - OTP] OTP Expiry: ${expiryMinutes} minutes`)
-  console.log(`[Email Service - OTP] Sender Address: ${senderAddress}`)
-  console.log(`[Email Service - OTP] Connection String Configured: ${!!connectionString}`)
-  console.log(`[Email Service - OTP] Connection String Length: ${connectionString?.length || 0}`)
-
   try {
     const emailMessage = {
       senderAddress,
       content: {
-        subject: "Your OTP for Future Cashflow Platform",
+        subject: "Your OTP for Future Mining Finance Platform",
         plainText: `
 Hello ${recipientName},
 
-Your One-Time Password (OTP) for accessing the Future Cashflow Platform is:
+Your One-Time Password (OTP) for accessing the Future Mining Finance (Pty) Ltd platform is:
 
 ${otp}
 
@@ -108,7 +99,7 @@ This OTP will expire in ${expiryMinutes} minutes.
 If you did not request this OTP, please contact your administrator immediately.
 
 Best regards,
-Future Cashflow Team
+Future Mining Finance (Pty) Ltd
         `.trim(),
         html: `
 <!DOCTYPE html>
@@ -181,11 +172,11 @@ Future Cashflow Team
 </head>
 <body>
   <div class="header">
-    <h1>🔐 Future Cashflow</h1>
+    <h1>🔐 Future Mining Finance</h1>
   </div>
   <div class="content">
     <h2>Hello ${recipientName},</h2>
-    <p>Your One-Time Password (OTP) for accessing the <strong>Future Cashflow Platform</strong> is:</p>
+    <p>Your One-Time Password (OTP) for accessing the <strong>Future Mining Finance (Pty) Ltd</strong> platform is:</p>
     
     <div class="otp-box">
       <div class="otp-code">${otp}</div>
@@ -199,11 +190,11 @@ Future Cashflow Team
       If you did not request this OTP, please contact your administrator immediately.
     </div>
     
-    <p>Best regards,<br><strong>Future Cashflow Team</strong></p>
+    <p>Best regards,<br><strong>Future Mining Finance (Pty) Ltd</strong></p>
   </div>
   <div class="footer">
     <p>This is an automated message, please do not reply to this email.</p>
-    <p>© 2025 Future Cashflow. All rights reserved.</p>
+    <p>© 2026 Future Mining Finance (Pty) Ltd. All rights reserved.</p>
   </div>
 </body>
 </html>
@@ -219,20 +210,10 @@ Future Cashflow Team
       },
     }
 
-    // Send the email
-    console.log(`[Email Service - OTP] Creating email client...`)
     const client = getEmailClient()
-    console.log(`[Email Service - OTP] Email client created, starting send operation...`)
     const poller = await client.beginSend(emailMessage)
-
-    // Wait for the operation to complete
-    console.log(`[Email Service - OTP] Polling for send completion...`)
     const result = await poller.pollUntilDone()
 
-    // Check if email was sent successfully
-    console.log(`[Email Service - OTP] Send operation completed. Status: ${result.status}`)
-    console.log(`[Email Service - OTP] Message ID: ${result.id || 'N/A'}`)
-    
     if (result.status === KnownEmailSendStatus.Succeeded) {
       console.log(`[Email Service - OTP] ✅ OTP email sent successfully to ${recipientEmail}`)
       return true
@@ -264,11 +245,11 @@ export async function sendSupplierWelcomeEmail(
     const emailMessage = {
       senderAddress,
       content: {
-        subject: "Action Required: Sign Your Cession Agreement - Future Cashflow",
+        subject: "Action Required: Sign Your Cession Agreement - Future Mining Finance (Pty) Ltd",
         plainText: `
 Hello ${supplierName},
 
-Welcome to the Future Cashflow Platform!
+Welcome to Future Mining Finance (Pty) Ltd!
 
 You have been registered as a supplier. To complete your onboarding, please sign your cession agreement.
 
@@ -281,7 +262,7 @@ This link will expire in 14 days.
 Once you have signed your cession agreement, your application will be reviewed by our team.
 
 Best regards,
-Future Cashflow Team
+Future Mining Finance (Pty) Ltd
         `.trim(),
         html: `
 <!DOCTYPE html>
@@ -367,11 +348,11 @@ Future Cashflow Team
 </head>
 <body>
   <div class="header">
-    <h1>📋 Welcome to Future Cashflow</h1>
+    <h1>📋 Welcome to Future Mining Finance</h1>
   </div>
   <div class="content">
     <h2>Hello ${supplierName},</h2>
-    <p>Welcome to the <strong>Future Cashflow Platform</strong>!</p>
+    <p>Welcome to <strong>Future Mining Finance (Pty) Ltd</strong>!</p>
     <p>You have been registered as a supplier. To complete your onboarding, please follow these steps:</p>
     
     <div class="steps">
@@ -390,11 +371,11 @@ Future Cashflow Team
     
     <p>If you have any questions, please contact your account manager.</p>
     
-    <p>Best regards,<br><strong>Future Cashflow Team</strong></p>
+    <p>Best regards,<br><strong>Future Mining Finance (Pty) Ltd</strong></p>
   </div>
   <div class="footer">
     <p>This is an automated message, please do not reply to this email.</p>
-    <p>© 2025 Future Cashflow. All rights reserved.</p>
+    <p>© 2026 Future Mining Finance (Pty) Ltd. All rights reserved.</p>
   </div>
 </body>
 </html>
@@ -412,9 +393,6 @@ Future Cashflow Team
 
     const client = getEmailClient()
     console.log(`[Email Service] Sending welcome email to: ${recipientEmail}`)
-    console.log(`[Email Service] Sender: ${senderAddress}`)
-    console.log(`[Email Service] Access link: ${accessLink}`)
-    
     const poller = await client.beginSend(emailMessage)
     const result = await poller.pollUntilDone()
 
@@ -616,11 +594,11 @@ export async function sendOfferNotificationEmail(
     const emailMessage = {
       senderAddress,
       content: {
-        subject: `💰 You Have ${offerCount} New Early Payment Offer${offerCount > 1 ? "s" : ""} - Future Cashflow`,
+        subject: `💰 You Have ${offerCount} New Early Payment Offer${offerCount > 1 ? "s" : ""} - Future Mining Finance (Pty) Ltd`,
         plainText: `
 Hello ${supplierName},
 
-Great news! You have ${offerCount} new early payment offer${offerCount > 1 ? "s" : ""} available on the Future Cashflow platform.
+Great news! You have ${offerCount} new early payment offer${offerCount > 1 ? "s" : ""} available on the Future Mining Finance (Pty) Ltd platform.
 
 Total offer value: ${formattedAmount}
 
@@ -631,7 +609,7 @@ ${accessLink}
 This link will expire in 14 days.
 
 Best regards,
-Future Cashflow Team
+Future Mining Finance (Pty) Ltd
         `.trim(),
         html: `
 <!DOCTYPE html>
@@ -721,7 +699,7 @@ Future Cashflow Team
   </div>
   <div class="content">
     <p>Hello <strong>${supplierName}</strong>,</p>
-    <p>You have new early payment offers waiting for your review on the Future Cashflow platform.</p>
+    <p>You have new early payment offers waiting for your review on the Future Mining Finance (Pty) Ltd platform.</p>
 
     <div class="offer-summary">
       <div class="offer-count">${offerCount}</div>
@@ -742,11 +720,11 @@ Future Cashflow Team
       Accept the offers you'd like to receive early payment on. The discounted amount will be paid directly to your bank account.
     </p>
 
-    <p>Best regards,<br><strong>Future Cashflow Team</strong></p>
+    <p>Best regards,<br><strong>Future Mining Finance (Pty) Ltd</strong></p>
   </div>
   <div class="footer">
     <p>This is an automated message, please do not reply to this email.</p>
-    <p>&copy; 2025 Future Cashflow. All rights reserved.</p>
+    <p>&copy; 2026 Future Mining Finance (Pty) Ltd. All rights reserved.</p>
   </div>
 </body>
 </html>
