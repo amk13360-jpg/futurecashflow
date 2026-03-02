@@ -1,4 +1,4 @@
-const mysql = require('mysql2/promise');
+const { getConnection } = require('./db-config');
 
 async function main() {
   const conn = await mysql.createConnection({

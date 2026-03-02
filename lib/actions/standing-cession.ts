@@ -1,7 +1,7 @@
 "use server"
 
 import { query, transaction } from "@/lib/db"
-import { getSupplierSession } from "@/lib/auth/session"
+import { getSupplierSession, getSession } from "@/lib/auth/session"
 import { createAuditLog } from "@/lib/auth/audit"
 import { revalidatePath } from "next/cache"
 import type { RowDataPacket } from "mysql2"
@@ -311,7 +311,12 @@ export async function getSupplierCessionStatus(): Promise<{
 export async function approveStandingCession(
   cessionId: number
 ): Promise<{ success: boolean; error?: string }> {
-  // This would be called by admin
+  // Verify admin authentication
+  const session = await getSession()
+  if (!session || session.role !== 'admin') {
+    return { success: false, error: 'Unauthorized: Admin access required' }
+  }
+
   try {
     await query(
       `UPDATE cession_agreements 
@@ -342,6 +347,12 @@ export async function approveStandingCession(
 export async function approveAddendum(
   addendumId: number
 ): Promise<{ success: boolean; error?: string }> {
+  // Verify admin authentication
+  const adminSession = await getSession()
+  if (!adminSession || adminSession.role !== 'admin') {
+    return { success: false, error: 'Unauthorized: Admin access required' }
+  }
+
   try {
     await query(
       `UPDATE cession_agreements 

@@ -137,9 +137,9 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
             <Logo size="md" variant="adaptive" showText={true} />
           </a>
 
-          <div className="hidden sm:flex flex-col">
-            <span className="text-muted-foreground text-sm">{pageContextSection}</span>
-            <span className="font-medium text-foreground text-sm">{pageTitle}</span>
+          <div className="hidden sm:flex flex-col gap-0.5">
+            <span className="text-muted-foreground text-xs leading-[1.25]">{pageContextSection}</span>
+            <span className="font-medium text-foreground text-sm leading-[1.25]">{pageTitle}</span>
           </div>
         </div>
 
@@ -152,7 +152,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-sm px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${active ? 'font-medium text-foreground bg-accent' : 'text-muted-foreground hover:text-foreground hover:bg-transparent'}`}
+                  className={`inline-flex items-center leading-none text-sm px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${active ? 'font-medium text-foreground bg-accent' : 'text-muted-foreground hover:text-foreground hover:bg-transparent'}`}
                 >
                   {link.label}
                 </Link>
@@ -167,7 +167,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                 <span className="text-muted-foreground">{pageContextSection}</span>
                 <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" aria-hidden />
               </li>
-              <li className="font-medium text-foreground">{pageTitle}</li>
+              <li className="inline-flex items-center leading-none font-medium text-foreground">{pageTitle}</li>
             </ol>
           </nav>
         </div>

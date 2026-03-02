@@ -438,7 +438,7 @@ Future Cashflow Team
 }
 
 /**
- * Send approval email to supplier - access to dashboard for early payment offers
+ * Send approval email to supplier - access to dashboard for early payment requests
  */
 export async function sendSupplierApprovalEmail(
   recipientEmail: string,
@@ -449,13 +449,15 @@ export async function sendSupplierApprovalEmail(
     const emailMessage = {
       senderAddress,
       content: {
-        subject: "🎉 Your Application Has Been Approved - Future Cashflow",
+        subject: "🎉 Your Application Has Been Approved - Future Mining Finance (Pty) Ltd",
         plainText: `
 Hello ${supplierName},
 
-Great news! Your supplier application has been approved.
+Great news! Your supplier application has been approved by Future Mining Finance (Pty) Ltd.
 
-You can now access your dashboard to view and accept early payment offers.
+You can start requesting early payments.
+
+Early payment will be processed within 2-3 business days.
 
 Click the link below to access your dashboard:
 
@@ -464,7 +466,7 @@ ${accessLink}
 This link will expire in 14 days.
 
 Best regards,
-Future Cashflow Team
+Future Mining Finance (Pty) Ltd
         `.trim(),
         html: `
 <!DOCTYPE html>
@@ -518,20 +520,12 @@ Future Cashflow Team
       font-size: 48px;
       margin-bottom: 10px;
     }
-    .features {
+    .info-box {
       background: #f3f4f6;
       padding: 20px;
       border-radius: 8px;
       margin: 20px 0;
-    }
-    .feature {
-      display: flex;
-      align-items: center;
-      margin: 10px 0;
-    }
-    .feature-icon {
-      margin-right: 12px;
-      font-size: 20px;
+      border-left: 4px solid #059669;
     }
     .footer {
       background: #f9fafb;
@@ -551,32 +545,29 @@ Future Cashflow Team
   </div>
   <div class="content">
     <h2>Hello ${supplierName},</h2>
-    
+
     <div class="success-box">
       <div class="success-icon">🎉</div>
       <h3 style="margin: 0; color: #059669;">Your supplier application has been approved!</h3>
     </div>
-    
-    <p>You can now access your dashboard and start receiving early payment offers.</p>
-    
-    <div class="features">
-      <h4 style="margin-top: 0;">What you can do now:</h4>
-      <div class="feature"><span class="feature-icon">💰</span> View and accept early payment offers</div>
-      <div class="feature"><span class="feature-icon">📊</span> Track your payment history</div>
-      <div class="feature"><span class="feature-icon">👤</span> Manage your supplier profile</div>
+
+    <p>You can start requesting early payments.</p>
+
+    <div class="info-box">
+      <p style="margin: 0;">⏱️ <strong>Early payment will be processed within 2-3 business days.</strong></p>
     </div>
-    
+
     <div style="text-align: center;">
       <a href="${accessLink}" class="button">Access Your Dashboard</a>
     </div>
-    
+
     <p>If you have any questions, please contact your account manager.</p>
-    
-    <p>Best regards,<br><strong>Future Cashflow Team</strong></p>
+
+    <p>Best regards,<br><strong>Future Mining Finance (Pty) Ltd</strong></p>
   </div>
   <div class="footer">
     <p>This is an automated message, please do not reply to this email.</p>
-    <p>© 2025 Future Cashflow. All rights reserved.</p>
+    <p>© 2026 Future Mining Finance (Pty) Ltd. All rights reserved.</p>
   </div>
 </body>
 </html>

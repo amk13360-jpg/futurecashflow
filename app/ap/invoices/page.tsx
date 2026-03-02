@@ -58,6 +58,24 @@ export default function InvoicesPage() {
 
  const totalAmount = invoices.reduce((sum: number, inv: any) => sum + Number(inv.amount || 0), 0)
 
+ function getOfferStatus(invoice: any): { label: string; className: string } {
+ const status = (invoice.status || '').toLowerCase()
+ const offerCount = Number(invoice.offer_count || 0)
+ if (status === 'paid') {
+ return { label: 'Paid', className: 'bg-success-bg text-success-foreground border border-success-border' }
+ }
+ if (status === 'accepted') {
+ return { label: 'Accepted', className: 'bg-info-bg text-info-foreground border border-info-border' }
+ }
+ if (offerCount > 0 || status === 'offered') {
+ return { label: 'Offer Sent', className: 'bg-warning-bg text-warning-foreground border border-warning-border' }
+ }
+ if (status === 'available' || status === 'matched') {
+ return { label: 'Eligible', className: 'bg-info-bg text-info-foreground border border-info-border' }
+ }
+ return { label: 'Not Eligible', className: 'bg-muted text-muted-foreground border' }
+ }
+
  return (
  <div className="bg-muted min-h-screen text-foreground">
 
@@ -154,8 +172,8 @@ export default function InvoicesPage() {
  <th className="px-4 py-4 font-semibold text-muted-foreground text-sm text-left">Vendor</th>
  <th className="px-4 py-4 font-semibold text-muted-foreground text-sm text-left">Amount</th>
  <th className="px-4 py-4 font-semibold text-muted-foreground text-sm text-left">Due Date</th>
- <th className="px-4 py-4 font-semibold text-muted-foreground text-sm text-left">Status</th>
- <th className="px-4 py-4 font-semibold text-muted-foreground text-sm text-left">Offers</th>
+ <th className="px-4 py-4 font-semibold text-muted-foreground text-sm text-left">Upload Date</th>
+ <th className="px-4 py-4 font-semibold text-muted-foreground text-sm text-left">Offer Status</th>
  <th className="px-4 py-4 font-semibold text-muted-foreground text-sm text-right">Actions</th>
  </tr>
  </thead>
@@ -185,20 +203,15 @@ export default function InvoicesPage() {
  </div>
  </td>
  <td className="px-4 py-4">
- <Badge
- variant={invoice.status === "offered" ? "default" : invoice.status === "matched" ? "secondary" : "outline"}
- >
- {invoice.status}
- </Badge>
+ <div className="text-muted-foreground text-sm">
+ {invoice.uploaded_at ? new Date(invoice.uploaded_at).toLocaleDateString("en-ZA") : '—'}
+ </div>
  </td>
  <td className="px-4 py-4">
- {invoice.offer_count > 0 ? (
- <Badge variant="outline" className="gap-1">
- {invoice.offer_count} offer{invoice.offer_count !== 1 ? "s" : ""}
- </Badge>
- ) : (
- <span className="text-muted-foreground text-sm">No offers</span>
- )}
+ {(() => {
+ const { label, className } = getOfferStatus(invoice);
+ return <Badge className={className}>{label}</Badge>;
+ })()}
  </td>
  <td className="px-4 py-4 text-right">
  <Button

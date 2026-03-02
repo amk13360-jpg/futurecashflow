@@ -95,7 +95,8 @@ export async function POST(request: NextRequest) {
     const otp = generateOTP()
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
 
-    // Store OTP in database
+    // Store OTP in database — invalidate any existing unused OTPs first (prevent replay)
+    await query("DELETE FROM otp_codes WHERE user_id = ? AND used_at IS NULL", [user.user_id])
     await query("INSERT INTO otp_codes (user_id, code, expires_at) VALUES (?, ?, ?)", [user.user_id, otp, expiresAt])
 
     // Send OTP via Azure Communication Services

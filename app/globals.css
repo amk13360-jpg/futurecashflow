@@ -422,11 +422,15 @@ p {
   }
 }
 
-/* Minimum touch target size (44x44px per WCAG 2.2) */
-button, 
-[role="button"], 
-a, 
-input[type="checkbox"], 
+/* Minimum touch target size (44x44px per WCAG 2.2)
+ * NOTE: <a> is intentionally excluded here. Applying min-height to all
+ * anchor elements forces navlinks, breadcrumbs, and inline text links to
+ * 44px tall, creating the "floating text" visual effect inside headers.
+ * Navigation links achieve accessible sizing through explicit padding.
+ */
+button,
+[role="button"],
+input[type="checkbox"],
 input[type="radio"],
 [role="tab"],
 [role="menuitem"] {
@@ -434,18 +438,163 @@ input[type="radio"],
   min-width: 44px;
 }
 
-/* Exception for inline text links */
-a:not([class]) {
-  min-height: auto;
-  min-width: auto;
+/* Shadcn buttons carry explicit h-{n} heights set by CVA size variants.
+ * Prevent the touch-target floor from overriding those precise sizes.  */
+[data-slot="button"] {
+  min-height: unset;
+  min-width: unset;
 }
 
 /* ========================================================================
    SMOOTH TRANSITIONS
    ======================================================================== */
 
+/* Use explicit properties instead of `all` — avoids height/size
+ * transitions that can cause subtle layout drift during hover.         */
 button, a, [role="button"] {
-  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.15s cubic-bezier(0.4, 0, 0.2, 1),
+              outline-color 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========================================================================
+   VERTICAL ALIGNMENT SYSTEM
+   8px grid · flex-based centering · zero magic numbers
+   ======================================================================== */
+
+/* --- Standard height tokens ------------------------------------------- *
+ * Single source of truth for every repeating UI row height.            *
+ * Reference these in component files instead of hardcoded px values.   */
+:root {
+  --height-navbar:     64px;   /* fixed/sticky top bar  (h-16)    */
+  --height-btn-xl:     48px;   /* button size="xl"                */
+  --height-btn-lg:     44px;   /* button size="lg"                */
+  --height-btn-md:     40px;   /* button size="default" (h-10)    */
+  --height-btn-sm:     36px;   /* button size="sm"      (h-9)     */
+  --height-input:      40px;   /* text input / select   (h-10)    */
+  --height-table-head: 40px;   /* thead row             (h-10)    */
+  --height-table-row:  52px;   /* tbody data row                  */
+  --height-sidebar:    40px;   /* sidebar nav item                */
+  --height-breadcrumb: 28px;   /* breadcrumb inline bar           */
+  --height-tab:        36px;   /* tab trigger row                 */
+}
+
+/* --- SVG / icon alignment --------------------------------------------- *
+ * Problem: inline SVGs render below the text baseline by default,       *
+ * creating a 1–3px downward drift relative to adjacent text.            *
+ *                                                                        *
+ * Solution:                                                              *
+ *   block context  → vertical-align: middle snaps it to text midline    *
+ *   flex context   → parent align-items: center handles it; use block   */
+svg {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
+/* Inside flex containers, revert to block — flex alignment is superior  */
+.flex  > svg,
+button > svg,
+a      > svg,
+li     > svg,
+label  > svg,
+td     > svg,
+th     > svg,
+[role] > svg {
+  display: block;
+  vertical-align: unset;
+}
+
+/* --- Prevent line-height drift on interactive elements ---------------- *
+ * Browser "normal" line-height depends on the font metric and varies    *
+ * from ~1.14 (system-ui) to ~1.5 (serif). Pinning to 1.25 ensures text *
+ * centres predictably inside every fixed-height interactive container. */
+button,
+[role="button"],
+[role="tab"],
+[role="menuitem"],
+label {
+  line-height: 1.25;
+}
+
+/* --- Input / select text alignment ------------------------------------ */
+input,
+select,
+textarea,
+[data-slot="select-trigger"],
+[data-slot="input"] {
+  line-height: 1.25;
+  vertical-align: middle;
+}
+
+/* --- Table cell vertical centering ------------------------------------ *
+ * align-middle is the correct value for <td>/<th>; enforcing it here    *
+ * overrides any component-level `align-top` regressions.               */
+[data-slot="table-cell"],
+[data-slot="table-head"] {
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+/* Consistent row heights — eliminates rows that are taller/shorter      *
+ * than siblings when cell content varies.                               */
+[data-slot="table-row"] {
+  height: var(--height-table-row);
+}
+[data-slot="table-header"] [data-slot="table-row"] {
+  height: var(--height-table-head);
+}
+
+/* --- Navigation link alignment ---------------------------------------- *
+ * <a> inside headers must inline-flex and align-items: center so that   *
+ * text and any adjacent icon/badge float neither above nor below each   *
+ * other. Without this, text sits at the top of the link's line box.    */
+header nav > a,
+header nav > button,
+header > div > div > a,
+header > div > div > nav a,
+header > div > div > nav button {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+/* --- Breadcrumb items ------------------------------------------------- *
+ * Each <li>, <a>, and <span> inside a breadcrumb must flex-center so     *
+ * the separator chevron and label text share the same visual midline.  */
+[aria-label="Breadcrumb"] ol,
+[aria-label="Breadcrumb"] li,
+[aria-label="Breadcrumb"] a,
+[aria-label="Breadcrumb"] span {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+/* --- Badge inline alignment ------------------------------------------- *
+ * Badges placed next to text inside a non-flex container drift 2–4px    *
+ * upward. vertical-align: middle anchors them to the text midline.     */
+[data-slot="badge"] {
+  vertical-align: middle;
+  line-height: 1;
+}
+
+/* --- Card title safe line-height -------------------------------------- *
+ * leading-none (1.0) clips ascenders / descenders on most fonts.        *
+ * 1.25 is the tightest value that is safe across all weights.          */
+[data-slot="card-title"] {
+  line-height: 1.25 !important;
+}
+
+/* --- Sidebar navigation items ----------------------------------------- */
+[data-sidebar="menu-button"],
+[data-sidebar="menu-item"] {
+  display: flex;
+  align-items: center;
 }
 
 /* ========================================================================

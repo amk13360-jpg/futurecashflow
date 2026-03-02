@@ -1,14 +1,8 @@
-const mysql = require('mysql2/promise');
+const { getConnection } = require('./db-config');
 const fs = require('fs');
 
 async function extractSchema() {
-  const conn = await mysql.createConnection({
-    host: 'futurefinancecashflow.mysql.database.azure.com',
-    user: 'FMadmin',
-    password: 'REDACTED_DB_PASSWORD',
-    database: 'fmf_scf_platform',
-    ssl: { rejectUnauthorized: true }
-  });
+  const conn = await getConnection();
 
   let sql = '-- =====================================================\n';
   sql += '-- Database Schema Export: fmf_scf_platform\n';

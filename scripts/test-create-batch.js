@@ -1,13 +1,7 @@
-const mysql = require('mysql2/promise');
+const { getConnection } = require('./db-config');
 
 async function test() {
-  const conn = await mysql.createConnection({
-    host: 'futurefinancecashflow.mysql.database.azure.com',
-    user: 'FMadmin',
-    password: 'REDACTED_DB_PASSWORD',
-    database: 'fmf_scf_platform',
-    ssl: { rejectUnauthorized: true }
-  });
+  const conn = await getConnection();
   
   console.log('=== SIMULATING CREATE BATCH FOR MOKWENA (supplier_id=89) ===\n');
   

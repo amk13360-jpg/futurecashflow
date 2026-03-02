@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { 
  Building2, ArrowLeft, Edit, Users, FileText, History, 
  TrendingUp, CheckCircle2, Clock, AlertCircle,
- Upload, Eye, Trash2, Plus, Mail, Key, UserPlus
+ Upload, Eye, Trash2, Plus, Mail, Key, UserPlus, Download
 } from 'lucide-react';
 import { RandIcon } from '@/components/ui/rand-icon';
 import { Button } from '@/components/ui/button';
@@ -273,6 +273,10 @@ export default function BuyerDetailsPage() {
  'trade_references': 'Trade References',
  'director_id': 'Director ID',
  'resolution': 'Board Resolution',
+ 'mine_permit': 'Mine Permit',
+ 'environmental_clearance': 'Environmental Clearance',
+ 'royalty_agreement': 'Royalty Agreement',
+ 'supply_agreement': 'Supply Agreement',
  'other': 'Other'
  };
  return labels[type] || type;
@@ -547,8 +551,16 @@ export default function BuyerDetailsPage() {
  <p className="font-medium">{buyer.rate_card_name || 'Default'}</p>
  </div>
  <div>
- <Label className="text-muted-foreground">Payment Capture Schedule</Label>
- <p className="font-medium capitalize">{buyer.payment_capture_schedule || 'daily'}</p>
+ <Label className="text-muted-foreground">Payment Processing Schedule</Label>
+ {(buyer as any).payment_capture_type ? (
+ <p className="font-medium">
+ {(buyer as any).payment_capture_type === 'monthly'
+ ? `Monthly — Day ${(buyer as any).payment_capture_value} of each month`
+ : `Weekly — Every ${(buyer as any).payment_capture_value}`}
+ </p>
+ ) : (
+ <p className="text-muted-foreground text-sm italic">Not configured</p>
+ )}
  </div>
  <div>
  <Label className="text-muted-foreground">Risk Tier</Label>
@@ -700,10 +712,11 @@ export default function BuyerDetailsPage() {
  <Table>
  <TableHeader>
  <TableRow>
- <TableHead>Document</TableHead>
- <TableHead>Type</TableHead>
+ <TableHead>File Name</TableHead>
+ <TableHead>Document Type</TableHead>
+ <TableHead>Uploaded By</TableHead>
  <TableHead>Status</TableHead>
- <TableHead>Uploaded</TableHead>
+ <TableHead>Upload Date</TableHead>
  <TableHead>Expires</TableHead>
  <TableHead className="text-right">Actions</TableHead>
  </TableRow>
@@ -715,6 +728,9 @@ export default function BuyerDetailsPage() {
  <p className="font-medium">{doc.file_name || doc.document_name}</p>
  </TableCell>
  <TableCell>{getDocTypeLabel(doc.document_type)}</TableCell>
+ <TableCell>
+ <span className="text-sm">{(doc as any).uploaded_by_name || '—'}</span>
+ </TableCell>
  <TableCell>
  {doc.verification_status === 'verified' ? (
  <Badge className="bg-success-bg text-success-foreground">Verified</Badge>
@@ -730,16 +746,31 @@ export default function BuyerDetailsPage() {
  <TableCell>
  {doc.expiry_date 
  ? new Date(doc.expiry_date).toLocaleDateString()
- : '-'
+ : '—'
  }
  </TableCell>
  <TableCell className="space-x-1 text-right">
  <Button 
  variant="ghost" 
  size="icon"
+ title="View"
  onClick={() => window.open(doc.file_url, '_blank')}
  >
  <Eye className="w-4 h-4" />
+ </Button>
+ <Button
+ variant="ghost"
+ size="icon"
+ title="Download"
+ onClick={() => {
+ const a = document.createElement('a');
+ a.href = doc.file_url;
+ a.download = doc.file_name || 'document';
+ a.target = '_blank';
+ a.click();
+ }}
+ >
+ <Download className="w-4 h-4" />
  </Button>
  {doc.verification_status === 'pending' && (
  <>
@@ -944,6 +975,10 @@ export default function BuyerDetailsPage() {
  <SelectItem value="trade_references">Trade References</SelectItem>
  <SelectItem value="director_id">Director ID</SelectItem>
  <SelectItem value="resolution">Board Resolution</SelectItem>
+ <SelectItem value="mine_permit">Mine Permit</SelectItem>
+ <SelectItem value="environmental_clearance">Environmental Clearance</SelectItem>
+ <SelectItem value="royalty_agreement">Royalty Agreement</SelectItem>
+ <SelectItem value="supply_agreement">Supply Agreement</SelectItem>
  <SelectItem value="other">Other</SelectItem>
  </SelectContent>
  </Select>
@@ -960,7 +995,7 @@ export default function BuyerDetailsPage() {
  id="doc-file-input"
  type="file"
  className="hidden"
- accept=".pdf,.png,.jpg,.jpeg"
+ accept=".pdf,.docx,.doc,.xlsx,.xls,.png,.jpg,.jpeg"
  onChange={(e) => {
  const file = e.target.files?.[0];
  if (file) {
@@ -987,7 +1022,7 @@ export default function BuyerDetailsPage() {
  Click to upload or drag and drop
  </p>
  <p className="mt-1 text-muted-foreground text-xs">
- PDF, PNG, JPG up to 10MB
+ PDF, DOCX, XLSX, PNG, JPG up to 10MB
  </p>
  </>
  )}

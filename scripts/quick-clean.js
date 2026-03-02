@@ -1,10 +1,6 @@
-const mysql = require('mysql2/promise');
+const { getConnection } = require('./db-config');
 (async () => {
-  const conn = await mysql.createConnection({
-    host: 'futurefinancecashflow.mysql.database.azure.com',
-    user: 'FMadmin', password: 'REDACTED_DB_PASSWORD',
-    database: 'fmf_scf_platform', ssl: { rejectUnauthorized: true }
-  });
+  const conn = await getConnection();
   console.log('Cleaning batch 53...');
   await conn.execute('DELETE FROM offers WHERE batch_id = 53');
   await conn.execute('DELETE FROM offer_batches WHERE batch_id = 53');

@@ -271,9 +271,19 @@ export async function createOfferBatch(
 
           // Calculate discount on full invoice amount (80% paid immediately, 20% paid on due date)
           const invoiceAmount = Number(invoice.amount)
+          if (isNaN(invoiceAmount) || invoiceAmount <= 0) {
+            errors.push(`Invoice ${invoiceId}: Invalid or negative amount (${invoice.amount})`)
+            continue
+          }
           const baseAmount = invoiceAmount
-          const discountAmount = (baseAmount * annualRate * daysToMaturity) / (365 * 100)
-          const netPaymentAmount = baseAmount - discountAmount
+          const rawDiscount = (baseAmount * annualRate * daysToMaturity) / (365 * 100)
+          const discountAmount = Math.round(rawDiscount * 100) / 100
+          const netPaymentAmount = Math.round((baseAmount - discountAmount) * 100) / 100
+
+          if (discountAmount >= invoiceAmount) {
+            errors.push(`Invoice ${invoiceId}: Discount (${discountAmount}) exceeds invoice amount (${invoiceAmount})`)
+            continue
+          }
 
           // Create offer with batch_id
           // NOTE: The offers table enum only allows: 'sent','opened','accepted','rejected','expired'

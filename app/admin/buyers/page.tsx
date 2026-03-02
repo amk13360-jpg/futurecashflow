@@ -6,7 +6,7 @@ import {
  Building2, Plus, Search, Filter, MoreVertical, 
  CheckCircle2, XCircle, AlertCircle, Clock, Users,
  FileText, TrendingUp, Edit, Eye, Pause,
- ChevronRight, ChevronLeft, MapPin, Phone, Mail, Settings2, Check, X, ArrowLeft
+ ChevronRight, ChevronLeft, MapPin, Phone, Mail, Settings2, Check, X, ArrowLeft, Calendar
 } from 'lucide-react';
 import { RandIcon } from '@/components/ui/rand-icon';
 import { Button } from '@/components/ui/button';
@@ -93,12 +93,9 @@ export default function BuyersPage() {
  max_invoice_amount: 5000000,
  min_days_to_maturity: 7,
  max_days_to_maturity: 90,
- active_status: 'active'
+ active_status: 'active',
+ payment_capture_schedule: 'daily'
  });
- 
- // default payment capture schedule
-  // options: immediate, daily, weekly, monthly
-  if (!formData.payment_capture_schedule) formData.payment_capture_schedule = 'daily';
 
  const createSteps = [
  { step: 1, label: 'Company', icon: Building2 },
@@ -239,7 +236,9 @@ export default function BuyersPage() {
  min_days_to_maturity: 7,
  max_days_to_maturity: 90,
 	active_status: 'active',
-	payment_capture_schedule: 'daily'
+	 payment_capture_schedule: 'daily',
+ payment_capture_type: undefined,
+ payment_capture_value: undefined,
  });
  setCreateStep(1);
  setFormErrors({});
@@ -248,7 +247,7 @@ export default function BuyersPage() {
  // Validate current step
  function validateStep(step: number): boolean {
  const errors: Record<string, string> = {};
- 
+
  if (step === 1) {
  if (!formData.name?.trim()) errors.name = 'Business name is required';
  if (!formData.code?.trim()) errors.code = 'Buyer code is required';
@@ -274,6 +273,18 @@ export default function BuyersPage() {
  if (formData.min_days_to_maturity && formData.max_days_to_maturity) {
  if (formData.min_days_to_maturity >= formData.max_days_to_maturity) {
  errors.min_days_to_maturity = 'Min must be less than max';
+ }
+ }
+ if (!formData.payment_capture_type) {
+ errors.payment_capture_type = 'Payment frequency is required';
+ } else if (formData.payment_capture_type === 'weekly') {
+ if (!formData.payment_capture_value) {
+ errors.payment_capture_value = 'Please select a day of the week';
+ }
+ } else if (formData.payment_capture_type === 'monthly') {
+ const day = Number(formData.payment_capture_value);
+ if (!formData.payment_capture_value || isNaN(day) || day < 1 || day > 31) {
+ errors.payment_capture_value = 'Please enter a valid day between 1 and 31';
  }
  }
  }
@@ -320,7 +331,9 @@ export default function BuyersPage() {
  max_days_to_maturity: buyer.max_days_to_maturity,
  credit_limit: buyer.credit_limit ? Number(buyer.credit_limit) : undefined,
  rate_card_id: buyer.rate_card_id || undefined
- , payment_capture_schedule: buyer.payment_capture_schedule || 'daily'
+ , payment_capture_schedule: buyer.payment_capture_schedule || 'daily',
+ payment_capture_type: (buyer.payment_capture_type as 'weekly' | 'monthly' | undefined) || undefined,
+ payment_capture_value: buyer.payment_capture_value || undefined,
  });
  setShowEditDialog(true);
  }
@@ -1069,24 +1082,83 @@ export default function BuyersPage() {
  </Select>
  <p className="text-muted-foreground text-xs">Can be assigned later after activation</p>
  </div>
+ </CardContent>
+ </Card>
+
+ {/* Payment Processing Schedule */}
+ <Card className="shadow-sm border-border/60">
+ <CardHeader className="pb-4">
+ <CardTitle className="flex items-center gap-2 text-base">
+ <Calendar className="w-4 h-4" />
+ Payment Processing Schedule <span className="text-error text-sm">*</span>
+ </CardTitle>
+ <CardDescription>Select when the mine processes its payments.</CardDescription>
+ </CardHeader>
+ <CardContent className="gap-4 grid grid-cols-2">
  <div className="space-y-2">
- <Label>Payment Capture Schedule</Label>
+ <Label className="flex items-center gap-1">
+ Payment Frequency <span className="text-error">*</span>
+ </Label>
  <Select
-	 value={formData.payment_capture_schedule || 'daily'}
-	 onValueChange={(v) => setFormData({...formData, payment_capture_schedule: v as any})}
+ value={formData.payment_capture_type || ''}
+ onValueChange={(v) => setFormData({...formData, payment_capture_type: v as 'weekly' | 'monthly', payment_capture_value: ''})}
  >
-	 <SelectTrigger>
-		 <SelectValue placeholder="Select schedule" />
-	 </SelectTrigger>
-	 <SelectContent>
-		 <SelectItem value="immediate">Immediate</SelectItem>
-		 <SelectItem value="daily">Daily</SelectItem>
-		 <SelectItem value="weekly">Weekly</SelectItem>
-		 <SelectItem value="monthly">Monthly</SelectItem>
-	 </SelectContent>
+ <SelectTrigger className={formErrors.payment_capture_type ? 'border-error-border' : ''}>
+ <SelectValue placeholder="Select frequency" />
+ </SelectTrigger>
+ <SelectContent>
+ <SelectItem value="weekly">Weekly</SelectItem>
+ <SelectItem value="monthly">Monthly</SelectItem>
+ </SelectContent>
  </Select>
- <p className="text-muted-foreground text-xs">When to capture payments for this buyer</p>
+ {formErrors.payment_capture_type && <p className="text-error text-sm">{formErrors.payment_capture_type}</p>}
  </div>
+
+ {formData.payment_capture_type === 'weekly' && (
+ <div className="space-y-2">
+ <Label className="flex items-center gap-1">
+ Day of Week <span className="text-error">*</span>
+ </Label>
+ <Select
+ value={formData.payment_capture_value || ''}
+ onValueChange={(v) => setFormData({...formData, payment_capture_value: v})}
+ >
+ <SelectTrigger className={formErrors.payment_capture_value ? 'border-error-border' : ''}>
+ <SelectValue placeholder="Select day" />
+ </SelectTrigger>
+ <SelectContent>
+ {['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map(d => (
+ <SelectItem key={d} value={d}>{d}</SelectItem>
+ ))}
+ </SelectContent>
+ </Select>
+ {formErrors.payment_capture_value && <p className="text-error text-sm">{formErrors.payment_capture_value}</p>}
+ </div>
+ )}
+
+ {formData.payment_capture_type === 'monthly' && (
+ <div className="space-y-2">
+ <Label className="flex items-center gap-1">
+ Day of Month (1–31) <span className="text-error">*</span>
+ </Label>
+ <Input
+ type="number"
+ min={1}
+ max={31}
+ value={formData.payment_capture_value || ''}
+ onChange={(e) => setFormData({...formData, payment_capture_value: e.target.value})}
+ placeholder="e.g., 15"
+ className={formErrors.payment_capture_value ? 'border-error-border' : ''}
+ />
+ {formErrors.payment_capture_value && <p className="text-error text-sm">{formErrors.payment_capture_value}</p>}
+ </div>
+ )}
+
+ {!formData.payment_capture_type && (
+ <div className="flex items-center text-muted-foreground text-sm">
+ Select a frequency to configure the payment day.
+ </div>
+ )}
  </CardContent>
  </Card>
  </div>
@@ -1201,8 +1273,18 @@ export default function BuyersPage() {
  <span>{formData.credit_limit ? `R${formData.credit_limit.toLocaleString()}` : 'No limit'}</span>
  </div>
  <div className="flex justify-between">
-  <span className="text-muted-foreground">Payment Capture Schedule</span>
-  <span className="capitalize">{formData.payment_capture_schedule || 'daily'}</span>
+ <span className="text-muted-foreground">Payment Frequency</span>
+ <span className="capitalize">{formData.payment_capture_type || <span className="text-error text-xs">Not set</span>}</span>
+ </div>
+ <div className="flex justify-between">
+ <span className="text-muted-foreground">Payment Day</span>
+ <span>
+ {formData.payment_capture_value
+ ? (formData.payment_capture_type === 'monthly'
+ ? `Day ${formData.payment_capture_value} of each month`
+ : `Every ${formData.payment_capture_value}`)
+ : <span className="text-error text-xs">Not set</span>}
+ </span>
  </div>
  </CardContent>
  </Card>
@@ -1520,23 +1602,81 @@ export default function BuyersPage() {
  </SelectContent>
  </Select>
  </div>
- <div className="space-y-2">
- <Label>Payment Capture Schedule</Label>
- <Select
-	 value={formData.payment_capture_schedule || 'daily'}
-	 onValueChange={(v) => setFormData({...formData, payment_capture_schedule: v as any})}
- >
-	 <SelectTrigger>
-		 <SelectValue placeholder="Select schedule" />
-	 </SelectTrigger>
-	 <SelectContent>
-		 <SelectItem value="immediate">Immediate</SelectItem>
-		 <SelectItem value="daily">Daily</SelectItem>
-		 <SelectItem value="weekly">Weekly</SelectItem>
-		 <SelectItem value="monthly">Monthly</SelectItem>
-	 </SelectContent>
- </Select>
  </div>
+ </div>
+
+ {/* Payment Processing Schedule */}
+ <div className="mt-4 pt-4 border-t">
+ <div className="flex items-center gap-2 mb-1">
+ <Calendar className="w-4 h-4 text-muted-foreground" />
+ <h4 className="font-medium text-sm">Payment Processing Schedule</h4>
+ </div>
+ <p className="mb-4 text-muted-foreground text-xs">Select when the mine processes its payments.</p>
+ <div className="gap-4 grid grid-cols-2">
+ <div className="space-y-2">
+ <Label className="flex items-center gap-1">
+ Payment Frequency <span className="text-error">*</span>
+ </Label>
+ <Select
+ value={formData.payment_capture_type || ''}
+ onValueChange={(v) => setFormData({...formData, payment_capture_type: v as 'weekly' | 'monthly', payment_capture_value: ''})}
+ >
+ <SelectTrigger className={formErrors.payment_capture_type ? 'border-error-border' : ''}>
+ <SelectValue placeholder="Select frequency" />
+ </SelectTrigger>
+ <SelectContent>
+ <SelectItem value="weekly">Weekly</SelectItem>
+ <SelectItem value="monthly">Monthly</SelectItem>
+ </SelectContent>
+ </Select>
+ {formErrors.payment_capture_type && <p className="text-error text-sm">{formErrors.payment_capture_type}</p>}
+ </div>
+
+ {formData.payment_capture_type === 'weekly' && (
+ <div className="space-y-2">
+ <Label className="flex items-center gap-1">
+ Day of Week <span className="text-error">*</span>
+ </Label>
+ <Select
+ value={formData.payment_capture_value || ''}
+ onValueChange={(v) => setFormData({...formData, payment_capture_value: v})}
+ >
+ <SelectTrigger className={formErrors.payment_capture_value ? 'border-error-border' : ''}>
+ <SelectValue placeholder="Select day" />
+ </SelectTrigger>
+ <SelectContent>
+ {['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map(d => (
+ <SelectItem key={d} value={d}>{d}</SelectItem>
+ ))}
+ </SelectContent>
+ </Select>
+ {formErrors.payment_capture_value && <p className="text-error text-sm">{formErrors.payment_capture_value}</p>}
+ </div>
+ )}
+
+ {formData.payment_capture_type === 'monthly' && (
+ <div className="space-y-2">
+ <Label className="flex items-center gap-1">
+ Day of Month (1–31) <span className="text-error">*</span>
+ </Label>
+ <Input
+ type="number"
+ min={1}
+ max={31}
+ value={formData.payment_capture_value || ''}
+ onChange={(e) => setFormData({...formData, payment_capture_value: e.target.value})}
+ placeholder="e.g., 15"
+ className={formErrors.payment_capture_value ? 'border-error-border' : ''}
+ />
+ {formErrors.payment_capture_value && <p className="text-error text-sm">{formErrors.payment_capture_value}</p>}
+ </div>
+ )}
+
+ {!formData.payment_capture_type && (
+ <div className="flex items-center text-muted-foreground text-sm">
+ Select a frequency to configure the payment day.
+ </div>
+ )}
  </div>
  </div>
  </TabsContent>

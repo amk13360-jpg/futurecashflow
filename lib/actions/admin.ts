@@ -312,7 +312,8 @@ export async function getSupplierApplicationById(supplierId: number) {
 
   try {
     const results = await query(
-      `SELECT s.*, b.name AS buyer_name
+      `SELECT s.*, b.name AS buyer_name,
+              s.mine_cession_approved, s.mine_approval_date, s.bank_change_effective_date
        FROM suppliers s
        LEFT JOIN buyers b ON s.company_code = b.code
        WHERE s.supplier_id = ?
@@ -446,6 +447,58 @@ export async function getRecentPayments() {
   } catch (error) {
     console.error("[v0] Error fetching recent payments:", error)
     throw error
+  }
+}
+
+/**
+ * ADMIN ONLY: Update mine cession approval status and bank change effective date
+ */
+export async function updateMineCessionStatus(
+  supplierId: number,
+  data: {
+    mine_cession_approved: boolean;
+    mine_approval_date?: string | null;
+    bank_change_effective_date?: string | null;
+  }
+): Promise<{ success: boolean; error?: string }> {
+  const session = await getSession()
+  if (!session || session.role !== "admin") {
+    return { success: false, error: "Unauthorized" }
+  }
+
+  try {
+    await query(
+      `UPDATE suppliers
+       SET mine_cession_approved = ?,
+           mine_approval_date = ?,
+           bank_change_effective_date = ?,
+           updated_at = NOW()
+       WHERE supplier_id = ?`,
+      [
+        data.mine_cession_approved ? 1 : 0,
+        data.mine_cession_approved ? (data.mine_approval_date || new Date().toISOString().slice(0, 10)) : null,
+        data.bank_change_effective_date || null,
+        supplierId,
+      ]
+    )
+
+    await createAuditLog({
+      userId: session.userId,
+      userType: "admin",
+      action: data.mine_cession_approved ? "MINE_CESSION_APPROVED" : "MINE_CESSION_PENDING",
+      entityType: "supplier",
+      entityId: supplierId,
+      details: JSON.stringify({
+        mine_cession_approved: data.mine_cession_approved,
+        mine_approval_date: data.mine_approval_date,
+        bank_change_effective_date: data.bank_change_effective_date,
+      }),
+    })
+
+    return { success: true }
+  } catch (error: any) {
+    console.error("[Admin] Error updating mine cession status:", error)
+    return { success: false, error: error.message || "Failed to update mine cession status" }
   }
 }
 

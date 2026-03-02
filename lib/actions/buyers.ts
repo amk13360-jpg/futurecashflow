@@ -36,6 +36,8 @@ export interface Buyer {
   current_exposure: number;
   rate_card_id: number | null;
   payment_capture_schedule: 'immediate' | 'daily' | 'weekly' | 'monthly';
+  payment_capture_type: 'weekly' | 'monthly' | null;
+  payment_capture_value: string | null;
   created_by: number | null;
   approved_by: number | null;
   approved_at: Date | null;
@@ -76,6 +78,8 @@ export interface CreateBuyerInput {
   credit_limit?: number;
   rate_card_id?: number;
   payment_capture_schedule?: 'immediate' | 'daily' | 'weekly' | 'monthly';
+  payment_capture_type?: 'weekly' | 'monthly';
+  payment_capture_value?: string;
   active_status?: 'draft' | 'active';
 }
 
@@ -223,6 +227,21 @@ export async function createBuyer(input: CreateBuyerInput): Promise<{ success: b
       return { success: false, message: 'A buyer with this code already exists' };
     }
 
+    // Validate payment capture schedule
+    if (input.payment_capture_type) {
+      const VALID_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      if (input.payment_capture_type === 'weekly') {
+        if (!input.payment_capture_value || !VALID_DAYS.includes(input.payment_capture_value)) {
+          return { success: false, message: 'A valid weekday is required for weekly payment capture' };
+        }
+      } else if (input.payment_capture_type === 'monthly') {
+        const day = Number(input.payment_capture_value);
+        if (!input.payment_capture_value || isNaN(day) || day < 1 || day > 31) {
+          return { success: false, message: 'Day of month must be a number between 1 and 31' };
+        }
+      }
+    }
+
     // Get default rate card if not specified
     let rateCardId = input.rate_card_id;
     if (!rateCardId) {
@@ -242,8 +261,10 @@ export async function createBuyer(input: CreateBuyerInput): Promise<{ success: b
         primary_contact_name, contact_email, contact_phone,
         financial_contact_name, financial_contact_email,
         min_invoice_amount, max_invoice_amount, min_days_to_maturity, max_days_to_maturity,
-        credit_limit, rate_card_id, payment_capture_schedule, created_by, active_status
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        credit_limit, rate_card_id, payment_capture_schedule,
+        payment_capture_type, payment_capture_value,
+        created_by, active_status
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const result = await query(sql, [
@@ -270,6 +291,8 @@ export async function createBuyer(input: CreateBuyerInput): Promise<{ success: b
       input.credit_limit || null,
       rateCardId || null,
       input.payment_capture_schedule || 'daily',
+      input.payment_capture_type || null,
+      input.payment_capture_value || null,
       session.userId,
       input.active_status || 'active'
     ]) as any;
@@ -416,6 +439,23 @@ export async function updateBuyer(input: UpdateBuyerInput): Promise<{ success: b
       }
     }
 
+    // Validate payment capture fields when provided
+    if (input.payment_capture_type !== undefined) {
+      const VALID_DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      if (input.payment_capture_type === 'weekly') {
+        const val = input.payment_capture_value ?? currentBuyer[0].payment_capture_value ?? '';
+        if (!val || !VALID_DAYS.includes(val)) {
+          return { success: false, message: 'A valid weekday is required for weekly payment capture' };
+        }
+      } else if (input.payment_capture_type === 'monthly') {
+        const val = input.payment_capture_value ?? currentBuyer[0].payment_capture_value ?? '';
+        const day = Number(val);
+        if (!val || isNaN(day) || day < 1 || day > 31) {
+          return { success: false, message: 'Day of month must be a number between 1 and 31' };
+        }
+      }
+    }
+
     // Build dynamic update query
     const updateFields: string[] = [];
     const params: any[] = [];
@@ -427,11 +467,15 @@ export async function updateBuyer(input: UpdateBuyerInput): Promise<{ success: b
       'primary_contact_name', 'contact_email', 'contact_phone',
       'financial_contact_name', 'financial_contact_email',
       'min_invoice_amount', 'max_invoice_amount', 'min_days_to_maturity', 'max_days_to_maturity',
-      'credit_limit', 'rate_card_id', 'payment_capture_schedule', 'active_status'
+      'credit_limit', 'rate_card_id', 'payment_capture_schedule',
+      'payment_capture_type', 'payment_capture_value',
+      'active_status'
     ];
 
     // Critical fields that require approval workflow (future enhancement)
     const criticalFields = ['name', 'tax_id', 'risk_tier'];
+    // Audit-logged fields (change tracking without approval gate)
+    const auditedFields = ['payment_capture_type', 'payment_capture_value'];
 
     for (const field of fields) {
       if (input[field] !== undefined) {
@@ -442,6 +486,19 @@ export async function updateBuyer(input: UpdateBuyerInput): Promise<{ success: b
         if (criticalFields.includes(field)) {
           const oldValue = String(currentBuyer[0][field as keyof Buyer] || '');
           const newValue = String(input[field] || '');
+          if (oldValue !== newValue) {
+            await query(
+              `INSERT INTO buyer_change_log (buyer_id, field_name, old_value, new_value, changed_by, requires_approval)
+               VALUES (?, ?, ?, ?, ?, ?)`,
+              [input.buyer_id, field, oldValue, newValue, session.userId, false]
+            );
+          }
+        }
+
+        // Log change for payment capture audit fields
+        if (auditedFields.includes(field)) {
+          const oldValue = String(currentBuyer[0][field as keyof Buyer] ?? '');
+          const newValue = String(input[field] ?? '');
           if (oldValue !== newValue) {
             await query(
               `INSERT INTO buyer_change_log (buyer_id, field_name, old_value, new_value, changed_by, requires_approval)

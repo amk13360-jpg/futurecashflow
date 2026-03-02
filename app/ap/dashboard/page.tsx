@@ -1,53 +1,10 @@
 "use client"
-import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Upload, FileText, BarChart3, Users, TrendingUp, Clock, CheckCircle2, AlertCircle } from "lucide-react"
+import { Upload, FileText, BarChart3, Users } from "lucide-react"
 import Link from "next/link"
-import { toast } from "sonner"
 
 export default function APDashboardPage() {
-  const [loading, setLoading] = useState(true)
-  const [stats, setStats] = useState<any>(null)
-  const [session, setSession] = useState<any>(null)
-
-  useEffect(() => {
-    fetch("/api/session")
-      .then(res => res.json())
-      .then(data => setSession(data))
-      .catch(() => setSession({ username: "User" }))
-
-    let mounted = true
-    const fetchStats = async () => {
-      setLoading(true)
-      try {
-        const res = await fetch("/api/invoices", { cache: "no-store" })
-        if (!res.ok) throw new Error("Failed to fetch invoices")
-        const invoices = await res.json()
-        if (mounted) {
-          const totalInvoices = invoices.length
-          const totalValue = invoices.reduce((sum: number, inv: any) => {
-            const amount = Number(inv.amount_doc_curr ?? inv.amount_local_curr ?? inv.amount ?? 0)
-            return sum + (Number.isFinite(amount) ? amount : 0)
-          }, 0)
-          setStats({ totalInvoices, totalValue })
-          setLoading(false)
-        }
-      } catch (err: any) {
-        if (mounted) {
-          toast.error(err.message || "Failed to load dashboard stats")
-          setLoading(false)
-        }
-      }
-    }
-    fetchStats()
-    const interval = setInterval(fetchStats, 30000)
-    return () => {
-      mounted = false
-      clearInterval(interval)
-    }
-  }, [])
-
   return (
     <div className="bg-background min-h-screen text-foreground transition-colors duration-300">
       <main className="mx-auto px-4 py-8 max-w-7xl container">
@@ -59,7 +16,7 @@ export default function APDashboardPage() {
               <h1 className="font-bold text-foreground text-4xl md:text-5xl">Accounts Payable Dashboard</h1>
             </div>
             <p className="ml-7 text-muted-foreground text-lg md:text-xl">
-              Please upload your vendor and accounts payable data
+              Manage your vendor and invoice data for early payment processing
             </p>
           </div>
         </div>
@@ -135,35 +92,6 @@ export default function APDashboardPage() {
             </CardContent>
           </Card>
         </div>
-
-        {/* Recent Activity */}
-        <Card className="bg-card shadow-xl backdrop-blur border">
-          <CardHeader className="border-b">
-            <CardTitle className="text-foreground text-2xl">Recent Activity</CardTitle>
-            <CardDescription className="text-muted-foreground">Your latest invoice uploads and offer updates</CardDescription>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <div className="py-16 text-center">
-              <div className="inline-flex justify-center items-center bg-muted mb-6 rounded-2xl w-20 h-20">
-                <FileText className="w-10 h-10 text-muted-foreground" />
-              </div>
-              <p className="mb-2 font-semibold text-foreground text-xl">No recent activity to display</p>
-              <p className="mb-8 text-muted-foreground">Upload invoices or vendors to get started</p>
-              <div className="flex justify-center gap-4">
-                <Link href="/ap/invoices/upload">
-                  <Button variant="outline" className="px-8 font-semibold">
-                    Upload Invoices
-                  </Button>
-                </Link>
-                <Link href="/ap/vendors/upload">
-                  <Button variant="outline" className="px-8 font-semibold">
-                    Upload Vendors
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </main>
     </div>
   )

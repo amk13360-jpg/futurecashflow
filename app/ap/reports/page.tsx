@@ -20,21 +20,14 @@ export default function APReportsPage() {
   const fetchStats = async () => {
       setLoading(true)
       try {
-        const [invoicesRes, vendorsRes, paymentsRes] = await Promise.all([
+        const [invoicesRes, vendorsRes] = await Promise.all([
           fetch("/api/invoices", { cache: "no-store" }),
           fetch("/api/suppliers", { cache: "no-store" }),
-          fetch("/api/payments", { cache: "no-store" })
         ])
         if (!invoicesRes.ok) throw new Error("Failed to fetch invoices")
         if (!vendorsRes.ok) throw new Error("Failed to fetch vendors")
-        if (!paymentsRes.ok) throw new Error("Failed to fetch payments")
         const invoices = await invoicesRes.json()
         const vendors = await vendorsRes.json()
-        const payments = await paymentsRes.json()
-        
-        // Debug log to see what data we're getting
-        console.log("First invoice:", invoices[0]);
-        console.log("Available fields:", invoices[0] ? Object.keys(invoices[0]) : "No invoices");
         
         if (mounted) {
           const totalInvoices = invoices.length

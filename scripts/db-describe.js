@@ -1,13 +1,7 @@
-const mysql = require('mysql2/promise');
+const { getConnection } = require('./db-config');
 
 async function main() {
-  const conn = await mysql.createConnection({
-    host: 'futurefinancecashflow.mysql.database.azure.com',
-    user: 'FMadmin',
-    password: 'REDACTED_DB_PASSWORD',
-    database: 'fmf_scf_platform',
-    ssl: { rejectUnauthorized: true }
-  });
+  const conn = await getConnection();
 
   console.log('=== DESCRIBE offer_batches ===');
   const [offerBatches] = await conn.execute('DESCRIBE offer_batches');

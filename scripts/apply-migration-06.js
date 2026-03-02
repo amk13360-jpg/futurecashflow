@@ -1,15 +1,9 @@
 const fs = require('fs');
-const mysql = require('mysql2/promise');
+const { getConnection } = require('./db-config');
 (async () => {
   try {
     const sql = fs.readFileSync(__dirname + '/06-add-payment-capture-schedule.sql', 'utf8');
-    const c = await mysql.createConnection({
-      host: 'futurefinancecashflow.mysql.database.azure.com',
-      user: 'FMadmin',
-      password: 'REDACTED_DB_PASSWORD',
-      database: 'fmf_scf_platform',
-      ssl: { rejectUnauthorized: true }
-    });
+    const c = await getConnection();
     console.log('Connected, running migration...');
     await c.query(sql);
     console.log('Migration applied successfully.');
