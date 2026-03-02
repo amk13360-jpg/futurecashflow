@@ -8,20 +8,17 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Users, Mail, ArrowLeft, CheckCircle, Clock } from "lucide-react"
+import { Users, Clock, LogIn } from "lucide-react"
 import { toast } from "sonner"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Logo } from "@/components/ui/logo"
-
-type ViewMode = "token" | "request-access" | "request-sent"
+import Link from "next/link"
 
 export default function SupplierAccessPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [token, setToken] = useState("")
-  const [email, setEmail] = useState("")
   const [loading, setLoading] = useState(false)
-  const [viewMode, setViewMode] = useState<ViewMode>("token")
   const [isTokenExpired, setIsTokenExpired] = useState(false)
 
   useEffect(() => {
@@ -43,7 +40,6 @@ export default function SupplierAccessPage() {
       })
       const data = await response.json()
       if (!response.ok) {
-        // Check if token is expired or already used
         if (data.error?.includes("expired") || data.error?.includes("Invalid")) {
           setIsTokenExpired(true)
         }
@@ -52,7 +48,7 @@ export default function SupplierAccessPage() {
         return
       }
       router.push("/supplier/dashboard")
-    } catch (err) {
+    } catch {
       toast.error("An error occurred. Please try again.")
       setLoading(false)
     }
@@ -63,32 +59,6 @@ export default function SupplierAccessPage() {
     await verifyToken(token)
   }
 
-  const handleRequestAccess = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    
-    try {
-      const response = await fetch("/api/auth/supplier/request-access", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim().toLowerCase() }),
-      })
-      const data = await response.json()
-      
-      if (!response.ok) {
-        toast.error(data.error || "Failed to request access")
-        setLoading(false)
-        return
-      }
-      
-      setViewMode("request-sent")
-      setLoading(false)
-    } catch (err) {
-      toast.error("An error occurred. Please try again.")
-      setLoading(false)
-    }
-  }
-
   return (
     <div className="relative flex justify-center items-center bg-background px-4 min-h-screen text-foreground">
       {/* Theme toggle top-right */}
@@ -97,11 +67,13 @@ export default function SupplierAccessPage() {
           <ThemeToggle className="px-3 rounded-full h-9 text-xs" />
         </div>
       </div>
-      {/* Modern background gradient and blur effects */}
+
+      {/* Background blur effects */}
       <div className="-z-10 absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="-top-40 -right-40 absolute bg-primary/20 blur-3xl rounded-full w-72 h-72"></div>
-        <div className="-bottom-40 -left-40 absolute bg-primary/10 blur-3xl rounded-full w-72 h-72"></div>
+        <div className="-top-40 -right-40 absolute bg-primary/20 blur-3xl rounded-full w-72 h-72" />
+        <div className="-bottom-40 -left-40 absolute bg-primary/10 blur-3xl rounded-full w-72 h-72" />
       </div>
+
       <div className="w-full max-w-md">
         <Card className="bg-card shadow-none border-0 text-foreground">
           <CardHeader className="text-center">
@@ -110,175 +82,73 @@ export default function SupplierAccessPage() {
             </div>
             <div className="mb-6">
               <div className="inline-block bg-muted p-4 border border-border rounded-full">
-                {viewMode === "request-sent" ? (
-                  <CheckCircle className="w-12 h-12 text-success" />
-                ) : viewMode === "request-access" ? (
-                  <Mail className="w-12 h-12 text-primary" />
-                ) : (
-                  <Users className="w-12 h-12 text-primary" />
-                )}
+                <Users className="w-12 h-12 text-primary" />
               </div>
             </div>
-            <CardTitle className="font-bold text-2xl">
-              {viewMode === "request-sent" 
-                ? "Check Your Email" 
-                : viewMode === "request-access" 
-                  ? "Request Access Link" 
-                  : "Supplier Access"}
-            </CardTitle>
+            <CardTitle className="font-bold text-2xl">First-Time Portal Access</CardTitle>
             <CardDescription>
-              {viewMode === "request-sent"
-                ? "We've sent you a new access link"
-                : viewMode === "request-access"
-                  ? "Enter your registered email to receive a new access link"
-                  : "Enter your access token to proceed"}
+              Enter the one-time access token from your welcome email
             </CardDescription>
           </CardHeader>
+
           <CardContent>
-            {/* Token Entry View */}
-            {viewMode === "token" && (
-              <>
-                <form onSubmit={handleTokenSubmit} className="space-y-4">
-                  
-                  {/* Show helpful message if token expired */}
-                  {isTokenExpired && (
-                    <Alert className="bg-warning/10 border-warning">
-                      <Clock className="w-4 h-4 text-warning" />
-                      <AlertDescription className="text-sm">
-                        Your access link has expired or was already used. 
-                        Request a new link below.
-                      </AlertDescription>
-                    </Alert>
-                  )}
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="token" className="font-semibold text-sm">Access Token</Label>
-                    <Input
-                      id="token"
-                      type="text"
-                      value={token}
-                      onChange={(e) => {
-                        setToken(e.target.value)
-                        setIsTokenExpired(false)
-                      }}
-                      placeholder="Paste your supplier access token"
-                      required
-                      disabled={loading}
-                      autoComplete="off"
-                      className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-colors"
-                    />
-                  </div>
-                  <Button type="submit" className="py-3 rounded-xl w-full font-semibold" disabled={loading}>
-                    {loading ? "Verifying..." : "Verify Token"}
-                  </Button>
-                </form>
-                
-                <div className="mt-6 pt-6 border-border border-t">
-                  <p className="mb-3 text-muted-foreground text-sm text-center">
-                    Don't have a valid token or it expired?
-                  </p>
-                  <Button 
-                    variant="outline" 
-                    className="w-full"
-                    onClick={() => {
-                      setViewMode("request-access")
-                    }}
-                  >
-                    <Mail className="mr-2 w-4 h-4" />
-                    Request New Access Link
-                  </Button>
-                </div>
-                
-                <div className="mt-6 text-muted-foreground text-sm text-center">
-                  <p>Supplier access is by invitation only.</p>
-                  <p className="mt-1 font-mono text-xs">Paste the token you received via email.</p>
-                </div>
-              </>
-            )}
+            <form onSubmit={handleTokenSubmit} className="space-y-4">
+              {/* Expired token message */}
+              {isTokenExpired && (
+                <Alert className="bg-warning/10 border-warning">
+                  <Clock className="w-4 h-4 text-warning" />
+                  <AlertDescription className="text-sm">
+                    Your access link has expired or has already been used.
+                    If you have already signed your cession agreement, use your login credentials below.
+                    Otherwise, contact <strong>support@futureminingfinance.co.za</strong> for assistance.
+                  </AlertDescription>
+                </Alert>
+              )}
 
-            {/* Request Access View */}
-            {viewMode === "request-access" && (
-              <>
-                <form onSubmit={handleRequestAccess} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="font-semibold text-sm">Registered Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value)
-                      }}
-                      placeholder="Enter your registered email address"
-                      required
-                      disabled={loading}
-                      autoComplete="email"
-                      className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-colors"
-                    />
-                    <p className="text-muted-foreground text-xs">
-                      This should be the email address your buyer has registered for you.
-                    </p>
-                  </div>
-                  <Button type="submit" className="py-3 rounded-xl w-full font-semibold" disabled={loading}>
-                    {loading ? "Sending..." : "Send Access Link"}
-                  </Button>
-                </form>
-                
-                <div className="mt-6 pt-6 border-border border-t">
-                  <Button 
-                    variant="ghost" 
-                    className="w-full text-muted-foreground"
-                    onClick={() => {
-                      setViewMode("token")
-                    }}
-                  >
-                    <ArrowLeft className="mr-2 w-4 h-4" />
-                    Back to Token Entry
-                  </Button>
-                </div>
-              </>
-            )}
-
-            {/* Request Sent Confirmation View */}
-            {viewMode === "request-sent" && (
-              <div className="space-y-4 text-center">
-                <div className="bg-success/10 p-4 border border-success/20 rounded-lg">
-                  <p className="text-foreground text-sm">
-                    If an account exists with <strong>{email}</strong>, you will receive 
-                    a new access link within a few minutes.
-                  </p>
-                </div>
-                
-                <div className="space-y-2 text-muted-foreground text-sm">
-                  <p>Please check your inbox and spam folder.</p>
-                  <p>The link will be valid for <strong>14 days</strong>.</p>
-                </div>
-                
-                <div className="space-y-2 pt-4">
-                  <Button 
-                    variant="outline" 
-                    className="w-full"
-                    onClick={() => {
-                      setViewMode("token")
-                      setEmail("")
-                    }}
-                  >
-                    <ArrowLeft className="mr-2 w-4 h-4" />
-                    Back to Token Entry
-                  </Button>
-                  
-                  <Button 
-                    variant="ghost" 
-                    className="w-full text-muted-foreground text-sm"
-                    onClick={() => {
-                      setViewMode("request-access")
-                    }}
-                  >
-                    Didn't receive it? Try again
-                  </Button>
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="token" className="font-semibold text-sm">Access Token</Label>
+                <Input
+                  id="token"
+                  type="text"
+                  value={token}
+                  onChange={(e) => {
+                    setToken(e.target.value)
+                    setIsTokenExpired(false)
+                  }}
+                  placeholder="Paste your one-time access token"
+                  required
+                  disabled={loading}
+                  autoComplete="off"
+                  className="focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 transition-colors"
+                />
               </div>
-            )}
+
+              <Button
+                type="submit"
+                className="py-3 rounded-xl w-full font-semibold"
+                disabled={loading}
+              >
+                {loading ? "Verifying..." : "Verify Token"}
+              </Button>
+            </form>
+
+            {/* Login with credentials link */}
+            <div className="mt-6 pt-6 border-border border-t">
+              <p className="mb-3 text-muted-foreground text-sm text-center">
+                Already signed your cession agreement?
+              </p>
+              <Button variant="outline" className="w-full" asChild>
+                <Link href="/supplier/login">
+                  <LogIn className="mr-2 w-4 h-4" />
+                  Sign in with your credentials
+                </Link>
+              </Button>
+            </div>
+
+            <div className="mt-4 text-muted-foreground text-xs text-center">
+              <p>The access token is for first-time use only.</p>
+              <p className="mt-1">After signing your cession agreement, login credentials will be emailed to you.</p>
+            </div>
           </CardContent>
         </Card>
       </div>

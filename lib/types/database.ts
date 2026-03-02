@@ -38,6 +38,8 @@ export interface Supplier {
   approved_by?: number
   approved_at?: Date
   active_status: "active" | "inactive" | "suspended"
+  password_hash?: string
+  password_set_at?: Date
   created_at: Date
   updated_at: Date
 }

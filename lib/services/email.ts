@@ -756,3 +756,124 @@ Future Mining Finance (Pty) Ltd
     return false
   }
 }
+
+/**
+ * Send login credentials to supplier after they sign their cession agreement.
+ * This replaces token-based access for all subsequent logins.
+ */
+export async function sendSupplierCredentialsEmail(
+  recipientEmail: string,
+  supplierName: string,
+  temporaryPassword: string,
+): Promise<boolean> {
+  const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"
+  const loginUrl = `${baseUrl}/supplier/login`
+
+  try {
+    const emailMessage = {
+      senderAddress,
+      content: {
+        subject: "Your Supplier Portal Login Credentials - Future Mining Finance (Pty) Ltd",
+        plainText: `
+Hello ${supplierName},
+
+Thank you for signing your cession agreement.
+
+Your supplier portal login credentials have been set up. You can now log in at any time using the details below.
+
+Login URL: ${loginUrl}
+Email: ${recipientEmail}
+Temporary Password: ${temporaryPassword}
+
+Please keep these credentials safe. For security, we recommend changing your password after your first login.
+
+If you did not sign a cession agreement or did not expect this email, please contact us immediately.
+
+Best regards,
+Future Mining Finance (Pty) Ltd
+        `.trim(),
+        html: `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%); padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+    .header h1 { color: white; margin: 0; font-size: 24px; }
+    .content { background: #ffffff; padding: 30px; border: 1px solid #e5e7eb; border-top: none; }
+    .credentials-box { background: #f0f9ff; border: 2px solid #2563eb; border-radius: 8px; padding: 20px; margin: 20px 0; }
+    .credential-row { display: flex; align-items: center; margin: 10px 0; }
+    .credential-label { font-weight: bold; color: #374151; min-width: 100px; font-size: 13px; }
+    .credential-value { font-family: monospace; font-size: 15px; background: #e0f2fe; padding: 4px 10px; border-radius: 4px; color: #1e40af; letter-spacing: 0.5px; }
+    .button { display: inline-block; padding: 15px 30px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 20px 0; }
+    .warning { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px; margin: 20px 0; border-radius: 4px; font-size: 13px; }
+    .footer { background: #f9fafb; padding: 20px; text-align: center; font-size: 12px; color: #6b7280; border-radius: 0 0 8px 8px; border: 1px solid #e5e7eb; border-top: none; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🔑 Your Login Credentials</h1>
+  </div>
+  <div class="content">
+    <h2>Hello ${supplierName},</h2>
+    <p>Thank you for signing your cession agreement. Your <strong>Future Mining Finance (Pty) Ltd</strong> supplier portal login has been set up.</p>
+    <p>Use the credentials below to log in at any time:</p>
+
+    <div class="credentials-box">
+      <div class="credential-row">
+        <span class="credential-label">Login URL</span>
+        <span class="credential-value">${loginUrl}</span>
+      </div>
+      <div class="credential-row">
+        <span class="credential-label">Email</span>
+        <span class="credential-value">${recipientEmail}</span>
+      </div>
+      <div class="credential-row">
+        <span class="credential-label">Password</span>
+        <span class="credential-value">${temporaryPassword}</span>
+      </div>
+    </div>
+
+    <div style="text-align: center;">
+      <a href="${loginUrl}" class="button">Go to Supplier Login</a>
+    </div>
+
+    <div class="warning">
+      🔒 <strong>Keep these credentials safe.</strong> We recommend changing your password after your first login.
+      We will never ask for your password via email or phone.
+    </div>
+
+    <p>If you did not sign a cession agreement or did not expect this email, please contact us immediately at <strong>support@futureminingfinance.co.za</strong>.</p>
+
+    <p>Best regards,<br><strong>Future Mining Finance (Pty) Ltd</strong></p>
+  </div>
+  <div class="footer">
+    <p>This is an automated message, please do not reply to this email.</p>
+    <p>&copy; 2026 Future Mining Finance (Pty) Ltd. All rights reserved.</p>
+  </div>
+</body>
+</html>
+        `.trim(),
+      },
+      recipients: {
+        to: [{ address: recipientEmail, displayName: supplierName }],
+      },
+    }
+
+    const client = getEmailClient()
+    console.log(`[Email Service] Sending credentials email to: ${recipientEmail}`)
+    const poller = await client.beginSend(emailMessage)
+    const result = await poller.pollUntilDone()
+
+    if (result.status === KnownEmailSendStatus.Succeeded) {
+      console.log(`[Email Service] Credentials email sent successfully to ${recipientEmail}`)
+      return true
+    } else {
+      console.error(`[Email Service] Failed to send credentials email. Status: ${result.status}`)
+      return false
+    }
+  } catch (error) {
+    console.error("[Email Service] Error sending credentials email:", error)
+    return false
+  }
+}
