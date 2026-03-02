@@ -1,6 +1,5 @@
 "use client"
 import { useEffect, useState } from "react"
-import { DashboardHeader } from "@/components/admin/dashboard-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Upload, FileText, BarChart3, Users, TrendingUp, Clock, CheckCircle2, AlertCircle } from "lucide-react"
@@ -51,7 +50,6 @@ export default function APDashboardPage() {
 
   return (
     <div className="bg-background min-h-screen text-foreground transition-colors duration-300">
-      <DashboardHeader userName={session?.fullName || session?.username || "User"} />
       <main className="mx-auto px-4 py-8 max-w-7xl container">
         {/* Welcome Section */}
         <div className="relative mb-10">
