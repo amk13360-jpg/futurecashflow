@@ -60,7 +60,6 @@ export default function InvoicesPage() {
 
  return (
  <div className="bg-muted min-h-screen text-foreground">
- <DashboardHeader />
 
  <main className="mx-auto px-4 py-8 max-w-7xl container">
  <div className="mb-8">

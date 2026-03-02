@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { DashboardHeader } from "@/components/admin/dashboard-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -182,7 +181,6 @@ export default function SettingsPage() {
  if (loading) {
  return (
  <div className="bg-muted min-h-screen">
- <DashboardHeader />
  <main className="mx-auto px-4 py-8 container">
  <div className="space-y-4">
  <div className="space-y-2">
@@ -209,8 +207,7 @@ export default function SettingsPage() {
 
  return (
  <div className="bg-muted min-h-screen">
- <DashboardHeader />
-
+ 
  <main className="mx-auto px-4 py-8 container">
  <div className="mb-6">
  <Breadcrumbs

@@ -35,6 +35,7 @@ export interface Buyer {
   credit_limit: number | null;
   current_exposure: number;
   rate_card_id: number | null;
+  payment_capture_schedule: 'immediate' | 'daily' | 'weekly' | 'monthly';
   created_by: number | null;
   approved_by: number | null;
   approved_at: Date | null;
@@ -74,6 +75,7 @@ export interface CreateBuyerInput {
   max_days_to_maturity?: number;
   credit_limit?: number;
   rate_card_id?: number;
+  payment_capture_schedule?: 'immediate' | 'daily' | 'weekly' | 'monthly';
   active_status?: 'draft' | 'active';
 }
 
@@ -240,8 +242,8 @@ export async function createBuyer(input: CreateBuyerInput): Promise<{ success: b
         primary_contact_name, contact_email, contact_phone,
         financial_contact_name, financial_contact_email,
         min_invoice_amount, max_invoice_amount, min_days_to_maturity, max_days_to_maturity,
-        credit_limit, rate_card_id, created_by, active_status
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        credit_limit, rate_card_id, payment_capture_schedule, created_by, active_status
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const result = await query(sql, [
@@ -267,6 +269,7 @@ export async function createBuyer(input: CreateBuyerInput): Promise<{ success: b
       input.max_days_to_maturity || 90,
       input.credit_limit || null,
       rateCardId || null,
+      input.payment_capture_schedule || 'daily',
       session.userId,
       input.active_status || 'active'
     ]) as any;
@@ -424,7 +427,7 @@ export async function updateBuyer(input: UpdateBuyerInput): Promise<{ success: b
       'primary_contact_name', 'contact_email', 'contact_phone',
       'financial_contact_name', 'financial_contact_email',
       'min_invoice_amount', 'max_invoice_amount', 'min_days_to_maturity', 'max_days_to_maturity',
-      'credit_limit', 'rate_card_id', 'active_status'
+      'credit_limit', 'rate_card_id', 'payment_capture_schedule', 'active_status'
     ];
 
     // Critical fields that require approval workflow (future enhancement)

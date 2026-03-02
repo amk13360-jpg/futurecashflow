@@ -547,6 +547,10 @@ export default function BuyerDetailsPage() {
  <p className="font-medium">{buyer.rate_card_name || 'Default'}</p>
  </div>
  <div>
+ <Label className="text-muted-foreground">Payment Capture Schedule</Label>
+ <p className="font-medium capitalize">{buyer.payment_capture_schedule || 'daily'}</p>
+ </div>
+ <div>
  <Label className="text-muted-foreground">Risk Tier</Label>
  <Badge className={
  buyer.risk_tier === 'A' ? 'bg-success-bg text-success-foreground border border-success-border' :

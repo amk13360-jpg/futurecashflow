@@ -90,9 +90,7 @@ export default function VendorUploadPage() {
 
  return (
  <div className="bg-muted min-h-screen">
- <DashboardHeader />
-
- <main className="mx-auto px-4 py-8 container">
+      <main className="mx-auto px-4 py-8 container">
  <div className="mb-6">
  <Breadcrumbs
  items={[

@@ -95,6 +95,10 @@ export default function BuyersPage() {
  max_days_to_maturity: 90,
  active_status: 'active'
  });
+ 
+ // default payment capture schedule
+  // options: immediate, daily, weekly, monthly
+  if (!formData.payment_capture_schedule) formData.payment_capture_schedule = 'daily';
 
  const createSteps = [
  { step: 1, label: 'Company', icon: Building2 },
@@ -234,7 +238,8 @@ export default function BuyersPage() {
  max_invoice_amount: 5000000,
  min_days_to_maturity: 7,
  max_days_to_maturity: 90,
- active_status: 'active'
+	active_status: 'active',
+	payment_capture_schedule: 'daily'
  });
  setCreateStep(1);
  setFormErrors({});
@@ -315,6 +320,7 @@ export default function BuyersPage() {
  max_days_to_maturity: buyer.max_days_to_maturity,
  credit_limit: buyer.credit_limit ? Number(buyer.credit_limit) : undefined,
  rate_card_id: buyer.rate_card_id || undefined
+ , payment_capture_schedule: buyer.payment_capture_schedule || 'daily'
  });
  setShowEditDialog(true);
  }
@@ -1063,6 +1069,24 @@ export default function BuyersPage() {
  </Select>
  <p className="text-muted-foreground text-xs">Can be assigned later after activation</p>
  </div>
+ <div className="space-y-2">
+ <Label>Payment Capture Schedule</Label>
+ <Select
+	 value={formData.payment_capture_schedule || 'daily'}
+	 onValueChange={(v) => setFormData({...formData, payment_capture_schedule: v as any})}
+ >
+	 <SelectTrigger>
+		 <SelectValue placeholder="Select schedule" />
+	 </SelectTrigger>
+	 <SelectContent>
+		 <SelectItem value="immediate">Immediate</SelectItem>
+		 <SelectItem value="daily">Daily</SelectItem>
+		 <SelectItem value="weekly">Weekly</SelectItem>
+		 <SelectItem value="monthly">Monthly</SelectItem>
+	 </SelectContent>
+ </Select>
+ <p className="text-muted-foreground text-xs">When to capture payments for this buyer</p>
+ </div>
  </CardContent>
  </Card>
  </div>
@@ -1175,6 +1199,10 @@ export default function BuyersPage() {
  <div className="flex justify-between">
  <span className="text-muted-foreground">Credit Limit</span>
  <span>{formData.credit_limit ? `R${formData.credit_limit.toLocaleString()}` : 'No limit'}</span>
+ </div>
+ <div className="flex justify-between">
+  <span className="text-muted-foreground">Payment Capture Schedule</span>
+  <span className="capitalize">{formData.payment_capture_schedule || 'daily'}</span>
  </div>
  </CardContent>
  </Card>
@@ -1490,6 +1518,23 @@ export default function BuyersPage() {
  </SelectItem>
  ))}
  </SelectContent>
+ </Select>
+ </div>
+ <div className="space-y-2">
+ <Label>Payment Capture Schedule</Label>
+ <Select
+	 value={formData.payment_capture_schedule || 'daily'}
+	 onValueChange={(v) => setFormData({...formData, payment_capture_schedule: v as any})}
+ >
+	 <SelectTrigger>
+		 <SelectValue placeholder="Select schedule" />
+	 </SelectTrigger>
+	 <SelectContent>
+		 <SelectItem value="immediate">Immediate</SelectItem>
+		 <SelectItem value="daily">Daily</SelectItem>
+		 <SelectItem value="weekly">Weekly</SelectItem>
+		 <SelectItem value="monthly">Monthly</SelectItem>
+	 </SelectContent>
  </Select>
  </div>
  </div>

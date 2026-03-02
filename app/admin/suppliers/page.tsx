@@ -1,5 +1,4 @@
 import { getAllSuppliers } from "@/lib/actions/admin"
-import { DashboardHeader } from "@/components/admin/dashboard-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -40,7 +39,6 @@ export default async function SuppliersPage() {
 
   return (
     <div className="bg-background min-h-screen">
-      <DashboardHeader userName={session?.username} />
 
       <main className="mx-auto px-4 py-8 container">
         {/* Page Header */}

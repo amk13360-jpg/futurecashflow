@@ -4,7 +4,6 @@ import {
  getPendingCessions,
  getBankChangeRequests,
 } from "@/lib/actions/admin"
-import { DashboardHeader } from "@/components/admin/dashboard-header"
 import { MetricCard } from "@/components/admin/metric-card"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -25,9 +24,7 @@ export default async function AdminDashboardPage() {
 
  return (
  <div className="bg-muted min-h-screen">
- <DashboardHeader userName={session?.fullName || session?.username} />
-
- <main className="mx-auto px-4 py-8 max-w-7xl">
+<main className="mx-auto px-4 py-8 max-w-7xl">
  {/* Page Header - Enhanced Typography */}
  <div className="mb-10">
  <h1 className="mb-3 font-bold text-4xl tracking-tight">Dashboard</h1>

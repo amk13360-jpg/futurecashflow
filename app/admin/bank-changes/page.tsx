@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useTransition } from "react"
-import { DashboardHeader } from "@/components/admin/dashboard-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -108,7 +107,6 @@ export default function BankChangesPage() {
  if (loading) {
  return (
  <div className="bg-muted min-h-screen">
- <DashboardHeader />
  <main className="mx-auto px-4 py-8 container">
  <div className="space-y-3">
  {Array.from({ length: 4 }).map((_, index) => (
@@ -132,8 +130,7 @@ export default function BankChangesPage() {
 
  return (
  <div className="bg-muted min-h-screen">
- <DashboardHeader />
-
+ 
  <main className="mx-auto px-4 py-8 container">
  <div className="mb-6">
  <Breadcrumbs

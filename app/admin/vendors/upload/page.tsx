@@ -4,7 +4,6 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { DashboardHeader } from "@/components/admin/dashboard-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -84,9 +83,8 @@ export default function VendorUploadPage() {
  }
  }
 
- return (
+  return (
  <div className="bg-muted min-h-screen">
- <DashboardHeader />
 
  <main className="mx-auto px-4 py-8 container">
  <div className="mb-6">
