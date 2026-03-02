@@ -47,7 +47,7 @@ export default function SupplierDashboardPage() {
  <Card className="bg-warning-bg border border-warning-border">
  <CardContent className="flex items-center gap-4 py-4">
  <div className="bg-warning-bg p-2 rounded-lg">
- <AlertTriangle className="w-6 h-6 text-warning " />
+ <AlertTriangle className="w-6 h-6 text-warning" />
  </div>
  <div className="flex-1">
  <p className="font-semibold text-foreground">Action Required</p>
