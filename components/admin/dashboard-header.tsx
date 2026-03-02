@@ -93,6 +93,36 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
 
   const pageTitle = 'Dashboard'
 
+  // Role-aware navigation: each role gets its own set of primary links and home URL
+  const homeHref = sessionRole === 'supplier'
+    ? '/supplier/dashboard'
+    : sessionRole === 'accounts_payable'
+      ? '/ap/dashboard'
+      : '/admin'
+
+  const navLinks = useMemo(() => {
+    if (sessionRole === 'supplier') {
+      return [
+        { href: '/supplier/dashboard', label: 'Dashboard' },
+        { href: '/supplier/offers', label: 'Offers' },
+        { href: '/supplier/cession-agreement', label: 'Cession Agreement' },
+      ]
+    }
+    if (sessionRole === 'accounts_payable') {
+      return [
+        { href: '/ap/dashboard', label: 'Dashboard' },
+        { href: '/ap/invoices', label: 'Invoices' },
+        { href: '/ap/vendors', label: 'Vendors' },
+      ]
+    }
+    // Default: admin
+    return [
+      { href: '/admin/dashboard', label: 'Dashboard' },
+      { href: '/admin/buyers', label: 'Buyers' },
+      { href: '/admin/offer-batches', label: 'Offer Batches' },
+    ]
+  }, [sessionRole])
+
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
     router.push('/')
@@ -103,7 +133,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
       <div className="flex justify-between items-center mx-auto px-4 sm:px-6 max-w-7xl h-16">
         {/* Left: Brand anchor + page context */}
         <div className="flex items-center gap-4">
-          <a href="/admin" aria-label="Future Cashflow home" className="inline-flex items-center no-underline">
+          <a href={homeHref} aria-label="Future Cashflow home" className="inline-flex items-center no-underline">
             <Logo size="md" variant="adaptive" showText={true} />
           </a>
 
@@ -116,11 +146,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
         {/* Center: optional breadcrumb for larger screens (screen-reader includes product for full path) */}
         <div className="hidden md:flex items-center gap-6">
           <nav aria-label="Primary navigation" className="hidden lg:flex items-center gap-4">
-            {[
-              { href: '/admin/dashboard', label: 'Dashboard' },
-              { href: '/admin/buyers', label: 'Buyers' },
-              { href: '/admin/offer-batches', label: 'Offer Batches' },
-            ].map((link) => {
+            {navLinks.map((link) => {
               const active = pathname?.startsWith(link.href)
               return (
                 <Link
