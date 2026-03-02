@@ -99,8 +99,8 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-card/95 backdrop-blur-sm border-b border-border shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+    <header className="top-0 z-50 sticky bg-card/95 shadow-sm backdrop-blur-sm border-border border-b">
+      <div className="flex justify-between items-center mx-auto px-4 sm:px-6 max-w-7xl h-16">
         {/* Left: Brand anchor + page context */}
         <div className="flex items-center gap-4">
           <a href="/admin" aria-label="Future Cashflow home" className="inline-flex items-center no-underline">
@@ -108,8 +108,8 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
           </a>
 
           <div className="hidden sm:flex flex-col">
-            <span className="text-sm text-muted-foreground">{pageContextSection}</span>
-            <span className="text-sm font-medium text-foreground">{pageTitle}</span>
+            <span className="text-muted-foreground text-sm">{pageContextSection}</span>
+            <span className="font-medium text-foreground text-sm">{pageTitle}</span>
           </div>
         </div>
 
@@ -134,7 +134,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
             })}
           </nav>
 
-          <nav aria-label="Breadcrumb" className="hidden md:flex items-center text-sm text-muted-foreground">
+          <nav aria-label="Breadcrumb" className="hidden md:flex items-center text-muted-foreground text-sm">
             <ol className="flex items-center gap-2">
               <li className="sr-only">Future Cashflow</li>
               <li className="flex items-center gap-2">
@@ -158,19 +158,19 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                 aria-label="Notifications"
                 aria-expanded={bellOpen}
                 aria-haspopup="true"
-                className="relative flex justify-center items-center w-10 h-10 rounded-lg border border-border bg-card text-muted-foreground hover:border-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                className="relative flex justify-center items-center bg-card border border-border hover:border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 w-10 h-10 text-muted-foreground"
               >
                 <Bell className="w-5 h-5" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 inline-flex items-center justify-center rounded-full bg-error text-white w-4 h-4 text-[10px]">{unreadCount}</span>
+                  <span className="inline-flex -top-0.5 -right-0.5 absolute justify-center items-center bg-error rounded-full w-4 h-4 text-[10px] text-white">{unreadCount}</span>
                 )}
               </button>
 
               {bellOpen && (
-                <div className="absolute right-0 top-[calc(100%+8px)] w-80 bg-popover border border-border rounded-lg shadow-lg">
-                  <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-                    <span className="text-xs uppercase tracking-wide text-muted-foreground">Notifications</span>
-                    <button type="button" className="text-xs text-primary">Mark all read</button>
+                <div className="top-[calc(100%+8px)] right-0 absolute bg-popover shadow-lg border border-border rounded-lg w-80">
+                  <div className="flex justify-between items-center px-4 py-3 border-border border-b">
+                    <span className="text-muted-foreground text-xs uppercase tracking-wide">Notifications</span>
+                    <button type="button" className="text-primary text-xs">Mark all read</button>
                   </div>
                   <div className="max-h-64 overflow-auto">
                     {notifications.map((n, i) => (
@@ -178,14 +178,14 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                         <span className={`${n.unread ? 'bg-primary' : 'bg-border'} mt-1.5 rounded-full w-2 h-2`} />
                         <div className="flex-1 min-w-0">
                           <p className={`${n.unread ? 'font-semibold text-foreground' : 'font-medium text-foreground/70'} text-sm truncate`}>{n.title}</p>
-                          <p className="text-xs text-muted-foreground truncate">{n.sub}</p>
+                          <p className="text-muted-foreground text-xs truncate">{n.sub}</p>
                         </div>
-                        <span className="text-xs text-muted-foreground shrink-0">{n.time}</span>
+                        <span className="text-muted-foreground text-xs shrink-0">{n.time}</span>
                       </div>
                     ))}
                   </div>
-                  <div className="px-4 py-2 border-t border-border text-center">
-                    <button type="button" className="text-xs text-primary">View all</button>
+                  <div className="px-4 py-2 border-border border-t text-center">
+                    <button type="button" className="text-primary text-xs">View all</button>
                   </div>
                 </div>
               )}
@@ -198,34 +198,34 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
               onClick={() => { setProfileOpen(!profileOpen); setBellOpen(false) }}
               aria-haspopup="menu"
               aria-expanded={profileOpen}
-              className="flex items-center gap-2.5 px-2 py-1.5 rounded-lg border border-border bg-card hover:border-primary focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              className="flex items-center gap-2.5 bg-card px-2 py-1.5 border border-border hover:border-primary rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
             >
-              <div className="flex items-center justify-center rounded-full w-8 h-8 bg-primary/10 text-primary font-semibold">{initials}</div>
-              <span className="hidden sm:inline text-sm font-medium text-foreground">{displayName}</span>
+              <div className="flex justify-center items-center bg-primary/10 rounded-full w-8 h-8 font-semibold text-primary">{initials}</div>
+              <span className="hidden sm:inline font-medium text-foreground text-sm">{displayName}</span>
               <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground ${profileOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {profileOpen && (
-              <div className="absolute right-0 top-[calc(100%+8px)] w-56 bg-popover border border-border rounded-lg shadow-lg">
-                <div className="px-4 py-3 border-b border-border bg-primary/[0.04] flex items-center gap-3">
-                  <div className="flex items-center justify-center rounded-full w-9 h-9 bg-primary/10 font-bold text-primary">{initials}</div>
+              <div className="top-[calc(100%+8px)] right-0 absolute bg-popover shadow-lg border border-border rounded-lg w-56">
+                <div className="flex items-center gap-3 bg-primary/[0.04] px-4 py-3 border-border border-b">
+                  <div className="flex justify-center items-center bg-primary/10 rounded-full w-9 h-9 font-bold text-primary">{initials}</div>
                   <div className="min-w-0">
                     <p className="font-medium text-foreground text-sm truncate">{displayName}</p>
-                    <p className="text-xs text-muted-foreground truncate">{roleLabel}</p>
+                    <p className="text-muted-foreground text-xs truncate">{roleLabel}</p>
                   </div>
                 </div>
                 <div className="py-1">
-                  <button type="button" className="flex items-center gap-2.5 px-4 py-2.5 w-full text-sm font-medium text-foreground hover:bg-accent">
+                  <button type="button" className="flex items-center gap-2.5 hover:bg-accent px-4 py-2.5 w-full font-medium text-foreground text-sm">
                     <User className="w-4 h-4 text-muted-foreground" />
                     Profile
                   </button>
-                  <button type="button" className="flex items-center gap-2.5 px-4 py-2.5 w-full text-sm font-medium text-foreground hover:bg-accent">
+                  <button type="button" className="flex items-center gap-2.5 hover:bg-accent px-4 py-2.5 w-full font-medium text-foreground text-sm">
                     <Settings className="w-4 h-4 text-muted-foreground" />
                     Settings
                   </button>
                 </div>
-                <div className="border-t border-border">
-                  <button onClick={handleLogout} type="button" className="flex items-center gap-2.5 px-4 py-2.5 w-full text-sm font-medium text-error hover:bg-error/[0.08]">
+                <div className="border-border border-t">
+                  <button onClick={handleLogout} type="button" className="flex items-center gap-2.5 hover:bg-error/[0.08] px-4 py-2.5 w-full font-medium text-error text-sm">
                     <LogOut className="w-4 h-4" />
                     Sign out
                   </button>
