@@ -122,7 +122,7 @@ export default function SupplierLoginPage() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="top-1/2 right-3 absolute -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="top-1/2 right-3 absolute text-muted-foreground hover:text-foreground -translate-y-1/2"
                     tabIndex={-1}
                     aria-label={showPassword ? "Hide password" : "Show password"}
                   >
