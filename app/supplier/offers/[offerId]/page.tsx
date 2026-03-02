@@ -2,7 +2,7 @@
 
 import { use, useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { SupplierHeader } from "@/components/supplier/supplier-header"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -97,7 +97,6 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
  if (pageLoading) {
    return (
      <div className="bg-muted min-h-screen">
-       <SupplierHeader />
        <main className="mx-auto px-4 py-8 container">
          <div className="space-y-4 mx-auto max-w-3xl">
            {Array.from({ length: 4 }).map((_, index) => (
@@ -126,8 +125,6 @@ export default function OfferDetailPage({ params }: { params: Promise<{ offerId:
 
  return (
  <div className="bg-muted min-h-screen">
- <SupplierHeader />
-
  <main className="mx-auto px-4 py-8 container">
  <Breadcrumbs
  items={[

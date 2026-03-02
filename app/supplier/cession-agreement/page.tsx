@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { SupplierHeader } from "@/components/supplier/supplier-header";
 import { Breadcrumbs } from "@/components/ui/breadcrumbs";
 import Link from "next/link";
 import { getSupplierProfile } from "@/lib/actions/suppliers";
@@ -22,8 +21,6 @@ export default async function SupplierCessionAgreementPage() {
 
  return (
  <div className="bg-muted min-h-screen">
- <SupplierHeader supplierName={profile?.name} />
- 
  <main className="mx-auto px-4 py-8 container">
  <Breadcrumbs
  items={[

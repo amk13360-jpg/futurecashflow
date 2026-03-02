@@ -11,10 +11,23 @@ interface SupplierHeaderProps {
   supplierName?: string
 }
 
-export function SupplierHeader({ supplierName }: SupplierHeaderProps) {
+export function SupplierHeader({ supplierName: supplierNameProp }: SupplierHeaderProps) {
   const router = useRouter()
   const [profileOpen, setProfileOpen] = useState(false)
+  const [sessionName, setSessionName] = useState<string | null>(null)
   const profileRef = useRef<HTMLDivElement>(null)
+
+  // Self-fetch session name when no prop is supplied (e.g. when rendered from layout)
+  useEffect(() => {
+    if (!supplierNameProp) {
+      fetch("/api/session")
+        .then((res) => res.json())
+        .then((data) => setSessionName(data?.fullName || data?.username || null))
+        .catch(() => {})
+    }
+  }, [supplierNameProp])
+
+  const supplierName = supplierNameProp || sessionName || undefined
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" })

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useTransition } from "react"
 import { useRouter } from "next/navigation"
-import { SupplierHeader } from "@/components/supplier/supplier-header"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -125,18 +125,14 @@ export default function SupplierOffersPage() {
  .reduce(
  (acc, offer) => ({
  invoiceAmount: acc.invoiceAmount + (parseFloat(String(offer.invoice_amount)) || 0),
- earlyPaymentBase: acc.earlyPaymentBase + (parseFloat(String(offer.invoice_amount)) * 0.8 || 0),
- discountAmount: acc.discountAmount + (parseFloat(String(offer.discount_amount)) || 0),
  netPayment: acc.netPayment + (parseFloat(String(offer.net_payment_amount)) || 0),
- retainedAmount: acc.retainedAmount + (parseFloat(String(offer.invoice_amount)) * 0.2 || 0),
  }),
- { invoiceAmount: 0, earlyPaymentBase: 0, discountAmount: 0, netPayment: 0, retainedAmount: 0 }
+ { invoiceAmount: 0, netPayment: 0 }
  )
 
  if (loading) {
  return (
  <div className="bg-muted min-h-screen">
- <SupplierHeader />
  <main className="mx-auto px-4 py-8 container">
  <div className="space-y-4">
    {Array.from({ length: 6 }).map((_, index) => (
@@ -161,8 +157,6 @@ export default function SupplierOffersPage() {
 
  return (
  <div className="bg-muted min-h-screen">
- <SupplierHeader />
-
  <main className="mx-auto px-4 py-8 container">
  <Breadcrumbs
  items={[
@@ -249,7 +243,7 @@ export default function SupplierOffersPage() {
  </Badge>
  </div>
  
-<div className="gap-4 grid grid-cols-2 md:grid-cols-4 text-sm">
+<div className="gap-4 grid grid-cols-2 text-sm">
                  <div>
                  <p className="text-muted-foreground">Invoice Amount</p>
                  <p className="font-semibold">
@@ -257,25 +251,11 @@ export default function SupplierOffersPage() {
                  </p>
                  </div>
                  <div>
-                 <p className="text-muted-foreground">Your Fee</p>
-                 <p className="font-medium text-error">
-                 -{offer.currency} {parseFloat(String(offer.discount_amount)).toLocaleString()}
-                 </p>
-                 <p className="text-muted-foreground text-xs">{offer.days_to_maturity} days</p>
-                 </div>
-                 <div>
                  <p className="text-muted-foreground">You Will Receive</p>
                  <p className="font-semibold text-success">
                  {offer.currency} {parseFloat(String(offer.net_payment_amount)).toLocaleString()}
                  </p>
                  </div>
-                 <div>
-                 <p className="text-muted-foreground">Payment Split</p>
-                 <p className="font-medium text-success">
-                 {offer.currency} {(parseFloat(String(offer.invoice_amount)) * 0.8).toLocaleString()} now
-                 </p>
-                 <p className="text-muted-foreground text-xs">{offer.currency} {(parseFloat(String(offer.invoice_amount)) * 0.2).toLocaleString()} in {offer.days_to_maturity} days</p>
- </div>
  </div>
 
  <div className="flex justify-between items-center mt-3 pt-3 border-t text-muted-foreground text-xs">
@@ -322,29 +302,11 @@ export default function SupplierOffersPage() {
                            R {selectedTotals.invoiceAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
                          </span>
                        </div>
-                       <div className="flex justify-between">
-                         <span className="text-muted-foreground">Total Fee</span>
-                         <span className="font-medium text-error">
-                           -R {selectedTotals.discountAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
-                         </span>
-                       </div>
                        <Separator />
                        <div className="flex justify-between">
                          <span className="font-semibold">You Will Receive</span>
                          <span className="font-bold text-success text-xl">
                            R {selectedTotals.netPayment.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
-                         </span>
-                       </div>
-                       <div className="flex justify-between pt-2 border-t border-dashed">
-                         <span className="text-muted-foreground text-sm">Paid immediately (80%)</span>
-                         <span className="font-medium text-success">
-                           R {selectedTotals.earlyPaymentBase.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
-                         </span>
-                       </div>
-                       <div className="flex justify-between">
-                         <span className="text-muted-foreground text-sm">Paid on due date (20%)</span>
-                         <span className="font-medium text-muted-foreground">
-                           R {selectedTotals.retainedAmount.toLocaleString("en-ZA", { minimumFractionDigits: 2 })}
                          </span>
                        </div>
                      </div>

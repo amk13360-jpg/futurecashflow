@@ -1,5 +1,4 @@
 import { getSupplierOffers, getSupplierProfile, getSupplierCessionAgreement, getSupplierPayments } from "@/lib/actions/suppliers"
-import { SupplierHeader } from "@/components/supplier/supplier-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { use } from "react"
@@ -36,7 +35,6 @@ export default function SupplierDashboardPage() {
 
  return (
  <div className="bg-muted min-h-screen">
- <SupplierHeader supplierName={profile?.name} />
  <main className="mx-auto px-4 py-8 container">
  {/* Welcome Section */}
  <div className="mb-8">
