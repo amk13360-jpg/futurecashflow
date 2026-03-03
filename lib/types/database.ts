@@ -56,6 +56,18 @@ export interface User {
   active_status: "active" | "inactive" | "locked"
   failed_login_attempts: number
   last_login_at?: Date
+  // Added by migration 05 (buyer onboarding)
+  must_change_password: number
+  is_email_verified: number
+  activation_token?: string
+  activation_token_expires?: Date
+  // Added by migration 06 (security enhancements - TOTP 2FA)
+  totp_secret?: string
+  totp_secret_pending?: string
+  totp_pending_at?: Date
+  totp_enabled: boolean
+  totp_backup_codes?: string
+  totp_enabled_at?: Date
   created_at: Date
   updated_at: Date
 }
