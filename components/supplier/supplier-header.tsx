@@ -54,7 +54,7 @@ export function SupplierHeader({ supplierName: supplierNameProp }: SupplierHeade
   return (
     <header className="top-0 z-50 sticky bg-card/95 backdrop-blur-sm border-border border-b h-16">
       {/* Single-row, full-height flex container — nothing grows vertically */}
-      <div className="flex items-center justify-between h-full mx-auto px-4 sm:px-6 max-w-7xl">
+      <div className="flex justify-between items-center mx-auto px-4 sm:px-6 max-w-7xl h-full">
 
         {/* ── LEFT: Logo icon + brand name + portal badge ── */}
         <div className="flex items-center gap-3 min-w-0">
@@ -62,14 +62,14 @@ export function SupplierHeader({ supplierName: supplierNameProp }: SupplierHeade
           <Logo size="sm" variant="adaptive" showText={false} />
 
           {/* Vertical divider */}
-          <div className="w-px h-5 bg-border shrink-0" />
+          <div className="bg-border w-px h-5 shrink-0" />
 
           {/* Brand name + portal sub-label stacked, tightly */}
           <div className="flex flex-col justify-center gap-0 leading-none">
-            <span className="font-semibold text-foreground text-[13px] leading-[1.2] tracking-tight">
+            <span className="font-semibold text-[13px] text-foreground leading-[1.2] tracking-tight">
               Future Cashflow
             </span>
-            <span className="text-muted-foreground text-[11px] leading-[1.3] tracking-wide uppercase">
+            <span className="text-[11px] text-muted-foreground uppercase leading-[1.3] tracking-wide">
               Supplier Portal
             </span>
           </div>
@@ -82,7 +82,7 @@ export function SupplierHeader({ supplierName: supplierNameProp }: SupplierHeade
           <ThemeToggle />
 
           {/* Vertical divider */}
-          <div className="w-px h-5 bg-border shrink-0" />
+          <div className="bg-border w-px h-5 shrink-0" />
 
           {/* Avatar + name + role pill button */}
           <div ref={profileRef} className="relative">
@@ -102,13 +102,13 @@ export function SupplierHeader({ supplierName: supplierNameProp }: SupplierHeade
               )}
             >
               {/* Avatar circle */}
-              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary font-bold text-[11px] shrink-0 select-none">
+              <div className="flex justify-center items-center bg-primary/10 rounded-full w-6 h-6 font-bold text-[11px] text-primary select-none shrink-0">
                 {initials}
               </div>
 
               {/* Name + role — hidden on xs */}
-              <div className="hidden sm:flex flex-col items-start justify-center gap-0 leading-none">
-                <span className="text-[12px] font-semibold text-foreground leading-[1.2] whitespace-nowrap">
+              <div className="hidden sm:flex flex-col justify-center items-start gap-0 leading-none">
+                <span className="font-semibold text-[12px] text-foreground leading-[1.2] whitespace-nowrap">
                   {supplierName || "Supplier"}
                 </span>
                 <span className="text-[10px] text-muted-foreground leading-[1.3] whitespace-nowrap">
@@ -127,17 +127,17 @@ export function SupplierHeader({ supplierName: supplierNameProp }: SupplierHeade
 
             {/* Dropdown menu */}
             {profileOpen && (
-              <div className="absolute right-0 top-[calc(100%+6px)] z-50 w-52 rounded-xl border border-border bg-popover shadow-lg animate-in fade-in-0 zoom-in-95 slide-in-from-top-1">
+              <div className="top-[calc(100%+6px)] right-0 z-50 absolute bg-popover slide-in-from-top-1 shadow-lg border border-border rounded-xl w-52 animate-in fade-in-0 zoom-in-95">
                 {/* User identity header */}
-                <div className="flex items-center gap-3 px-4 py-3 bg-primary/[0.04] border-b border-border rounded-t-xl">
-                  <div className="flex items-center justify-center w-9 h-9 rounded-full bg-primary/10 text-primary font-bold text-xs shrink-0">
+                <div className="flex items-center gap-3 bg-primary/[0.04] px-4 py-3 border-border border-b rounded-t-xl">
+                  <div className="flex justify-center items-center bg-primary/10 rounded-full w-9 h-9 font-bold text-primary text-xs shrink-0">
                     {initials}
                   </div>
                   <div className="min-w-0">
-                    <p className="text-sm font-semibold text-foreground truncate leading-none">
+                    <p className="font-semibold text-foreground text-sm truncate leading-none">
                       {supplierName || "Supplier"}
                     </p>
-                    <p className="mt-0.5 text-xs text-muted-foreground leading-none">Supplier</p>
+                    <p className="mt-0.5 text-muted-foreground text-xs leading-none">Supplier</p>
                   </div>
                 </div>
 
@@ -145,20 +145,20 @@ export function SupplierHeader({ supplierName: supplierNameProp }: SupplierHeade
                 <div className="py-1">
                   <button
                     type="button"
-                    className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm font-medium text-foreground hover:bg-accent transition-colors duration-100"
+                    className="flex items-center gap-2.5 hover:bg-accent px-4 py-2.5 w-full font-medium text-foreground text-sm transition-colors duration-100"
                   >
                     <User className="w-4 h-4 text-muted-foreground shrink-0" />
                     Profile
                   </button>
                 </div>
 
-                <div className="border-t border-border" />
+                <div className="border-border border-t" />
 
                 <div className="py-1">
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className="flex items-center gap-2.5 w-full px-4 py-2.5 text-sm font-medium text-destructive hover:bg-destructive/[0.08] transition-colors duration-100"
+                    className="flex items-center gap-2.5 hover:bg-destructive/[0.08] px-4 py-2.5 w-full font-medium text-destructive text-sm transition-colors duration-100"
                   >
                     <LogOut className="w-4 h-4 shrink-0" />
                     Sign out

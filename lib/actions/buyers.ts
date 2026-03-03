@@ -38,6 +38,7 @@ export interface Buyer {
   payment_capture_schedule: 'immediate' | 'daily' | 'weekly' | 'monthly';
   payment_capture_type: 'weekly' | 'monthly' | null;
   payment_capture_value: string | null;
+  require_cession_approval: number;
   created_by: number | null;
   approved_by: number | null;
   approved_at: Date | null;
@@ -80,6 +81,7 @@ export interface CreateBuyerInput {
   payment_capture_schedule?: 'immediate' | 'daily' | 'weekly' | 'monthly';
   payment_capture_type?: 'weekly' | 'monthly';
   payment_capture_value?: string;
+  require_cession_approval?: boolean;
   active_status?: 'draft' | 'active';
 }
 
@@ -263,8 +265,8 @@ export async function createBuyer(input: CreateBuyerInput): Promise<{ success: b
         min_invoice_amount, max_invoice_amount, min_days_to_maturity, max_days_to_maturity,
         credit_limit, rate_card_id, payment_capture_schedule,
         payment_capture_type, payment_capture_value,
-        created_by, active_status
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        created_by, active_status, require_cession_approval
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
     const result = await query(sql, [
@@ -294,7 +296,8 @@ export async function createBuyer(input: CreateBuyerInput): Promise<{ success: b
       input.payment_capture_type || null,
       input.payment_capture_value || null,
       session.userId,
-      input.active_status || 'active'
+      input.active_status || 'active',
+      input.require_cession_approval ? 1 : 0
     ]) as any;
 
     const buyerId = result.insertId;
@@ -469,7 +472,7 @@ export async function updateBuyer(input: UpdateBuyerInput): Promise<{ success: b
       'min_invoice_amount', 'max_invoice_amount', 'min_days_to_maturity', 'max_days_to_maturity',
       'credit_limit', 'rate_card_id', 'payment_capture_schedule',
       'payment_capture_type', 'payment_capture_value',
-      'active_status'
+      'require_cession_approval', 'active_status'
     ];
 
     // Critical fields that require approval workflow (future enhancement)

@@ -19,7 +19,8 @@ import {
  Building2, 
  CreditCard,
  AlertTriangle,
- ArrowRightLeft
+ ArrowRightLeft,
+ CalendarDays
 } from "lucide-react"
 import Link from "next/link"
 import { toast } from "sonner"
@@ -46,6 +47,7 @@ interface BankChangeRequest {
  reviewed_at: string | null
  reviewed_by_username: string | null
  rejection_reason: string | null
+ effective_date?: string | null
 }
 
 export default function BankChangesPage() {
@@ -55,6 +57,7 @@ export default function BankChangesPage() {
  const [selectedRequest, setSelectedRequest] = useState<BankChangeRequest | null>(null)
  const [showRejectDialog, setShowRejectDialog] = useState(false)
  const [rejectionReason, setRejectionReason] = useState("")
+ const [approveEffectiveDates, setApproveEffectiveDates] = useState<Record<number, string>>({})
 
  useEffect(() => {
  loadRequests()
@@ -73,8 +76,9 @@ export default function BankChangesPage() {
  }
 
  const handleApprove = async (requestId: number) => {
+ const effectiveDate = approveEffectiveDates[requestId]
  startTransition(async () => {
- const result = await approveBankChangeRequest(requestId)
+ const result = await approveBankChangeRequest(requestId, effectiveDate || undefined)
  if (result.success) {
  toast.success("Bank change approved successfully")
  loadRequests()
@@ -261,9 +265,22 @@ export default function BankChangesPage() {
 
  {/* Actions */}
  <div className="flex justify-between items-center pt-4 border-t">
+ <div className="flex flex-col gap-2">
  <span className="text-muted-foreground text-xs">
  Requested: {new Date(request.created_at).toLocaleString()}
  </span>
+ <div className="flex items-center gap-2">
+ <CalendarDays className="w-4 h-4 text-muted-foreground" />
+ <Label className="text-sm shrink-0">Effective Date</Label>
+ <Input
+ type="date"
+ className="w-44 h-8 text-sm"
+ value={approveEffectiveDates[request.request_id] || ''}
+ onChange={(e) => setApproveEffectiveDates(prev => ({ ...prev, [request.request_id]: e.target.value }))}
+ />
+ <span className="text-muted-foreground text-xs">When should new bank details take effect?</span>
+ </div>
+ </div>
  <div className="flex gap-2">
  <Button
  variant="outline"
@@ -327,6 +344,12 @@ export default function BankChangesPage() {
  <p className="text-muted-foreground text-sm">
  {request.new_bank_name} - {request.new_account_no}
  </p>
+ {request.effective_date && (
+ <p className="text-muted-foreground text-xs flex items-center gap-1 mt-0.5">
+ <CalendarDays className="w-3 h-3" />
+ Effective: {new Date(request.effective_date).toLocaleDateString()}
+ </p>
+ )}
  </div>
  </div>
  <div className="text-right">

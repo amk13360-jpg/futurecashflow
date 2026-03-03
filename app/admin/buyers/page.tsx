@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { 
  Building2, Plus, Search, Filter, MoreVertical, 
  CheckCircle2, XCircle, AlertCircle, Clock, Users,
- FileText, TrendingUp, Edit, Eye, Pause,
+ FileText, TrendingUp, Edit, Eye, Pause, Shield,
  ChevronRight, ChevronLeft, MapPin, Phone, Mail, Settings2, Check, X, ArrowLeft, Calendar
 } from 'lucide-react';
 import { RandIcon } from '@/components/ui/rand-icon';
@@ -57,6 +57,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Breadcrumbs } from '@/components/ui/breadcrumbs';
+import { Switch } from '@/components/ui/switch';
 import Link from 'next/link';
 import { toast } from 'sonner';
 import { 
@@ -94,7 +95,8 @@ export default function BuyersPage() {
  min_days_to_maturity: 7,
  max_days_to_maturity: 90,
  active_status: 'active',
- payment_capture_schedule: 'daily'
+ payment_capture_schedule: 'daily',
+ require_cession_approval: false
  });
 
  const createSteps = [
@@ -236,6 +238,7 @@ export default function BuyersPage() {
 	 payment_capture_schedule: 'daily',
  payment_capture_type: undefined,
  payment_capture_value: undefined,
+ require_cession_approval: false,
  });
  setCreateStep(1);
  setFormErrors({});
@@ -331,6 +334,7 @@ export default function BuyersPage() {
  , payment_capture_schedule: buyer.payment_capture_schedule || 'daily',
  payment_capture_type: (buyer.payment_capture_type as 'weekly' | 'monthly' | undefined) || undefined,
  payment_capture_value: buyer.payment_capture_value || undefined,
+ require_cession_approval: !!(buyer.require_cession_approval),
  });
  setShowEditDialog(true);
  }
@@ -552,6 +556,11 @@ export default function BuyersPage() {
  <div>
  <div className="font-medium">{buyer.name}</div>
  <div className="text-muted-foreground text-sm">{buyer.contact_email}</div>
+ {buyer.require_cession_approval ? (
+ <span className="inline-flex items-center gap-1 text-warning text-xs mt-0.5">
+ <Shield className="w-3 h-3" />Cession Approval Required
+ </span>
+ ) : null}
  </div>
  </TableCell>
  <TableCell className="font-mono">{buyer.code}</TableCell>
@@ -1158,6 +1167,30 @@ export default function BuyersPage() {
  )}
  </CardContent>
  </Card>
+
+ {/* Cession Agreement Settings */}
+ <Card className="shadow-sm border-border/60">
+ <CardHeader className="pb-4">
+ <CardTitle className="flex items-center gap-2 text-base">
+ <Shield className="w-4 h-4" />
+ Cession Agreement Settings
+ </CardTitle>
+ <CardDescription>Configure cession approval requirements for this buyer</CardDescription>
+ </CardHeader>
+ <CardContent>
+ <div className="flex items-start gap-4">
+ <Switch
+ checked={!!formData.require_cession_approval}
+ onCheckedChange={(v: boolean) => setFormData({...formData, require_cession_approval: v})}
+ id="require_cession_approval_create"
+ />
+ <div>
+ <Label htmlFor="require_cession_approval_create" className="font-medium">Require Buyer Cession Approval</Label>
+ <p className="text-muted-foreground text-sm mt-0.5">When enabled, this buyer must explicitly approve each supplier's cession agreement before it becomes effective.</p>
+ </div>
+ </div>
+ </CardContent>
+ </Card>
  </div>
  )}
 
@@ -1282,6 +1315,12 @@ export default function BuyersPage() {
  : `Every ${formData.payment_capture_value}`)
  : <span className="text-error text-xs">Not set</span>}
  </span>
+ </div>
+ <div className="flex justify-between items-center">
+ <span className="text-muted-foreground">Cession Approval</span>
+ <span>{formData.require_cession_approval
+ ? <Badge className="bg-warning-bg text-warning-foreground"><Shield className="w-3 h-3 mr-1" />Required</Badge>
+ : <Badge variant="outline">Not Required</Badge>}</span>
  </div>
  </CardContent>
  </Card>
@@ -1674,6 +1713,25 @@ export default function BuyersPage() {
  Select a frequency to configure the payment day.
  </div>
  )}
+ </div>
+ </div>
+
+ {/* Cession Agreement Settings */}
+ <div className="mt-4 pt-4 border-t">
+ <div className="flex items-center gap-2 mb-3">
+ <Shield className="w-4 h-4 text-muted-foreground" />
+ <h4 className="font-medium text-sm">Cession Agreement Settings</h4>
+ </div>
+ <div className="flex items-start gap-4">
+ <Switch
+ checked={!!formData.require_cession_approval}
+ onCheckedChange={(v: boolean) => setFormData({...formData, require_cession_approval: v})}
+ id="require_cession_approval_edit"
+ />
+ <div>
+ <Label htmlFor="require_cession_approval_edit" className="font-medium">Require Buyer Cession Approval</Label>
+ <p className="text-muted-foreground text-sm mt-0.5">When enabled, this buyer must explicitly approve each supplier's cession agreement before it becomes effective.</p>
+ </div>
  </div>
  </div>
  </TabsContent>

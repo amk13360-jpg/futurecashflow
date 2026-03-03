@@ -99,13 +99,19 @@ export default function SupplierOffersPage() {
  toast.success(`Successfully accepted ${result.acceptedCount} offer(s)`)
  }
  
- if (result.failedCount > 0) {
+                 if (result.failedCount > 0) {
  toast.warning(`${result.failedCount} offer(s) could not be accepted`)
  }
 
- // Redirect to cession agreement if offers were accepted
  if (result.acceptedCount > 0) {
+ if (result.requiresCessionSignature) {
+ // No standing cession — supplier must sign one first
  router.push("/supplier/cession-agreement")
+ } else {
+ // Standing cession exists; addendum created — go to dashboard
+ toast.success("Offers accepted. Your standing cession covers these invoices.")
+ router.push("/supplier/dashboard")
+ }
  } else {
  // Refresh the list
  const data = await getSupplierOffers()
@@ -314,8 +320,8 @@ export default function SupplierOffersPage() {
                      <Alert>
                        <AlertTriangle className="w-4 h-4" />
                        <AlertDescription className="text-xs">
-                         By accepting, you agree to receive early payment at the discounted amount. 
-                         You will need to sign a cession agreement.
+                         By accepting, you agree to receive early payment at the discounted amount.
+                         Your standing cession agreement will cover these invoices automatically.
                        </AlertDescription>
                      </Alert>
 

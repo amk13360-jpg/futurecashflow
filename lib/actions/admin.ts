@@ -190,7 +190,7 @@ export async function getBankChangeRequests() {
 }
 
 // Approve bank change request
-export async function approveBankChangeRequest(requestId: number): Promise<{ success: boolean; error?: string }> {
+export async function approveBankChangeRequest(requestId: number, effectiveDate?: string): Promise<{ success: boolean; error?: string }> {
   const session = await getSession()
   if (!session || session.role !== "admin") {
     return { success: false, error: "Unauthorized" }
@@ -213,17 +213,17 @@ export async function approveBankChangeRequest(requestId: number): Promise<{ suc
       // Update supplier bank details
       await connection.execute(
         `UPDATE suppliers 
-         SET bank_name = ?, bank_account_no = ?, bank_branch_code = ?, updated_at = NOW()
+         SET bank_name = ?, bank_account_no = ?, bank_branch_code = ?, bank_change_effective_date = ?, updated_at = NOW()
          WHERE supplier_id = ?`,
-        [request.new_bank_name, request.new_account_no, request.new_branch_code, request.supplier_id]
+        [request.new_bank_name, request.new_account_no, request.new_branch_code, effectiveDate || null, request.supplier_id]
       )
 
       // Update request status
       await connection.execute(
         `UPDATE bank_change_requests 
-         SET status = 'approved', reviewed_by = ?, reviewed_at = NOW()
+         SET status = 'approved', reviewed_by = ?, reviewed_at = NOW(), effective_date = ?
          WHERE request_id = ?`,
-        [session.userId, requestId]
+        [session.userId, effectiveDate || null, requestId]
       )
     })
 
@@ -286,7 +286,7 @@ export async function getAllBankChangeRequests() {
     const requests = await query(
       `SELECT b.request_id, b.supplier_id, b.new_bank_name, b.new_account_no,
               b.new_branch_code, b.reason, b.status, b.created_at, b.reviewed_at,
-              b.rejection_reason,
+              b.rejection_reason, b.effective_date,
               s.name as supplier_name, s.contact_email,
               s.bank_name as current_bank_name, s.bank_account_no as current_account_no,
               s.bank_branch_code as current_branch_code,

@@ -80,13 +80,13 @@ export default function APDashboardPage() {
               <div className="flex justify-center items-center bg-muted mb-4 rounded-xl w-14 h-14">
                 <BarChart3 className="w-7 h-7 text-muted-foreground" />
               </div>
-              <CardTitle className="text-foreground text-xl">Reports</CardTitle>
+              <CardTitle className="text-foreground text-xl">View Vendors</CardTitle>
               <CardDescription className="text-muted-foreground">View uploaded vendors and invoices</CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/ap/reports">
                 <Button variant="outline" className="w-full font-semibold" size="lg">
-                  View Reports
+                  View Vendors
                 </Button>
               </Link>
             </CardContent>

@@ -400,6 +400,7 @@ export async function acceptMultipleOffers(offerIds: number[]) {
     }
 
     // Create cession addendum for accepted offers if any were successful
+    let requiresCessionSignature = false
     if (results.successfulOffers.length > 0) {
       try {
         // Get invoice IDs for successful offers
@@ -415,13 +416,14 @@ export async function acceptMultipleOffers(offerIds: number[]) {
           const addendumResult = await createCessionAddendum(invoiceIds, "offer_acceptance")
           
           if (!addendumResult.success) {
+            // No standing cession found — supplier needs to sign one
+            requiresCessionSignature = true
             console.warn("[Cession Addendum] Failed to create addendum:", addendumResult.error)
-            // Don't fail the offer acceptance, just log the warning
           }
         }
       } catch (addendumError) {
+        requiresCessionSignature = true
         console.warn("[Cession Addendum] Error creating addendum:", addendumError)
-        // Don't fail the offer acceptance, just log the warning
       }
     }
 
@@ -431,6 +433,7 @@ export async function acceptMultipleOffers(offerIds: number[]) {
       failedCount: results.failedOffers.length,
       successfulOffers: results.successfulOffers,
       failedOffers: results.failedOffers,
+      requiresCessionSignature,
     }
   } catch (error) {
     console.error("[v0] Error accepting multiple offers:", error)
