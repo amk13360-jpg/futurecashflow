@@ -91,7 +91,46 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
         ? 'Supplier'
         : 'Dashboard'
 
-  const pageTitle = 'Dashboard'
+  // Derive page title dynamically from the current pathname
+  const pageTitle = useMemo(() => {
+    if (!pathname) return 'Dashboard'
+    const routeTitleMap: Record<string, string> = {
+      // Admin routes
+      '/admin': 'Dashboard',
+      '/admin/dashboard': 'Dashboard',
+      '/admin/buyers': 'Buyers',
+      '/admin/suppliers': 'Suppliers',
+      '/admin/invoices': 'Invoice Management',
+      '/admin/offer-batches': 'Offer Batches',
+      '/admin/payments': 'Payment Processing',
+      '/admin/bank-changes': 'Bank Change Requests',
+      '/admin/reports': 'Reports & Analytics',
+      '/admin/settings': 'System Settings',
+      '/admin/vendors/upload': 'Upload Vendor Data',
+      // Supplier routes
+      '/supplier/dashboard': 'Dashboard',
+      '/supplier/offers': 'Early Payment Offers',
+      '/supplier/cession-agreement': 'Cession Agreements',
+      '/supplier/cession-agreement/upload': 'Upload Cession Agreement',
+      // AP routes
+      '/ap/dashboard': 'Dashboard',
+      '/ap/invoices': 'Invoices',
+      '/ap/invoices/upload': 'Upload AP Data',
+      '/ap/vendors/upload': 'Upload Vendor Data',
+      '/ap/reports': 'Uploaded Data',
+    }
+    // Try exact match first, then progressively shorter paths
+    if (routeTitleMap[pathname]) return routeTitleMap[pathname]
+    const segments = pathname.split('/').filter(Boolean)
+    for (let i = segments.length - 1; i >= 2; i--) {
+      const partial = '/' + segments.slice(0, i).join('/')
+      if (routeTitleMap[partial]) return routeTitleMap[partial]
+    }
+    // Fallback: capitalize the last segment
+    const last = segments[segments.length - 1]
+    if (last) return last.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+    return 'Dashboard'
+  }, [pathname])
 
   // Role-aware navigation: each role gets its own set of primary links and home URL
   const homeHref = sessionRole === 'supplier'
@@ -109,13 +148,20 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
       ]
     }
     if (sessionRole === 'accounts_payable') {
-      return []
+      return [
+        { href: '/ap/dashboard', label: 'Dashboard' },
+        { href: '/ap/invoices', label: 'Invoices' },
+        { href: '/ap/invoices/upload', label: 'Upload' },
+        { href: '/ap/reports', label: 'Reports' },
+      ]
     }
     // Default: admin
     return [
       { href: '/admin/dashboard', label: 'Dashboard' },
       { href: '/admin/buyers', label: 'Buyers' },
+      { href: '/admin/suppliers', label: 'Suppliers' },
       { href: '/admin/offer-batches', label: 'Offer Batches' },
+      { href: '/admin/invoices', label: 'Invoices' },
     ]
   }, [sessionRole])
 
@@ -133,16 +179,14 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
             <Logo size="md" variant="adaptive" showText={true} />
           </a>
 
-          {sessionRole !== 'accounts_payable' && (
-            <div className="hidden sm:flex flex-col gap-0.5">
-              <span className="text-muted-foreground text-xs leading-[1.25]">{pageContextSection}</span>
-              <span className="font-medium text-foreground text-sm leading-[1.25]">{pageTitle}</span>
-            </div>
-          )}
+          <div className="hidden sm:flex flex-col gap-0.5">
+            <span className="text-muted-foreground text-xs leading-[1.25]">{pageContextSection}</span>
+            <span className="font-medium text-foreground text-sm leading-[1.25]">{pageTitle}</span>
+          </div>
         </div>
 
         {/* Center: optional breadcrumb for larger screens (screen-reader includes product for full path) */}
-        {sessionRole !== 'accounts_payable' && <div className="hidden md:flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-6">
           <nav aria-label="Primary navigation" className="hidden lg:flex items-center gap-4">
             {navLinks.map((link) => {
               const active = pathname?.startsWith(link.href)
@@ -168,7 +212,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
               <li className="inline-flex items-center font-medium text-foreground leading-none">{pageTitle}</li>
             </ol>
           </nav>
-        </div>}
+        </div>
 
         {/* Right: Icon group + profile dropdown */}
         <div className="flex items-center gap-3">
