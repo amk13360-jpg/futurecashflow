@@ -557,7 +557,7 @@ export default function BuyersPage() {
  <div className="font-medium">{buyer.name}</div>
  <div className="text-muted-foreground text-sm">{buyer.contact_email}</div>
  {buyer.require_cession_approval ? (
- <span className="inline-flex items-center gap-1 text-warning text-xs mt-0.5">
+ <span className="inline-flex items-center gap-1 mt-0.5 text-warning text-xs">
  <Shield className="w-3 h-3" />Cession Approval Required
  </span>
  ) : null}
@@ -1186,7 +1186,7 @@ export default function BuyersPage() {
  />
  <div>
  <Label htmlFor="require_cession_approval_create" className="font-medium">Require Buyer Cession Approval</Label>
- <p className="text-muted-foreground text-sm mt-0.5">When enabled, this buyer must explicitly approve each supplier's cession agreement before it becomes effective.</p>
+ <p className="mt-0.5 text-muted-foreground text-sm">When enabled, this buyer must explicitly approve each supplier's cession agreement before it becomes effective.</p>
  </div>
  </div>
  </CardContent>
@@ -1319,7 +1319,7 @@ export default function BuyersPage() {
  <div className="flex justify-between items-center">
  <span className="text-muted-foreground">Cession Approval</span>
  <span>{formData.require_cession_approval
- ? <Badge className="bg-warning-bg text-warning-foreground"><Shield className="w-3 h-3 mr-1" />Required</Badge>
+ ? <Badge className="bg-warning-bg text-warning-foreground"><Shield className="mr-1 w-3 h-3" />Required</Badge>
  : <Badge variant="outline">Not Required</Badge>}</span>
  </div>
  </CardContent>
@@ -1730,7 +1730,7 @@ export default function BuyersPage() {
  />
  <div>
  <Label htmlFor="require_cession_approval_edit" className="font-medium">Require Buyer Cession Approval</Label>
- <p className="text-muted-foreground text-sm mt-0.5">When enabled, this buyer must explicitly approve each supplier's cession agreement before it becomes effective.</p>
+ <p className="mt-0.5 text-muted-foreground text-sm">When enabled, this buyer must explicitly approve each supplier's cession agreement before it becomes effective.</p>
  </div>
  </div>
  </div>

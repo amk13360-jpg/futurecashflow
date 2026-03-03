@@ -180,7 +180,7 @@ export default function ApplicationReviewClient({ supplier }: ApplicationReviewC
                 </Badge>
               )}
               {mineApproved && mineApprovalDate && (
-                <span className="text-muted-foreground text-sm flex items-center gap-1">
+                <span className="flex items-center gap-1 text-muted-foreground text-sm">
                   <CalendarDays className="w-3.5 h-3.5" />
                   {new Date(mineApprovalDate).toLocaleDateString("en-ZA")}
                 </span>

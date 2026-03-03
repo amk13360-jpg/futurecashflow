@@ -345,7 +345,7 @@ export default function BankChangesPage() {
  {request.new_bank_name} - {request.new_account_no}
  </p>
  {request.effective_date && (
- <p className="text-muted-foreground text-xs flex items-center gap-1 mt-0.5">
+ <p className="flex items-center gap-1 mt-0.5 text-muted-foreground text-xs">
  <CalendarDays className="w-3 h-3" />
  Effective: {new Date(request.effective_date).toLocaleDateString()}
  </p>
