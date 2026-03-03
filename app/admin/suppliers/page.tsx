@@ -9,6 +9,7 @@ import { Search, Filter, Download, Eye, Users } from "lucide-react"
 import { getSession } from "@/lib/auth/session"
 import { EmptyState } from "@/components/ui/empty-state"
 import Link from "next/link"
+import { SendCredentialsButton } from "@/components/admin/send-credentials-button"
 
 export default async function SuppliersPage() {
   const session = await getSession()
@@ -59,6 +60,7 @@ export default async function SuppliersPage() {
                 <Download className="mr-2 w-4 h-4" />
                 Export
               </Button>
+              <SendCredentialsButton />
               <Link href="/admin/dashboard">
                 <Button variant="outline" size="sm">Back to Dashboard</Button>
               </Link>

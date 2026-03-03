@@ -539,3 +539,89 @@ export async function releaseOffersForSupplier(
     }
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Bulk send login credentials to all approved suppliers that have not yet
+// received their credentials (password_hash IS NULL).
+// ─────────────────────────────────────────────────────────────────────────────
+export interface SendCredentialsResult {
+  sent: number
+  skipped: number
+  failed: number
+  errors: string[]
+}
+
+export async function sendCredentialsToApprovedSuppliers(): Promise<SendCredentialsResult> {
+  const session = await getSession()
+  if (!session || session.role !== "admin") {
+    throw new Error("Unauthorized")
+  }
+
+  const { generateTemporaryPassword, hashPassword } = await import("@/lib/auth/password")
+  const { sendSupplierCredentialsEmail } = await import("@/lib/services/email")
+
+  // Find every approved supplier that has no credentials yet
+  const suppliers = await query<Array<{
+    supplier_id: number
+    name: string
+    contact_email: string
+  }>>(
+    `SELECT supplier_id, name, contact_email
+     FROM suppliers
+     WHERE onboarding_status = 'approved'
+       AND (password_hash IS NULL OR password_hash = '')
+     ORDER BY supplier_id`,
+  )
+
+  const result: SendCredentialsResult = {
+    sent: 0,
+    skipped: 0,
+    failed: 0,
+    errors: [],
+  }
+
+  for (const supplier of suppliers) {
+    try {
+      if (!supplier.contact_email) {
+        result.skipped++
+        result.errors.push(`Supplier ${supplier.supplier_id} (${supplier.name}): no email address — skipped`)
+        continue
+      }
+
+      const tempPassword = generateTemporaryPassword()
+      const passwordHash = await hashPassword(tempPassword)
+
+      await query(
+        `UPDATE suppliers
+         SET password_hash = ?, password_set_at = NOW()
+         WHERE supplier_id = ?`,
+        [passwordHash, supplier.supplier_id],
+      )
+
+      const emailSent = await sendSupplierCredentialsEmail(
+        supplier.contact_email,
+        supplier.name,
+        tempPassword,
+      )
+
+      if (emailSent) {
+        result.sent++
+      } else {
+        result.failed++
+        result.errors.push(`Supplier ${supplier.supplier_id} (${supplier.name}): email service returned false`)
+      }
+    } catch (err: any) {
+      result.failed++
+      result.errors.push(`Supplier ${supplier.supplier_id} (${supplier.name}): ${err.message}`)
+    }
+  }
+
+  await createAuditLog({
+    userId: session.userId,
+    userType: session.role,
+    action: "BULK_SUPPLIER_CREDENTIALS_SENT",
+    details: `Bulk credential emails: ${result.sent} sent, ${result.skipped} skipped (no email), ${result.failed} failed`,
+  })
+
+  return result
+}
