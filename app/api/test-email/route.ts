@@ -1,17 +1,26 @@
 import { NextResponse } from 'next/server';
 import { sendEmail } from '@/lib/services/email';
+import { getSession } from '@/lib/auth/session';
 
+/**
+ * GET /api/test-email?to=...
+ * Admin-only endpoint for testing email delivery.
+ * Protected by middleware (removed from publicApiRoutes) and
+ * by an explicit session + role check here as defense-in-depth.
+ */
 export async function GET(request: Request) {
+  // Defense-in-depth: verify admin session even though middleware protects this
+  const session = await getSession();
+  if (!session || session.role !== 'admin') {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   const url = new URL(request.url);
   const to = url.searchParams.get('to');
   
   if (!to) {
     return NextResponse.json({ error: 'Missing "to" email parameter' }, { status: 400 });
   }
-  
-  console.log('[Test Email] Starting email test...');
-  console.log('[Test Email] AZURE_COMMUNICATION_CONNECTION_STRING:', process.env.AZURE_COMMUNICATION_CONNECTION_STRING ? 'SET (length: ' + process.env.AZURE_COMMUNICATION_CONNECTION_STRING.length + ')' : 'NOT SET');
-  console.log('[Test Email] AZURE_COMMUNICATION_SENDER:', process.env.AZURE_COMMUNICATION_SENDER || 'NOT SET');
   
   try {
     const result = await sendEmail({

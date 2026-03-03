@@ -249,8 +249,9 @@ export async function shouldRefreshSession(token: string): Promise<boolean> {
 }
 
 // Refresh session - creates new token with same data but extended expiration
-export async function refreshSession(token: string): Promise<string | null> {
+// Accepts optional headers to preserve session binding (IP/UserAgent)
+export async function refreshSession(token: string, headers?: Headers): Promise<string | null> {
   const session = await verifySession(token)
   if (!session) return null
-  return createSession(session)
+  return createSession(session, headers)
 }

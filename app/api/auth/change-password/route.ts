@@ -2,8 +2,13 @@ import { type NextRequest, NextResponse } from "next/server";
 import { query } from "@/lib/db";
 import { getSession } from "@/lib/auth/session";
 import { createAuditLog } from "@/lib/auth/audit";
-import { hashPassword } from "@/lib/auth/password";
+import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { validatePasswordStrength } from "@/lib/utils/validation";
+
+interface UserRow {
+  password_hash: string;
+  must_change_password: number;
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,10 +19,50 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
     }
 
-    const { newPassword } = await request.json();
+    const { currentPassword, newPassword } = await request.json();
 
     if (!newPassword) {
       return NextResponse.json({ error: "New password is required" }, { status: 400 });
+    }
+
+    // Fetch current user data to check must_change_password flag
+    const users = await query<UserRow[]>(
+      `SELECT password_hash, must_change_password FROM users WHERE user_id = ?`,
+      [session.userId]
+    );
+
+    if (users.length === 0) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const user = users[0];
+    const isForced = user.must_change_password === 1;
+
+    // Require current password verification unless this is a forced first-login change
+    if (!isForced) {
+      if (!currentPassword) {
+        return NextResponse.json(
+          { error: "Current password is required" },
+          { status: 400 }
+        );
+      }
+
+      const isCurrentValid = await verifyPassword(currentPassword, user.password_hash);
+      if (!isCurrentValid) {
+        await createAuditLog({
+          userId: session.userId,
+          userType: session.role === 'accounts_payable' ? 'accounts_payable' : 'admin',
+          action: "PASSWORD_CHANGE_FAILED",
+          details: "Incorrect current password provided",
+          ipAddress: request.headers.get("x-forwarded-for") || undefined,
+          userAgent: request.headers.get("user-agent") || undefined,
+        });
+
+        return NextResponse.json(
+          { error: "Current password is incorrect" },
+          { status: 403 }
+        );
+      }
     }
 
     // Validate password strength using centralized validation
@@ -46,9 +91,9 @@ export async function POST(request: NextRequest) {
     // Log the password change
     await createAuditLog({
       userId: session.userId,
-      userType: session.role === 'accounts_payable' ? 'accounts_payable' : (session.role === 'admin' ? 'admin' : 'accounts_payable'),
+      userType: session.role === 'accounts_payable' ? 'accounts_payable' : 'admin',
       action: "PASSWORD_CHANGED",
-      details: "User changed password on first login",
+      details: isForced ? "User changed password on first login" : "User changed password voluntarily",
       ipAddress: request.headers.get("x-forwarded-for") || undefined,
       userAgent: request.headers.get("user-agent") || undefined,
     });

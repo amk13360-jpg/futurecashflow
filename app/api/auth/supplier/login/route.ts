@@ -3,9 +3,37 @@ import { query } from "@/lib/db"
 import { verifyPassword } from "@/lib/auth/password"
 import { createSupplierSession } from "@/lib/auth/session"
 import { createAuditLog } from "@/lib/auth/audit"
+import { checkRateLimit, clearRateLimit, getClientIP, RATE_LIMITS } from "@/lib/auth/rate-limit"
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting - prevent brute force attacks on supplier login
+    const clientIP = getClientIP(request.headers)
+    const rateLimitKey = `supplier-login:${clientIP}`
+    const rateLimit = checkRateLimit(rateLimitKey, RATE_LIMITS.AUTH)
+
+    if (!rateLimit.allowed) {
+      await createAuditLog({
+        userType: "system",
+        action: "RATE_LIMITED",
+        details: `Supplier login rate limit exceeded for IP: ${clientIP}`,
+        ipAddress: clientIP,
+        userAgent: request.headers.get("user-agent") || undefined,
+      })
+
+      return NextResponse.json(
+        { error: "Too many login attempts. Please try again later." },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(rateLimit.retryAfter || 900),
+            "X-RateLimit-Remaining": "0",
+            "X-RateLimit-Reset": String(rateLimit.resetTime),
+          },
+        }
+      )
+    }
+
     const { email, password } = await request.json()
 
     if (!email || !password) {
@@ -44,8 +72,21 @@ export async function POST(request: NextRequest) {
     // Verify password
     const valid = await verifyPassword(password, supplier.password_hash)
     if (!valid) {
+      await createAuditLog({
+        userType: "supplier",
+        action: "SUPPLIER_LOGIN_FAILED",
+        entityType: "supplier",
+        entityId: supplier.supplier_id,
+        details: `Failed login attempt for supplier email: ${email}`,
+        ipAddress: clientIP,
+        userAgent: request.headers.get("user-agent") || undefined,
+      })
+
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
     }
+
+    // Clear rate limit on successful login
+    clearRateLimit(rateLimitKey)
 
     // Create supplier session
     const sessionToken = await createSupplierSession(

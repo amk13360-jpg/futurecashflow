@@ -25,8 +25,8 @@ function buildCSPHeader(nonce: string, isDev: boolean): string {
 
 	return [
 		"default-src 'self'",
-		"script-src 'self' 'unsafe-eval' 'unsafe-inline'",
-		"style-src 'self' 'unsafe-inline'",
+		`script-src 'self' 'nonce-${nonce}'`,
+		`style-src 'self' 'nonce-${nonce}'`,
 		"img-src 'self' data: blob: https:",
 		"font-src 'self' data:",
 		"connect-src 'self' https:",
@@ -46,7 +46,6 @@ const publicApiRoutes = [
 	"/api/auth/supplier",
 	"/api/auth/2fa",
 	"/api/health",
-	"/api/test-email", // Should be removed in production
 ]
 
 // API routes that require admin authentication
@@ -160,7 +159,7 @@ const publicRoutes = ["/", "/landing", "/login/ap", "/supplier/access", "/suppli
 		// Sliding session: refresh token if it's close to expiring (within 1 hour)
 		const needsRefresh = await shouldRefreshSession(token)
 		if (needsRefresh) {
-			const newToken = await refreshSession(token)
+			const newToken = await refreshSession(token, request.headers)
 			if (newToken) {
 				const response = addSecurityHeaders(NextResponse.next(), nonce, isDev)
 				response.cookies.set("session", newToken, {

@@ -90,8 +90,8 @@ export async function POST(request: NextRequest) {
 
     return response
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error"
-    console.error("[v0] Supplier token verification error:", errorMessage, error)
-    return NextResponse.json({ error: `Verification failed: ${errorMessage}` }, { status: 500 })
+    // Log the full error internally but do not expose details to the client
+    console.error("[v0] Supplier token verification error:", error)
+    return NextResponse.json({ error: "Verification failed. Please try again." }, { status: 500 })
   }
 }

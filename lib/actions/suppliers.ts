@@ -486,17 +486,31 @@ export async function updateSupplierProfile(data: {
     const updates: string[] = []
     const values: any[] = []
 
+    // Validate and sanitize each field before building the query
     if (data.contactPerson !== undefined) {
+      const trimmed = String(data.contactPerson).trim()
+      if (trimmed.length === 0 || trimmed.length > 100) {
+        throw new Error("Contact person name must be between 1 and 100 characters")
+      }
       updates.push("contact_person = ?")
-      values.push(data.contactPerson)
+      values.push(trimmed)
     }
     if (data.contactPhone !== undefined) {
+      const trimmed = String(data.contactPhone).trim()
+      // Allow digits, spaces, +, -, (, ) only
+      if (!/^[\d\s+\-()]{7,20}$/.test(trimmed)) {
+        throw new Error("Invalid phone number format")
+      }
       updates.push("contact_phone = ?")
-      values.push(data.contactPhone)
+      values.push(trimmed)
     }
     if (data.physicalAddress !== undefined) {
+      const trimmed = String(data.physicalAddress).trim()
+      if (trimmed.length === 0 || trimmed.length > 500) {
+        throw new Error("Physical address must be between 1 and 500 characters")
+      }
       updates.push("physical_address = ?")
-      values.push(data.physicalAddress)
+      values.push(trimmed)
     }
 
     if (updates.length === 0) {

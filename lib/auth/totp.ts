@@ -198,11 +198,24 @@ export function generateBackupCodes(count: number = 10): string[] {
 }
 
 /**
+ * Get the HMAC key for backup code hashing.
+ * Uses BACKUP_CODE_SECRET env var, falling back to JWT_SECRET.
+ * Never uses a hardcoded value in production.
+ */
+function getBackupCodeKey(): string {
+  const key = process.env.BACKUP_CODE_SECRET || process.env.JWT_SECRET
+  if (!key && process.env.NODE_ENV === "production") {
+    throw new Error("CRITICAL: BACKUP_CODE_SECRET or JWT_SECRET must be set in production")
+  }
+  return key || "dev-only-backup-code-key"
+}
+
+/**
  * Hash backup code for secure storage
  */
 export function hashBackupCode(code: string): string {
   const normalized = code.replace(/-/g, "").toUpperCase()
-  return createHmac("sha256", "backup-code-salt")
+  return createHmac("sha256", getBackupCodeKey())
     .update(normalized)
     .digest("hex")
 }

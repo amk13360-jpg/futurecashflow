@@ -104,7 +104,29 @@ export async function POST(request: NextRequest) {
     // Reset failed login attempts and update last login
     await query("UPDATE users SET failed_login_attempts = 0, last_login_at = NOW() WHERE user_id = ?", [user.user_id])
 
-    // Create session
+    // Clear rate limit on successful login
+    clearRateLimit(rateLimitKey)
+
+    // Check if 2FA (TOTP) is enabled for this user
+    if (user.totp_enabled) {
+      await createAuditLog({
+        userId: user.user_id,
+        userType: "admin",
+        action: "LOGIN_REQUIRES_2FA",
+        details: "Password verified, awaiting 2FA verification",
+        ipAddress: request.headers.get("x-forwarded-for") || undefined,
+        userAgent: request.headers.get("user-agent") || undefined,
+      })
+
+      // Do NOT issue a session token yet -- require 2FA first
+      return NextResponse.json({
+        success: true,
+        requires2FA: true,
+        userId: user.user_id,
+      })
+    }
+
+    // No 2FA: issue session immediately
     const token = await createSession({
       userId: user.user_id,
       username: user.username,
@@ -113,9 +135,6 @@ export async function POST(request: NextRequest) {
       buyerId: user.buyer_id,
       fullName: user.full_name,
     })
-
-    // Clear rate limit on successful login
-    clearRateLimit(rateLimitKey)
 
     await createAuditLog({
       userId: user.user_id,

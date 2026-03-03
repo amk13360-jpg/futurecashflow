@@ -1,9 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { query } from "@/lib/db"
 import { createAuditLog } from "@/lib/auth/audit"
-import { checkRateLimit, getClientIP, RATE_LIMITS } from "@/lib/auth/rate-limit"
+import { createSession } from "@/lib/auth/session"
+import { checkRateLimit, clearRateLimit, getClientIP, RATE_LIMITS } from "@/lib/auth/rate-limit"
 import { verifyTOTP, verifyBackupCode } from "@/lib/auth/totp"
 import { isValidOTP } from "@/lib/utils/validation"
+import type { User } from "@/lib/types/database"
 
 /**
  * POST /api/auth/2fa/verify
@@ -36,9 +38,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "User ID and token are required" }, { status: 400 })
     }
 
-    // Get user's 2FA settings
-    const users = await query<any[]>(
-      `SELECT totp_secret, totp_enabled, totp_backup_codes FROM users WHERE user_id = ? AND totp_enabled = 1`,
+    // Get user's 2FA settings and full profile for session creation
+    const users = await query<User[]>(
+      `SELECT * FROM users WHERE user_id = ? AND totp_enabled = 1 AND active_status = 'active'`,
       [userId]
     )
 
@@ -101,21 +103,60 @@ export async function POST(request: NextRequest) {
       userAgent: request.headers.get("user-agent") || undefined,
     })
 
-    // Return remaining backup codes count if a backup code was used
-    const response: any = {
+    // Clear rate limit on successful 2FA
+    clearRateLimit(rateLimitKey)
+
+    // Issue session token now that both factors are verified
+    const sessionToken = await createSession({
+      userId: user.user_id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      buyerId: user.buyer_id,
+      fullName: user.full_name,
+    })
+
+    await createAuditLog({
+      userId: user.user_id,
+      userType: "admin",
+      action: "LOGIN_SUCCESS",
+      details: "Admin logged in successfully via 2FA",
+      ipAddress: clientIP,
+      userAgent: request.headers.get("user-agent") || undefined,
+    })
+
+    // Build response with session cookie
+    const responseBody: Record<string, unknown> = {
       success: true,
-      message: "2FA verification successful"
+      message: "2FA verification successful",
+      user: {
+        userId: user.user_id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        fullName: user.full_name,
+      },
     }
 
     if (usedBackupCode) {
       const remainingCodes = JSON.parse(user.totp_backup_codes || "[]").length - 1
-      response.backupCodesRemaining = remainingCodes
-      response.warning = remainingCodes < 3 
+      responseBody.backupCodesRemaining = remainingCodes
+      responseBody.warning = remainingCodes < 3 
         ? "You have few backup codes remaining. Consider regenerating them."
         : undefined
     }
 
-    return NextResponse.json(response)
+    const response = NextResponse.json(responseBody)
+
+    response.cookies.set("session", sessionToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 4, // 4 hours
+      path: "/",
+    })
+
+    return response
   } catch (error) {
     console.error("[2FA] Verification error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
