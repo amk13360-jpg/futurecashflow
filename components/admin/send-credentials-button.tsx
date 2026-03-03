@@ -84,7 +84,7 @@ export function SendCredentialsButton() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleSend} className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <AlertDialogAction onClick={handleSend} className="bg-primary hover:bg-primary/90 text-primary-foreground">
               <Mail className="mr-2 w-4 h-4" />
               Send Now
             </AlertDialogAction>
@@ -105,7 +105,7 @@ export function SendCredentialsButton() {
               <div className="gap-3 grid grid-cols-3">
                 <div className="flex flex-col items-center gap-1 bg-success-bg px-3 py-3 border border-success-border rounded-lg">
                   <CheckCircle2 className="w-5 h-5 text-success-foreground" />
-                  <span className="font-bold text-2xl text-success-foreground">{result.sent}</span>
+                  <span className="font-bold text-success-foreground text-2xl">{result.sent}</span>
                   <span className="text-success-foreground text-xs">Sent</span>
                 </div>
                 <div className="flex flex-col items-center gap-1 bg-muted px-3 py-3 border rounded-lg">
@@ -115,7 +115,7 @@ export function SendCredentialsButton() {
                 </div>
                 <div className="flex flex-col items-center gap-1 bg-destructive/10 px-3 py-3 border border-destructive/20 rounded-lg">
                   <XCircle className="w-5 h-5 text-destructive" />
-                  <span className="font-bold text-2xl text-destructive">{result.failed}</span>
+                  <span className="font-bold text-destructive text-2xl">{result.failed}</span>
                   <span className="text-destructive text-xs">Failed</span>
                 </div>
               </div>
@@ -126,7 +126,7 @@ export function SendCredentialsButton() {
                   <ul className="space-y-1 bg-muted/50 p-3 rounded-lg max-h-40 overflow-y-auto">
                     {result.errors.map((e, i) => (
                       <li key={i} className="flex items-start gap-2 text-muted-foreground text-xs">
-                        <Badge variant="outline" className="mt-0.5 shrink-0 text-[10px]">{i + 1}</Badge>
+                        <Badge variant="outline" className="mt-0.5 text-[10px] shrink-0">{i + 1}</Badge>
                         {e}
                       </li>
                     ))}
@@ -135,7 +135,7 @@ export function SendCredentialsButton() {
               )}
 
               {result.sent === 0 && result.failed === 0 && result.skipped === 0 && (
-                <p className="text-muted-foreground text-sm text-center py-2">
+                <p className="py-2 text-muted-foreground text-sm text-center">
                   No approved suppliers are awaiting credentials.
                 </p>
               )}
