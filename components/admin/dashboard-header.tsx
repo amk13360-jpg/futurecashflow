@@ -58,7 +58,19 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
     return () => document.removeEventListener("mousedown", handler)
   }, [])
 
-  const displayName = userName || sessionName || "Admin User"
+  // Determine which portal we're in based on the URL (drives nav, breadcrumb, home link)
+  const currentPortal = useMemo(() => {
+    if (!pathname) return 'admin'
+    if (pathname.startsWith('/supplier')) return 'supplier'
+    if (pathname.startsWith('/ap')) return 'accounts_payable'
+    return 'admin'
+  }, [pathname])
+
+  const displayName = userName || sessionName || (
+    currentPortal === 'supplier' ? 'Supplier' :
+    currentPortal === 'accounts_payable' ? 'AP User' :
+    'Admin User'
+  )
   const roleLabel =
     sessionRole === 'admin'
       ? 'Administrator'
@@ -66,7 +78,13 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
         ? 'Accounts Payable'
         : sessionRole === 'supplier'
           ? 'Supplier'
-          : ''
+          : currentPortal === 'supplier'
+            ? 'Supplier'
+            : currentPortal === 'accounts_payable'
+              ? 'Accounts Payable'
+              : currentPortal === 'admin'
+                ? 'Administrator'
+                : ''
 
   const initials = useMemo(() => {
     const source = (displayName || "User").trim()
@@ -83,12 +101,12 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
   ]
   const unreadCount = notifications.filter((n) => n.unread).length
 
-  const pageContextSection = sessionRole === 'admin'
+  const pageContextSection = currentPortal === 'admin'
     ? 'Admin'
-    : sessionRole === 'accounts_payable'
+    : currentPortal === 'accounts_payable'
       ? 'Accounts Payable'
-      : sessionRole === 'supplier'
-        ? 'Supplier'
+      : currentPortal === 'supplier'
+        ? 'Supplier Portal'
         : 'Dashboard'
 
   // Derive page title dynamically from the current pathname
@@ -132,22 +150,18 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
     return 'Dashboard'
   }, [pathname])
 
-  // Role-aware navigation: each role gets its own set of primary links and home URL
-  const homeHref = sessionRole === 'supplier'
+  // Portal-aware navigation: driven by the URL path, not the session role
+  const homeHref = currentPortal === 'supplier'
     ? '/supplier/dashboard'
-    : sessionRole === 'accounts_payable'
+    : currentPortal === 'accounts_payable'
       ? '/ap/dashboard'
       : '/admin'
 
   const navLinks = useMemo(() => {
-    if (sessionRole === 'supplier') {
-      return [
-        { href: '/supplier/dashboard', label: 'Dashboard' },
-        { href: '/supplier/offers', label: 'Offers' },
-        { href: '/supplier/cession-agreement', label: 'Cession Agreement' },
-      ]
+    if (currentPortal === 'supplier') {
+      return []
     }
-    if (sessionRole === 'accounts_payable') {
+    if (currentPortal === 'accounts_payable') {
       return [
         { href: '/ap/dashboard', label: 'Dashboard' },
         { href: '/ap/invoices', label: 'Invoices' },
@@ -163,7 +177,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
       { href: '/admin/offer-batches', label: 'Offer Batches' },
       { href: '/admin/invoices', label: 'Invoices' },
     ]
-  }, [sessionRole])
+  }, [currentPortal])
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
