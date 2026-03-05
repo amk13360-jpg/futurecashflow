@@ -81,7 +81,7 @@ export default function APDashboardPage() {
                 <BarChart3 className="w-7 h-7 text-muted-foreground" />
               </div>
               <CardTitle className="text-foreground text-xl">View Vendors</CardTitle>
-              <CardDescription className="text-muted-foreground">View uploaded vendors and invoices</CardDescription>
+              <CardDescription className="text-muted-foreground">View uploaded vendors</CardDescription>
             </CardHeader>
             <CardContent>
               <Link href="/ap/reports">
