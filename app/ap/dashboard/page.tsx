@@ -64,7 +64,7 @@ export default function APDashboardPage() {
               </div>
               <CardTitle className="text-foreground text-xl">View Invoices</CardTitle>
               <CardDescription className="text-muted-foreground">
-                Track uploaded invoices and offer status
+                View uploaded invoices
               </CardDescription>
             </CardHeader>
             <CardContent>
