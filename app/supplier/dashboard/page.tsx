@@ -141,18 +141,6 @@ export default function SupplierDashboardPage() {
  </p>
  </div>
  <div>
- <p className="text-muted-foreground text-sm">Early Payment Amount</p>
- <p className="font-semibold text-success text-lg">
- {offer.currency} {offer.net_payment_amount.toLocaleString()}
- </p>
- </div>
- <div>
- <p className="text-muted-foreground text-sm">Discount</p>
- <p className="font-medium text-sm">
- {offer.currency} {offer.discount_amount.toLocaleString()} ({offer.annual_rate}% p.a.)
- </p>
- </div>
- <div>
  <p className="text-muted-foreground text-sm">Days to Maturity</p>
  <p className="font-medium text-sm">{offer.days_to_maturity} days</p>
  </div>
