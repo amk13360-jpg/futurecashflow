@@ -1,8 +1,7 @@
 "use client"
 
 import { useRouter, usePathname } from "next/navigation"
-import Link from "next/link"
-import { LogOut, Bell, ChevronDown, Settings, User, ChevronRight } from "lucide-react"
+import { LogOut, Bell, ChevronDown, Settings, User } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Logo } from "@/components/ui/logo"
 import { useEffect, useMemo, useRef, useState } from "react"
@@ -109,11 +108,9 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
         ? 'Supplier Portal'
         : 'Dashboard'
 
-  // Derive page title dynamically from the current pathname
   const pageTitle = useMemo(() => {
     if (!pathname) return 'Dashboard'
     const routeTitleMap: Record<string, string> = {
-      // Admin routes
       '/admin': 'Dashboard',
       '/admin/dashboard': 'Dashboard',
       '/admin/buyers': 'Buyers',
@@ -125,12 +122,10 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
       '/admin/reports': 'Reports & Analytics',
       '/admin/settings': 'System Settings',
       '/admin/vendors/upload': 'Upload Vendor Data',
-      // Supplier routes
       '/supplier/dashboard': 'Dashboard',
       '/supplier/offers': 'Early Payment Offers',
       '/supplier/cession-agreement': 'Cession Agreements',
       '/supplier/cession-agreement/upload': 'Upload Cession Agreement',
-      // AP routes
       '/ap/dashboard': 'Dashboard',
       '/ap/invoices': 'Invoices',
       '/ap/invoices/upload': 'Upload AP Data',
@@ -138,14 +133,12 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
       '/ap/cession-agreements': 'Cession Approvals',
       '/ap/reports': 'Uploaded Data',
     }
-    // Try exact match first, then progressively shorter paths
     if (routeTitleMap[pathname]) return routeTitleMap[pathname]
     const segments = pathname.split('/').filter(Boolean)
     for (let i = segments.length - 1; i >= 2; i--) {
       const partial = '/' + segments.slice(0, i).join('/')
       if (routeTitleMap[partial]) return routeTitleMap[partial]
     }
-    // Fallback: capitalize the last segment
     const last = segments[segments.length - 1]
     if (last) return last.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
     return 'Dashboard'
@@ -157,29 +150,6 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
     : currentPortal === 'accounts_payable'
       ? '/ap/dashboard'
       : '/admin'
-
-  const navLinks = useMemo(() => {
-    if (currentPortal === 'supplier') {
-      return []
-    }
-    if (currentPortal === 'accounts_payable') {
-      return [
-        { href: '/ap/dashboard', label: 'Dashboard' },
-        { href: '/ap/invoices', label: 'Invoices' },
-        { href: '/ap/invoices/upload', label: 'Upload' },
-        { href: '/ap/cession-agreements', label: 'Cession Approvals' },
-        { href: '/ap/reports', label: 'Reports' },
-      ]
-    }
-    // Default: admin
-    return [
-      { href: '/admin/dashboard', label: 'Dashboard' },
-      { href: '/admin/buyers', label: 'Buyers' },
-      { href: '/admin/suppliers', label: 'Suppliers' },
-      { href: '/admin/offer-batches', label: 'Offer Batches' },
-      { href: '/admin/invoices', label: 'Invoices' },
-    ]
-  }, [currentPortal])
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' })
@@ -199,36 +169,10 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
             <span className="text-muted-foreground text-xs leading-[1.25]">{pageContextSection}</span>
             <span className="font-medium text-foreground text-sm leading-[1.25]">{pageTitle}</span>
           </div>
+
         </div>
 
-        {/* Center: optional breadcrumb for larger screens (screen-reader includes product for full path) */}
-        <div className="hidden md:flex items-center gap-6">
-          <nav aria-label="Primary navigation" className="hidden lg:flex items-center gap-4">
-            {navLinks.map((link) => {
-              const active = pathname?.startsWith(link.href)
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`inline-flex items-center leading-none text-sm px-3 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 ${active ? 'font-medium text-foreground bg-accent' : 'text-muted-foreground hover:text-foreground hover:bg-transparent'}`}
-                >
-                  {link.label}
-                </Link>
-              )
-            })}
-          </nav>
 
-          <nav aria-label="Breadcrumb" className="hidden md:flex items-center text-muted-foreground text-sm">
-            <ol className="flex items-center gap-2">
-              <li className="sr-only">Future Cashflow</li>
-              <li className="flex items-center gap-2">
-                <span className="text-muted-foreground">{pageContextSection}</span>
-                <ChevronRight className="w-3.5 h-3.5 text-muted-foreground" aria-hidden />
-              </li>
-              <li className="inline-flex items-center font-medium text-foreground leading-none">{pageTitle}</li>
-            </ol>
-          </nav>
-        </div>
 
         {/* Right: Icon group + profile dropdown */}
         <div className="flex items-center gap-3">
