@@ -177,8 +177,8 @@ export async function signStandingCession(
       details: `Supplier ${session.name} signed standing cession`,
     })
 
-    // Generate login credentials based on buyer approval requirements
-    await generateSupplierCredentialsIfNeeded(session.supplierId, session.email, session.name)
+    // Generate login credentials immediately after signing
+    await generateSupplierCredentialsAfterSigning(session.supplierId, session.email, session.name)
 
     revalidatePath("/supplier/cession-agreement")
     return { success: true }
@@ -189,9 +189,9 @@ export async function signStandingCession(
 }
 
 /**
- * Generate supplier credentials if needed based on buyer approval requirements
+ * Generate supplier credentials immediately after cession signing
  */
-export async function generateSupplierCredentialsIfNeeded(
+export async function generateSupplierCredentialsAfterSigning(
   supplierId: number,
   supplierEmail: string,
   supplierName: string
@@ -208,67 +208,23 @@ export async function generateSupplierCredentialsIfNeeded(
       return
     }
 
-    // Get buyer's approval requirements for this supplier
-    const buyerInfo = await query<any[]>(
-      `SELECT DISTINCT b.require_cession_approval
-       FROM suppliers s
-       JOIN cession_agreements ca ON s.supplier_id = ca.supplier_id  
-       JOIN buyers b ON ca.buyer_id = b.buyer_id
-       WHERE s.supplier_id = ?
-       LIMIT 1`,
-      [supplierId]
-    )
-
-    // Get current cession status
-    const cessionStatus = await query<any[]>(
-      `SELECT status FROM cession_agreements 
-       WHERE supplier_id = ? 
-       ORDER BY created_at DESC 
-       LIMIT 1`,
-      [supplierId]
-    )
-
-    if (cessionStatus.length === 0) {
-      console.log(`[Credentials] No cession found for supplier ${supplierEmail}`)
-      return
-    }
-
-    const status = cessionStatus[0].status
-    const requiresApproval = buyerInfo.length > 0 ? buyerInfo[0].require_cession_approval : false
-
-    // Determine if credentials should be sent
-    let shouldSendCredentials = false
+    // Generate and send credentials immediately after signing
+    const { generateTemporaryPassword, hashPassword } = await import("@/lib/auth/password")
+    const { sendSupplierCredentialsEmail } = await import("@/lib/services/email")
     
-    if (!requiresApproval) {
-      // No buyer approval required - send after signing
-      shouldSendCredentials = ['signed', 'buyer_approved', 'approved'].includes(status)
-    } else {
-      // Buyer approval required - wait for buyer approval
-      shouldSendCredentials = ['buyer_approved', 'approved'].includes(status)
-    }
-
-    if (shouldSendCredentials) {
-      const { generateTemporaryPassword, hashPassword } = await import("@/lib/auth/password")
-      const { sendSupplierCredentialsEmail } = await import("@/lib/services/email")
-      
-      const tempPassword = generateTemporaryPassword()
-      const passwordHash = await hashPassword(tempPassword)
-      
-      await query(
-        "UPDATE suppliers SET password_hash = ?, password_set_at = NOW() WHERE supplier_id = ?",
-        [passwordHash, supplierId]
-      )
-      
-      await sendSupplierCredentialsEmail(supplierEmail, supplierName, tempPassword)
-      
-      const approvalType = requiresApproval ? 'buyer-approved' : 'signed'
-      console.log(`[Credentials] Generated and emailed to ${supplierEmail} (${approvalType} cession)`)
-    } else {
-      const reason = requiresApproval ? 'pending buyer approval' : 'cession not yet signed'
-      console.log(`[Credentials] Not sending to ${supplierEmail} - ${reason} (status: ${status})`)
-    }
+    const tempPassword = generateTemporaryPassword()
+    const passwordHash = await hashPassword(tempPassword)
+    
+    await query(
+      "UPDATE suppliers SET password_hash = ?, password_set_at = NOW() WHERE supplier_id = ?",
+      [passwordHash, supplierId]
+    )
+    
+    await sendSupplierCredentialsEmail(supplierEmail, supplierName, tempPassword)
+    
+    console.log(`[Credentials] Generated and emailed to ${supplierEmail} immediately after cession signing`)
   } catch (credError) {
-    console.error("[Credentials] Error generating supplier credentials:", credError)
+    console.error("[Credentials] Error generating supplier credentials after signing:", credError)
   }
 }
 

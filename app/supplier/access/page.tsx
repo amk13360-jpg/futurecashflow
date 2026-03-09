@@ -147,7 +147,7 @@ export default function SupplierAccessPage() {
 
             <div className="mt-4 text-muted-foreground text-xs text-center">
               <p>The access token is for first-time use only.</p>
-              <p className="mt-1">After signing your cession agreement, login credentials will be emailed to you once approved.</p>
+              <p className="mt-1">After signing your cession agreement, login credentials will be emailed to you immediately.</p>
             </div>
           </CardContent>
         </Card>
