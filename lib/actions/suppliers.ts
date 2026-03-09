@@ -438,6 +438,35 @@ export async function acceptMultipleOffers(offerIds: number[]) {
             continue
           }
 
+          // Check buyer's cession approval requirement before accepting
+          const [buyerRows] = await connection.execute(
+            `SELECT b.buyer_id, b.require_cession_approval
+             FROM invoices i
+             JOIN buyers b ON i.buyer_id = b.buyer_id
+             WHERE i.invoice_id = ?
+             LIMIT 1`,
+            [offer.invoice_id]
+          ) as any
+          const buyer = (buyerRows as any[])[0]
+
+          if (buyer?.require_cession_approval) {
+            const [cessionRows] = await connection.execute(
+              `SELECT cession_id, status FROM cession_agreements
+               WHERE supplier_id = ? AND buyer_id = ?
+                 AND status IN ('buyer_approved', 'approved')
+               LIMIT 1`,
+              [session.supplierId, buyer.buyer_id]
+            ) as any
+            const approvedCession = (cessionRows as any[])[0]
+            if (!approvedCession) {
+              failedOffers.push({ 
+                offerId, 
+                reason: "Your cession agreement has not been approved by the buyer yet. Please wait for buyer approval before accepting offers." 
+              })
+              continue
+            }
+          }
+
           // Update offer status
           await connection.execute(`UPDATE offers SET status = 'accepted', responded_at = NOW() WHERE offer_id = ?`, [
             offerId,
@@ -471,9 +500,11 @@ export async function acceptMultipleOffers(offerIds: number[]) {
     if (results.successfulOffers.length > 0) {
       try {
         // Get invoice IDs for successful offers
+        // Build dynamic placeholders since execute() doesn't expand arrays for IN (?)
+        const placeholders = results.successfulOffers.map(() => '?').join(',')
         const invoiceQuery = await query<any[]>(
-          `SELECT invoice_id FROM offers WHERE offer_id IN (?)`,
-          [results.successfulOffers]
+          `SELECT invoice_id FROM offers WHERE offer_id IN (${placeholders})`,
+          results.successfulOffers
         )
         const invoiceIds = invoiceQuery.map((row: any) => row.invoice_id)
         
