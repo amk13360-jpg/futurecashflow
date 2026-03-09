@@ -533,6 +533,124 @@ export async function updateBuyer(input: UpdateBuyerInput): Promise<{ success: b
       details: JSON.stringify({ fields: Object.keys(input).filter(k => k !== 'buyer_id') })
     });
 
+    // If contact_email changed, update all AP users' email and send credentials to new email
+    const oldEmail = currentBuyer[0].contact_email;
+    const newEmail = input.contact_email;
+    if (newEmail && oldEmail && oldEmail.toLowerCase() !== newEmail.toLowerCase()) {
+      try {
+        const bcrypt = (await import('bcryptjs')).default;
+        const { sendEmail } = await import('@/lib/services/email');
+
+        // Find all AP users linked to this buyer
+        const apUsers = await query(
+          `SELECT user_id, username, full_name, email FROM users WHERE buyer_id = ? AND role = 'accounts_payable'`,
+          [input.buyer_id]
+        ) as Array<{ user_id: number; username: string; full_name: string; email: string }>;
+
+        const buyerCode = input.code || currentBuyer[0].code;
+        const buyerName = input.name || currentBuyer[0].name;
+
+        for (const apUser of apUsers) {
+          // Generate new temp password
+          const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%';
+          let tempPassword = '';
+          for (let i = 0; i < 12; i++) {
+            tempPassword += chars[Math.floor(Math.random() * chars.length)];
+          }
+          const passwordHash = await bcrypt.hash(tempPassword, 10);
+
+          // Update user email and password
+          await query(
+            `UPDATE users SET email = ?, password_hash = ?, must_change_password = 1, updated_at = NOW() WHERE user_id = ?`,
+            [newEmail, passwordHash, apUser.user_id]
+          );
+
+          // Send credentials to the new email
+          const loginUrl = process.env.NEXT_PUBLIC_APP_URL
+            ? `${process.env.NEXT_PUBLIC_APP_URL}/login/ap`
+            : 'https://fm-asp-dev-san-hufee4h8hyawbhcx.southafricanorth-01.azurewebsites.net/login/ap';
+
+          await sendEmail({
+            to: newEmail,
+            subject: `Updated Login Credentials - Future Mining Finance (Pty) Ltd`,
+            text: `Hello ${apUser.full_name || apUser.username},\n\nYour email address has been updated by the administrator.\n\nYour new login credentials:\n- Login URL: ${loginUrl}\n- Mine Code: ${buyerCode}\n- Username: ${apUser.username}\n- Password: ${tempPassword}\n\nPlease change your password after your first login.\n\nBest regards,\nFuture Mining Finance (Pty) Ltd`,
+            html: `
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background: #1e40af; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
+    .content { padding: 20px; background: #f9fafb; border: 1px solid #e5e7eb; }
+    .credentials { background: white; border: 1px solid #e5e7eb; padding: 15px; margin: 15px 0; border-radius: 8px; }
+    .credential-row { display: flex; margin: 10px 0; }
+    .credential-label { font-weight: bold; width: 120px; color: #6b7280; }
+    .credential-value { font-family: monospace; background: #f3f4f6; padding: 4px 8px; border-radius: 4px; }
+    .warning { background: #fef3c7; border: 1px solid #f59e0b; padding: 15px; margin: 15px 0; border-radius: 8px; }
+    .button { display: inline-block; background: #1e40af; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 15px 0; }
+    .footer { text-align: center; padding: 20px; color: #6b7280; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Updated Login Credentials</h1>
+    </div>
+    <div class="content">
+      <p>Dear ${apUser.full_name || apUser.username},</p>
+      <p>Your email address for <strong>${buyerName}</strong> has been updated by the administrator. Below are your new login credentials:</p>
+      <div class="credentials">
+        <h3 style="margin-top: 0;">Your Login Credentials</h3>
+        <div class="credential-row">
+          <span class="credential-label">Login URL:</span>
+          <span class="credential-value"><a href="${loginUrl}">${loginUrl}</a></span>
+        </div>
+        <div class="credential-row">
+          <span class="credential-label">Mine Code:</span>
+          <span class="credential-value">${buyerCode}</span>
+        </div>
+        <div class="credential-row">
+          <span class="credential-label">Username:</span>
+          <span class="credential-value">${apUser.username}</span>
+        </div>
+        <div class="credential-row">
+          <span class="credential-label">Password:</span>
+          <span class="credential-value">${tempPassword}</span>
+        </div>
+      </div>
+      <div class="warning">
+        <strong>⚠️ Important:</strong> This is a temporary password. You will be required to change it upon your first login.
+      </div>
+      <a href="${loginUrl}" class="button">Login to Future Mining Finance</a>
+      <p>Best regards,<br>Future Mining Finance (Pty) Ltd</p>
+    </div>
+    <div class="footer">
+      <p>This is an automated message. Please do not reply directly to this email.</p>
+      <p>&copy; ${new Date().getFullYear()} Future Mining Finance. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>`
+          });
+
+          console.log(`[updateBuyer] Sent credentials to updated email ${newEmail} for AP user ${apUser.user_id}`);
+
+          await createAuditLog({
+            userId: session.userId,
+            userType: 'admin',
+            action: 'BUYER_EMAIL_UPDATED_CREDENTIALS_SENT',
+            entityType: 'user',
+            entityId: apUser.user_id,
+            details: JSON.stringify({ oldEmail, newEmail, username: apUser.username })
+          });
+        }
+      } catch (emailError) {
+        console.error('[updateBuyer] Failed to send credentials to updated email:', emailError);
+        // Don't fail the buyer update — just log the error
+      }
+    }
+
     revalidatePath('/admin/buyers');
     revalidatePath(`/admin/buyers/${input.buyer_id}`);
     return { success: true, message: 'Buyer updated successfully' };
