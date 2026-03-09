@@ -186,6 +186,29 @@ export async function approveCessionAsBuyer(
       details: `AP user ${session.username} (buyer_id=${session.buyerId}) approved cession #${cessionId}`,
     })
 
+    // Generate supplier credentials after buyer approval
+    try {
+      const supplierInfo = await query<any[]>(
+        `SELECT s.supplier_id, s.email, s.name 
+         FROM suppliers s
+         JOIN cession_agreements ca ON s.supplier_id = ca.supplier_id
+         WHERE ca.cession_id = ?`,
+        [cessionId]
+      )
+      
+      if (supplierInfo.length > 0) {
+        const supplier = supplierInfo[0]
+        const { generateSupplierCredentialsIfNeeded } = await import("@/lib/actions/standing-cession")
+        await generateSupplierCredentialsIfNeeded(
+          supplier.supplier_id,
+          supplier.email,
+          supplier.name
+        )
+      }
+    } catch (credError) {
+      console.error("[BuyerCession] Warning: Could not generate supplier credentials after approval:", credError)
+    }
+
     revalidatePath("/ap/cession-agreements")
     return { success: true }
   } catch (error: any) {
