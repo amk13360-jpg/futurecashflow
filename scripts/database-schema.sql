@@ -166,9 +166,11 @@ CREATE TABLE `cession_agreements` (
   `version` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '1.0',
   `signed_date` date DEFAULT NULL,
   `signature_data` text COLLATE utf8mb4_unicode_ci,
-  `status` enum('pending','signed','approved','rejected') COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
+  `status` enum('pending','signed','buyer_approved','approved','rejected') COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
   `approved_by` int DEFAULT NULL,
   `approved_at` timestamp NULL DEFAULT NULL,
+  `buyer_approved_by` int DEFAULT NULL,
+  `buyer_approved_at` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `is_standing` tinyint(1) DEFAULT '0',
@@ -183,9 +185,12 @@ CREATE TABLE `cession_agreements` (
   KEY `idx_status` (`status`),
   KEY `fk_parent_cession` (`parent_cession_id`),
   KEY `fk_cession_buyer` (`buyer_id`),
+  KEY `buyer_approved_by` (`buyer_approved_by`),
+  KEY `idx_cession_status_buyer` (`buyer_id`,`status`),
   CONSTRAINT `cession_agreements_ibfk_1` FOREIGN KEY (`supplier_id`) REFERENCES `suppliers` (`supplier_id`) ON DELETE CASCADE,
   CONSTRAINT `cession_agreements_ibfk_2` FOREIGN KEY (`approved_by`) REFERENCES `users` (`user_id`) ON DELETE SET NULL,
   CONSTRAINT `fk_cession_buyer` FOREIGN KEY (`buyer_id`) REFERENCES `buyers` (`buyer_id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_cession_buyer_approved_by` FOREIGN KEY (`buyer_approved_by`) REFERENCES `users` (`user_id`) ON DELETE SET NULL,
   CONSTRAINT `fk_parent_cession` FOREIGN KEY (`parent_cession_id`) REFERENCES `cession_agreements` (`cession_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

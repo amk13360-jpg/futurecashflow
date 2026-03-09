@@ -25,13 +25,52 @@ export async function uploadCessionAgreement({ supplierId, file, fileName }: { s
     documentUrl = `/uploads/cession-agreements/${uniqueName}`;
   }
 
-  // Insert or update cession_agreements record
-  await query(
-    `INSERT INTO cession_agreements (supplier_id, document_url, document_type, version, signed_date, status, created_at, updated_at)
-     VALUES (?, ?, 'uploaded', 'v1', NOW(), 'pending', NOW(), NOW())
-     ON DUPLICATE KEY UPDATE document_url = VALUES(document_url), document_type = 'uploaded', version = 'v1', signed_date = NOW(), status = 'pending', updated_at = NOW()`,
-    [supplierId, documentUrl]
+  // Look up the buyer for this supplier (via company_code → buyers.code)
+  const buyerRows = await query<Array<{ buyer_id: number }>>(
+    `SELECT b.buyer_id
+     FROM buyers b
+     JOIN suppliers s ON s.company_code = b.code
+     WHERE s.supplier_id = ?
+     LIMIT 1`,
+    [supplierId]
   );
+  const buyerId: number | null = buyerRows.length > 0 ? buyerRows[0].buyer_id : null;
+
+  // Check if a standing cession already exists for this supplier.
+  // NOTE: cession_agreements has no UNIQUE KEY on supplier_id, so ON DUPLICATE KEY
+  // would not fire on INSERT. We must SELECT first then UPDATE or INSERT.
+  const existing = await query<Array<{ cession_id: number }>>(
+    `SELECT cession_id FROM cession_agreements
+     WHERE supplier_id = ? AND is_standing = 1
+     ORDER BY created_at DESC
+     LIMIT 1`,
+    [supplierId]
+  );
+
+  if (existing.length > 0) {
+    // Update the existing standing cession to 'signed'
+    await query(
+      `UPDATE cession_agreements
+       SET buyer_id     = ?,
+           document_url = ?,
+           document_type = 'uploaded',
+           version      = 'v1',
+           signed_date  = NOW(),
+           status       = 'signed',
+           updated_at   = NOW()
+       WHERE cession_id = ?`,
+      [buyerId, documentUrl, existing[0].cession_id]
+    );
+  } else {
+    // No standing cession yet — create one
+    await query(
+      `INSERT INTO cession_agreements
+         (supplier_id, buyer_id, document_url, document_type, version, signed_date, status, is_standing, created_at, updated_at)
+       VALUES (?, ?, ?, 'uploaded', 'v1', NOW(), 'signed', 1, NOW(), NOW())`,
+      [supplierId, buyerId, documentUrl]
+    );
+  }
+
   return { success: true, documentUrl };
 }
 
@@ -209,6 +248,34 @@ export async function acceptOffer(offerId: number, selectedInvoices: number[]) {
 
       if (offer.status !== "sent") {
         throw new Error(`Offer is already ${offer.status}`)
+      }
+
+      // Check buyer's cession approval requirement before accepting
+      const [buyerRows] = await connection.execute(
+        `SELECT b.buyer_id, b.require_cession_approval
+         FROM invoices i
+         JOIN buyers b ON i.buyer_id = b.buyer_id
+         WHERE i.invoice_id = ?
+         LIMIT 1`,
+        [offer.invoice_id]
+      ) as any
+      const buyer = (buyerRows as any[])[0]
+
+      if (buyer?.require_cession_approval) {
+        const [cessionRows] = await connection.execute(
+          `SELECT cession_id, status FROM cession_agreements
+           WHERE supplier_id = ? AND buyer_id = ?
+             AND status IN ('buyer_approved', 'approved')
+           LIMIT 1`,
+          [session.supplierId, buyer.buyer_id]
+        ) as any
+        const approvedCession = (cessionRows as any[])[0]
+        if (!approvedCession) {
+          throw new Error(
+            "Your cession agreement has not been approved by the buyer yet. " +
+            "Please wait for buyer approval before accepting offers."
+          )
+        }
       }
 
       // Check if offer is expired

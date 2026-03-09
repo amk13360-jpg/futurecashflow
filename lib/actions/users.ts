@@ -52,7 +52,7 @@ export async function getUsers(): Promise<User[]> {
   try {
     const users = await query<RowDataPacket[]>(
       `SELECT u.user_id, u.username, u.full_name, u.email, u.role, u.buyer_id,
-              u.status, u.created_at, u.last_login,
+              u.active_status AS status, u.created_at, u.last_login_at AS last_login,
               b.name as buyer_name, b.code as buyer_code
        FROM users u
        LEFT JOIN buyers b ON u.buyer_id = b.buyer_id
@@ -78,7 +78,7 @@ export async function getUserById(userId: number): Promise<User | null> {
   try {
     const users = await query<RowDataPacket[]>(
       `SELECT u.user_id, u.username, u.full_name, u.email, u.role, u.buyer_id,
-              u.status, u.created_at, u.last_login,
+              u.active_status AS status, u.created_at, u.last_login_at AS last_login,
               b.name as buyer_name, b.code as buyer_code
        FROM users u
        LEFT JOIN buyers b ON u.buyer_id = b.buyer_id
@@ -144,8 +144,8 @@ export async function createUser(input: CreateUserInput): Promise<{ success: boo
 
     // Create user
     const result = await query<RowDataPacket[]>(
-      `INSERT INTO users (username, password_hash, full_name, email, role, buyer_id, status, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, 'active', NOW())`,
+      `INSERT INTO users (username, password_hash, full_name, email, role, buyer_id, active_status, created_at)
+       VALUES (?, ?, ?, ?, ?, ?, 'active', NOW())`,  
       [input.username, password_hash, input.full_name, input.email, input.role, input.buyer_id]
     )
 
@@ -207,7 +207,7 @@ export async function updateUser(input: UpdateUserInput): Promise<{ success: boo
       values.push(input.buyer_id)
     }
     if (input.status !== undefined) {
-      updates.push("status = ?")
+      updates.push("active_status = ?")
       values.push(input.status)
     }
 
@@ -291,7 +291,7 @@ export async function deleteUser(userId: number): Promise<{ success: boolean; er
 
   try {
     await query(
-      `UPDATE users SET status = 'inactive', updated_at = NOW() WHERE user_id = ?`,
+      `UPDATE users SET active_status = 'inactive', updated_at = NOW() WHERE user_id = ?`,
       [userId]
     )
 
@@ -328,7 +328,7 @@ export async function toggleUserStatus(userId: number): Promise<{ success: boole
   try {
     // Get current status
     const users = await query<RowDataPacket[]>(
-      `SELECT status FROM users WHERE user_id = ?`,
+      `SELECT active_status AS status FROM users WHERE user_id = ?`,
       [userId]
     )
 
@@ -340,7 +340,7 @@ export async function toggleUserStatus(userId: number): Promise<{ success: boole
     const newStatus = currentStatus === "active" ? "inactive" : "active"
 
     await query(
-      `UPDATE users SET status = ?, updated_at = NOW() WHERE user_id = ?`,
+      `UPDATE users SET active_status = ?, updated_at = NOW() WHERE user_id = ?`,
       [newStatus, userId]
     )
 

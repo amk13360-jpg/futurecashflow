@@ -92,7 +92,7 @@ export async function getPendingCessions() {
               s.name as supplier_name, s.contact_email
        FROM cession_agreements c
        JOIN suppliers s ON c.supplier_id = s.supplier_id
-       WHERE c.status IN ('pending', 'signed')
+       WHERE c.status IN ('pending', 'signed', 'buyer_approved')
        ORDER BY c.created_at DESC`,
     )
 
@@ -255,8 +255,8 @@ export async function rejectBankChangeRequest(
   try {
     await query(
       `UPDATE bank_change_requests 
-       SET status = 'rejected', reviewed_by = ?, reviewed_at = NOW(), rejection_reason = ?
-       WHERE request_id = ? AND status = 'pending'`,
+       SET status = 'rejected', reviewed_by = ?, reviewed_at = NOW(), review_notes = ?
+       WHERE request_id = ? AND status = 'pending'`,  
       [session.userId, reason || null, requestId]
     )
 
@@ -286,7 +286,7 @@ export async function getAllBankChangeRequests() {
     const requests = await query(
       `SELECT b.request_id, b.supplier_id, b.new_bank_name, b.new_account_no,
               b.new_branch_code, b.reason, b.status, b.created_at, b.reviewed_at,
-              b.rejection_reason, b.effective_date,
+              b.review_notes AS rejection_reason, b.effective_date,
               s.name as supplier_name, s.contact_email,
               s.bank_name as current_bank_name, s.bank_account_no as current_account_no,
               s.bank_branch_code as current_branch_code,

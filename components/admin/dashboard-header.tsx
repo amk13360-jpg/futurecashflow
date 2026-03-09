@@ -135,6 +135,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
       '/ap/invoices': 'Invoices',
       '/ap/invoices/upload': 'Upload AP Data',
       '/ap/vendors/upload': 'Upload Vendor Data',
+      '/ap/cession-agreements': 'Cession Approvals',
       '/ap/reports': 'Uploaded Data',
     }
     // Try exact match first, then progressively shorter paths
@@ -166,6 +167,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
         { href: '/ap/dashboard', label: 'Dashboard' },
         { href: '/ap/invoices', label: 'Invoices' },
         { href: '/ap/invoices/upload', label: 'Upload' },
+        { href: '/ap/cession-agreements', label: 'Cession Approvals' },
         { href: '/ap/reports', label: 'Reports' },
       ]
     }

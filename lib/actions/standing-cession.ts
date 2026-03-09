@@ -18,7 +18,7 @@ export interface StandingCession {
   version: string
   signed_date: string | null
   valid_until: string | null
-  status: "pending" | "signed" | "approved" | "rejected" | "expired"
+  status: "pending" | "signed" | "buyer_approved" | "approved" | "rejected" | "expired"
   is_standing: boolean
   standing_valid_until: string | null
   created_at: string
@@ -54,7 +54,7 @@ export async function getStandingCession(): Promise<StandingCession | null> {
        LEFT JOIN buyers b ON ca.buyer_id = b.buyer_id
        WHERE ca.supplier_id = ?
          AND ca.is_standing = 1
-         AND ca.status IN ('signed', 'approved')
+         AND ca.status IN ('signed', 'buyer_approved', 'approved')
          AND (ca.standing_valid_until IS NULL OR ca.standing_valid_until > NOW())
        ORDER BY ca.created_at DESC
        LIMIT 1`,
