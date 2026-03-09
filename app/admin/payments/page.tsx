@@ -71,10 +71,24 @@ export default function PaymentsPage() {
     setProcessing(true)
     try {
       const result = await queuePayments(selectedOffers)
-      toast.success(`Queued ${result.queued.length} payments`)
-      if (result.errors.length > 0) {
-        toast.error(`${result.errors.length} errors occurred`)
+      
+      if (result.queued.length > 0) {
+        toast.success(`Successfully queued ${result.queued.length} payments`)
       }
+      
+      if (result.errors.length > 0) {
+        console.error("Payment queuing errors:", result.errors)
+        // Show first few errors to user
+        const errorSummary = result.errors.length <= 3 
+          ? result.errors.join('; ') 
+          : `${result.errors.slice(0, 2).join('; ')} and ${result.errors.length - 2} more...`
+        toast.error(`Failed to queue ${result.errors.length} payments: ${errorSummary}`)
+      }
+      
+      if (result.queued.length === 0 && result.errors.length === 0) {
+        toast.warning("No payments were queued - no eligible offers found")
+      }
+      
       setSelectedOffers([])
       loadData()
     } catch (error: any) {

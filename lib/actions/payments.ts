@@ -114,22 +114,25 @@ export async function queuePayments(offerIds: number[]) {
           const paymentRef = `FMF${Date.now()}${offerId}`
 
           // Create payment record
-          await connection.execute(
+          const paymentResult = await connection.execute(
             `INSERT INTO payments (offer_id, supplier_id, amount, currency, 
              payment_reference, status, scheduled_date, processed_by)
              VALUES (?, ?, ?, ?, ?, 'queued', CURDATE(), ?)`,
             [offerId, offer.supplier_id, offer.net_payment_amount, "ZAR", paymentRef, session.userId],
-          )
+          ) as any
+
+          const paymentId = paymentResult.insertId
 
           // Create repayment record
           await connection.execute(
             `INSERT INTO repayments (payment_id, buyer_id, expected_amount, due_date, status)
-             SELECT LAST_INSERT_ID(), ?, ?, ?, 'pending'`,
-            [offer.buyer_id, offer.net_payment_amount + offer.discount_amount, offer.due_date],
+             VALUES (?, ?, ?, ?, 'pending')`,
+            [paymentId, offer.buyer_id, offer.net_payment_amount + offer.discount_amount, offer.due_date],
           )
 
           queued.push(offerId)
         } catch (error: any) {
+          console.error(`Error processing offer ${offerId}:`, error)
           errors.push(`Offer ${offerId}: ${error.message}`)
         }
       }
