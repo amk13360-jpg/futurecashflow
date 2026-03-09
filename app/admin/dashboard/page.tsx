@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { EmptyState } from "@/components/ui/empty-state"
-import { FileText, Users, CheckCircle, Clock, Package, ArrowRight, Building2 } from "lucide-react"
+import { FileText, Users, CheckCircle, Clock, Package, ArrowRight, Building2, Shield } from "lucide-react"
 import { RandIcon } from "@/components/ui/rand-icon"
 import Link from "next/link"
 import { getSession } from "@/lib/auth/session"
@@ -69,7 +69,7 @@ export default async function AdminDashboardPage() {
  {/* Quick Actions */}
  <section className="mb-10" aria-labelledby="actions-heading">
  <h2 id="actions-heading" className="mb-6 font-semibold text-foreground text-2xl">Quick Actions</h2>
- <div className="gap-6 grid md:grid-cols-2 lg:grid-cols-4">
+ <div className="gap-6 grid md:grid-cols-2 lg:grid-cols-5">
  <Card className="group hover:shadow-lg border-l-4 border-l-info hover:border-l-info transition-all hover:-translate-y-1 duration-300">
  <CardHeader className="pb-3">
  <div className="flex justify-between items-center">
@@ -131,6 +131,25 @@ export default async function AdminDashboardPage() {
  </Card>
 
  <Card className="group hover:shadow-lg border-l-4 border-l-warning hover:border-l-warning transition-all hover:-translate-y-1 duration-300">
+ <Card className="group hover:shadow-lg border-l-4 border-l-warning hover:border-l-warning transition-all hover:-translate-y-1 duration-300">
+ <CardHeader className="pb-3">
+ <div className="flex justify-between items-center">
+ <div className="bg-warning-bg p-2.5 rounded-lg group-hover:scale-110 transition-transform duration-300">
+ <Shield className="w-5 h-5 text-warning" />
+ </div>
+ </div>
+ <CardTitle className="mt-3 font-semibold text-base">Cession Agreements</CardTitle>
+ <CardDescription className="text-xs">Review and approve supplier cession agreements</CardDescription>
+ </CardHeader>
+ <CardContent>
+ <Button asChild className="w-full" size="sm">
+ <Link href="/ap/cession-agreements">
+ Go to Cession Agreements
+ <ArrowRight className="ml-2 w-4 h-4" />
+ </Link>
+ </Button>
+ </CardContent>
+ </Card>
  <CardHeader className="pb-3">
  <div className="flex justify-between items-center">
  <div className="bg-warning-bg p-2.5 rounded-lg group-hover:scale-110 transition-transform duration-300">

@@ -1,5 +1,5 @@
 Company Code,Vendor Number,Vendor Name,Document Number,Document Type,Document Date,Posting Date,Baseline Date,Net Due Date,Days Overdue,Amount (Doc Curr),Currency,Amount (Local Curr),Payment Terms,Payment Method,Assignment (PO #),Reference (Invoice #),Open Item,Text
-AAP1001,300001,Khumalo Mining Services,44001001,KR,2026-01-10,2026-01-10,2026-01-10,2026-03-11,-27,875000,ZAR,875000,0003 (60 days),T (EFT),PO-8001,INV-KMS-301,Yes,Underground ventilation system installation
-AAP1001,300001,Khumalo Mining Services,44001002,KR,2026-01-18,2026-01-18,2026-01-18,2026-03-19,-35,342500,ZAR,342500,0003 (60 days),T (EFT),PO-8002,INV-KMS-302,Yes,Shaft reinforcement support structures
-AAP1001,300002,Ngwenya Plant Hire,44002001,KR,2026-01-05,2026-01-05,2026-01-05,2026-02-19,-7,1250000,ZAR,1250000,0002 (45 days),T (EFT),PO-8010,INV-NPH-110,Yes,CAT 390F excavator monthly hire - January
-AAP1001,300002,Ngwenya Plant Hire,44002002,KR,2026-01-22,2026-01-22,2026-01-22,2026-03-08,-24,680000,ZAR,680000,0002 (45 days),T (EFT),PO-8011,INV-NPH-111,Yes,Mobile crane rental - shaft deepening project
+ONGO003,300001,Khumalo Mining Services,44001001,KR,2026-01-10,2026-01-10,2026-01-10,2026-03-11,-27,875000,ZAR,875000,0003 (60 days),T (EFT),PO-8001,INV-KMS-301,Yes,Underground ventilation system installation
+ONGO003,300001,Khumalo Mining Services,44001002,KR,2026-01-18,2026-01-18,2026-01-18,2026-03-19,-35,342500,ZAR,342500,0003 (60 days),T (EFT),PO-8002,INV-KMS-302,Yes,Shaft reinforcement support structures
+ONGO003,300002,Ngwenya Plant Hire,44002001,KR,2026-01-05,2026-01-05,2026-01-05,2026-02-19,-7,1250000,ZAR,1250000,0002 (45 days),T (EFT),PO-8010,INV-NPH-110,Yes,CAT 390F excavator monthly hire - January
+ONGO003,300002,Ngwenya Plant Hire,44002002,KR,2026-01-22,2026-01-22,2026-01-22,2026-03-08,-24,680000,ZAR,680000,0002 (45 days),T (EFT),PO-8011,INV-NPH-111,Yes,Mobile crane rental - shaft deepening project
