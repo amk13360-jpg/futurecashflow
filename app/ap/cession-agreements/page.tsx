@@ -117,7 +117,7 @@ export default async function BuyerCessionApprovalsPage() {
                   </div>
                 </div>
 
-                <div className="flex sm:flex-col flex-row items-start sm:items-end gap-2">
+                <div className="flex flex-row sm:flex-col items-start sm:items-end gap-2">
                   <StatusBadge status={c.status} />
                   <Button asChild size="sm" className="w-full sm:w-auto">
                     <Link href={`/ap/cession-agreements/${c.cession_id}`}>

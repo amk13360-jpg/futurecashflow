@@ -84,7 +84,7 @@ export default function BuyerCessionReviewClient({ cession }: Props) {
         ]}
       />
 
-      <div className="flex sm:flex-row flex-col justify-between gap-3 sm:items-center">
+      <div className="flex sm:flex-row flex-col justify-between sm:items-center gap-3">
         <div>
           <p className="text-muted-foreground text-sm">Cession Agreement #{cession.cession_id}</p>
           <h1 className="font-bold text-3xl">Review Agreement</h1>
