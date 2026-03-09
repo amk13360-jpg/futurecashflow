@@ -88,7 +88,7 @@ export async function getCessionAddendums(standingCessionId: number): Promise<Ce
   try {
     const addendums = await query<RowDataPacket[]>(
       `SELECT ca.*, 
-              (SELECT SUM(COALESCE(i.invoice_amount, 0))
+              (SELECT SUM(COALESCE(i.amount, 0))
                FROM invoices i 
                WHERE FIND_IN_SET(i.invoice_id, REPLACE(REPLACE(ca.linked_invoice_ids, '[', ''), ']', ''))
               ) as total_amount

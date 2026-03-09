@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter, usePathname } from "next/navigation"
-import { LogOut, Bell, ChevronDown, Settings, User } from "lucide-react"
+import { LogOut, Bell, ChevronDown } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Logo } from "@/components/ui/logo"
 import { useEffect, useMemo, useRef, useState } from "react"
@@ -241,16 +241,6 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                     <p className="font-medium text-foreground text-sm truncate">{displayName}</p>
                     <p className="text-muted-foreground text-xs truncate">{roleLabel}</p>
                   </div>
-                </div>
-                <div className="py-1">
-                  <button type="button" className="flex items-center gap-2.5 hover:bg-accent px-4 py-2.5 w-full font-medium text-foreground text-sm">
-                    <User className="w-4 h-4 text-muted-foreground" />
-                    Profile
-                  </button>
-                  <button type="button" className="flex items-center gap-2.5 hover:bg-accent px-4 py-2.5 w-full font-medium text-foreground text-sm">
-                    <Settings className="w-4 h-4 text-muted-foreground" />
-                    Settings
-                  </button>
                 </div>
                 <div className="border-border border-t">
                   <button onClick={handleLogout} type="button" className="flex items-center gap-2.5 hover:bg-error/[0.08] px-4 py-2.5 w-full font-medium text-error text-sm">

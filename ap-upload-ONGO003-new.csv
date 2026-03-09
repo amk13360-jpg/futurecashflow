@@ -1,0 +1,7 @@
+Company Code,Vendor Number,Vendor Name,Document Number,Document Type,Document Date,Posting Date,Baseline Date,Net Due Date,Days Overdue,Amount (Doc Curr),Currency,Amount (Local Curr),Payment Terms,Payment Method,Assignment (PO #),Reference (Invoice #),Open Item,Text
+ONGO003,300101,Phiri Engineering,44101001,KR,2026-02-05,2026-02-05,2026-02-05,2026-03-07,-2,425000,ZAR,425000,0001 (30 days),T (EFT),PO-9001,INV-PE-401,Yes,Structural steel fabrication - headgear upgrade
+ONGO003,300101,Phiri Engineering,44101002,KR,2026-02-12,2026-02-12,2026-02-12,2026-03-14,-5,187500,ZAR,187500,0001 (30 days),T (EFT),PO-9002,INV-PE-402,Yes,Conveyor belt frame welding and installation
+ONGO003,300101,Phiri Engineering,44101003,KR,2026-02-20,2026-02-20,2026-02-20,2026-03-22,-13,310000,ZAR,310000,0001 (30 days),T (EFT),PO-9003,INV-PE-403,Yes,Underground pipe fitting and maintenance
+ONGO003,300102,Mokoena Logistics,44102001,KR,2026-01-15,2026-01-15,2026-01-15,2026-04-15,-37,950000,ZAR,950000,0004 (90 days),T (EFT),PO-9010,INV-ML-201,Yes,Bulk ore transport - Johannesburg to Richards Bay
+ONGO003,300102,Mokoena Logistics,44102002,KR,2026-01-28,2026-01-28,2026-01-28,2026-04-28,-50,1125000,ZAR,1125000,0004 (90 days),T (EFT),PO-9011,INV-ML-202,Yes,Heavy equipment haulage - new drilling rigs
+ONGO003,300102,Mokoena Logistics,44102003,KR,2026-02-10,2026-02-10,2026-02-10,2026-05-11,-61,680000,ZAR,680000,0004 (90 days),T (EFT),PO-9012,INV-ML-203,Yes,Monthly fleet management and dispatch services

@@ -45,13 +45,15 @@ function statusLabel(status: string): string {
 
 export default function BuyerCessionReviewClient({ cession }: Props) {
   const router = useRouter()
-  const [isPending, startTransition] = useTransition()
+  const [isApproving, startApproveTransition] = useTransition()
+  const [isRejecting, startRejectTransition] = useTransition()
   const [rejectReason, setRejectReason] = useState("")
+  const isPending = isApproving || isRejecting
 
   const canAction = cession.status === "signed"
 
   const handleApprove = () => {
-    startTransition(async () => {
+    startApproveTransition(async () => {
       const result = await approveCessionAsBuyer(cession.cession_id)
       if (result.success) {
         toast.success("✓ Cession agreement approved successfully!")
@@ -63,7 +65,7 @@ export default function BuyerCessionReviewClient({ cession }: Props) {
   }
 
   const handleReject = () => {
-    startTransition(async () => {
+    startRejectTransition(async () => {
       const result = await rejectCessionAsBuyer(cession.cession_id, rejectReason || undefined)
       if (result.success) {
         toast.success("✓ Cession agreement rejected. The supplier will be notified.")
@@ -186,7 +188,7 @@ export default function BuyerCessionReviewClient({ cession }: Props) {
                 <AlertDialogTrigger asChild>
                   <Button disabled={isPending} className="flex-1 gap-2">
                     <CheckCircle2 className="w-4 h-4" />
-                    {isPending ? "Processing…" : "Approve"}
+                    {isApproving ? "Processing…" : "Approve"}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>
@@ -213,7 +215,7 @@ export default function BuyerCessionReviewClient({ cession }: Props) {
                 <AlertDialogTrigger asChild>
                   <Button variant="destructive" disabled={isPending} className="flex-1 gap-2">
                     <XCircle className="w-4 h-4" />
-                    {isPending ? "Processing…" : "Reject"}
+                    {isRejecting ? "Processing…" : "Reject"}
                   </Button>
                 </AlertDialogTrigger>
                 <AlertDialogContent>

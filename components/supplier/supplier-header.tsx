@@ -1,7 +1,7 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { LogOut, ChevronDown, User } from "lucide-react"
+import { LogOut, ChevronDown } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Logo } from "@/components/ui/logo"
 import { useEffect, useMemo, useRef, useState } from "react"
@@ -139,17 +139,6 @@ export function SupplierHeader({ supplierName: supplierNameProp }: SupplierHeade
                     </p>
                     <p className="mt-0.5 text-muted-foreground text-xs leading-none">Supplier</p>
                   </div>
-                </div>
-
-                {/* Menu items */}
-                <div className="py-1">
-                  <button
-                    type="button"
-                    className="flex items-center gap-2.5 hover:bg-accent px-4 py-2.5 w-full font-medium text-foreground text-sm transition-colors duration-100"
-                  >
-                    <User className="w-4 h-4 text-muted-foreground shrink-0" />
-                    Profile
-                  </button>
                 </div>
 
                 <div className="border-border border-t" />
