@@ -479,36 +479,52 @@ export async function updateBuyer(input: UpdateBuyerInput): Promise<{ success: b
     const criticalFields = ['name', 'tax_id', 'risk_tier'];
     // Audit-logged fields (change tracking without approval gate)
     const auditedFields = ['payment_capture_type', 'payment_capture_value'];
+    // All other profile fields to track for change history
+    const trackedFields = [
+      'trading_name', 'code', 'registration_no', 'industry_sector',
+      'physical_address_street', 'physical_address_city', 'physical_address_province', 'physical_address_postal',
+      'primary_contact_name', 'contact_email', 'contact_phone',
+      'financial_contact_name', 'financial_contact_email',
+      'min_invoice_amount', 'max_invoice_amount', 'min_days_to_maturity', 'max_days_to_maturity',
+      'credit_limit', 'rate_card_id', 'payment_capture_schedule',
+      'require_cession_approval', 'active_status'
+    ];
 
     for (const field of fields) {
       if (input[field] !== undefined) {
         updateFields.push(`${field} = ?`);
         params.push(input[field]);
 
+        // Check if this field value actually changed
+        const oldValue = String(currentBuyer[0][field as keyof Buyer] || '');
+        const newValue = String(input[field] || '');
+        const hasChanged = oldValue !== newValue;
+
         // Log change for critical fields
-        if (criticalFields.includes(field)) {
-          const oldValue = String(currentBuyer[0][field as keyof Buyer] || '');
-          const newValue = String(input[field] || '');
-          if (oldValue !== newValue) {
-            await query(
-              `INSERT INTO buyer_change_log (buyer_id, field_name, old_value, new_value, changed_by, requires_approval)
-               VALUES (?, ?, ?, ?, ?, ?)`,
-              [input.buyer_id, field, oldValue, newValue, session.userId, false]
-            );
-          }
+        if (criticalFields.includes(field) && hasChanged) {
+          await query(
+            `INSERT INTO buyer_change_log (buyer_id, field_name, old_value, new_value, changed_by, requires_approval)
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [input.buyer_id, field, oldValue, newValue, session.userId, false]
+          );
         }
 
         // Log change for payment capture audit fields
-        if (auditedFields.includes(field)) {
-          const oldValue = String(currentBuyer[0][field as keyof Buyer] ?? '');
-          const newValue = String(input[field] ?? '');
-          if (oldValue !== newValue) {
-            await query(
-              `INSERT INTO buyer_change_log (buyer_id, field_name, old_value, new_value, changed_by, requires_approval)
-               VALUES (?, ?, ?, ?, ?, ?)`,
-              [input.buyer_id, field, oldValue, newValue, session.userId, false]
-            );
-          }
+        else if (auditedFields.includes(field) && hasChanged) {
+          await query(
+            `INSERT INTO buyer_change_log (buyer_id, field_name, old_value, new_value, changed_by, requires_approval)
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [input.buyer_id, field, oldValue, newValue, session.userId, false]
+          );
+        }
+
+        // Log change for all other tracked profile fields
+        else if (trackedFields.includes(field) && hasChanged) {
+          await query(
+            `INSERT INTO buyer_change_log (buyer_id, field_name, old_value, new_value, changed_by, requires_approval)
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [input.buyer_id, field, oldValue, newValue, session.userId, false]
+          );
         }
       }
     }
@@ -699,6 +715,13 @@ export async function activateBuyer(buyerId: number): Promise<{ success: boolean
         updated_at = NOW()
        WHERE buyer_id = ?`,
       [session.userId, buyerId]
+    );
+
+    // Log the activation in change history
+    await query(
+      `INSERT INTO buyer_change_log (buyer_id, field_name, old_value, new_value, change_reason, changed_by)
+       VALUES (?, 'active_status', ?, 'active', 'Buyer activated', ?)`,
+      [buyerId, buyer.active_status, session.userId]
     );
 
     await createAuditLog({

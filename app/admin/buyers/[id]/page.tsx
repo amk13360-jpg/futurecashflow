@@ -52,6 +52,43 @@ import {
 } from '@/lib/actions/buyer-documents';
 import Link from 'next/link';
 
+// Helper function to convert field names to user-friendly labels
+function getFieldLabel(fieldName: string): string {
+  const fieldLabels: { [key: string]: string } = {
+    'name': 'Company Name',
+    'trading_name': 'Trading Name',
+    'code': 'Buyer Code',
+    'registration_no': 'Registration Number',
+    'tax_id': 'Tax ID',
+    'industry_sector': 'Industry Sector',
+    'risk_tier': 'Risk Tier',
+    'physical_address_street': 'Physical Address',
+    'physical_address_city': 'City',
+    'physical_address_province': 'Province',
+    'physical_address_postal': 'Postal Code',
+    'primary_contact_name': 'Primary Contact',
+    'contact_email': 'Contact Email',
+    'contact_phone': 'Contact Phone',
+    'financial_contact_name': 'Financial Contact',
+    'financial_contact_email': 'Financial Email',
+    'min_invoice_amount': 'Minimum Invoice Amount',
+    'max_invoice_amount': 'Maximum Invoice Amount',
+    'min_days_to_maturity': 'Min Days to Maturity',
+    'max_days_to_maturity': 'Max Days to Maturity',
+    'credit_limit': 'Credit Limit',
+    'rate_card_id': 'Rate Card',
+    'payment_capture_schedule': 'Payment Schedule',
+    'payment_capture_type': 'Payment Capture Type',
+    'payment_capture_value': 'Payment Capture Value',
+    'require_cession_approval': 'Requires Cession Approval',
+    'active_status': 'Status',
+    'document_uploaded': 'Document Upload',
+    'document_verified': 'Document Verification',
+    'document_deleted': 'Document Deletion'
+  };
+  return fieldLabels[fieldName] || fieldName.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+}
+
 export default function BuyerDetailsPage() {
  const params = useParams();
  const router = useRouter();
@@ -829,7 +866,7 @@ export default function BuyerDetailsPage() {
  <div key={log.log_id} className="flex items-start gap-4 p-4 border rounded-lg">
  <div className="flex-1">
  <div className="flex items-center gap-2">
- <Badge variant="outline">{log.field_name}</Badge>
+ <Badge variant="outline">{getFieldLabel(log.field_name)}</Badge>
  {log.requires_approval && (
  <Badge className={
  log.approval_status === 'approved' ? 'bg-success-bg text-success-foreground' :
