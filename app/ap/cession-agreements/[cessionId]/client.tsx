@@ -48,7 +48,6 @@ export default function BuyerCessionReviewClient({ cession }: Props) {
   const [isApproving, startApproveTransition] = useTransition()
   const [isRejecting, startRejectTransition] = useTransition()
   const [rejectReason, setRejectReason] = useState("")
-  const isPending = isApproving || isRejecting
 
   const canAction = cession.status === "signed"
 
@@ -186,7 +185,7 @@ export default function BuyerCessionReviewClient({ cession }: Props) {
               {/* Approve */}
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button disabled={isPending} className="flex-1 gap-2">
+                  <Button disabled={isApproving} className="flex-1 gap-2">
                     <CheckCircle2 className="w-4 h-4" />
                     {isApproving ? "Processing…" : "Approve"}
                   </Button>
@@ -203,7 +202,7 @@ export default function BuyerCessionReviewClient({ cession }: Props) {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleApprove} disabled={isPending}>
+                    <AlertDialogAction onClick={handleApprove} disabled={isApproving}>
                       Confirm Approval
                     </AlertDialogAction>
                   </AlertDialogFooter>
@@ -213,7 +212,7 @@ export default function BuyerCessionReviewClient({ cession }: Props) {
               {/* Reject */}
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="destructive" disabled={isPending} className="flex-1 gap-2">
+                  <Button variant="destructive" disabled={isRejecting} className="flex-1 gap-2">
                     <XCircle className="w-4 h-4" />
                     {isRejecting ? "Processing…" : "Reject"}
                   </Button>
@@ -240,7 +239,7 @@ export default function BuyerCessionReviewClient({ cession }: Props) {
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleReject}
-                      disabled={isPending}
+                      disabled={isRejecting}
                       className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                     >
                       Confirm Rejection
