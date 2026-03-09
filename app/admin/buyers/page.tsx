@@ -6,7 +6,7 @@ import {
  Building2, Plus, Search, Filter, MoreVertical, 
  CheckCircle2, XCircle, AlertCircle, Clock, Users,
  FileText, TrendingUp, Edit, Eye, Pause, Shield,
- ChevronRight, ChevronLeft, MapPin, Phone, Mail, Settings2, Check, X, ArrowLeft, Calendar
+ ChevronRight, ChevronLeft, MapPin, Phone, Mail, Settings2, Check, X, ArrowLeft, ArrowRight, Calendar
 } from 'lucide-react';
 import { RandIcon } from '@/components/ui/rand-icon';
 import { Button } from '@/components/ui/button';
@@ -453,6 +453,32 @@ export default function BuyersPage() {
  </CardContent>
  </Card>
  </div>
+
+{/* Quick Actions */}
+<section className="mb-6" aria-labelledby="buyer-actions-heading">
+ <h2 id="buyer-actions-heading" className="mb-4 font-semibold text-foreground text-lg">Quick Actions</h2>
+ <div className="gap-6 grid md:grid-cols-2 lg:grid-cols-4">
+ <Card className="group hover:shadow-lg border-l-4 border-l-warning hover:border-l-warning transition-all hover:-translate-y-1 duration-300">
+ <CardHeader className="pb-3">
+ <div className="flex justify-between items-center">
+ <div className="bg-warning-bg p-2.5 rounded-lg group-hover:scale-110 transition-transform duration-300">
+ <Shield className="w-5 h-5 text-warning" />
+ </div>
+ </div>
+ <CardTitle className="mt-3 font-semibold text-base">Cession Agreements</CardTitle>
+ <CardDescription className="text-xs">Review and approve buyer cession agreements</CardDescription>
+ </CardHeader>
+ <CardContent>
+ <Button asChild className="w-full" size="sm">
+ <Link href="/ap/cession-agreements">
+ Manage
+ <ArrowRight className="ml-2 w-4 h-4" />
+ </Link>
+ </Button>
+ </CardContent>
+ </Card>
+ </div>
+</section>
 
  {/* Filters */}
  <div className="flex items-center gap-4">
