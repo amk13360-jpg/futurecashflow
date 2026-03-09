@@ -1,7 +1,7 @@
 "use client"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Upload, FileText, BarChart3, Users } from "lucide-react"
+import { Upload, FileText, BarChart3, Users, Shield } from "lucide-react"
 import Link from "next/link"
 
 export default function APDashboardPage() {
@@ -87,6 +87,22 @@ export default function APDashboardPage() {
               <Link href="/ap/reports">
                 <Button variant="outline" className="w-full font-semibold" size="lg">
                   View Vendors
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+          <Card className="bg-card hover:shadow-xl backdrop-blur border hover:border-primary/50 transition-all">
+            <CardHeader>
+              <div className="flex justify-center items-center bg-primary/10 mb-4 rounded-xl w-14 h-14">
+                <Shield className="w-7 h-7 text-primary" />
+              </div>
+              <CardTitle className="text-foreground text-xl">Cession Agreements</CardTitle>
+              <CardDescription className="text-muted-foreground">Review and approve supplier cession agreements</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/ap/cession-agreements">
+                <Button variant="outline" className="w-full font-semibold" size="lg">
+                  Manage
                 </Button>
               </Link>
             </CardContent>
