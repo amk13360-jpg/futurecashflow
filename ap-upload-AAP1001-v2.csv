@@ -1,0 +1,5 @@
+Company Code,Vendor Number,Vendor Name,Document Number,Document Type,Document Date,Posting Date,Baseline Date,Net Due Date,Days Overdue,Amount (Doc Curr),Currency,Amount (Local Curr),Payment Terms,Payment Method,Assignment (PO #),Reference (Invoice #),Open Item,Text
+AAP1001,300003,Khumalo Mining Services,44003001,KR,2026-02-05,2026-02-05,2026-02-05,2026-04-06,-55,1100000,ZAR,1100000,0003 (60 days),T (EFT),PO-8020,INV-KMS-401,Yes,Mining equipment service contract Q1
+AAP1001,300003,Khumalo Mining Services,44003002,KR,2026-02-10,2026-02-10,2026-02-10,2026-04-11,-60,425000,ZAR,425000,0003 (60 days),T (EFT),PO-8021,INV-KMS-402,Yes,Shaft lift maintenance February
+AAP1001,300004,Ngwenya Plant Hire,44004001,KR,2026-01-28,2026-01-28,2026-01-28,2026-03-14,-33,960000,ZAR,960000,0002 (45 days),T (EFT),PO-8030,INV-NPH-201,Yes,Crane hire - site clearance operations
+AAP1001,300004,Ngwenya Plant Hire,44004002,KR,2026-02-08,2026-02-08,2026-02-08,2026-03-25,-44,345000,ZAR,345000,0002 (45 days),T (EFT),PO-8031,INV-NPH-202,Yes,Dump truck fleet rental February

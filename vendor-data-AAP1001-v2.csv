@@ -1,0 +1,3 @@
+Company Code,Vendor Number,Vendor Name,Address,Contact Person,Contact Email,Contact Phone,Bank Country,Bank Name,Bank Key (Branch Code),Bank Account Number,IBAN,SWIFT/BIC,Default Payment Method,Default Payment Terms,VAT Registration No,Registration No,Reconciliation G/L Account
+AAP1001,300003,Khumalo Mining Services,"12 Platinum Rd, Rustenburg, 0299",Thabo Khumalo,bradleyswear@gmail.com,+27 72 345 6789,ZA,Standard Bank,051001,412187654,,SBZAZAJJ,T (EFT),0003 (60 days),4120987654,2006/012345/07,200000
+AAP1001,300004,Ngwenya Plant Hire,"45 Industrial Ave, Limpopo, 0700",Nomsa Ngwenya,swearleehlairlookus@gmail.com,+27 83 456 7890,ZA,First National Bank,250655,623187654,,FIRNZAJJ,T (EFT),0002 (45 days),4230456781,2010/098765/07,200000
