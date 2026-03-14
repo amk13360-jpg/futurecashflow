@@ -158,3 +158,31 @@ export interface BankChangeRequest {
   created_at: Date
   updated_at: Date
 }
+
+export interface Notification {
+  notification_id: number
+  recipient_type: "supplier" | "user"
+  recipient_id: number
+  notification_type: string
+  subject?: string
+  message: string
+  channel: "email" | "sms" | "in_app"
+  status: "pending" | "sent" | "failed" | "read"
+  sent_at?: Date
+  read_at?: Date
+  metadata?: any  // JSON data
+  created_at: Date
+}
+
+export interface NotificationRule {
+  rule_id: number
+  rule_name: string
+  trigger_event: string
+  recipient_type: "admin" | "ap_user" | "supplier" | "buyer_contact"
+  channel: "email" | "sms" | "in_app"
+  template_key: string
+  is_active: boolean
+  conditions?: any  // JSON data
+  created_at: Date
+  updated_at: Date
+}

@@ -125,6 +125,7 @@ import { query, transaction } from "@/lib/db"
 import { getSupplierSession } from "@/lib/auth/session"
 import { createAuditLog } from "@/lib/auth/audit"
 import { redirect } from "next/navigation"
+import { createBankChangeNotification } from "@/lib/services/notifications"
 
 // Get supplier offers
 import type { PoolConnection } from "mysql2/promise"
@@ -653,6 +654,25 @@ export async function requestBankChange(data: {
         data.reason,
       ],
     )
+
+    // Create notification for admin users about the bank change request
+    try {
+      // Get all admin users to notify them
+      const adminUsers = await query(
+        `SELECT user_id FROM users WHERE role = 'admin' AND active_status = 'active'`
+      )
+      
+      for (const admin of adminUsers as any[]) {
+        await createBankChangeNotification(
+          admin.user_id,
+          supplier.name, 
+          session.supplierId  // Using supplier_id as request_id placeholder - will be updated
+        )
+      }
+      console.log(`[Suppliers] Bank change notifications created for ${adminUsers.length} admin users`)
+    } catch (notificationError) {
+      console.error("[Suppliers] Failed to create bank change notifications:", notificationError)
+    }
 
     await createAuditLog({
       userType: "supplier",

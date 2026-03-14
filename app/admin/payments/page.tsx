@@ -20,7 +20,7 @@ import {
 import { Download, CheckCircle, ArrowLeft, Clock, FileSpreadsheet } from "lucide-react"
 import Link from "next/link"
 import { toast } from "sonner"
-import * as XLSX from "xlsx"
+import ExcelJS from "exceljs"
 
 export default function PaymentsPage() {
   const [queue, setQueue] = useState<any[]>([])
@@ -150,7 +150,7 @@ export default function PaymentsPage() {
   const processingPayments = payments.filter((p) => p.status === "processing")
 
   // Excel Export Functions
-  const exportPaymentQueueToExcel = () => {
+  const exportPaymentQueueToExcel = async () => {
     if (queue.length === 0) {
       toast.error("No data to export")
       return
@@ -175,19 +175,44 @@ export default function PaymentsPage() {
       "Accepted Date": item.accepted_at ? new Date(item.accepted_at).toLocaleDateString() : "",
     }))
 
-    const ws = XLSX.utils.json_to_sheet(exportData)
-    const wb = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(wb, ws, "Payment Queue")
-    
-    // Auto-size columns
-    const colWidths = Object.keys(exportData[0] || {}).map(key => ({ wch: Math.max(key.length, 15) }))
-    ws["!cols"] = colWidths
-
-    XLSX.writeFile(wb, `Payment_Queue_${new Date().toISOString().split("T")[0]}.xlsx`)
-    toast.success(`Exported ${queue.length} records to Excel`)
+    try {
+      const workbook = new ExcelJS.Workbook()
+      const worksheet = workbook.addWorksheet("Payment Queue")
+      
+      // Add headers
+      const headers = Object.keys(exportData[0] || {})
+      worksheet.addRow(headers)
+      
+      // Add data rows
+      exportData.forEach(row => {
+        worksheet.addRow(Object.values(row))
+      })
+      
+      // Auto-size columns
+      headers.forEach((header, index) => {
+        const columnIndex = index + 1
+        const maxLength = Math.max(header.length, 15)
+        worksheet.getColumn(columnIndex).width = maxLength
+      })
+      
+      // Export to blob and download
+      const buffer = await workbook.xlsx.writeBuffer()
+      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" })
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `Payment_Queue_${new Date().toISOString().split("T")[0]}.xlsx`
+      a.click()
+      window.URL.revokeObjectURL(url)
+      
+      toast.success(`Exported ${queue.length} records to Excel`)
+    } catch (error) {
+      console.error("Export error:", error)
+      toast.error("Failed to export data to Excel")
+    }
   }
 
-  const exportPaymentsToExcel = () => {
+  const exportPaymentsToExcel = async () => {
     if (payments.length === 0) {
       toast.error("No data to export")
       return
@@ -208,18 +233,44 @@ export default function PaymentsPage() {
       "Created At": payment.created_at ? new Date(payment.created_at).toLocaleDateString() : "",
     }))
 
-    const ws = XLSX.utils.json_to_sheet(exportData)
-    const wb = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(wb, ws, "All Payments")
-    
-    const colWidths = Object.keys(exportData[0] || {}).map(key => ({ wch: Math.max(key.length, 15) }))
-    ws["!cols"] = colWidths
-
-    XLSX.writeFile(wb, `All_Payments_${new Date().toISOString().split("T")[0]}.xlsx`)
-    toast.success(`Exported ${payments.length} records to Excel`)
+    try {
+      const workbook = new ExcelJS.Workbook()
+      const worksheet = workbook.addWorksheet("All Payments")
+      
+      // Add headers
+      const headers = Object.keys(exportData[0] || {})
+      worksheet.addRow(headers)
+      
+      // Add data rows
+      exportData.forEach(row => {
+        worksheet.addRow(Object.values(row))
+      })
+      
+      // Auto-size columns
+      headers.forEach((header, index) => {
+        const columnIndex = index + 1
+        const maxLength = Math.max(header.length, 15)
+        worksheet.getColumn(columnIndex).width = maxLength
+      })
+      
+      // Export to blob and download
+      const buffer = await workbook.xlsx.writeBuffer()
+      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" })
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `All_Payments_${new Date().toISOString().split("T")[0]}.xlsx`
+      a.click()
+      window.URL.revokeObjectURL(url)
+      
+      toast.success(`Exported ${payments.length} records to Excel`)
+    } catch (error) {
+      console.error("Export error:", error)
+      toast.error("Failed to export data to Excel")
+    }
   }
 
-  const exportRepaymentsToExcel = () => {
+  const exportRepaymentsToExcel = async () => {
     if (repayments.length === 0) {
       toast.error("No data to export")
       return
@@ -239,15 +290,41 @@ export default function PaymentsPage() {
       "Reconciliation Reference": repayment.reconciliation_reference || "",
     }))
 
-    const ws = XLSX.utils.json_to_sheet(exportData)
-    const wb = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(wb, ws, "Repayments")
-    
-    const colWidths = Object.keys(exportData[0] || {}).map(key => ({ wch: Math.max(key.length, 15) }))
-    ws["!cols"] = colWidths
-
-    XLSX.writeFile(wb, `Repayments_${new Date().toISOString().split("T")[0]}.xlsx`)
-    toast.success(`Exported ${repayments.length} records to Excel`)
+    try {
+      const workbook = new ExcelJS.Workbook()
+      const worksheet = workbook.addWorksheet("Repayments")
+      
+      // Add headers
+      const headers = Object.keys(exportData[0] || {})
+      worksheet.addRow(headers)
+      
+      // Add data rows
+      exportData.forEach(row => {
+        worksheet.addRow(Object.values(row))
+      })
+      
+      // Auto-size columns
+      headers.forEach((header, index) => {
+        const columnIndex = index + 1
+        const maxLength = Math.max(header.length, 15)
+        worksheet.getColumn(columnIndex).width = maxLength
+      })
+      
+      // Export to blob and download
+      const buffer = await workbook.xlsx.writeBuffer()
+      const blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" })
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `Repayments_${new Date().toISOString().split("T")[0]}.xlsx`
+      a.click()
+      window.URL.revokeObjectURL(url)
+      
+      toast.success(`Exported ${repayments.length} records to Excel`)
+    } catch (error) {
+      console.error("Export error:", error)
+      toast.error("Failed to export data to Excel")
+    }
   }
 
   return (

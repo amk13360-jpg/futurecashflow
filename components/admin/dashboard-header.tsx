@@ -6,6 +6,17 @@ import { ThemeToggle } from "@/components/theme-toggle"
 import { Logo } from "@/components/ui/logo"
 import { useEffect, useMemo, useRef, useState } from "react"
 
+interface NotificationItem {
+  notification_id: number
+  subject?: string
+  message: string
+  timeAgo?: string
+  icon?: string
+  priority?: "low" | "medium" | "high"
+  status: "pending" | "sent" | "failed" | "read"
+  metadata?: any
+}
+
 interface DashboardHeaderProps {
   userName?: string
 }
@@ -25,11 +36,16 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
   const [sessionName, setSessionName] = useState<string | null>(null)
   const [profileOpen, setProfileOpen] = useState(false)
   const [bellOpen, setBellOpen] = useState(false)
+  const [notifications, setNotifications] = useState<NotificationItem[]>([])
+  const [unreadCount, setUnreadCount] = useState(0)
+  const [notificationsLoading, setNotificationsLoading] = useState(true)
   const profileRef = useRef<HTMLDivElement>(null)
   const bellRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     let mounted = true
+    
+    // Fetch session data
     fetch('/api/session')
       .then((res) => res.json())
       .then((data) => {
@@ -41,8 +57,86 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
         if (!mounted) return
         setSessionRole(null)
       })
+
+    // Fetch notifications
+    loadNotifications()
+    
     return () => { mounted = false }
   }, [])
+
+  // Function to load notifications
+  const loadNotifications = async () => {
+    try {
+      setNotificationsLoading(true)
+      const response = await fetch('/api/notifications?limit=10&includeRead=true')
+      if (response.ok) {
+        const data = await response.json()
+        setNotifications(data.notifications || [])
+        setUnreadCount(data.unreadCount || 0)
+      }
+    } catch (error) {
+      console.error('Failed to load notifications:', error)
+    } finally {
+      setNotificationsLoading(false)
+    }
+  }
+
+  // Function to mark notification as read
+  const markAsRead = async (notificationId: number) => {
+    try {
+      const response = await fetch('/api/notifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'markAsRead',
+          notificationIds: notificationId
+        })
+      })
+      if (response.ok) {
+        // Update local state
+        setNotifications(prev => 
+          prev.map(n => 
+            n.notification_id === notificationId 
+              ? { ...n, status: 'read' as const }
+              : n
+          )
+        )
+        setUnreadCount(prev => Math.max(0, prev - 1))
+      }
+    } catch (error) {
+      console.error('Failed to mark notification as read:', error)
+    }
+  }
+
+  // Function to mark all notifications as read
+  const markAllAsRead = async () => {
+    try {
+      const unreadNotificationIds = notifications
+        .filter(n => n.status !== 'read')
+        .map(n => n.notification_id)
+      
+      if (unreadNotificationIds.length === 0) return
+
+      const response = await fetch('/api/notifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'markAsRead',
+          notificationIds: unreadNotificationIds
+        })
+      })
+
+      if (response.ok) {
+        // Update local state
+        setNotifications(prev => 
+          prev.map(n => ({ ...n, status: 'read' as const }))
+        )
+        setUnreadCount(0)
+      }
+    } catch (error) {
+      console.error('Failed to mark all notifications as read:', error)
+    }
+  }
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -92,13 +186,6 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
     if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase()
     return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
   }, [displayName])
-
-  const notifications = [
-    { title: "New invoice uploaded", sub: "INV-2025-0048 · Acme Mining", time: "2m ago", unread: true },
-    { title: "Payment completed", sub: "R145,000 disbursed", time: "18m ago", unread: true },
-    { title: "Approval required", sub: "Cession #CA-2025-12", time: "1h ago", unread: false },
-  ]
-  const unreadCount = notifications.filter((n) => n.unread).length
 
   const pageContextSection = currentPortal === 'admin'
     ? 'Admin'
@@ -198,22 +285,77 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                 <div className="top-[calc(100%+8px)] right-0 absolute bg-popover shadow-lg border border-border rounded-lg w-80">
                   <div className="flex justify-between items-center px-4 py-3 border-border border-b">
                     <span className="text-muted-foreground text-xs uppercase tracking-wide">Notifications</span>
-                    <button type="button" className="text-primary text-xs">Mark all read</button>
+                    <button 
+                      type="button" 
+                      className="text-primary text-xs hover:underline disabled:opacity-50"
+                      onClick={markAllAsRead}
+                      disabled={unreadCount === 0}
+                    >
+                      Mark all read
+                    </button>
                   </div>
                   <div className="max-h-64 overflow-auto">
-                    {notifications.map((n, i) => (
-                      <div key={i} className={`flex gap-3 px-4 py-3 ${n.unread ? 'bg-primary/[0.04]' : ''} ${i < notifications.length - 1 ? 'border-b border-border' : ''}`}>
-                        <span className={`${n.unread ? 'bg-primary' : 'bg-border'} mt-1.5 rounded-full w-2 h-2`} />
-                        <div className="flex-1 min-w-0">
-                          <p className={`${n.unread ? 'font-semibold text-foreground' : 'font-medium text-foreground/70'} text-sm truncate`}>{n.title}</p>
-                          <p className="text-muted-foreground text-xs truncate">{n.sub}</p>
-                        </div>
-                        <span className="text-muted-foreground text-xs shrink-0">{n.time}</span>
+                    {notificationsLoading ? (
+                      <div className="flex justify-center items-center py-8">
+                        <div className="text-muted-foreground text-sm">Loading notifications...</div>
                       </div>
-                    ))}
+                    ) : notifications.length === 0 ? (
+                      <div className="flex justify-center items-center py-8">
+                        <div className="text-muted-foreground text-sm">No notifications</div>
+                      </div>
+                    ) : (
+                      notifications.map((notification, i) => {
+                        const isUnread = notification.status !== 'read'
+                        return (
+                          <div 
+                            key={notification.notification_id} 
+                            className={`flex gap-3 px-4 py-3 hover:bg-muted/50 cursor-pointer ${
+                              isUnread ? 'bg-primary/[0.04]' : ''
+                            } ${i < notifications.length - 1 ? 'border-b border-border' : ''}`}
+                            onClick={() => {
+                              if (isUnread) {
+                                markAsRead(notification.notification_id)
+                              }
+                            }}
+                          >
+                            <span className="text-lg shrink-0 mt-0.5">
+                              {notification.icon || '🔔'}
+                            </span>
+                            <div className="flex-1 min-w-0">
+                              <p className={`${
+                                isUnread ? 'font-semibold text-foreground' : 'font-medium text-foreground/70'
+                              } text-sm truncate`}>
+                                {notification.subject || 'Notification'}
+                              </p>
+                              <p className="text-muted-foreground text-xs truncate">
+                                {notification.message}
+                              </p>
+                            </div>
+                            <div className="flex flex-col items-end gap-1 shrink-0">
+                              <span className="text-muted-foreground text-xs">
+                                {notification.timeAgo}
+                              </span>
+                              {isUnread && (
+                                <span className="bg-primary rounded-full w-2 h-2" />
+                              )}
+                            </div>
+                          </div>
+                        )
+                      })
+                    )}
                   </div>
                   <div className="px-4 py-2 border-border border-t text-center">
-                    <button type="button" className="text-primary text-xs">View all</button>
+                    <button 
+                      type="button" 
+                      className="text-primary text-xs hover:underline"
+                      onClick={() => {
+                        setBellOpen(false)
+                        // Navigate to notifications page if you have one
+                        // router.push('/notifications')
+                      }}
+                    >
+                      View all
+                    </button>
                   </div>
                 </div>
               )}

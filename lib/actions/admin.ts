@@ -8,6 +8,7 @@ import { sendSupplierApprovalEmail } from "@/lib/services/email"
 import { createAuditLog } from "@/lib/auth/audit"
 import { randomBytes } from "crypto"
 import type { PoolConnection } from "mysql2/promise"
+import { createBankChangeNotification, createNotification } from "@/lib/services/notifications"
 
 // Generate a secure random token
 function generateToken(): string {
@@ -225,6 +226,33 @@ export async function approveBankChangeRequest(requestId: number, effectiveDate?
          WHERE request_id = ?`,
         [session.userId, effectiveDate || null, requestId]
       )
+
+      // Create notification for supplier about approval
+      try {
+        const [supplierName] = await connection.execute(
+          `SELECT s.name, s.supplier_id 
+           FROM suppliers s 
+           JOIN bank_change_requests bcr ON s.supplier_id = bcr.supplier_id 
+           WHERE bcr.request_id = ?`,
+          [requestId]
+        )
+        
+        if (supplierName && (supplierName as any).length > 0) {
+          const supplier = (supplierName as any)[0]
+          const approvalMessage = `Your bank detail change request has been approved${effectiveDate ? ` and will be effective from ${effectiveDate}` : ''}.`
+          await createNotification({
+            recipientType: "supplier",
+            recipientId: supplier.supplier_id,
+            notificationType: "bank_change_approved",
+            subject: "Bank Details Change Approved",
+            message: approvalMessage,
+            metadata: { requestId, effectiveDate }
+          })
+          console.log(`[Admin] Bank change approval notification sent to supplier ${supplier.supplier_id}`)
+        }
+      } catch (notificationError) {
+        console.error("[Admin] Failed to create bank change approval notification:", notificationError)
+      }
     })
 
     await createAuditLog({
@@ -259,6 +287,33 @@ export async function rejectBankChangeRequest(
        WHERE request_id = ? AND status = 'pending'`,  
       [session.userId, reason || null, requestId]
     )
+
+    // Create notification for supplier about rejection
+    try {
+      const [supplierData] = await query(
+        `SELECT s.name, s.supplier_id 
+         FROM suppliers s 
+         JOIN bank_change_requests bcr ON s.supplier_id = bcr.supplier_id 
+         WHERE bcr.request_id = ?`,
+        [requestId]
+      )
+      
+      if (supplierData && (supplierData as any).length > 0) {
+        const supplier = (supplierData as any)[0]
+        const rejectionMessage = `Your bank detail change request has been rejected${reason ? `: ${reason}` : '. Please contact support for more information.'}`
+        await createNotification({
+          recipientType: "supplier",
+          recipientId: supplier.supplier_id,
+          notificationType: "bank_change_rejected",
+          subject: "Bank Details Change Rejected",
+          message: rejectionMessage,
+          metadata: { requestId, reason }
+        })
+        console.log(`[Admin] Bank change rejection notification sent to supplier ${supplier.supplier_id}`)
+      }
+    } catch (notificationError) {
+      console.error("[Admin] Failed to create bank change rejection notification:", notificationError)
+    }
 
     await createAuditLog({
       userType: "admin",
@@ -374,7 +429,10 @@ export async function reviewSupplierApplication(
           console.log(`[Admin] Created approval token for supplier ${supplierId}`)
           
           // Generate access link
-          const baseUrl = process.env.NEXTAUTH_URL || "https://fm-asp-dev-san-hufee4h8hyawbhcx.southafricanorth-01.azurewebsites.net"
+          const baseUrl = process.env.NEXTAUTH_URL
+          if (!baseUrl) {
+            throw new Error("NEXTAUTH_URL environment variable is required")
+          }
           const accessLink = `${baseUrl}/supplier/access?token=${token}`
           
           // Send approval email (for dashboard access to view early payment offers)

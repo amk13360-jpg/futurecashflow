@@ -60,6 +60,7 @@ const protectedApiRoutes = [
 	"/api/session",
 	"/api/suppliers",
 	"/api/invoices",
+	"/api/notifications",
 ]
 
 export async function middleware(request: NextRequest) {

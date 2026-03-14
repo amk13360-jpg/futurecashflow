@@ -5,6 +5,7 @@ import { getSession } from "@/lib/auth/session"
 import { createAuditLog } from "@/lib/auth/audit"
 import { redirect } from "next/navigation"
 import type { RowDataPacket } from "mysql2"
+import { createPaymentNotification } from "@/lib/services/notifications"
 
 // Get payment queue (accepted offers ready for payment)
 export async function getPaymentQueue() {
@@ -244,20 +245,46 @@ export async function markPaymentsCompleted(paymentIds: number[]) {
   try {
     await transaction(async (connection) => {
       for (const paymentId of paymentIds) {
-        await connection.execute(
-          `UPDATE payments SET status = 'completed', completed_date = CURDATE() WHERE payment_id = ?`,
-          [paymentId],
+        // Get payment details for notification
+        const [paymentDetails] = await connection.execute<RowDataPacket[]>(
+          `SELECT p.payment_id, p.amount, p.payment_reference, p.supplier_id 
+           FROM payments p
+           WHERE p.payment_id = ?`,
+          [paymentId]
         )
 
-        // Update invoice status
-        await connection.execute(
-          `UPDATE invoices i
-           JOIN offers o ON i.invoice_id = o.invoice_id
-           JOIN payments p ON o.offer_id = p.offer_id
-           SET i.status = 'paid'
-           WHERE p.payment_id = ?`,
-          [paymentId],
-        )
+        if (paymentDetails.length > 0) {
+          const payment = paymentDetails[0] as any
+
+          // Update payment status
+          await connection.execute(
+            `UPDATE payments SET status = 'completed', completed_date = CURDATE() WHERE payment_id = ?`,
+            [paymentId],
+          )
+
+          // Update invoice status
+          await connection.execute(
+            `UPDATE invoices i
+             JOIN offers o ON i.invoice_id = o.invoice_id
+             JOIN payments p ON o.offer_id = p.offer_id
+             SET i.status = 'paid'
+             WHERE p.payment_id = ?`,
+            [paymentId],
+          )
+
+          // Create payment completion notification for supplier
+          try {
+            await createPaymentNotification(
+              payment.supplier_id,
+              payment.amount,
+              payment.payment_reference,
+              "completed"
+            )
+            console.log(`[Payments] Payment completion notification created for supplier ${payment.supplier_id}`)
+          } catch (notificationError) {
+            console.error("[Payments] Failed to create payment notification:", notificationError)
+          }
+        }
       }
     })
 

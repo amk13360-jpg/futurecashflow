@@ -9,6 +9,7 @@ import type { RowDataPacket, OkPacket } from "mysql2"
 import { generateToken } from "@/lib/utils"
 import type { APDataRow, VendorDataRow } from "@/lib/types/database"
 import { redirect } from "next/navigation"
+import { createInvoiceNotification } from "@/lib/services/notifications"
 
 type OfferGenerationResults = {
   created: Array<{ invoiceId: number; invoiceNumber: string | null; supplierEmail: string | null; token: string }>
@@ -314,6 +315,19 @@ export async function uploadAPData(apDataRows: APDataRow[]) {
             ],
           )
 
+          // Create invoice upload notification for admin users
+          try {
+            const invoiceNumber = toNullable(row["Reference (Invoice #)"]) || toNullable(row["Document Number"]) || 'N/A'
+            await createInvoiceNotification(
+              session.userId, 
+              invoiceNumber,
+              toNullable(row["Vendor Name"]) || 'Unknown Supplier',
+              amountDocCurr
+            )
+          } catch (notificationError) {
+            console.error("[Invoices] Failed to create invoice notification:", notificationError)
+          }
+
           uploaded.push(row["Document Number"])
         } catch (error: any) {
           if (error.code === "ER_DUP_ENTRY") {
@@ -512,7 +526,10 @@ export async function uploadVendorData(vendorDataRows: VendorDataRow[]) {
         console.log(`[v0] Created invite token for supplier ${supplier.supplierId} (${supplier.email})`)
 
         // Generate access link with token - use the correct Azure URL
-        const baseUrl = process.env.NEXTAUTH_URL || "https://fm-asp-dev-san-hufee4h8hyawbhcx.southafricanorth-01.azurewebsites.net"
+        const baseUrl = process.env.NEXTAUTH_URL
+        if (!baseUrl) {
+          throw new Error("NEXTAUTH_URL environment variable is required")
+        }
         const accessLink = `${baseUrl}/supplier/access?token=${token}`
 
         // Send invitation email via Azure Communication Services
@@ -915,7 +932,10 @@ export async function manualGenerateOffersForSupplier(supplierId: number, trigge
         const supplier = supplierRows[0]
         // Use the first token created for this batch
         const token = results.created[0].token
-        const baseUrl = process.env.NEXTAUTH_URL || "https://fm-asp-dev-san-hufee4h8hyawbhcx.southafricanorth-01.azurewebsites.net"
+        const baseUrl = process.env.NEXTAUTH_URL
+        if (!baseUrl) {
+          throw new Error("NEXTAUTH_URL environment variable is required")
+        }
         const accessLink = `${baseUrl}/supplier/access?token=${token}`
         
         try {

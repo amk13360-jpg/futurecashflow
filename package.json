@@ -49,6 +49,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "embla-carousel-react": "^8.3.0",
+    "exceljs": "^4.4.0",
     "input-otp": "^1.4.2",
     "jose": "^6.1.0",
     "lucide-react": "^0.548.0",
@@ -64,10 +65,9 @@
     "react-resizable-panels": "^4.6.2",
     "recharts": "^2.12.7",
     "sonner": "^2.0.7",
-    "tailwindcss": "^4.1.16",
     "tailwind-merge": "^3.3.1",
+    "tailwindcss": "^4.1.16",
     "typescript": "^5.0.0",
-    "vaul": "^0.9.1",
-    "xlsx": "^0.18.5"
+    "vaul": "^0.9.1"
   }
 }

@@ -6,6 +6,7 @@ import { createAuditLog } from "@/lib/auth/audit"
 import type { RowDataPacket } from "mysql2"
 import { generateToken } from "@/lib/utils"
 import { sendOfferNotificationEmail } from "@/lib/services/email"
+import { createOfferNotification } from "@/lib/services/notifications"
 
 // Types
 export interface OfferBatch {
@@ -365,13 +366,24 @@ export async function createOfferBatch(
         )
 
         // Send offer notification email
-        const baseUrl = process.env.NEXTAUTH_URL || "https://fm-asp-dev-san-hufee4h8hyawbhcx.southafricanorth-01.azurewebsites.net"
+        const baseUrl = process.env.NEXTAUTH_URL
+        if (!baseUrl) {
+          throw new Error("NEXTAUTH_URL environment variable is required")
+        }
         const accessLink = `${baseUrl}/supplier/access?token=${token}`
 
         try {
           await sendOfferNotificationEmail(supplier.contact_email, supplier.name, accessLink, offersCreated, totalNetPayment)
         } catch (emailError) {
           console.error("[OfferBatches] Failed to send offer email:", emailError)
+        }
+
+        // Create in-app notification
+        try {
+          await createOfferNotification(supplierId, offersCreated, totalNetPayment, supplier.buyer_name)
+          console.log(`[OfferBatches] In-app notification created for supplier ${supplierId}`)
+        } catch (notificationError) {
+          console.error("[OfferBatches] Failed to create in-app notification:", notificationError)
         }
       }
 
@@ -494,7 +506,10 @@ export async function sendOfferBatch(batchId: number): Promise<{ success: boolea
       )
 
       // Send offer notification email
-      const baseUrl = process.env.NEXTAUTH_URL || "https://fm-asp-dev-san-hufee4h8hyawbhcx.southafricanorth-01.azurewebsites.net"
+      const baseUrl = process.env.NEXTAUTH_URL
+      if (!baseUrl) {
+        throw new Error("NEXTAUTH_URL environment variable is required")
+      }
       const accessLink = `${baseUrl}/supplier/access?token=${token}`
 
       try {

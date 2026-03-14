@@ -583,13 +583,15 @@ export async function updateBuyer(input: UpdateBuyerInput): Promise<{ success: b
 
           // Send credentials to the new email
           const loginUrl = process.env.NEXT_PUBLIC_APP_URL
-            ? `${process.env.NEXT_PUBLIC_APP_URL}/login/ap`
-            : 'https://fm-asp-dev-san-hufee4h8hyawbhcx.southafricanorth-01.azurewebsites.net/login/ap';
+          if (!loginUrl) {
+            throw new Error("NEXT_PUBLIC_APP_URL environment variable is required")
+          }
+          const apLoginUrl = `${loginUrl}/login/ap`
 
           await sendEmail({
             to: newEmail,
             subject: `Updated Login Credentials - Future Mining Finance (Pty) Ltd`,
-            text: `Hello ${apUser.full_name || apUser.username},\n\nYour email address has been updated by the administrator.\n\nYour new login credentials:\n- Login URL: ${loginUrl}\n- Mine Code: ${buyerCode}\n- Username: ${apUser.username}\n- Password: ${tempPassword}\n\nPlease change your password after your first login.\n\nBest regards,\nFuture Mining Finance (Pty) Ltd`,
+            text: `Hello ${apUser.full_name || apUser.username},\n\nYour email address has been updated by the administrator.\n\nYour new login credentials:\n- Login URL: ${apLoginUrl}\n- Mine Code: ${buyerCode}\n- Username: ${apUser.username}\n- Password: ${tempPassword}\n\nPlease change your password after your first login.\n\nBest regards,\nFuture Mining Finance (Pty) Ltd`,
             html: `
 <!DOCTYPE html>
 <html>
@@ -620,7 +622,7 @@ export async function updateBuyer(input: UpdateBuyerInput): Promise<{ success: b
         <h3 style="margin-top: 0;">Your Login Credentials</h3>
         <div class="credential-row">
           <span class="credential-label">Login URL:</span>
-          <span class="credential-value"><a href="${loginUrl}">${loginUrl}</a></span>
+          <span class="credential-value"><a href="${apLoginUrl}">${apLoginUrl}</a></span>
         </div>
         <div class="credential-row">
           <span class="credential-label">Mine Code:</span>
