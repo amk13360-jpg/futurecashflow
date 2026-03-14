@@ -1,8 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { query } from "@/lib/db"
 import { verifyPassword } from "@/lib/auth/password"
-import { createSupplierSession } from "@/lib/auth/session"
+import { createSupplierSession, getClientFingerprint } from "@/lib/auth/session"
 import { createAuditLog } from "@/lib/auth/audit"
+import { generateRandomToken } from "@/lib/security/enhanced"
 
 export async function POST(request: NextRequest) {
   try {
@@ -47,15 +48,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
     }
 
-    // Create supplier session
-    const sessionToken = await createSupplierSession(
-      {
-        supplierId: supplier.supplier_id,
-        email: supplier.contact_email,
-        name: supplier.name,
-      },
-      request.headers
-    )
+    // Create supplier session with security fields
+    const fingerprint = getClientFingerprint(request.headers)
+    const sessionData = {
+      supplierId: supplier.supplier_id,
+      email: supplier.contact_email,
+      name: supplier.name,
+      ipHash: fingerprint.ipHash,
+      userAgentHash: fingerprint.userAgentHash,
+      sessionId: generateRandomToken(16),
+      lastRotation: Date.now(),
+      loginTime: Date.now(),
+    }
+    
+    const sessionToken = await createSupplierSession(sessionData, request.headers)
 
     await createAuditLog({
       userType: "supplier",

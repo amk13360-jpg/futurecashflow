@@ -1,7 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { query } from "@/lib/db"
-import { createSupplierSession } from "@/lib/auth/session"
+import { createSupplierSession, getClientFingerprint } from "@/lib/auth/session"
 import { createAuditLog } from "@/lib/auth/audit"
+import { generateRandomToken } from "@/lib/security/enhanced"
 import type { Supplier } from "@/lib/types/database"
 
 interface SupplierToken {
@@ -51,12 +52,18 @@ export async function POST(request: NextRequest) {
     // Mark token as used
     await query("UPDATE supplier_tokens SET used_at = NOW() WHERE token_id = ?", [supplierToken.token_id])
 
-    // Create supplier session
+    // Create supplier session with security fields
+    const fingerprint = getClientFingerprint(request.headers)
     const sessionToken = await createSupplierSession({
       supplierId: supplier.supplier_id,
       email: supplier.contact_email,
       name: supplier.name,
-    })
+      ipHash: fingerprint.ipHash,
+      userAgentHash: fingerprint.userAgentHash,
+      sessionId: generateRandomToken(16),
+      lastRotation: Date.now(),
+      loginTime: Date.now(),
+    }, request.headers)
 
     await createAuditLog({
       userType: "supplier",

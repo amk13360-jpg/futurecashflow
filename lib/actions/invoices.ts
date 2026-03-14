@@ -956,26 +956,63 @@ export async function manualGenerateOffersForSupplier(supplierId: number, trigge
 
 // Get all invoices for admin - UPDATED for new structure
 export async function getAllInvoices() {
-  // Allow any logged-in user to fetch all invoices
+  const session = await getSession()
+  if (!session) {
+    redirect("/login")
+  }
 
   try {
-    const invoices = await query(
-      `SELECT i.invoice_id, i.document_number, i.reference_invoice, i.document_date, 
-        i.due_date, i.amount, i.currency, i.status, i.uploaded_at,
-        i.vendor_number, i.payment_terms, i.company_code,
-        i.vendor_number as supplier_name, -- Using vendor_number as supplier name placeholder
-        i.company_code as buyer_name, -- Using company_code as buyer name placeholder
-        COUNT(o.offer_id) as offer_count
-       FROM invoices i
-       LEFT JOIN offers o ON i.invoice_id = o.invoice_id
-       GROUP BY i.invoice_id
-       ORDER BY i.uploaded_at DESC
-       LIMIT 100`,
-    )
+    let invoices
+    
+    // Admin users can see all invoices
+    if (session.role === "admin") {
+      invoices = await query(
+        `SELECT i.invoice_id, i.document_number, i.reference_invoice, i.document_date, 
+          i.due_date, i.amount, i.currency, i.status, i.uploaded_at,
+          i.vendor_number, i.payment_terms, i.company_code, i.buyer_id,
+          s.name as supplier_name,
+          b.company_name as buyer_name,
+          COUNT(o.offer_id) as offer_count
+         FROM invoices i
+         LEFT JOIN offers o ON i.invoice_id = o.invoice_id
+         LEFT JOIN suppliers s ON i.vendor_number = s.vendor_number AND i.company_code = s.company_code
+         LEFT JOIN buyers b ON i.buyer_id = b.buyer_id
+         GROUP BY i.invoice_id
+         ORDER BY i.uploaded_at DESC
+         LIMIT 100`
+      )
+    } 
+    // AP users can only see invoices for their buyer
+    else if (session.role === "accounts_payable") {
+      if (!session.buyerId) {
+        throw new Error("No buyer associated with this AP account")
+      }
+      
+      invoices = await query(
+        `SELECT i.invoice_id, i.document_number, i.reference_invoice, i.document_date, 
+          i.due_date, i.amount, i.currency, i.status, i.uploaded_at,
+          i.vendor_number, i.payment_terms, i.company_code, i.buyer_id,
+          s.name as supplier_name,
+          b.company_name as buyer_name,
+          COUNT(o.offer_id) as offer_count
+         FROM invoices i
+         LEFT JOIN offers o ON i.invoice_id = o.invoice_id
+         LEFT JOIN suppliers s ON i.vendor_number = s.vendor_number AND i.company_code = s.company_code
+         LEFT JOIN buyers b ON i.buyer_id = b.buyer_id
+         WHERE i.buyer_id = ?
+         GROUP BY i.invoice_id
+         ORDER BY i.uploaded_at DESC
+         LIMIT 100`,
+        [session.buyerId]
+      )
+    }
+    else {
+      throw new Error("Unauthorized access")
+    }
 
     return invoices
   } catch (error) {
-    console.error("[v0] Error fetching all invoices:", error)
+    console.error("[v0] Error fetching invoices:", error)
     throw error
   }
 }

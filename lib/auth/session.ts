@@ -34,18 +34,24 @@ export interface SessionData {
   buyerId?: number
   fullName?: string
   buyerName?: string
-  // Session binding fields (optional for backwards compatibility)
-  ipHash?: string
-  userAgentHash?: string
+  // Session security fields
+  ipHash: string
+  userAgentHash: string
+  sessionId: string
+  lastRotation: number
+  loginTime: number
 }
 
 export interface SupplierSessionData {
   supplierId: number
   email: string
   name: string
-  // Session binding fields
-  ipHash?: string
-  userAgentHash?: string
+  // Session security fields
+  ipHash: string
+  userAgentHash: string
+  sessionId: string
+  lastRotation: number
+  loginTime: number
 }
 
 /**

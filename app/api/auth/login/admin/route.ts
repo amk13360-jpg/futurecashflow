@@ -1,9 +1,10 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { query } from "@/lib/db"
 import { verifyPassword } from "@/lib/auth/password"
-import { createSession } from "@/lib/auth/session"
+import { createSession, getClientFingerprint } from "@/lib/auth/session"
 import { createAuditLog } from "@/lib/auth/audit"
 import { checkRateLimit, clearRateLimit, getClientIP, RATE_LIMITS } from "@/lib/auth/rate-limit"
+import { generateRandomToken } from "@/lib/security/enhanced"
 import { isValidUsername, sanitizeString } from "@/lib/utils/validation"
 import type { User } from "@/lib/types/database"
 
@@ -104,7 +105,8 @@ export async function POST(request: NextRequest) {
     // Reset failed login attempts and update last login
     await query("UPDATE users SET failed_login_attempts = 0, last_login_at = NOW() WHERE user_id = ?", [user.user_id])
 
-    // Create session
+    // Create session with security fields
+    const fingerprint = getClientFingerprint(request.headers)
     const token = await createSession({
       userId: user.user_id,
       username: user.username,
@@ -112,6 +114,11 @@ export async function POST(request: NextRequest) {
       role: user.role,
       buyerId: user.buyer_id,
       fullName: user.full_name,
+      ipHash: fingerprint.ipHash,
+      userAgentHash: fingerprint.userAgentHash,
+      sessionId: generateRandomToken(16),
+      lastRotation: Date.now(),
+      loginTime: Date.now(),
     })
 
     // Clear rate limit on successful login

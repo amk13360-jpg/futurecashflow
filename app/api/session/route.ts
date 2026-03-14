@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { getSession, getSupplierSession } from "@/lib/auth/session"
+import { createErrorResponse, secureLog } from "@/lib/security/enhanced"
 
 export async function GET() {
   try {
@@ -31,7 +32,7 @@ export async function GET() {
 
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 })
   } catch (error) {
-    console.error("[API] Session error:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    secureLog('error', 'Session API error', { error: error instanceof Error ? error.message : String(error) })
+    return createErrorResponse(error, "Session validation")
   }
 }
