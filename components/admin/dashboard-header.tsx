@@ -287,7 +287,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                     <span className="text-muted-foreground text-xs uppercase tracking-wide">Notifications</span>
                     <button 
                       type="button" 
-                      className="text-primary text-xs hover:underline disabled:opacity-50"
+                      className="disabled:opacity-50 text-primary text-xs hover:underline"
                       onClick={markAllAsRead}
                       disabled={unreadCount === 0}
                     >
@@ -318,7 +318,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                               }
                             }}
                           >
-                            <span className="text-lg shrink-0 mt-0.5">
+                            <span className="mt-0.5 text-lg shrink-0">
                               {notification.icon || '🔔'}
                             </span>
                             <div className="flex-1 min-w-0">
